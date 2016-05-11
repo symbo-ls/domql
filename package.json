@@ -19,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/nikoloza/bbdom/issues"
   },
-  "homepage": "https://github.com/nikoloza/bbdom#readme"
+  "homepage": "https://github.com/nikoloza/bbdom#readme",
+  "dependencies": {
+    "lodash": "^4.12.0"
+  }
 }
