@@ -1,2 +1,2 @@
 # bbdom
-In browser, backendless CMS.
+In-browser, backendless CMS in Javascript.
