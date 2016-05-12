@@ -6,17 +6,29 @@ var now = performance.now()
 
 for (let i = 0; i < 1000; i++) {
   var afrika = $.Element.create({
-    'nodeName': 'div',
-    'text': 'Hello Afrika',
-    'attr': {
-      'align': 'right'
+    text: 'Hello Afrika - ' + parseInt(Math.random() * 100),
+    attr: {
+      align: 'right'
     },
-    'styles': {
-      'background': 'black',
-      'color': 'white',
-      'padding': '10px'
+    style: {
+      background: 'black',
+      color: 'white',
+      padding: '10px'
     }
   })
+
+  var lion = $.Element.create({
+    text: 'Lion',
+    tag: 'span',
+    style: {
+      color: 'black',
+      background: 'yellow'
+    }
+  }, afrika)
+
+  var yay = $.Element.create('yay', afrika)
+
+  $.Element.method.assign(lion, afrika)
 }
 
 var later = performance.now()
