@@ -4,7 +4,7 @@ var $ = require('../lib')
 
 var now = performance.now()
 
-for (let i = 0; i < 14000; i++) {
+for (let i = 0; i < 1000; i++) {
   var afrika = $.Element.create({
     'nodeName': 'div',
     'text': 'Hello Afrika',
@@ -22,4 +22,4 @@ for (let i = 0; i < 14000; i++) {
 var later = performance.now()
 
 console.log(later - now)
-console.log($.Element.tree)
+// react - 517ms - https://jsfiddle.net/nikoloza/6ototeqs/
