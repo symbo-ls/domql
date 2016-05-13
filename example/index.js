@@ -22,6 +22,7 @@ for (let i = 0; i < 1000; i++) {
     tag: 'span',
     style: {
       color: 'black',
+      opacity: Math.random(),
       background: 'yellow'
     }
   }, afrika)
