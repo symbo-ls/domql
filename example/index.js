@@ -35,4 +35,4 @@ for (let i = 0; i < 1000; i++) {
 var later = performance.now()
 
 console.log(later - now)
-// react - 517ms - https://jsfiddle.net/nikoloza/6ototeqs/
+// react - https://jsfiddle.net/nikoloza/6ototeqs/
