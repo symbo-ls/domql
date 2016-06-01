@@ -1,4 +1,4 @@
-# domr
+# DOMr
 DOM rendering Javascript framework.
 
 - [x] create
