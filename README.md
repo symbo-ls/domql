@@ -1,5 +1,5 @@
 # DOMr
-DOM rendering Javascript framework.
+DOM rendering Javascript framework in a very early stage.
 
 - [x] create
 - [ ] update
