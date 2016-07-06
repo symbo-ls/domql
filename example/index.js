@@ -28,11 +28,8 @@ for (let i = 0; i < 1000; i++) {
   }, afrika)
 
   var yay = $.Element.create('yay', afrika)
-
-  $.Element.method.assign(lion, afrika)
 }
 
 var later = performance.now()
 
 console.log(later - now)
-// react - https://jsfiddle.net/nikoloza/6ototeqs/
