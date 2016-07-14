@@ -2,6 +2,7 @@
 DOM rendering Javascript framework in a very early stage.
 
 - [x] create
+- [ ] binding
 - [ ] update
 - [ ] events
 
