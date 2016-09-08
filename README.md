@@ -3,7 +3,7 @@ DOM rendering Javascript framework in a very early stage.
 
 - [x] error reporting and languages support
 - [x] create
-- [ ] binding - in progress
+- [ ] binding *- in progress*
 - [ ] update
 - [ ] events
 
