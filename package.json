@@ -1,7 +1,7 @@
 {
-  "name": "bbdom",
-  "version": "0.0.1",
-  "description": "In-browser, backendless CMS in Javascript. — Edit",
+  "name": "freeDOM",
+  "version": "0.1.0",
+  "description": "DOM rendering framework. Good for translating JSON into DOM.",
   "main": "lib/index.js",
   "scripts": {
     "dev": "budo ./example/index.js --live --pushstate -- -r ./package.json:package.json",
