@@ -1,13 +1,3 @@
-<<<<<<< HEAD
-node_modules
-dist
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.npm
-.eslintcache
-.env
-=======
 # Logs
 logs
 *.log
@@ -42,5 +32,4 @@ node_modules
 # Optional REPL history
 .node_repl_history
 
-_!*
->>>>>>> 966f98521373dfa2901abdda7210eaa80a46ac31
+yarn.lock
