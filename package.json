@@ -1,20 +1,16 @@
 {
-  "name": "freedom",
+  "name": "rackai-dom",
   "version": "0.0.3",
   "description": "DOM rendering Javascript framework at early stage. Good for translating JSON into HTML objecs.",
   "scripts": {
     "start": "webpack-dev-server --open --watch --config webpack.dev.js",
+    "size": "size-limit",
     "build": "webpack --config webpack.prod.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rackai/freeDOM.git"
   },
-  "keywords": [
-    "es7",
-    "webpack",
-    "boilerplate"
-  ],
   "author": "rackai",
   "license": "MIT",
   "bugs": {
@@ -22,14 +18,14 @@
   },
   "homepage": "https://github.com/rackai/freeDOM",
   "dependencies": {
-    "lodash": "^4.17.11"
+    "lodash.indexof": "^4.0.5"
   },
   "devDependencies": {
-    "core-js": "^2.6.9",
     "@babel/core": "^7.2.2",
     "@babel/preset-env": "^7.2.3",
     "babel-loader": "^8.0.5",
     "clean-webpack-plugin": "^1.0.0",
+    "core-js": "^2.6.9",
     "css-loader": "^2.1.0",
     "eslint": "^5.12.0",
     "eslint-config-standard": "^12.0.0",
@@ -44,11 +40,18 @@
     "mini-css-extract-plugin": "^0.5.0",
     "node-sass": "^4.11.0",
     "sass-loader": "^7.1.0",
+    "size-limit": "^1.3.7",
     "style-loader": "^0.23.1",
     "webpack": "^4.28.4",
     "webpack-cli": "^3.2.1",
     "webpack-dev-server": "^3.1.14",
     "webpack-merge": "^4.2.1"
   },
-  "browserslist": "> 0.25%, not dead"
+  "browserslist": "> 0.25%, not dead",
+  "size-limit": [
+    {
+      "limit": "10 KB",
+      "path": "src/index.js"
+    }
+  ]
 }
