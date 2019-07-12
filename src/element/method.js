@@ -1,7 +1,7 @@
 'use strict'
 
-var text = (text) => {
-  this.node.innerHTML = text
+var text = (text, node) => {
+  node.innerHTML = text
 }
 
 var append = (node, parent) => {

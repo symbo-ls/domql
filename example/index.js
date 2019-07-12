@@ -2,35 +2,59 @@
 
 import DOM from '../src'
 
+import header from './header'
+import footer from './footer'
+import increment from './increment'
+
 var { performance } = window
 var now = performance.now()
 
-for (let i = 0; i < 1000; i++) {
-  var afrika = DOM.create({
+var list = {
+  tag: 'ul',
+  style: {
+    padding: 0
+  }
+}
+
+for (let i = 0; i < 35; i++) {
+  let afrika = {
     text: 'Hello Afrika - ' + parseInt(Math.random() * 100),
+    tag: 'li',
     attr: {
       align: 'right'
     },
     style: {
       background: 'black',
       color: 'white',
-      padding: '10px'
+      padding: 10
     }
-  })
+  }
 
-  DOM.create({
+  let lion = {
     text: 'Lion',
-    tag: 'span',
     style: {
       color: 'black',
       opacity: Math.random(),
       background: 'yellow'
     }
-  }, afrika)
+  }
 
-  DOM.create('yay', afrika)
+  let yay = 'yay'
+
+  afrika[lion] = lion
+  afrika[yay] = yay
+
+  list[i] = afrika
 }
 
-var later = performance.now()
+var root = {
+  header,
+  increment,
+  list,
+  footer
+}
 
+DOM.create(root)
+
+var later = performance.now()
 console.log(later - now)
