@@ -8,7 +8,7 @@ import setPrototype from '../utils/setPrototype'
 
 var create = (elemParams, parent, key) => {
   // If parent is not given
-  if (!parent) parent = tree.base
+  if (!parent) parent = tree.root
 
   // If elemParams is not given
   if (!elemParams) return Err('CantCreateWithoutNode')

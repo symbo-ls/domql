@@ -4,12 +4,14 @@ import Evt from '../event'
 import Err from '../res/error'
 import create from './create'
 
-import { style, attr, text } from './params'
+import { style, attr, text, dataset } from './params'
 
 var createElement = (params, key) => {
   if (!Evt.can.render(params)) {
     return Err('HTMLInvalidTag')
   }
+
+  if (!params.data) params.data = {}
 
   var node
   if (params.tag === 'string') node = document.createTextNode(params.text)
@@ -33,6 +35,9 @@ var createElement = (params, key) => {
           break
         case 'text':
           text(params.text, node)
+          break
+        case 'data':
+          if (params['data'].visible) dataset(params.data, node)
           break
         case 'style':
           style(params.style, node)

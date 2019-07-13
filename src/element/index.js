@@ -1,7 +1,7 @@
 'use strict'
 
 import nodes from './nodes'
-import base from './base'
+import root from './root'
 import tree from './tree'
 import create from './create'
 import createElement from './createElement'
@@ -9,7 +9,7 @@ import method from './method'
 
 export default {
   nodes,
-  base,
+  root,
   tree,
   create,
   createElement,

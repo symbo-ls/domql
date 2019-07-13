@@ -30,6 +30,10 @@ var errors = {
       title: 'Attibutes object is invalid',
       description: 'Please pass a valid plain object to apply as an attributes for a DOM node'
     },
+    HTMLInvalidData: {
+      title: 'Data object is invalid',
+      description: 'Please pass a valid plain object to apply as an dataset for a DOM node'
+    },
     HTMLInvalidStyles: {
       title: 'Styles object is invalid',
       description: 'Please pass a valid plain object to apply as an style for a DOM node'

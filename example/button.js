@@ -1,3 +1,5 @@
+'use strict'
+
 export default {
   query: true,
   shape: 'ShapeA',

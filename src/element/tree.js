@@ -1,5 +1,5 @@
 'use strict'
 
-import base from './base'
+import root from './root'
 
-export default { base }
+export default { root }
