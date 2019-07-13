@@ -1,5 +1,5 @@
 # DOMQL
-DOM rendering Javascript framework in a very early stage.
+DOM rendering Javascript framework at a early stage.
 
 - [x] error reporting
 - [x] virtual DOM tree
