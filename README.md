@@ -4,6 +4,7 @@ DOM rendering Javascript framework in a very early stage.
 - [x] error reporting
 - [x] virtual DOM tree
 - [x] create
+  - [x] create using prototype class
 - [ ] binding *- in progress*
 - [ ] update
 - [ ] events
