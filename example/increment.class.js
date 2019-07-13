@@ -6,9 +6,6 @@ var val = {
 
 var Button = {
   tag: 'button',
-  attr: {
-    class: 'ui-button'
-  },
   on: {
     click: (e, element) => {
       element.text === 'Increment' ? val.text++ : val.text--
