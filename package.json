@@ -5,6 +5,7 @@
   "author": "",
   "version": "0.0.1",
   "repository": "",
+  "main": "src/index.js",
   "scripts": {
     "start": "parcel example/index.html",
     "build": "parcel build example/index.html"
