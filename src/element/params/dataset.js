@@ -6,7 +6,8 @@ export default (params, node) => {
   if (params) {
     if (!(typeof params === 'object')) Err('HTMLInvalidData', params)
     for (let dataset in params) {
-      node.dataset[dataset] = params[dataset]
+      if (dataset !== 'visible')
+        node.dataset[dataset] = params[dataset]
     }
   }
 }

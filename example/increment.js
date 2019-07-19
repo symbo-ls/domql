@@ -7,6 +7,7 @@ var val = {
 var Button = {
   tag: 'button'
 }
+// <button></button>
 
 var increment = {
   class: Button,
