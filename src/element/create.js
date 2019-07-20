@@ -13,9 +13,9 @@ var create = (elemParams, parent, key) => {
   // If elemParams is not given
   if (!elemParams) return Err('CantCreateWithoutNode')
 
-  // if class
-  if (elemParams.class) {
-    setPrototype(elemParams, elemParams.class)
+  // if proto
+  if (elemParams.proto) {
+    setPrototype(elemParams, elemParams.proto)
   }
 
   // If elemParams is string

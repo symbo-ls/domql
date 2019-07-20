@@ -4,7 +4,7 @@ import Evt from '../event'
 import Err from '../res/error'
 import create from './create'
 
-import { style, attr, text, dataset } from './params'
+import { style, attr, text, dataset, classList } from './params'
 
 var createElement = (params, key) => {
   if (!Evt.can.render(params)) {
@@ -30,8 +30,11 @@ var createElement = (params, key) => {
         case 'key':
         case 'tag':
         case 'node':
-        case 'class':
+        case 'proto':
         case 'on':
+          break
+        case 'class':
+          classList(params.class, node)
           break
         case 'text':
           text(params.text, node)
