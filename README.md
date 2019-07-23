@@ -16,3 +16,18 @@ To install all dependencies and run dev server, run:
 ```shell
 yarn && yarn start
 ```
+
+### Reserved keywords
+
+```
+key
+tag
+node
+proto
+on
+class
+text
+data
+style
+attr
+```

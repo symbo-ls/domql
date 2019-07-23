@@ -24,6 +24,8 @@ var createElement = (params, key) => {
   key = key || params.key ? params.key : randomKey
   params.key = key
 
+  console.log(params)
+
   if (params.tag !== 'string') {
     for (let param in params) {
       switch (param) {
