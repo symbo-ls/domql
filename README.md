@@ -31,3 +31,25 @@ data
 style
 attr
 ```
+
+### Example 
+
+```
+var link = {
+  tag: 'a',
+  class: 'menu link',
+  attr: {
+    href: '#'
+  }
+}
+```
+
+```
+var img = {
+  tag: 'img',
+  class: 'avatar',
+  attr: {
+    src: '...'
+  }
+}
+```
