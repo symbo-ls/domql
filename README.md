@@ -34,6 +34,8 @@ attr
 
 ### Example 
 
+Attributes:
+
 ```
 var link = {
   tag: 'a',
@@ -43,7 +45,6 @@ var link = {
   }
 }
 ```
-
 ```
 var img = {
   tag: 'img',
@@ -51,5 +52,29 @@ var img = {
   attr: {
     src: '...'
   }
+}
+```
+
+Reusing: 
+```
+var listItem = {
+  tag: 'a',
+  class: 'ui link',
+  attr: {
+    href: '#'
+  }
+}
+
+var menu = [{
+  proto: listItem,
+  text: 'Home'
+}, {
+  proto: listItem,
+  text: 'About'
+}]
+
+var header = {
+  logo: {},
+  menu
 }
 ```
