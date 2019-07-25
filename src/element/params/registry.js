@@ -1,25 +1,26 @@
 'use strict'
 
 import {
+  proto,
   attr,
   style,
   text,
-  dataset
+  dataset,
+  classList
 } from './'
 
-
-var attrRegistry = {
+var paramRegistry = {
   attr,
   style,
   text,
   data: dataset,
-
+  class: classList,
+  
+  proto: {},
   key: {},
   tag: {},
-  class: {},
   node: {},
-  prototype: {},
   on: {}
 }
 
-export default attrRegistry
+export default paramRegistry

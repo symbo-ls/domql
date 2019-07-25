@@ -10,22 +10,22 @@ var Button = {
 // <button></button>
 
 var increment = {
-  class: Button,
+  proto: Button,
   text: 'Increment',
   on: {
-    click: (e) => {
-      val.text++
-    }
+    // click: (e) => {
+    //   val.text++
+    // }
   }
 }
 
 var decrement = {
-  class: Button,
+  proto: Button,
   text: 'Decrement',
   on: {
-    click: (e) => {
-      val.text--
-    }
+    // click: (e) => {
+    //   val.text--
+    // }
   }
 }
 

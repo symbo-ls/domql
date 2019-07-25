@@ -10,11 +10,11 @@ var setPrototype = (obj, extention) => {
   //   obj.__proto__[e] = extention[e]
   // }
 
-  Object.setPrototypeOf(obj, extention)
+  // Object.setPrototypeOf(obj, extention)
 
-  // for (let e in extention) {
-  //   if (!obj[e]) obj[e] = extention[e]
-  // }
+  for (let e in extention) {
+    if (!obj[e]) obj[e] = extention[e]
+  }
 }
 
 export default setPrototype

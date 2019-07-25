@@ -2,6 +2,9 @@
 
 import Err from '../../res/error'
 
+/**
+ * Recursively add attributes to a DOM node
+ */
 export default (params, node) => {
   if (params) {
     if (!(typeof params === 'object')) Err('HTMLInvalidAttr', params)

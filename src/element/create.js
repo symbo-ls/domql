@@ -6,6 +6,9 @@ import createElement from './createElement'
 import method from './method'
 import setPrototype from '../utils/setPrototype'
 
+/**
+ * Creating a domQL element using passed parameters
+ */
 var create = (elemParams, parent, key) => {
   // If parent is not given
   if (!parent) parent = tree.root
@@ -29,7 +32,7 @@ var create = (elemParams, parent, key) => {
   // Assign parent reference to the element
   element.parent = parent
 
-  method.assign(element, parent)
+  method.assignNode(element, parent)
 
   return element
 }
