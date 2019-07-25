@@ -8,10 +8,15 @@
   "main": "src/index.js",
   "scripts": {
     "start": "parcel example/index.html",
-    "build": "parcel build example/index.html"
+    "build": "parcel build example/index.html",
+    "test": "jest --watch"
   },
   "dependencies": {},
   "devDependencies": {
+    "@babel/core": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "babel-jest": "^24.8.0",
+    "jest": "^24.8.0",
     "parcel-bundler": "^1.12.3"
   }
 }

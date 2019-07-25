@@ -4,7 +4,7 @@ import Err from '../res/error'
 import tree from './tree'
 import createElement from './createElement'
 import method from './method'
-import setPrototype from '../utils/setPrototype'
+import deepMerge from '../utils/deepMerge'
 
 /**
  * Creating a domQL element using passed parameters
@@ -18,7 +18,7 @@ var create = (elemParams, parent, key) => {
 
   // if proto
   if (elemParams.proto) {
-    setPrototype(elemParams, elemParams.proto)
+    deepMerge(elemParams, elemParams.proto)
   }
 
   // If elemParams is string
