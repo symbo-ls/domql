@@ -2,6 +2,6 @@
 
 import map from './map'
 import set from './set'
-import setPrototype from './setPrototype'
+import deepMerge from './deepMerge'
 
-export default { map, set, setPrototype }
+export default { map, set, deepMerge }
