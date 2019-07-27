@@ -1,6 +1,8 @@
 # DOMQL
 DOM rendering Javascript framework at the early stage.
 
+[![Coverage Status](https://coveralls.io/repos/github/rackai/domql/badge.svg?branch=master)](https://coveralls.io/github/rackai/domql?branch=master)
+
 - [x] error reporting
 - [x] virtual DOM tree
 - [x] create
