@@ -9,8 +9,8 @@
   "scripts": {
     "start": "parcel example/index.html",
     "build": "parcel build example/index.html",
-    "test": "jest --watch",
-    "coverage": "jest --coverage --coverageReporters=text-lcov | coveralls"
+    "test": "jest --coverage --coverageReporters=text-lcov | coveralls",
+    "test-watch": "jest --watch"
   },
   "dependencies": {},
   "devDependencies": {
