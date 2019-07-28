@@ -19,7 +19,7 @@ test('should set prototype from a original to a new element', () => {
   }
 
   deepMerge(submit, proto)
-  
+
   expect(submit).toStrictEqual({
     tag: 'button',
     style: {

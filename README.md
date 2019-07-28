@@ -81,3 +81,13 @@ var header = {
   menu
 }
 ```
+
+Array Support:
+```
+var navItems = ['Home', 'About', 'FAQ', 'Contact']
+
+var menu = {
+  proto: listItem,
+  ...navItems
+}
+```
