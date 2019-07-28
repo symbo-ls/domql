@@ -4,7 +4,6 @@ import DOM from '../src'
 
 import header from './header'
 import footer from './footer'
-import increment from './increment'
 
 var { performance } = window
 var now = performance.now()
@@ -49,7 +48,6 @@ for (let i = 0; i < 35; i++) {
 
 var root = {
   header,
-  increment,
   list,
   footer
 }
