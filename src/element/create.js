@@ -21,10 +21,8 @@ var create = (elemParams, parent, key) => {
 
   // if proto, or inherited proto
   if (elemParams.proto) {
-    console.log('proto', elemParams)
     deepMerge(elemParams, elemParams.proto)
   } else if (parent && parent.childProto) {
-    console.log('childproto', elemParams)
     deepMerge(elemParams, parent.childProto)
   }
 
