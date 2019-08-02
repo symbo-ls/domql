@@ -4,37 +4,42 @@ import Evt from '../event'
 import Err from '../res/error'
 import create from './create'
 
-import { registry, style, attr, text, dataset, classList } from './params'
+import { exec, registry, style, attr, text, dataset, classList } from './params'
 
-var createElement = (params, key) => {
-  if (!Evt.can.render(params)) {
+var createElement = (element) => {
+  if (!Evt.can.render(element)) {
     return Err('HTMLInvalidTag')
   }
 
   // create and assign a node
   var node
-  if (params.tag === 'string') node = document.createTextNode(params.text)
-  else if (params.tag) node = document.createElement(params.tag)
+  if (element.tag === 'string') node = document.createTextNode(element.text)
+  else if (element.tag) node = document.createElement(element.tag)
   else node = document.createElement('div')
-  params.node = node
+  element.node = node
 
   // Apply element parameters
-  if (params.tag !== 'string') {
-    for (let param in params) {
+  if (element.tag !== 'string') {
+    for (let param in element) {
+      var execParam = exec(element[param], element)
+
       var registeredParam = registry[param]
       if (registeredParam) {
         if (typeof registeredParam === 'function') {
-          registeredParam(params[param], node)
+          registeredParam(execParam, element, node)
         }
       }
+      else if (element.define && element.define[param]) {
+        element[param] = element.define[param](element[param])
+      }
       else {
-        create(params[param], params, param)
+        create(element[param], element, param)
       }
     }
   }
 
   // node.dataset.key = key
-  return params
+  return element
 }
 
 export default createElement

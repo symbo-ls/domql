@@ -7,11 +7,11 @@ import method from '../method'
  * Creates a text node and appends into 
  * an original one as a child
  */
-export default (params, node) => {
-  if (params) {
-    if (typeof params === 'string') {
-      params = document.createTextNode(params)
-      method.appendNode(params, node)
-    } else Err('HTMLInvalidText', params)
+export default (param, element, node) => {
+  if (param) {
+    if (typeof param === 'string') {
+      param = document.createTextNode(param)
+      method.appendNode(param, node)
+    } else Err('HTMLInvalidText', param)
   }
 }

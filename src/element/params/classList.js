@@ -2,8 +2,8 @@
 
 import Err from '../../res/error'
 
-export default (params, node) => {
-  if (params) {
-    node.classList = params
+export default (param, element, node) => {
+  if (param) {
+    node.classList = param
   }
 }

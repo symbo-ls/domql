@@ -4,6 +4,12 @@ import DOM from '../src'
 
 import header from './header'
 import footer from './footer'
+import Icon from './icon'
+
+var icon = {
+  proto: Icon,
+  name: 'toke'
+}
 
 var { performance } = window
 var now = performance.now()
@@ -12,6 +18,21 @@ var list = {
   tag: 'ul',
   style: {
     padding: 0
+  }
+}
+
+var img = {
+  tag: 'img',
+  define: {
+    name: file => `assets/${file}`,
+    spacing: unit => `${unit}px`
+  },
+  attr: {
+    src: element => element.name
+  },
+  style: {
+    paddingLeft: element => element.spacing,
+    paddingRight: element => element.spacing
   }
 }
 
@@ -47,8 +68,16 @@ for (let i = 0; i < 35; i++) {
 }
 
 var root = {
-  header,
-  list,
+  // header,
+  // list,
+
+  logo: {
+    proto: img,
+    name: 'avatar.png',
+    spacing: 10
+  },
+
+  icon,
   footer
 }
 

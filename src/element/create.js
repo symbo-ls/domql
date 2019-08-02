@@ -32,10 +32,11 @@ var create = (elemParams, parent, key) => {
   if (typeof elemParams === 'string') {
     elemParams = { text: elemParams, tag: 'string' }
   }
+
   elemParams.key = key
 
   // create Element class
-  var element = createElement(elemParams, key)
+  var element = createElement(elemParams)
 
   // Assign parent reference to the element
   element.parent = parent

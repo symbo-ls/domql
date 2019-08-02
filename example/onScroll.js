@@ -3,9 +3,9 @@
 import root from '../src/element/root'
 
 root.on = {
-  scroll (e, element) {
+  scroll (event, element) {
     element.data = {
-      scrollTop: e.scrollTop
+      scrollTop: event.scrollTop
     }
   }
 }

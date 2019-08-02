@@ -6,7 +6,7 @@ import Err from '../../res/error'
  * Apply data parameters on the DOM nodes
  * this should only work if `toNode: true` is passed
  */
-export default (params, node) => {
+export default (params, element, node) => {
   if (params && params.toNode) {
     if (!(typeof params === 'object')) Err('HTMLInvalidData', params)
 

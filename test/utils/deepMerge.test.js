@@ -7,6 +7,11 @@ test('should set prototype from a original to a new element', () => {
       backgroundColor: 'white',
       color: 'black',
       outline: 0
+    },
+    icon: {
+      style: {
+        fill: 'blacl'
+      }
     }
   }
 
@@ -26,6 +31,11 @@ test('should set prototype from a original to a new element', () => {
       backgroundColor: 'green',
       color: 'white',
       outline: 0
+    },
+    icon: {
+      style: {
+        fill: 'blacl'
+      }
     },
     text: 'Submit'
   })
