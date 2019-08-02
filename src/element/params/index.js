@@ -5,6 +5,7 @@ import classList from './classList'
 import dataset from './dataset'
 import style from './style'
 import text from './text'
+import html from './html'
 import registry from './registry'
 
 export {
@@ -13,5 +14,6 @@ export {
   dataset,
   style,
   text,
+  html,
   registry
 }

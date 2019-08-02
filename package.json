@@ -7,7 +7,7 @@
   "repository": "",
   "main": "src/index.js",
   "scripts": {
-    "start": "parcel example/index.html",
+    "start": "parcel example/index.html --no-cache",
     "build": "parcel build example/index.html",
     "test": "jest --coverage --coverageReporters=text-lcov | coveralls",
     "test-watch": "jest --watch"

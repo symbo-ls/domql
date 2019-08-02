@@ -16,15 +16,23 @@ var create = (elemParams, parent, key) => {
   // If elemParams is not given
   if (!elemParams) return Err('CantCreateWithoutNode')
 
-  // if proto
+  // create and assign a key
+  if (!key) key = elemParams.key ? elemParams.key : parseInt(Math.random() * 10000)
+
+  // if proto, or inherited proto
   if (elemParams.proto) {
+    console.log('proto', elemParams)
     deepMerge(elemParams, elemParams.proto)
+  } else if (parent && parent.childProto) {
+    console.log('childproto', elemParams)
+    deepMerge(elemParams, parent.childProto)
   }
 
   // If elemParams is string
   if (typeof elemParams === 'string') {
-    elemParams = { key, text: elemParams, tag: 'string' }
+    elemParams = { text: elemParams, tag: 'string' }
   }
+  elemParams.key = key
 
   // create Element class
   var element = createElement(elemParams, key)

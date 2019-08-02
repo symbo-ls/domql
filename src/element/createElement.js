@@ -11,8 +11,6 @@ var createElement = (params, key) => {
     return Err('HTMLInvalidTag')
   }
 
-  if (!params.data) params.data = {}
-
   // create and assign a node
   var node
   if (params.tag === 'string') node = document.createTextNode(params.text)
@@ -41,7 +39,6 @@ var createElement = (params, key) => {
   }
 
   // node.dataset.key = key
-
   return params
 }
 

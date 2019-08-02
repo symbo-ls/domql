@@ -9,7 +9,7 @@ import Evt from './event'
 import Str from './res/string'
 import Lng from './res/language'
 
-var app = window.app = {
+var app = {
   about: {
     version: '0.0.1'
   },
@@ -24,5 +24,7 @@ var app = window.app = {
   Str,
   Lng
 }
+
+window.tree = app.Elem.tree
 
 export default app
