@@ -22,6 +22,7 @@ var paramRegistry = {
   childProto: {},
   key: {},
   tag: {},
+  parent: {},
   node: {},
   on: {}
 }

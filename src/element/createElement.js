@@ -18,11 +18,6 @@ var createElement = (params, key) => {
   else node = document.createElement('div')
   params.node = node
 
-  // create and assign a key
-  var randomKey = parseInt(Math.random() * 10000)
-  key = key || params.key ? params.key : randomKey
-  params.key = key
-
   // Apply element parameters
   if (params.tag !== 'string') {
     for (let param in params) {
