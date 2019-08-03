@@ -29,4 +29,19 @@ test('should merge multiple level prototypes', () => {
     div3: 'div3',
     div4: 'div4'
   })
+
+  var parent = {
+    childProto: proto4,
+    one: {}
+  }
+
+  applyPrototype(parent.one, parent)
+
+  expect(parent.one).toStrictEqual({
+    proto: proto3,
+    div1: 'div1',
+    div2: 'div2',
+    div3: 'div3',
+    div4: 'div4'
+  })
 })
