@@ -90,7 +90,7 @@ Array Support:
 var navItems = ['Home', 'About', 'FAQ', 'Contact']
 
 var menu = {
-  proto: listItem,
+  proto: ListItem,
   ...navItems
 }
 ```
