@@ -61,21 +61,23 @@ var img = {
 
 Reusing: 
 ```
-var listItem = {
-  tag: 'a',
+var Link = {
+  tag: 'a'
+}
+
+var ListItem = {
+  proto: Link,
   class: 'ui link',
   attr: {
     href: '#'
   }
 }
 
-var menu = [{
-  proto: listItem,
-  text: 'Home'
-}, {
-  proto: listItem,
+var menu = {
+  childProto: ListItem,
+  home: 'Home',
   text: 'About'
-}]
+}
 
 var header = {
   logo: {},
@@ -88,7 +90,7 @@ Array Support:
 var navItems = ['Home', 'About', 'FAQ', 'Contact']
 
 var menu = {
-  proto: listItem,
+  proto: ListItem,
   ...navItems
 }
 ```
