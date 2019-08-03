@@ -1,6 +1,6 @@
 import applyPrototype from '../../src/element/proto'
 
-test('should merge multiple prototypes', () => {
+test('should merge multiple level prototypes', () => {
   var proto1 = {
     div1: 'div1'
   }
@@ -15,12 +15,18 @@ test('should merge multiple prototypes', () => {
     div3: 'div3'
   }
 
-  applyPrototype(proto3)
+  var proto4 = {
+    proto: proto3,
+    div4: 'div4'
+  }
 
-  expect(proto3).toStrictEqual({
-    proto: proto2,
+  applyPrototype(proto4)
+
+  expect(proto4).toStrictEqual({
+    proto: proto3,
     div1: 'div1',
     div2: 'div2',
-    div3: 'div3'
+    div3: 'div3',
+    div4: 'div4'
   })
 })
