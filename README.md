@@ -9,7 +9,7 @@ DOM rendering Javascript framework at the early stage.
 - [x] create
   - [x] create using prototype class
   - [x] support multiple level prototypes
-- [ ] binding *- in progress*
+- [ ] binding
 - [ ] update
 - [ ] events
 
