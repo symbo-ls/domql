@@ -18,7 +18,7 @@ var create = (element, parent, key) => {
 
   // If element is string
   if (typeof element === 'string') {
-    element = { text: element, tag: 'string' }
+    element = { text: element, tag: (parent.childProto && parent.childProto.tag) || 'string' }
   }
 
   // Assign parent reference to the element
@@ -28,13 +28,13 @@ var create = (element, parent, key) => {
   applyPrototype(element, parent)
 
   // create and assign a key
-  if (!key) key = element.key ? element.key : parseInt(Math.random() * 10000)
-  element.key = key
+  var assignedKey = element.key || key || parseInt(Math.random() * 10000)
+  element.key = assignedKey
 
   // create Element class
   createElement(element)
 
-  method.assignNode(element, parent)
+  method.assignNode(element, parent, key)
 
   return element
 }

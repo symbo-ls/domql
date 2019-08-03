@@ -34,8 +34,13 @@ var createElement = (element) => {
         }
       }
       else if (element.define && element.define[param]) {
-        var cachedParam = element[param]
-        element[`_${param}`] = cachedParam
+        var cachedParam = element[`_${param}`]
+
+        if (!cachedParam) {
+          cachedParam = element[param]
+          element[`_${param}`] = cachedParam
+        }
+        
         element[param] = element.define[param](
           exec(cachedParam, element),
           element
