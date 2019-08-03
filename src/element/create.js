@@ -4,40 +4,35 @@ import Err from '../res/error'
 import tree from './tree'
 import createElement from './createElement'
 import method from './method'
-import deepMerge from '../utils/deepMerge'
+import applyPrototype from './proto'
 
 /**
  * Creating a domQL element using passed parameters
  */
-var create = (elemParams, parent, key) => {
+var create = (element, parent, key) => {
   // If parent is not given
   if (!parent) parent = tree.root
 
-  // If elemParams is not given
-  if (!elemParams) return Err('CantCreateWithoutNode')
+  // If element is not given
+  if (!element) return Err('CantCreateWithoutNode')
 
-  // create and assign a key
-  if (!key) key = elemParams.key ? elemParams.key : parseInt(Math.random() * 10000)
-
-  // if proto, or inherited proto
-  if (elemParams.proto) {
-    deepMerge(elemParams, elemParams.proto)
-  } else if (parent && parent.childProto) {
-    deepMerge(elemParams, parent.childProto)
+  // If element is string
+  if (typeof element === 'string') {
+    element = { text: element, tag: 'string' }
   }
-
-  // If elemParams is string
-  if (typeof elemParams === 'string') {
-    elemParams = { text: elemParams, tag: 'string' }
-  }
-
-  elemParams.key = key
-
-  // create Element class
-  var element = createElement(elemParams)
 
   // Assign parent reference to the element
   element.parent = parent
+
+  // if proto, or inherited proto
+  applyPrototype(element, parent)
+
+  // create and assign a key
+  if (!key) key = element.key ? element.key : parseInt(Math.random() * 10000)
+  element.key = key
+
+  // create Element class
+  createElement(element)
 
   method.assignNode(element, parent)
 

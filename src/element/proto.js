@@ -1,13 +1,24 @@
 'use strict'
 
-import Err from '../res/error'
-import setPrototype from '../utils/setPrototype'
+import deepMerge from '../utils/deepMerge'
 
 /**
  * Sets a prototype an element
  */
-export default (params) => {
-  if (params) {
-    setPrototype(params, params.proto)
+
+var recursiveProto = (protoOfElem) => {
+  while (protoOfElem.proto) {
+    deepMerge(protoOfElem, protoOfElem.proto)
+    recursiveProto(protoOfElem.proto)
+  }
+}
+
+export default (element, parent) => {
+  if (element.proto) {
+    recursiveProto(element.proto)
+    deepMerge(element, element.proto)
+  } else if (parent.childProto) {
+    recursiveProto(parent.childProto)
+    deepMerge(element, parent.childProto)
   }
 }

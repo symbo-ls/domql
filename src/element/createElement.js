@@ -14,7 +14,11 @@ var createElement = (element) => {
   // create and assign a node
   var node
   if (element.tag === 'string') node = document.createTextNode(element.text)
-  else if (element.tag) node = document.createElement(element.tag)
+  else if (element.tag) {
+    if (element.tag === 'svg') 
+      node = document.createElementNS('http://www.w3.org/2000/svg', element.tag)
+    else node = document.createElement(element.tag)
+  }
   else node = document.createElement('div')
   element.node = node
 
@@ -30,7 +34,12 @@ var createElement = (element) => {
         }
       }
       else if (element.define && element.define[param]) {
-        element[param] = element.define[param](element[param])
+        var cachedParam = element[param]
+        element[`_${param}`] = cachedParam
+        element[param] = element.define[param](
+          exec(cachedParam, element),
+          element
+        )
       }
       else {
         create(element[param], element, param)
