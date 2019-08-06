@@ -28,7 +28,7 @@ var create = (element, parent, key) => {
   applyPrototype(element, parent)
 
   // create and assign a key
-  var assignedKey = element.key || key || parseInt(Math.random() * 10000)
+  var assignedKey = element.key || key || parseInt(Math.random() * 10000, 10)
   element.key = assignedKey
 
   // create Element class
