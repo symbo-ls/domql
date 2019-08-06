@@ -3,7 +3,8 @@
 import err from '..'
 
 var setCurrent = (code) => {
-  if (this.list.hasOwnProperty(code)) {
+  var hasProperty = Object.prototype.hasOwnProperty.call(this.list, code)
+  if (hasProperty) {
     this.current = code
   }
 }

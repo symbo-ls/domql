@@ -68,14 +68,8 @@ for (let i = 0; i < 35; i++) {
 }
 
 var root = {
-  // header,
-  // list,
-
-  logo: {
-    proto: img,
-    name: 'avatar.png',
-    spacing: 10
-  },
+  header,
+  list,
 
   icon,
   footer

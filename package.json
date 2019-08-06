@@ -9,21 +9,27 @@
   "scripts": {
     "start": "parcel example/index.html --no-cache",
     "build": "parcel build example/index.html",
-    "test": "jest --coverage --coverageReporters=text-lcov | coveralls",
+    "standard": "npx standard \"src/**/*.js\"",
+    "test": "standard && jest --coverage --coverageReporters=text-lcov | coveralls",
     "test-watch": "jest --watch"
   },
   "dependencies": {},
   "devDependencies": {
     "@babel/core": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
+    "babel-eslint": "^10.0.2",
     "babel-jest": "^24.8.0",
     "coveralls": "^3.0.5",
     "jest": "^24.8.0",
-    "parcel-bundler": "^1.12.3"
+    "parcel-bundler": "^1.12.3",
+    "standard": "^13.1.0"
   },
   "jest": {
     "collectCoverageFrom": [
       "src/**/*.js"
     ]
+  },
+  "standard": {
+    "parser": "babel-eslint"
   }
 }

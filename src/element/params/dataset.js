@@ -11,9 +11,8 @@ export default (params, element, node) => {
     if (!(typeof params === 'object')) Err('HTMLInvalidData', params)
 
     // Apply data params on node
-    for (let dataset in params) {
-      if (dataset !== 'showOnNode')
-        node.dataset[dataset] = params[dataset]
+    for (const dataset in params) {
+      if (dataset !== 'showOnNode') { node.dataset[dataset] = params[dataset] }
     }
   }
 }

@@ -9,7 +9,7 @@ import exec from './exec'
 export default (params, element, node) => {
   if (params) {
     if (!(typeof params === 'object')) Err('HTMLInvalidAttr', params)
-    for (let attr in params) {
+    for (const attr in params) {
       node.setAttribute(attr, exec(params[attr], element))
     }
   }

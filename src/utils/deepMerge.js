@@ -1,10 +1,10 @@
 'use strict'
 
 var deepMerge = (obj, original) => {
-  for (let e in original) {
+  for (const e in original) {
     // if (e === 'proto') return
-    let objProp = obj[e]
-    let originalProp = original[e]
+    const objProp = obj[e]
+    const originalProp = original[e]
     if (!objProp) {
       obj[e] = originalProp
     } else if (typeof objProp === 'object') {

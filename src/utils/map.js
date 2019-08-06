@@ -1,7 +1,7 @@
 'use strict'
 
 var mapProperty = (obj, extention) => {
-  for (let e in extention) {
+  for (const e in extention) {
     obj[e] = extention[e]
   }
 }

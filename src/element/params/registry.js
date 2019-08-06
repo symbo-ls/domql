@@ -1,7 +1,6 @@
 'use strict'
 
 import {
-  proto,
   attr,
   style,
   text,

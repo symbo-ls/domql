@@ -4,7 +4,7 @@ import Evt from '../event'
 import Err from '../res/error'
 import create from './create'
 
-import { exec, registry, style, attr, text, dataset, classList } from './params'
+import { exec, registry } from './params'
 
 var createElement = (element) => {
   if (!Evt.can.render(element)) {
@@ -15,16 +15,13 @@ var createElement = (element) => {
   var node
   if (element.tag === 'string') node = document.createTextNode(element.text)
   else if (element.tag) {
-    if (element.tag === 'svg') 
-      node = document.createElementNS('http://www.w3.org/2000/svg', element.tag)
-    else node = document.createElement(element.tag)
-  }
-  else node = document.createElement('div')
+    if (element.tag === 'svg') { node = document.createElementNS('http://www.w3.org/2000/svg', element.tag) } else node = document.createElement(element.tag)
+  } else node = document.createElement('div')
   element.node = node
 
   // Apply element parameters
   if (element.tag !== 'string') {
-    for (let param in element) {
+    for (const param in element) {
       var execParam = exec(element[param], element)
 
       var registeredParam = registry[param]
@@ -32,21 +29,19 @@ var createElement = (element) => {
         if (typeof registeredParam === 'function') {
           registeredParam(execParam, element, node)
         }
-      }
-      else if (element.define && element.define[param]) {
+      } else if (element.define && element.define[param]) {
         var cachedParam = element[`_${param}`]
 
         if (!cachedParam) {
           cachedParam = element[param]
           element[`_${param}`] = cachedParam
         }
-        
+
         element[param] = element.define[param](
           exec(cachedParam, element),
           element
         )
-      }
-      else {
+      } else {
         create(element[param], element, param)
       }
     }

@@ -4,11 +4,7 @@ export default {
   tag: 'svg',
   class: 'icon',
   define: {
-    name (param) {
-      return `transformed ${param}`
-    }
+    name: param => `transformed ${param}`
   },
-  content (element) {
-    return `${element.name}`
-  }
+  content: element => `${element.name}`
 }

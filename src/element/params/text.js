@@ -4,7 +4,7 @@ import Err from '../../res/error'
 import method from '../method'
 
 /**
- * Creates a text node and appends into 
+ * Creates a text node and appends into
  * an original one as a child
  */
 export default (param, element, node) => {
