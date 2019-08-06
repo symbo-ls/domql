@@ -10,14 +10,14 @@ export default {
   },
   avatar: {
     query: true
-  }
+  },
   title: {
     query: true,
     style: {
       flex: 1
     },
     on: {
-      data,
+      data: {},
       hover: (e) => {
         console.log(e)
       }
