@@ -21,23 +21,8 @@ var list = {
   }
 }
 
-var img = {
-  tag: 'img',
-  define: {
-    name: file => `assets/${file}`,
-    spacing: unit => `${unit}px`
-  },
-  attr: {
-    src: element => element.name
-  },
-  style: {
-    paddingLeft: element => element.spacing,
-    paddingRight: element => element.spacing
-  }
-}
-
 for (let i = 0; i < 35; i++) {
-  let afrika = {
+  const afrika = {
     text: 'Hello Afrika - ' + parseInt(Math.random() * 100),
     tag: 'li',
     attr: {
@@ -50,7 +35,7 @@ for (let i = 0; i < 35; i++) {
     }
   }
 
-  let lion = {
+  const lion = {
     text: 'Lion',
     style: {
       color: 'black',
@@ -59,7 +44,7 @@ for (let i = 0; i < 35; i++) {
     }
   }
 
-  let yay = 'yay'
+  const yay = 'yay'
 
   afrika[lion] = lion
   afrika[yay] = yay

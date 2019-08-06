@@ -1,6 +1,6 @@
 'use strict'
 
-import rootScroll from './onScroll'
+// import rootScroll from './onScroll'
 
 // var scrollIfPinned = rootScroll.data.scrollTop > 50 ? {
 //   position: 'fixed'

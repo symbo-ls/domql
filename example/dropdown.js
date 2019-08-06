@@ -26,8 +26,10 @@ var dropdown = {
   }
 }
 
+export default dropdown
+
 // data tree
-// { 
+// {
 //   results {
 //     avatar,
 //     name

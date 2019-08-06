@@ -15,12 +15,12 @@ var Button = {
 
 var increment = {
   class: Button,
-  text: 'Increment',
+  text: 'Increment'
 }
 
 var decrement = {
   class: Button,
-  text: 'Decrement',
+  text: 'Decrement'
 }
 
 export default { val, increment, decrement }
