@@ -10,10 +10,12 @@
     "start": "parcel example/index.html --no-cache",
     "build": "parcel build example/index.html",
     "standard": "npx standard \"src/**/*.js\"",
-    "test": "standard && jest --coverage --coverageReporters=text-lcov | coveralls",
+    "test": "yarn standard && jest --coverage --coverageReporters=text-lcov | coveralls",
     "test-watch": "jest --watch"
   },
-  "dependencies": {},
+  "dependencies": {
+    "npm-check-updates": "^3.1.20"
+  },
   "devDependencies": {
     "@babel/core": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
