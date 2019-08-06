@@ -3,7 +3,7 @@
 import deepMerge from '../utils/deepMerge'
 
 /**
- * Sets a prototype an element
+ * Applies multiple prototype level
  */
 var recursiveProto = (element, proto) => {
   if (proto) {
@@ -12,6 +12,10 @@ var recursiveProto = (element, proto) => {
   }
 }
 
+/**
+ * Checks whether element has `proto` or is a part
+ * of parent's `childProto` prototype
+ */
 export default (element, parent) => {
   // if (element.proto && element.childProto) {
   //   recursiveProto(element, parent.childProto)
