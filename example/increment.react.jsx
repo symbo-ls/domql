@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 
 class App extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       val: 0
@@ -11,11 +11,12 @@ class App extends Component {
   increment = () => {
     this.setState({ val: this.state.val + 1 })
   }
-  decrement = () => {
+
+  decrement () {
     this.setState({ val: this.state.val - 1 })
   }
 
-  render() {
+  render () {
     return (
       <div>
         { this.state.val }

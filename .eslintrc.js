@@ -5,12 +5,11 @@ module.exports = {
     "es6": true,
     "browser": true,
     "node": true,
-    "jest": true,
-    "jest/globals": true
+    "jest": true
   },
   overrides: [{
-    files: [ '**/*.test.js' ],
+    files: [ 'test/**/*.test.js' ],
     env: { jest: true },
-    plugins: [ 'jest' ],
+    plugins: [ 'jest' ]
   }]
 }
