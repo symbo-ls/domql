@@ -2,7 +2,7 @@
 
 import Err from '../res/error'
 import tree from './tree'
-import createElement from './createElement'
+import createNode from './createNode'
 import method from './method'
 import applyPrototype from './proto'
 
@@ -32,7 +32,7 @@ var create = (element, parent, key) => {
   element.key = assignedKey
 
   // create Element class
-  createElement(element)
+  createNode(element)
 
   method.assignNode(element, parent, key)
 

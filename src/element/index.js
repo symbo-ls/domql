@@ -4,7 +4,7 @@ import nodes from './nodes'
 import root from './root'
 import tree from './tree'
 import create from './create'
-import createElement from './createElement'
+import createNode from './createNode'
 import method from './method'
 
 export default {
@@ -12,6 +12,6 @@ export default {
   root,
   tree,
   create,
-  createElement,
+  createNode,
   method
 }

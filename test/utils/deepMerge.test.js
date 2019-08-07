@@ -15,7 +15,7 @@ test('should set prototype from a original to a new element', () => {
     }
   }
 
-  var submit = {
+  var element = {
     style: {
       backgroundColor: 'green',
       color: 'white'
@@ -23,9 +23,9 @@ test('should set prototype from a original to a new element', () => {
     text: 'Submit'
   }
 
-  deepMerge(submit, proto)
+  deepMerge(element, proto)
 
-  expect(submit).toStrictEqual({
+  expect(element).toStrictEqual({
     tag: 'button',
     style: {
       backgroundColor: 'green',

@@ -3,6 +3,7 @@
 export default {
   names: [
     'string',
+    'fragment',
 
     'a',
     'abbr',

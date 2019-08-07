@@ -9,6 +9,6 @@ export default (params, element, node) => {
         if (attr === 'add') node.classList.add(params[attr])
         if (attr === 'remove') node.classList.remove(params[attr])
       }
-    } else { node.classList = params }
+    } else { node.classList = params === true ? element.key : params }
   }
 }
