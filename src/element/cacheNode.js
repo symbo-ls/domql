@@ -1,5 +1,7 @@
 'use strict'
 
+import nodes from './nodes'
+
 var cachedElements = {}
 
 var createNode = (element) => {
@@ -17,13 +19,17 @@ var createNode = (element) => {
 }
 
 export default (element) => {
-  var { tag } = element
-  if (!tag) element.tag = 'div'
+  var tag
+  if (element.tag) tag = element.tag
+  else {
+    if (nodes.body.indexOf(element.key) > -1) tag = element.key
+    element.tag = tag || 'div'
+  }
 
   var cachedTag = cachedElements[tag]
   if (!cachedTag) cachedTag = cachedElements[tag] = createNode(element)
 
   var clonedNode = cachedTag.cloneNode(true)
-  if (tag === 'string') clonedNode.innerText = element.text
+  if (tag === 'string') clonedNode.nodeValue = element.text
   return clonedNode
 }

@@ -5,6 +5,8 @@ import tree from './tree'
 import createNode from './createNode'
 import method from './method'
 import applyPrototype from './proto'
+import ID from './id'
+import nodes from './nodes'
 
 /**
  * Creating a domQL element using passed parameters
@@ -18,7 +20,11 @@ var create = (element, parent, key) => {
 
   // If element is string
   if (typeof element === 'string') {
-    element = { text: element, tag: (parent.childProto && parent.childProto.tag) || 'string' }
+    element = {
+      text: element,
+      tag: (!element.proto && parent.childProto && parent.childProto.tag) ||
+        ((nodes.body.indexOf(key) > -1) && key) || 'string'
+    }
   }
 
   // Assign parent reference to the element
@@ -28,7 +34,7 @@ var create = (element, parent, key) => {
   applyPrototype(element, parent)
 
   // create and assign a key
-  var assignedKey = element.key || key || parseInt(Math.random() * 10000, 10)
+  var assignedKey = element.key || key || ID.next().value
   element.key = assignedKey
 
   // create Element class

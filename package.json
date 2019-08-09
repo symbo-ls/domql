@@ -13,8 +13,7 @@
     "test": "yarn standard && jest --coverage --coverageReporters=text-lcov | coveralls",
     "test-watch": "jest --watch"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "@babel/core": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
@@ -24,6 +23,7 @@
     "eslint": "^6.1.0",
     "eslint-plugin-jest": "^22.14.1",
     "jest": "^24.8.0",
+    "nodemon": "^1.19.1",
     "parcel-bundler": "^1.12.3",
     "standard": "^13.1.0"
   },
@@ -34,6 +34,8 @@
   },
   "standard": {
     "parser": "babel-eslint",
-    "env": [ "jest" ]
+    "env": [
+      "jest"
+    ]
   }
 }

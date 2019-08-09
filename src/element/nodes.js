@@ -1,10 +1,16 @@
 'use strict'
 
 export default {
-  names: [
+  head: [
+    'title',
+    'base',
+    'meta',
+    'style'
+  ],
+
+  body: [
     'string',
     'fragment',
-
     'a',
     'abbr',
     'acronym',
@@ -15,7 +21,6 @@ export default {
     'aside',
     'audio',
     'b',
-    'base',
     'basefont',
     'bdi',
     'bdo',
@@ -75,7 +80,6 @@ export default {
     'main',
     'map',
     'mark',
-    'meta',
     'meter',
     'nav',
     'noframes',
@@ -104,7 +108,6 @@ export default {
     'span',
     'strike',
     'strong',
-    'style',
     'sub',
     'summary',
     'sup',
@@ -118,7 +121,6 @@ export default {
     'th',
     'thead',
     'time',
-    'title',
     'tr',
     'track',
     'tt',

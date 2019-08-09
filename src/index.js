@@ -19,12 +19,14 @@ var app = {
   Err,
   Elem,
   create: Elem.create,
+  parse: Elem.parse,
 
   Evt,
   Str,
   Lng
 }
 
+window.DOM = app
 window.tree = app.Elem.tree
 
 export default app

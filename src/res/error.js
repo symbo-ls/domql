@@ -45,16 +45,17 @@ var errors = {
   }
 }
 
-var report = (err, arg) => {
+var report = (err, arg, elem) => {
   var currentLang = 'en'
   var errObj
   if (err && typeof err === 'string') errObj = errors[currentLang][err]
 
-  throw new Error(
-    err + '. ' +
-    errObj.title + '. ' +
-    errObj.description + ' -> ' +
-    (arg && JSON.stringify(arg))
+  throw console.error(
+    err,
+    errObj.title,
+    errObj.description,
+    arg,
+    elem
   )
 }
 

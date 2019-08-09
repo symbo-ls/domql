@@ -3,15 +3,24 @@
 import Err from '../../res/error'
 import method from '../method'
 
+import cacheNode from '../cacheNode'
+
 /**
  * Creates a text node and appends into
  * an original one as a child
  */
-export default (param, element, node) => {
-  if (param) {
-    if (typeof param === 'string') {
-      param = document.createTextNode(param)
-      method.appendNode(param, node)
-    } else Err('HTMLInvalidText', param)
+export default (param, element) => {
+  // if (param && typeof param === 'string') {
+  JSON.stringify(param)
+  if ((element.tag) === 'string') element.node.innerText = param
+  else {
+    // console.log(param)
+    param = {
+      tag: 'string',
+      text: param
+    }
+    var textNode = cacheNode(param)
+    method.appendNode(textNode, element.node)
   }
+  // } else Err('HTMLInvalidText', param, element)
 }

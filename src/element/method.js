@@ -17,9 +17,9 @@ var appendNode = (node, parentNode) => {
  * Receives elements and assigns the first
  * parameter as a child of the second one
  */
-var assignNode = (element, parentElement, key) => {
-  parentElement[key || element.key] = element
-  appendNode(element.node, parentElement.node)
+var assignNode = (element, parent, key) => {
+  parent[key || element.key] = element
+  appendNode(element.node, parent.node)
 }
 
 var define = (node, parent) => {

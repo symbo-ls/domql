@@ -1,6 +1,8 @@
 'use strict'
 
-var parse = (entry: 'src/index.js', dist: 'html/') => {
+var exampleFIle = '../example/index.js'
+
+var parse = (entry: exampleFIle, dist: 'html/') => {
 
 }
 
