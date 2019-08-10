@@ -17,6 +17,8 @@ var createNode = (element) => {
   var node = cacheNode(element)
   element.node = node
 
+  node.ref = element
+
   // Apply element parameters
   if (element.tag !== 'string' || element.tag !== 'fragment') {
     for (const param in element) {
@@ -28,19 +30,9 @@ var createNode = (element) => {
           registeredParam(execParam, element, node)
         }
       } else if (element.define && element.define[param]) { // Check if it's under `define`
-        var cachedParam = element[`_${param}`]
-
-        if (!cachedParam) {
-          cachedParam = element[param]
-          element[`_${param}`] = cachedParam
-        }
-
-        element[param] = element.define[param](
-          exec(cachedParam, element),
-          element
-        )
-      } else {
-        create(element[param], element, param)
+        element[param] = element.define[param](execParam, element)
+      } else if (element[param]) {
+        create(execParam, element, param)
       }
     }
   }

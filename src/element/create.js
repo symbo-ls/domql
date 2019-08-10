@@ -18,6 +18,9 @@ var create = (element, parent, key) => {
   // If element is not given
   if (!element) return Err('CantCreateWithoutNode')
 
+  // define key
+  var assignedKey = element.key || key || ID.next().value
+
   // If element is string
   if (typeof element === 'string') {
     element = {
@@ -34,7 +37,6 @@ var create = (element, parent, key) => {
   applyPrototype(element, parent)
 
   // create and assign a key
-  var assignedKey = element.key || key || ID.next().value
   element.key = assignedKey
 
   // create Element class

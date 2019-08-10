@@ -1,6 +1,5 @@
 'use strict'
 
-import Err from '../../res/error'
 import method from '../method'
 
 import cacheNode from '../cacheNode'
@@ -10,7 +9,6 @@ import cacheNode from '../cacheNode'
  * an original one as a child
  */
 export default (param, element) => {
-  // if (param && typeof param === 'string') {
   JSON.stringify(param)
   if ((element.tag) === 'string') element.node.innerText = param
   else {
@@ -22,5 +20,4 @@ export default (param, element) => {
     var textNode = cacheNode(param)
     method.appendNode(textNode, element.node)
   }
-  // } else Err('HTMLInvalidText', param, element)
 }

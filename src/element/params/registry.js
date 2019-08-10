@@ -22,6 +22,7 @@ var paramRegistry = {
   proto: {},
   childProto: {},
   define: {},
+  __cached: {},
   key: {},
   tag: {},
   parent: {},
