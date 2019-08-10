@@ -2,8 +2,9 @@
 
 import isObject from '../../utils/isObject'
 
-export default (params, element, node) => {
+export default (params, element) => {
   if (params) {
+    var { node } = element
     if (isObject(params)) {
       for (const attr in params) {
         if (attr === 'add') node.classList.add(params[attr])

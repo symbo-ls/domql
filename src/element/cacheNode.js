@@ -1,5 +1,8 @@
 'use strict'
 
+import Evt from '../event'
+import Err from '../res/error'
+
 import nodes from './nodes'
 
 var cachedElements = {}
@@ -19,11 +22,18 @@ var createNode = (element) => {
 }
 
 export default (element) => {
-  var tag
-  if (element.tag) tag = element.tag
-  else {
-    if (nodes.body.indexOf(element.key) > -1) tag = element.key
-    element.tag = tag || 'div'
+  var { tag, key } = element
+  var tagFromKey = nodes.body.indexOf(key) > -1
+
+  if (typeof tag !== 'string') {
+    if (tagFromKey && tag === true) tag = key
+    else tag = tagFromKey ? key : 'div'
+  }
+
+  element.tag = tag
+
+  if (!Evt.can.render(element)) {
+    return Err('HTMLInvalidTag')
   }
 
   var cachedTag = cachedElements[tag]

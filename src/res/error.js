@@ -51,11 +51,11 @@ var report = (err, arg, elem) => {
   if (err && typeof err === 'string') errObj = errors[currentLang][err]
 
   throw console.error(
+    arg,
+    elem,
     err,
     errObj.title,
-    errObj.description,
-    arg,
-    elem
+    errObj.description
   )
 }
 

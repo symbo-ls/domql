@@ -12,11 +12,8 @@ export default (param, element) => {
   JSON.stringify(param)
   if ((element.tag) === 'string') element.node.innerText = param
   else {
-    // console.log(param)
-    param = {
-      tag: 'string',
-      text: param
-    }
+    param = { tag: 'string', text: param }
+
     var textNode = cacheNode(param)
     method.appendNode(textNode, element.node)
   }

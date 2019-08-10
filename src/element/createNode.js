@@ -1,18 +1,11 @@
 'use strict'
 
-import Evt from '../event'
-import Err from '../res/error'
-
 import create from './create'
 import cacheNode from './cacheNode'
 
 import { exec, registry } from './params'
 
 var createNode = (element) => {
-  if (!Evt.can.render(element)) {
-    return Err('HTMLInvalidTag')
-  }
-
   // create and assign a node
   var node = cacheNode(element)
   element.node = node
@@ -25,13 +18,14 @@ var createNode = (element) => {
       var execParam = exec(element[param], element)
 
       var registeredParam = registry[param]
-      if (registeredParam) {
+
+      if (element.define && element.define[param]) { // Check if it's under `define`
+        element[param] = element.define[param](execParam, element)
+      } else if (registeredParam) { // Check if it's registered param
         if (typeof registeredParam === 'function') {
           registeredParam(execParam, element, node)
         }
-      } else if (element.define && element.define[param]) { // Check if it's under `define`
-        element[param] = element.define[param](execParam, element)
-      } else if (element[param]) {
+      } else if (element[param]) { // create element
         create(execParam, element, param)
       }
     }
