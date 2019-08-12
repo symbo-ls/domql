@@ -9,7 +9,6 @@ import cacheNode from '../cacheNode'
  * an original one as a child
  */
 export default (param, element) => {
-  JSON.stringify(param)
   if ((element.tag) === 'string') element.node.innerText = param
   else {
     param = { tag: 'string', text: param }

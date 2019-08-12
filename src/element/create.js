@@ -30,6 +30,10 @@ var create = (element, parent, key) => {
     }
   }
 
+  if (!element.class && typeof assignedKey === 'string' && assignedKey.charAt(0) === '_') {
+    element.class = assignedKey.slice(1)
+  }
+
   // Assign parent reference to the element
   element.parent = parent
 
