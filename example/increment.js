@@ -7,15 +7,14 @@ var val = {
 var Button = {
   tag: 'button'
 }
-// <button></button>
 
 var increment = {
   proto: Button,
   text: 'Increment',
   on: {
-    // click: (e) => {
-    //   val.text++
-    // }
+    click: (e) => {
+      val.text++
+    }
   }
 }
 
@@ -23,9 +22,9 @@ var decrement = {
   proto: Button,
   text: 'Decrement',
   on: {
-    // click: (e) => {
-    //   val.text--
-    // }
+    click: (e) => {
+      val.text--
+    }
   }
 }
 

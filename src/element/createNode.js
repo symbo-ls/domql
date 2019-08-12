@@ -20,6 +20,7 @@ var createNode = (element) => {
       var registeredParam = registry[param]
 
       if (element.define && element.define[param]) { // Check if it's under `define`
+        element.data[param] = execParam
         element[param] = element.define[param](execParam, element)
       } else if (registeredParam) { // Check if it's registered param
         if (typeof registeredParam === 'function') {

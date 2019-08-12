@@ -39,6 +39,9 @@ var create = (element, parent, key) => {
   // create and assign a key
   element.key = assignedKey
 
+  // enable caching in data
+  if (!element.data) element.data = {}
+
   // create Element class
   createNode(element)
 

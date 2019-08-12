@@ -14,12 +14,7 @@ var icon = {
 var { performance } = window
 var now = performance.now()
 
-var list = {
-  tag: 'ul',
-  style: {
-    padding: 0
-  }
-}
+var list = []
 
 for (let i = 0; i < 35; i++) {
   const afrika = {

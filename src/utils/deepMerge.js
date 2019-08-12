@@ -2,8 +2,8 @@
 
 import cloneDeep from 'lodash.clonedeep'
 
-var deepMerge = (obj, original, deep = false) => {
-  original = cloneDeep(original)
+var deepMerge = (obj, original, cloneOriginal = true) => {
+  original = cloneOriginal ? cloneDeep(original) : original
   for (const e in original) {
     const objProp = obj[e]
     const originalProp = original[e]
