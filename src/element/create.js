@@ -37,6 +37,8 @@ var create = (element, parent, key) => {
   // Assign parent reference to the element
   element.parent = parent
 
+  if (typeof element.if === 'function' && !element.if(element)) return
+
   // if proto, or inherited proto
   applyPrototype(element, parent)
 
