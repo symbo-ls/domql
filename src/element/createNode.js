@@ -12,6 +12,13 @@ var createNode = (element) => {
 
   node.ref = element
 
+  // redefine undefined params if they are under define :)
+  if (element.define && typeof element.define === 'object') {
+    for (const param in element.define) {
+      if (!element[param]) element[param] = element.define[param](void 0, element)
+    }
+  }
+
   // Apply element parameters
   if (element.tag !== 'string' || element.tag !== 'fragment') {
     for (const param in element) {
