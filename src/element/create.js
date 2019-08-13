@@ -22,7 +22,7 @@ var create = (element, parent, key) => {
   var assignedKey = element.key || key || ID.next().value
 
   // If element is string
-  if (typeof element === 'string') {
+  if (typeof element === 'string' || typeof element === 'number') {
     element = {
       text: element,
       tag: (!element.proto && parent.childProto && parent.childProto.tag) ||
