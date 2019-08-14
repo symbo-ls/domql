@@ -1,6 +1,11 @@
 'use strict'
 
 export default {
+  root: [
+    'body',
+    'html'
+  ],
+
   head: [
     'title',
     'base',
@@ -26,7 +31,6 @@ export default {
     'bdo',
     'big',
     'blockquote',
-    'body',
     'br',
     'button',
     'canvas',
@@ -66,7 +70,6 @@ export default {
     'head',
     'header',
     'hr',
-    'html',
     'i',
     'iframe',
     'img',
