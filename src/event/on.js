@@ -1,9 +1,12 @@
 'use strict'
 
-import store from './store'
-
-var render = (parent) => {
-  parent(store.render)
+var render = (param, element) => {
+  param(element)
 }
 
-export default { render }
+var click = (param, element) => {
+  var { node } = element
+  node.addEventListener('click', event => param(event, element), true)
+}
+
+export { render, click }

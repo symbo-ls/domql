@@ -4,6 +4,7 @@ import create from './create'
 import cacheNode from './cacheNode'
 
 import { exec, registry } from './params'
+import * as on from '../event/on'
 
 var createNode = (element) => {
   // create and assign a node
@@ -24,16 +25,30 @@ var createNode = (element) => {
     for (const param in element) {
       var execParam = exec(element[param], element)
 
+      var hasDefine = element.define && element.define[param]
       var registeredParam = registry[param]
+      var hasEvent = element.on && element.on[param]
 
-      if (element.define && element.define[param]) { // Check if it's under `define`
+      if (hasDefine) {
+        // Check if it's under `define`
         element.data[param] = execParam
         element[param] = element.define[param](execParam, element)
-      } else if (registeredParam) { // Check if it's registered param
+      } else if (param === 'on') {
+        // Apply events
+        for (const param in element.on) {
+          var appliedFunction = element.on[param]
+          var registeredFunction = on[param]
+          if (typeof appliedFunction === 'function' && typeof registeredFunction === 'function') {
+            registeredFunction(appliedFunction, element)
+          } else console.error('Not such function', appliedFunction, registeredFunction)
+        }
+      } else if (registeredParam) {
+        // Check if it's registered param
         if (typeof registeredParam === 'function') {
           registeredParam(execParam, element, node)
         }
-      } else if (element[param]) { // create element
+      } else if (element[param]) {
+        // Create element
         create(execParam, element, param)
       }
     }
