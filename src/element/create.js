@@ -13,7 +13,7 @@ import nodes from './nodes'
  */
 var create = (element, parent, key) => {
   // If parent is not given
-  if (!parent) parent = tree.root
+  if (!parent) parent = tree
 
   // If element is not given
   if (!element) return Err('CantCreateWithoutNode')
