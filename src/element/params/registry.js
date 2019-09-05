@@ -28,6 +28,8 @@ var paramRegistry = {
   tag: {},
   parent: {},
   node: {},
+  set: {},
+  update: {},
   on: {}
 }
 

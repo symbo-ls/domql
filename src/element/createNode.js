@@ -6,12 +6,15 @@ import cacheNode from './cacheNode'
 import { exec, registry } from './params'
 import * as on from '../event/on'
 
-var createNode = (element) => {
+var createNode = (element, params) => {
   // create and assign a node
-  var node = cacheNode(element)
-  element.node = node
+  if (!element.node) {
+    var node = cacheNode(element)
+    element.node = node
+    node.ref = element
+  }
 
-  node.ref = element
+  var runThrough = params || element
 
   // redefine undefined params if they are under define :)
   if (element.define && typeof element.define === 'object') {
@@ -22,12 +25,12 @@ var createNode = (element) => {
 
   // Apply element parameters
   if (element.tag !== 'string' || element.tag !== 'fragment') {
-    for (const param in element) {
+    for (const param in runThrough) {
       var execParam = exec(element[param], element)
 
       var hasDefine = element.define && element.define[param]
       var registeredParam = registry[param]
-      var hasEvent = element.on && element.on[param]
+      console.log(param, registeredParam)
 
       if (hasDefine) {
         // Check if it's under `define`
@@ -49,6 +52,7 @@ var createNode = (element) => {
         }
       } else if (element[param]) {
         // Create element
+        console.log(execParam, element, param)
         create(execParam, element, param)
       }
     }

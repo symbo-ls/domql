@@ -17,6 +17,7 @@ var create = (element, parent, key) => {
   // If parent is not given
   if (!parent) parent = tree
 
+  console.log(element, parent, key)
   // If element is not given
   if (!element) return Err('CantCreateWithoutNode')
 

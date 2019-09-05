@@ -1,18 +1,13 @@
 'use strict'
 
+import createNode from './createNode'
 import { exec, registry } from './params'
+import overwrite from '../utils/overwrite'
 
 var update = (element, params) => {
-  for (const param in params) {
-    var execParam = exec(params[param], element)
-    var registeredParam = registry[element]
-    if (registeredParam) {
-      // Check if it's registered param
-      if (typeof registeredParam === 'function') {
-        registeredParam(execParam, element, element.node)
-      }
-    }
-  }
+  console.log(element, params)
+  overwrite(element, params)
+  createNode(element)
 }
 
 export default update
