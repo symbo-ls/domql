@@ -9,6 +9,8 @@ import Evt from './event'
 import Str from './res/string'
 import Lng from './res/language'
 
+const { create, parse, set } = Elem
+
 var app = {
   about: {
     version: '0.0.1'
@@ -18,8 +20,9 @@ var app = {
 
   Err,
   Elem,
-  create: Elem.create,
-  parse: Elem.parse,
+  create,
+  parse,
+  set,
 
   Evt,
   Str,

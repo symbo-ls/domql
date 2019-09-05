@@ -1,9 +1,12 @@
 'use strict'
 
-import overwrite from '../utils/set'
+import { exec, registry } from './params'
 
-var set = (params, element) => {
-  overwrite(element, params)
+import create from './create'
+
+var set = (parent, params) => {
+  parent.node.innerHTML = ''
+  create(params, parent, 'content')
 }
 
 export default set

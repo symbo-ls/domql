@@ -6,5 +6,5 @@ export default {
   define: {
     name: param => `transformed ${param}`
   },
-  content: element => `${element.name}`
+  html: element => `${element.name}`
 }

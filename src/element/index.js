@@ -7,6 +7,7 @@ import create from './create'
 import createNode from './createNode'
 import method from './method'
 import parse from './parse'
+import set from './set'
 
 export default {
   nodes,
@@ -15,5 +16,6 @@ export default {
   create,
   createNode,
   method,
-  parse
+  parse,
+  set
 }
