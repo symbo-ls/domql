@@ -15,7 +15,6 @@ var createNode = (element) => {
     element.node = node
     node.ref = element
   }
-  console.log(element)
 
   // redefine undefined params if they are under define :)
   if (element.define && typeof element.define === 'object') {
