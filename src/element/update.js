@@ -6,7 +6,7 @@ import overwrite from '../utils/overwrite'
 
 var update = (element, params) => {
   overwrite(element, params)
-  console.log(element)
+  element.node.innerHTML = ''
   createNode(element)
 }
 

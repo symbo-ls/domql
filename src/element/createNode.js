@@ -8,11 +8,14 @@ import * as on from '../event/on'
 
 var createNode = (element) => {
   // create and assign a node
+  var assigned
   if (!element.node) {
+    assigned = true
     var node = cacheNode(element)
     element.node = node
     node.ref = element
   }
+  console.log(element)
 
   // redefine undefined params if they are under define :)
   if (element.define && typeof element.define === 'object') {
@@ -24,6 +27,7 @@ var createNode = (element) => {
   // Apply element parameters
   if (element.tag !== 'string' || element.tag !== 'fragment') {
     for (const param in element) {
+      if (param === 'set' || param === 'update') return
       var execParam = exec(element[param], element)
 
       var hasDefine = element.define && element.define[param]
@@ -33,7 +37,7 @@ var createNode = (element) => {
         // Check if it's under `define`
         element.data[param] = execParam
         element[param] = element.define[param](execParam, element)
-      } else if (param === 'on') {
+      } else if (param === 'on' && assigned) {
         // Apply events
         for (const param in element.on) {
           var appliedFunction = element.on[param]
