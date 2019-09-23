@@ -17,7 +17,8 @@ var recursiveProto = (element, proto, cloneOriginal = true) => {
  * Checks whether element has `proto` or is a part
  * of parent's `childProto` prototype
  */
-export default (element, parent) => {
+export default (element) => {
+  var { parent } = element
   if (element.proto && (parent && parent.childProto)) {
     var proto = cloneDeep(element.proto)
     deepMerge(proto, parent.childProto)

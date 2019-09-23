@@ -2,9 +2,9 @@
 
 import create from './create'
 
-var set = (parent, params) => {
-  parent.node.innerHTML = ''
-  create(params, parent, 'content')
+var set = function (params) {
+  this.node.innerHTML = ''
+  create(params, this, 'content')
 }
 
 export default set

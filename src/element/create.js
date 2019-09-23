@@ -45,7 +45,7 @@ var create = (element, parent, key) => {
   element.parent = parent
 
   // if proto, or inherited proto
-  applyPrototype(element, parent)
+  applyPrototype(element)
 
   // create and assign a key
   element.key = assignedKey

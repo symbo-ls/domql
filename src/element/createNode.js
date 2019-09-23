@@ -8,9 +8,9 @@ import * as on from '../event/on'
 
 var createNode = (element) => {
   // create and assign a node
-  var assigned
+  var isNewNode
   if (!element.node) {
-    assigned = true
+    isNewNode = true
     var node = cacheNode(element)
     element.node = node
     node.ref = element
@@ -25,18 +25,23 @@ var createNode = (element) => {
 
   // Apply element parameters
   if (element.tag !== 'string' || element.tag !== 'fragment') {
+    if (typeof element.define === 'object') {
+      var { define } = element
+      for (const param in define) {
+        let execParam = exec(element[param], element)
+        element.data[param] = execParam
+        element[param] = element.define[param](execParam, element)
+      }
+    }
+
     for (const param in element) {
       if (param === 'set' || param === 'update') return
-      var execParam = exec(element[param], element)
+      let execParam = exec(element[param], element)
 
       var hasDefine = element.define && element.define[param]
       var registeredParam = registry[param]
 
-      if (hasDefine) {
-        // Check if it's under `define`
-        element.data[param] = execParam
-        element[param] = element.define[param](execParam, element)
-      } else if (param === 'on' && assigned) {
+      if (param === 'on' && isNewNode) {
         // Apply events
         for (const param in element.on) {
           var appliedFunction = element.on[param]
@@ -50,9 +55,10 @@ var createNode = (element) => {
         if (typeof registeredParam === 'function') {
           registeredParam(execParam, element, node)
         }
-      } else if (element[param]) {
+      } else if (element[param] && !hasDefine) {
         // Create element
-        create(execParam, element, param)
+        if (isNewNode) create(execParam, element, param)
+        else createNode(execParam)
       }
     }
   }
