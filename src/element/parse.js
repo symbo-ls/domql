@@ -8,7 +8,8 @@ var parse = (element) => {
     node: document.createElement('div')
   }
 
-  if (element && element.node) method.assignNode(element, virtualTree)
+  if (element && element.node)
+    method.assignNode(element, virtualTree)
   else create(element, virtualTree)
 
   return virtualTree.node.innerHTML
