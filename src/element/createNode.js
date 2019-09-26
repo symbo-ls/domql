@@ -57,8 +57,9 @@ var createNode = (element) => {
         }
       } else if (element[param] && !hasDefine) {
         // Create element
-        if (isNewNode) create(execParam, element, param)
-        else createNode(execParam)
+        create(execParam, element, param)
+        // if (isNewNode) create(execParam, element, param)
+        // else createNode(execParam)
       }
     }
   }
