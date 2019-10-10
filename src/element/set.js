@@ -3,8 +3,14 @@
 import create from './create'
 
 var set = function (params) {
-  this.node.innerHTML = ''
-  create(params, this, 'content')
+  if (this.content && this.content.node) {
+    this.node.removeChild(this.content.node)
+    delete this.content
+  }
+
+  if (params) {
+    create(params, this, 'content')
+  }
 }
 
 export default set

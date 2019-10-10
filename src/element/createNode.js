@@ -35,7 +35,7 @@ var createNode = (element) => {
     }
 
     for (const param in element) {
-      if (param === 'set' || param === 'update') return
+      if ((param === 'set' || param === 'update') || !element[param] === undefined) return
       let execParam = exec(element[param], element)
 
       var hasDefine = element.define && element.define[param]
