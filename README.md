@@ -107,7 +107,7 @@ var Increment = {
   text: 'Increment',
   on: {
     click: (e) => {
-      val.text--
+      val.update({ text: text++ })
     }
   }
 }
