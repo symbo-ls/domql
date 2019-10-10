@@ -28,7 +28,7 @@ var createNode = (element) => {
     if (typeof element.define === 'object') {
       var { define } = element
       for (const param in define) {
-        let execParam = exec(element[param], element)
+        var execParam = exec(element[param], element)
         element.data[param] = execParam
         element[param] = element.define[param](execParam, element)
       }
@@ -36,7 +36,7 @@ var createNode = (element) => {
 
     for (const param in element) {
       if ((param === 'set' || param === 'update') || !element[param] === undefined) return
-      let execParam = exec(element[param], element)
+      execParam = exec(element[param], element)
 
       var hasDefine = element.define && element.define[param]
       var registeredParam = registry[param]

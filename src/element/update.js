@@ -6,10 +6,13 @@ import overwrite from '../utils/overwrite'
 
 var update = function (params = {}) {
   overwrite(this, params)
+
   this.node.innerHTML = ''
   // debugger
   // applyPrototype(this)
   createNode(this)
+
+  return this
 }
 
 export default update

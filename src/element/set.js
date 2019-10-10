@@ -11,6 +11,8 @@ var set = function (params) {
   if (params) {
     create(params, this, 'content')
   }
+
+  return this
 }
 
 export default set
