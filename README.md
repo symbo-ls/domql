@@ -37,7 +37,7 @@ style
 attr
 ```
 
-### Example 
+### Examples
 
 Attributes:
 
@@ -93,5 +93,22 @@ var navItems = ['Home', 'About', 'FAQ', 'Contact']
 var menu = {
   proto: ListItem,
   ...navItems
+}
+```
+
+Update:
+```
+var val = {
+  text: 0
+}
+
+var Increment = {
+  tag: 'button',
+  text: 'Increment',
+  on: {
+    click: (e) => {
+      val.text--
+    }
+  }
 }
 ```
