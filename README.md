@@ -1,7 +1,6 @@
 # DOMQL
 DOM rendering Javascript framework at the early stage.
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/b9d6e7de5b604c7784783d430a5dd33d)](https://app.codacy.com/app/nika.tomadze/domql?utm_source=github.com&utm_medium=referral&utm_content=rackai/domql&utm_campaign=Badge_Grade_Settings)
 [![Build Status](https://travis-ci.org/rackai/domql.svg?branch=master)](https://travis-ci.org/rackai/domql)
 [![Coverage Status](https://coveralls.io/repos/github/rackai/domql/badge.svg?branch=master)](https://coveralls.io/github/rackai/domql?branch=master)
 
