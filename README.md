@@ -11,7 +11,7 @@ DOM rendering Javascript framework at the early stage.
   - [x] create using prototype class
   - [x] support multiple level prototypes
 - [ ] binding
-- [ ] update
+- [x] update
 - [ ] events
 
 ### Getting started
