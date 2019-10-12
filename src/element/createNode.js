@@ -8,10 +8,11 @@ import * as on from '../event/on'
 
 var createNode = (element) => {
   // create and assign a node
+  var { node } = element
   var isNewNode
-  if (!element.node) {
+  if (!node) {
     isNewNode = true
-    var node = cacheNode(element)
+    node = cacheNode(element)
     element.node = node
     node.ref = element
   }

@@ -10,6 +10,7 @@ var update = function (params = {}) {
   this.node.innerHTML = ''
   // debugger
   // applyPrototype(this)
+
   createNode(this)
 
   return this

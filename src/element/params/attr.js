@@ -10,7 +10,10 @@ export default (params, element, node) => {
   if (params) {
     if (!(typeof params === 'object')) Err('HTMLInvalidAttr', params)
     for (const attr in params) {
-      node.setAttribute(attr, exec(params[attr], element))
+      // if (!node) node = element.node
+      var val = exec(params[attr], element)
+      if (val) node.setAttribute(attr, val)
+      else node.removeAttribute(attr)
     }
   }
 }
