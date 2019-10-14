@@ -1,6 +1,6 @@
 'use strict'
 
-import utils from '../../utils'
+import { isObject, map } from '../../utils'
 import Err from '../../res/error'
 
 /**
@@ -8,7 +8,7 @@ import Err from '../../res/error'
  */
 export default (params, element, node) => {
   if (params) {
-    if (typeof params === 'object') utils.map(node.style, params)
+    if (isObject(params)) map(node.style, params)
     else Err('HTMLInvalidStyles', params)
   }
 }

@@ -3,7 +3,8 @@
 var classList = (params, element) => {
   if (params) {
     var { node } = element
-    node.classList = params === true ? element.key : params.trim()
+    if (params === true) params = element.class = element.key
+    node.classList = params.trim()
   }
 }
 
