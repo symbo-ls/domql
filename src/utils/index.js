@@ -3,5 +3,7 @@
 import map from './map'
 import set from './set'
 import deepMerge from './deepMerge'
+import isObject from './isObject'
+import overwrite from './overwrite'
 
-export default { map, set, deepMerge }
+export { map, set, deepMerge, isObject, overwrite }

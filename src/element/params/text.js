@@ -1,7 +1,6 @@
 'use strict'
 
 import method from '../method'
-
 import cacheNode from '../cacheNode'
 
 /**

@@ -6,11 +6,9 @@ import deepMerge from '../utils/deepMerge'
 /**
  * Applies multiple prototype level
  */
-var recursiveProto = (element, proto, cloneOriginal = true) => {
-  if (proto) {
-    deepMerge(element, proto, cloneOriginal)
-    if (proto.proto) recursiveProto(element, proto.proto)
-  }
+var recursiveProto = (element, proto, cloneProto = true) => {
+  deepMerge(element, proto, cloneProto)
+  if (proto.proto) recursiveProto(element, proto.proto)
 }
 
 /**
@@ -19,15 +17,15 @@ var recursiveProto = (element, proto, cloneOriginal = true) => {
  */
 export default (element) => {
   var { parent } = element
+
+  /** If it has both `proto` and `childProto` */
   if (element.proto && (parent && parent.childProto)) {
     var proto = cloneDeep(element.proto)
     deepMerge(proto, parent.childProto)
     recursiveProto(element, proto, false)
-  } else {
-    if (element.proto) {
-      recursiveProto(element, element.proto)
-    } else if (parent && parent.childProto) {
-      recursiveProto(element, parent.childProto)
-    }
+  } else if (element.proto) { /** If it has only `proto` */
+    recursiveProto(element, element.proto)
+  } else if (parent && parent.childProto) { /** If it has only `childProto` */
+    recursiveProto(element, parent.childProto)
   }
 }

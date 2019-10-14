@@ -23,6 +23,7 @@ var paramRegistry = {
   childProto: {},
   if: {},
   define: {},
+  transform: {},
   __cached: {},
   key: {},
   tag: {},

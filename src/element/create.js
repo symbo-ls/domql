@@ -33,7 +33,7 @@ var create = (element, parent, key) => {
     element = {
       text: element,
       tag: (!element.proto && parent.childProto && parent.childProto.tag) ||
-        ((nodes.body.indexOf(key) > -1) && key) || 'string'
+      ((nodes.body.indexOf(key) > -1) && key) || 'string'
     }
   }
 
