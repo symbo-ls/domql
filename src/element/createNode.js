@@ -40,7 +40,12 @@ var createNode = (element) => {
       var { transform } = element
       for (const param in transform) {
         execParam = exec(element[param], element)
-        element.data[param] = execParam
+        if (element.data[param]) {
+          execParam = exec(element.data[param], element)
+        } else {
+          execParam = exec(element[param], element)
+          element.data[param] = execParam
+        }
         element[param] = transform[param](execParam, element)
       }
     }

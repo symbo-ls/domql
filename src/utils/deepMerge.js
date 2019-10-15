@@ -11,7 +11,7 @@ var deepMerge = (obj, original, cloneOriginal = true) => {
     if (objProp === undefined) {
       obj[e] = originalProp
     } else if (isObject(objProp)) {
-      deepMerge(objProp, originalProp, true)
+      deepMerge(objProp, originalProp)
     }
   }
   return obj

@@ -9,4 +9,9 @@ var click = (param, element) => {
   node.addEventListener('click', event => param(event, element), true)
 }
 
-export { render, click }
+var change = (param, element) => {
+  var { node } = element
+  node.addEventListener('change', event => param(event, element), true)
+}
+
+export { render, click, change }

@@ -21,11 +21,11 @@ export default (element) => {
   /** If it has both `proto` and `childProto` */
   if (element.proto && (parent && parent.childProto)) {
     var proto = cloneDeep(element.proto)
-    deepMerge(proto, parent.childProto)
+    deepMerge(proto, parent.childProto, true)
     recursiveProto(element, proto, false)
   } else if (element.proto) { /** If it has only `proto` */
-    recursiveProto(element, element.proto)
+    recursiveProto(element, element.proto, true)
   } else if (parent && parent.childProto) { /** If it has only `childProto` */
-    recursiveProto(element, parent.childProto)
+    recursiveProto(element, parent.childProto, true)
   }
 }
