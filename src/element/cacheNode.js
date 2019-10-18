@@ -13,7 +13,7 @@ var createNode = (element) => {
     if (tag === 'string') return document.createTextNode(element.text)
     else if (tag === 'fragment') {
       return document.createDocumentFragment()
-    } else if (tag === 'svg') {
+    } else if (tag === 'svg' || tag === 'path') { // change that
       return document.createElementNS('http://www.w3.org/2000/svg', tag)
     } else return document.createElement(tag)
   } else {

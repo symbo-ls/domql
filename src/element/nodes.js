@@ -114,7 +114,6 @@ export default {
     'sub',
     'summary',
     'sup',
-    'svg',
     'table',
     'tbody',
     'td',
@@ -131,6 +130,10 @@ export default {
     'ul',
     'var',
     'video',
-    'wbr'
+    'wbr',
+
+    // SVG
+    'svg',
+    'path'
   ]
 }

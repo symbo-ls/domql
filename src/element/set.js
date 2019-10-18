@@ -2,17 +2,23 @@
 
 import create from './create'
 
-var set = function (params) {
-  if (this.content && this.content.node) {
-    this.node.removeChild(this.content.node)
-    delete this.content
+var set = function (params, enter, leave) {
+  var element = this
+
+  if (element.content && element.content.node) {
+    // leave(element, () => {
+    element.node.removeChild(element.content.node)
+    delete element.content
+    // })
   }
 
   if (params) {
-    create(params, this, 'content')
+    // enter(element, () => {
+    create(params, element, 'content')
+    // })
   }
 
-  return this
+  return element
 }
 
 export default set
