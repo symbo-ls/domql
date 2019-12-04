@@ -27,6 +27,7 @@ var createNode = (element) => {
 
   // Apply element parameters
   if (element.tag !== 'string' || element.tag !== 'fragment') {
+    // apply define
     if (isObject(element.define)) {
       var { define } = element
       for (const param in define) {
@@ -36,6 +37,7 @@ var createNode = (element) => {
       }
     }
 
+    // apply transform
     if (isObject(element.transform)) {
       var { transform } = element
       for (const param in transform) {
@@ -50,6 +52,19 @@ var createNode = (element) => {
       }
     }
 
+    // apply events
+    if (isObject(element.on)) {
+      for (const param in element.on) {
+        if (param === 'init' || param === 'render') break
+        var appliedFunction = element.on[param]
+        var registeredFunction = on[param]
+        if (typeof appliedFunction === 'function' &&
+          typeof registeredFunction === 'function') {
+          registeredFunction(appliedFunction, element)
+        } else console.error('Not such function', appliedFunction, registeredFunction)
+      }
+    }
+
     for (const param in element) {
       if ((param === 'set' || param === 'update') || !element[param] === undefined) return
       execParam = exec(element[param], element)
@@ -57,16 +72,7 @@ var createNode = (element) => {
       var hasDefine = element.define && element.define[param]
       var registeredParam = registry[param]
 
-      if (param === 'on' && isNewNode) {
-        // Apply events
-        for (const param in element.on) {
-          var appliedFunction = element.on[param]
-          var registeredFunction = on[param]
-          if (typeof appliedFunction === 'function' && typeof registeredFunction === 'function') {
-            registeredFunction(appliedFunction, element)
-          } else console.error('Not such function', appliedFunction, registeredFunction)
-        }
-      } else if (registeredParam) {
+      if (registeredParam) {
         // Check if it's registered param
         if (typeof registeredParam === 'function') {
           registeredParam(execParam, element, node)

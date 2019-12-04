@@ -9,6 +9,7 @@ import ID from './id'
 import nodes from './nodes'
 import set from './set'
 import update from './update'
+import * as on from '../event/on'
 
 /**
  * Creating a domQL element using passed parameters
@@ -19,6 +20,11 @@ var create = (element, parent, key) => {
 
   // If element is not given
   if (!element) return Err('CantCreateWithoutNode')
+
+  // run onInit
+  if (element.on && typeof element.on.init === 'function') {
+    on.init(element.on.init, element)
+  }
 
   // define key
   var assignedKey = element.key || key || ID.next().value
@@ -63,6 +69,11 @@ var create = (element, parent, key) => {
   element.set = set
   element.update = update
   method.assignNode(element, parent, key)
+
+  // run onRender
+  if (element.on && typeof element.on.render === 'function') {
+    on.render(element.on.render, element)
+  }
 
   return element
 }

@@ -1,5 +1,9 @@
 'use strict'
 
+var init = (param, element) => {
+  param(element)
+}
+
 var render = (param, element) => {
   param(element)
 }
@@ -14,4 +18,4 @@ var change = (param, element) => {
   node.addEventListener('change', event => param(event, element), true)
 }
 
-export { render, click, change }
+export { init, render, click, change }
