@@ -1,8 +1,10 @@
 'use strict'
 
-var mapProperty = (obj, extention) => {
+import exec from '../element/params/exec'
+
+var mapProperty = (obj, extention, element) => {
   for (const e in extention) {
-    obj[e] = extention[e]
+    obj[e] = exec(extention[e], element)
   }
 }
 

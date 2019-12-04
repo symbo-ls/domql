@@ -8,7 +8,7 @@ import Err from '../../res/error'
  */
 export default (params, element, node) => {
   if (params) {
-    if (isObject(params)) map(node.style, params)
+    if (isObject(params)) map(node.style, params, element)
     else Err('HTMLInvalidStyles', params)
   }
 }
