@@ -31,6 +31,7 @@ var paramRegistry = {
   node: {},
   set: {},
   update: {},
+  path: {},
   on: {}
 }
 

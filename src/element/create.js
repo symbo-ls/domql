@@ -46,6 +46,10 @@ var create = (element, parent, key) => {
   // Assign parent reference to the element
   element.parent = parent
 
+  // Set the path
+  if (!parent.path) parent.path = []
+  // element.path = parent.path.concat(key)
+
   // if proto, or inherited proto
   applyPrototype(element)
 
