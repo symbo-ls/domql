@@ -18,4 +18,19 @@ var change = (param, element) => {
   node.addEventListener('change', event => param(event, element), true)
 }
 
-export { init, render, click, change }
+var down = (param, element) => {
+  var { node } = element
+  node.addEventListener('mousedown', event => param(event, element), true)
+}
+
+var move = (param, element) => {
+  var { node } = element
+  node.addEventListener('mousemove', event => param(event, element), true)
+}
+
+var up = (param, element) => {
+  var { node } = element
+  node.addEventListener('mouseup', event => param(event, element), true)
+}
+
+export { init, render, click, change, down, move, up }
