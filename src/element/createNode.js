@@ -53,7 +53,7 @@ var createNode = (element) => {
     }
 
     // apply events
-    if (isObject(element.on)) {
+    if (isNewNode && isObject(element.on)) {
       for (const param in element.on) {
         if (param === 'init' || param === 'render') break
         var appliedFunction = element.on[param]
