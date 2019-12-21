@@ -39,5 +39,9 @@
     "env": [
       "jest"
     ]
-  }
+  },
+  "browserslist": [
+    "> 1%",
+    "ie >= 9"
+  ]
 }
