@@ -1,5 +1,7 @@
 'use strict'
 
+import "regenerator-runtime/runtime"
+
 import utils from './utils'
 
 import Err from './res/error'

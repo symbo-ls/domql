@@ -1,3 +1,10 @@
 module.exports = {
-  "presets": ["@babel/preset-env"]
+  "presets": [
+    ["env", {
+      "useBuiltIns": "usage",
+      "targets": {
+        "browsers": ["Explorer 10"]
+      }
+    }]
+  ]
 }
