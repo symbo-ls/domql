@@ -33,4 +33,9 @@ var up = (param, element) => {
   node.addEventListener('mouseup', event => param(event, element), true)
 }
 
-export { init, render, click, change, down, move, up }
+var load = (param, element) => {
+  var { node } = element
+  node.addEventListener('load', event => param(event, element), true)
+}
+
+export { init, render, click, change, down, move, up, load }
