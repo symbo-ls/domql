@@ -1,7 +1,5 @@
 'use strict'
 
-import browser from "../../utils/browser"
-
 var classList = (params, element) => {
   var { node } = element
   if (params === true) params = element.class = element.key

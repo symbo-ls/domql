@@ -9,5 +9,6 @@ export default (param, element, node) => {
     // var parser = new window.DOMParser()
     // param = parser.parseFromString(param, 'text/html')
     node.innerHTML = param
+    console.log(param, element, node.outerHTML)
   }
 }
