@@ -1,6 +1,6 @@
 'use strict'
 
-import "regenerator-runtime/runtime"
+import 'regenerator-runtime/runtime'
 
 import utils from './utils'
 

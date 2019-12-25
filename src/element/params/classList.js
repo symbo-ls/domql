@@ -1,13 +1,18 @@
 'use strict'
 
+import browser from '../../utils/browser'
+
 var classList = (params, element) => {
   var { node } = element
   if (params === true) params = element.class = element.key
-  var trimmed = params.replace(/\s+/g,' ').trim()
-  if (!trimmed || !node.classList) return
+  var trimmed = params.replace(/\s+/g, ' ').trim()
 
-  var splitted = trimmed.split(' ')
-  node.classList.add.apply(node.classList, splitted)
+  if (browser.IE && node.classList) {
+    var split = trimmed.split(' ')
+    split.map(value => {
+      node.className += ' ' + value
+    })
+  } else node.classList = trimmed
 }
 
 export default classList
