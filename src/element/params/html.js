@@ -8,6 +8,7 @@ export default (param, element, node) => {
   if (param) {
     // var parser = new window.DOMParser()
     // param = parser.parseFromString(param, 'text/html')
-    node.innerHTML = param
+    if (node.nodeName === 'SVG') node.textContent = param
+    else node.innerHTML = param
   }
 }
