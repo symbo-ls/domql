@@ -6,8 +6,7 @@ DOM rendering Javascript framework at early stage.
 
 It's good in:
 - Translating JSON and GraphQL query results into HTML objecs.
-- Virtual DOM rendering
-- DOM state management
+- Virtual DOM rendering and state management
 - Just to write a frontend code
 
 Key features:
