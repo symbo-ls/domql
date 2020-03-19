@@ -18,6 +18,8 @@ Key features:
   - [x] support multiple level prototypes
 - [ ] binding
 - [x] update
+  - [x] set (recreate)
+  - [ ] change what's in diff
 - [x] events
   - [x] event handling
   - [ ] bubbling and propogation
