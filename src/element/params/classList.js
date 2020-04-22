@@ -1,7 +1,7 @@
 'use strict'
 
 import exec from './exec'
-import { isObject } from '../../utils'
+// import { isObject } from '../../utils'
 
 var classify = (obj, element) => {
   var className = ''
@@ -17,10 +17,11 @@ var classify = (obj, element) => {
 }
 
 var classList = (params, element) => {
-  var { node } = element
-  if (params === true) params = element.class = element.key
-  if (isObject(params)) params = classify(params, element)
-  var trimmed = params.replace(/\s+/g, ' ').trim()
+  var { node, key } = element
+  if (typeof params === 'string') element.class = { default: params }
+  if (params === true) params = element.class = { key }
+  var className = classify(element.class, element)
+  var trimmed = className.replace(/\s+/g, ' ').trim()
   node.classList = trimmed
 }
 
