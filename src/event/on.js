@@ -38,4 +38,9 @@ var load = (param, element) => {
   node.addEventListener('load', event => param(event, element), true)
 }
 
-export { init, render, click, change, down, move, up, load }
+var input = (param, element) => {
+  var { node } = element
+  node.addEventListener('input', event => param(event, element), true)
+}
+
+export { init, render, click, change, down, move, up, load, input }

@@ -59,9 +59,13 @@ var createNode = (element) => {
         var appliedFunction = element.on[param]
         var registeredFunction = on[param]
         if (typeof appliedFunction === 'function' &&
-          typeof registeredFunction === 'function') {
+        typeof registeredFunction === 'function') {
           registeredFunction(appliedFunction, element)
-        } else console.error('Not such function', appliedFunction, registeredFunction)
+        }
+
+        // var definedFunction = element.define && element.define[param]
+        // else console.error('Not such function', appliedFunction, registeredFunction)
+        // if (typeof appliedFunction === 'function' && typeof definedFunction === 'function') definedFunction(appliedFunction, element)
       }
     }
 
