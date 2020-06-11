@@ -67,6 +67,7 @@ var createNode = (element) => {
 
     for (const param in element) {
       if ((param === 'set' || param === 'update') || !element[param] === undefined) return
+
       execParam = exec(element[param], element)
 
       var hasDefine = element.define && element.define[param]
@@ -77,6 +78,8 @@ var createNode = (element) => {
         if (typeof registeredParam === 'function') {
           registeredParam(execParam, element, node)
         }
+
+        if (param === 'style') registry['class'](element['class'], element, node)
       } else if (element[param] && !hasDefine) {
         // Create element
         create(execParam, element, param)

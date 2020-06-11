@@ -16,6 +16,7 @@ export default (params, element, node) => {
       if (isObject(element.class)) element.class.style = CSSed
       else if (typeof element.class === 'string') element.class += ` ${CSSed}`
       else if (element.class === true) element.class = { key, style: CSSed }
+      else if (element.class === undefined) element.class = CSSed
     } else if (isObject(params)) map(node.style, params, element)
     else Err('HTMLInvalidStyles', params)
   }
