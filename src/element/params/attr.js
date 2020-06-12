@@ -1,6 +1,6 @@
 'use strict'
 
-import Err from '../../res/error'
+import Report from '../../utils/report'
 import exec from './exec'
 
 /**
@@ -8,7 +8,7 @@ import exec from './exec'
  */
 export default (params, element, node) => {
   if (params) {
-    if (!(typeof params === 'object')) Err('HTMLInvalidAttr', params)
+    if (!(typeof params === 'object')) Report('HTMLInvalidAttr', params)
     for (const attr in params) {
       // if (!node) node = element.node
       var val = exec(params[attr], element)

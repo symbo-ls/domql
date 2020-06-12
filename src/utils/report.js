@@ -6,6 +6,10 @@ var errors = {
       title: 'Document is undefined',
       description: 'To tweak with DOM, you should use browser.'
     },
+    OverwriteToBuiltin: {
+      title: 'Overwriting to builtin method',
+      description: `Overwriting a builtin method in the global define is not possible, please choose different name`
+    },
     BrowserNotDefined: {
       title: 'Can\'t recognize environment',
       description: 'Environment should be browser application, that can run Javascript'
@@ -45,17 +49,15 @@ var errors = {
   }
 }
 
-var report = (err, arg, elem) => {
+var report = (err, arg, element) => {
   var currentLang = 'en'
   var errObj
   if (err && typeof err === 'string') errObj = errors[currentLang][err]
 
   throw console.error(
-    arg,
-    elem,
-    err,
-    errObj.title,
-    errObj.description
+    `"${err}", "${arg}"\n\n`,
+    `${errObj.description}`,
+    element ? `\n\n${element}` : ''
   )
 }
 

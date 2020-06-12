@@ -3,6 +3,7 @@
 import exec from './exec'
 // import { isObject } from '../../utils'
 
+// stringifies class object
 var classify = (obj, element) => {
   var className = ''
   for (var item in obj) {

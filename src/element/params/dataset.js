@@ -1,6 +1,6 @@
 'use strict'
 
-import Err from '../../res/error'
+import Report from '../../utils/report'
 
 /**
  * Apply data parameters on the DOM nodes
@@ -8,7 +8,7 @@ import Err from '../../res/error'
  */
 export default (params, element, node) => {
   if (params && params.showOnNode) {
-    if (!(typeof params === 'object')) Err('HTMLInvalidData', params)
+    if (!(typeof params === 'object')) Report('HTMLInvalidData', params)
 
     // Apply data params on node
     for (const dataset in params) {

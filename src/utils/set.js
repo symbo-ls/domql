@@ -1,6 +1,6 @@
 'use strict'
 
-import err from '..'
+import Report from '..'
 
 var setCurrent = (code) => {
   var hasProperty = Object.prototype.hasOwnProperty.call(this.list, code)

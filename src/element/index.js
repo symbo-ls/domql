@@ -6,10 +6,11 @@ import tree from './tree'
 import create from './create'
 import createNode from './createNode'
 import method from './method'
+import define from './define'
 import parse from './parse'
 import set from './set'
 
-export default {
+export {
   nodes,
   root,
   tree,
@@ -17,5 +18,6 @@ export default {
   createNode,
   method,
   parse,
+  define,
   set
 }
