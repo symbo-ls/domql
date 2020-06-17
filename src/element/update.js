@@ -10,8 +10,6 @@ var update = function (params = {}) {
   overwrite(element, params)
 
   element.node.innerHTML = ''
-  // debugger
-  // applyPrototype(this)
 
   createNode(element)
 
