@@ -1,7 +1,7 @@
 'use strict'
 
 import create from './create'
-import cacheNode from './cacheNode'
+import cacheNode from './cache'
 
 import { exec, registry } from './params'
 import * as on from '../event/on'

@@ -32,7 +32,8 @@ var paramRegistry = {
   set: {},
   update: {},
   path: {},
-  on: {}
+  on: {},
+  state: {}
 }
 
 export default paramRegistry

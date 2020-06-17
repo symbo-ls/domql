@@ -1,7 +1,7 @@
 'use strict'
 
 import method from '../method'
-import cacheNode from '../cacheNode'
+import cacheNode from '../cache'
 
 /**
  * Creates a text node and appends into
