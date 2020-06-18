@@ -8,7 +8,7 @@ var classify = (obj, element) => {
   var className = ''
   for (var item in obj) {
     var param = obj[item]
-    if (typeof param === 'boolean' && param) className += ` ${item}`
+    if (param === true) className += ` ${item}`
     else if (typeof param === 'string') className += ` ${param}`
     else if (typeof param === 'function') {
       className += ` ${exec(param, element)}`
