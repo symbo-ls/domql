@@ -2,16 +2,21 @@
 
 import createNode from './createNode'
 import overwrite from '../utils/overwrite'
+import * as on from '../event/on'
 // import applyPrototype from './proto'
 
 var update = function (params = {}) {
-  overwrite(this, params)
+  var element = this
+  overwrite(element, params)
 
-  this.node.innerHTML = ''
-  // debugger
-  // applyPrototype(this)
+  element.node.innerHTML = ''
 
-  createNode(this)
+  createNode(element)
+
+  // run onRender
+  if (element.on && typeof element.on.render === 'function') {
+    on.render(element.on.render, element)
+  }
 
   return this
 }

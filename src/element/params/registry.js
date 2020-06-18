@@ -6,18 +6,20 @@ import {
   text,
   html,
   content,
-  dataset,
-  classList
+  data,
+  classList,
+  state
 } from './'
 
-var paramRegistry = {
+export default {
   attr,
   style,
   text,
   html,
   content,
-  data: dataset,
+  data,
   class: classList,
+  state,
 
   proto: {},
   childProto: {},
@@ -34,5 +36,3 @@ var paramRegistry = {
   path: {},
   on: {}
 }
-
-export default paramRegistry
