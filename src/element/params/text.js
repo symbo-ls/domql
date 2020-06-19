@@ -1,6 +1,6 @@
 'use strict'
 
-import method from '../method'
+import { appendNode } from '../assign'
 import cacheNode from '../cache'
 
 /**
@@ -13,6 +13,6 @@ export default (param, element) => {
     param = { tag: 'string', text: param }
 
     var textNode = cacheNode(param)
-    method.appendNode(textNode, element.node)
+    appendNode(textNode, element.node)
   }
 }

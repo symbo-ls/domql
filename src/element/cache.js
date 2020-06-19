@@ -1,7 +1,7 @@
 'use strict'
 
 import Evt from '../event'
-import Report from '../utils/report'
+import { report } from '../utils'
 
 import nodes from './nodes'
 
@@ -33,7 +33,7 @@ export default (element) => {
   element.tag = tag
 
   if (!Evt.can.render(element)) {
-    return Report('HTMLInvalidTag')
+    return report('HTMLInvalidTag')
   }
 
   var cachedTag = cachedElements[tag]

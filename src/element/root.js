@@ -1,7 +1,7 @@
 'use strict'
 
-// import Report from '..'
+import report from '../utils'
 
 export default {
-  node: document && document.body // || err('DocumentNotDefined', document)
+  node: document ? document.body : report('DocumentNotDefined', document)
 }

@@ -3,7 +3,7 @@
 import Report from '../utils/report'
 import tree from './tree'
 import createNode from './createNode'
-import method from './method'
+import { assignNode } from './assign'
 import applyPrototype from './proto'
 import ID from './id'
 import nodes from './nodes'
@@ -31,7 +31,7 @@ var create = (element, parent, key) => {
 
   // if it already has a node
   if (element.node) {
-    return method.assignNode(element, parent, assignedKey)
+    return assignNode(element, parent, assignedKey)
   }
 
   // If element is string
@@ -48,7 +48,7 @@ var create = (element, parent, key) => {
 
   // Set the path
   if (!parent.path) parent.path = []
-  // element.path = parent.path.concat(key)
+  element.path = parent.path.concat(assignedKey)
 
   // if proto, or inherited proto
   applyPrototype(element)
@@ -72,7 +72,7 @@ var create = (element, parent, key) => {
 
   element.set = set
   element.update = update
-  method.assignNode(element, parent, key)
+  assignNode(element, parent, key)
 
   // run onRender
   if (element.on && typeof element.on.render === 'function') {

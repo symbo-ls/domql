@@ -15,10 +15,10 @@ var createNode = (element) => {
     isNewNode = true
     node = cacheNode(element)
     element.node = node
-    node.ref = element
+    // node.ref = element
   }
 
-  // Initialize pre defined but not settled params
+  // run define iteration to set params
   if (element.define && isObject(element.define)) {
     for (const param in element.define) {
       if (!element[param]) element[param] = element.define[param](void 0, element)
@@ -55,7 +55,7 @@ var createNode = (element) => {
     // apply events
     if (isNewNode && isObject(element.on)) {
       for (const param in element.on) {
-        if (param === 'init' || param === 'render') break
+        if (param === 'init' || param === 'render') continue
         var appliedFunction = element.on[param]
         var registeredFunction = on[param]
         if (typeof appliedFunction === 'function' &&

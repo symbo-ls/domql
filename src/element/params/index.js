@@ -20,6 +20,6 @@ export {
   text,
   html,
   state,
-  registry,
-  exec
+  exec,
+  registry
 }

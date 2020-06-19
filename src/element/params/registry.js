@@ -22,6 +22,7 @@ export default {
   state,
 
   proto: {},
+  path: {},
   childProto: {},
   if: {},
   define: {},
@@ -33,6 +34,5 @@ export default {
   node: {},
   set: {},
   update: {},
-  path: {},
   on: {}
 }
