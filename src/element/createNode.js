@@ -15,7 +15,7 @@ var createNode = (element) => {
     isNewNode = true
     node = cacheNode(element)
     element.node = node
-    // node.ref = element
+    node.ref = element
   }
 
   // run define iteration to set params
