@@ -1,6 +1,6 @@
 'use strict'
 
-import Report from '..'
+import report from '..'
 
 var setCurrent = (code) => {
   var hasProperty = Object.prototype.hasOwnProperty.call(this.list, code)
@@ -11,7 +11,7 @@ var setCurrent = (code) => {
 
 var setQuickPreferences = (prefsObj) => {
   if (!prefsObj || typeof prefsObj !== 'object') {
-    return err('setQuickPreferencesIsNotObject')
+    return report('setQuickPreferencesIsNotObject')
   }
 }
 

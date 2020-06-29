@@ -20,5 +20,5 @@ export default {
   edge: (false || !!document.documentMode) && !!window.StyleMedia,
 
   // Chrome 1 - 71
-  chrome: !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime) 
+  chrome: !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime)
 }
