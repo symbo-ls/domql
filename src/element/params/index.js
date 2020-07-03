@@ -4,7 +4,6 @@ import attr from './attr'
 import classList from './classList'
 import content from './content'
 import data from './data'
-import exec from './exec'
 import html from './html'
 import style from './style'
 import text from './text'
@@ -20,6 +19,5 @@ export {
   text,
   html,
   state,
-  exec,
   registry
 }

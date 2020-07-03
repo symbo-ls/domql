@@ -1,6 +1,6 @@
 'use strict'
 
-export default {
+export const device = {
   // Safari 3.0+ "[object HTMLElementConstructor]"
   safari: /constructor/i.test(window.HTMLElement) || (
     p => p.toString() === '[object SafariRemoteNotification]'

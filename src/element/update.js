@@ -1,7 +1,7 @@
 'use strict'
 
 import createNode from './createNode'
-import overwrite from '../utils/overwrite'
+import { overwrite } from '../utils'
 import * as on from '../event/on'
 // import applyPrototype from './proto'
 

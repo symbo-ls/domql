@@ -1,6 +1,6 @@
 'use strict'
 
-import Evt from '../event'
+import { can } from '../event'
 import { report } from '../utils'
 
 import nodes from './nodes'
@@ -32,7 +32,7 @@ export default (element) => {
 
   element.tag = tag
 
-  if (!Evt.can.render(element)) {
+  if (!can.render(element)) {
     return report('HTMLInvalidTag')
   }
 

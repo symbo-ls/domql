@@ -1,15 +1,11 @@
 'use strict'
 
-import can from './can'
-import on from './on'
-import is from './is'
-import store from './store'
-import render from './render'
+import * as on from './on'
+import * as can from './can'
+import * as is from './is'
 
-export default {
-  can,
+export {
   on,
-  is,
-  store,
-  render
+  can,
+  is
 }

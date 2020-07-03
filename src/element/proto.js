@@ -1,13 +1,21 @@
 'use strict'
 
 import cloneDeep from 'lodash.clonedeep'
-import deepMerge from '../utils/deepMerge'
+import { deepMerge } from '../utils'
+
+var mergeArrayProto = proto => {
+  const clonedProto = cloneDeep(proto[0])
+  for (let i = 1; i < proto.length; i++) deepMerge(clonedProto, proto[i])
+  return clonedProto
+}
 
 /**
  * Applies multiple prototype level
  */
-var recursiveProto = (element, proto, cloneProto = true) => {
-  deepMerge(element, proto, cloneProto)
+var recursiveProto = (element, proto, clone = false) => {
+  if (clone) proto = cloneDeep(proto)
+  if (Array.isArray(proto)) proto = mergeArrayProto(proto)
+  deepMerge(element, proto)
   if (proto.proto) recursiveProto(element, proto.proto)
 }
 
@@ -20,9 +28,9 @@ export default (element) => {
 
   /** If it has both `proto` and `childProto` */
   if (element.proto && (parent && parent.childProto)) {
-    var proto = cloneDeep(element.proto)
-    deepMerge(proto, parent.childProto, true)
-    recursiveProto(element, proto, false)
+    var clonedProto = cloneDeep(element.proto)
+    deepMerge(clonedProto, parent.childProto, true)
+    recursiveProto(element, clonedProto, false)
   } else if (element.proto) { /** If it has only `proto` */
     recursiveProto(element, element.proto, true)
   } else if (parent && parent.childProto) { /** If it has only `childProto` */

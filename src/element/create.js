@@ -1,6 +1,6 @@
 'use strict'
 
-import Report from '../utils/report'
+import { report } from '../utils'
 import tree from './tree'
 import createNode from './createNode'
 import { assignNode } from './assign'
@@ -19,7 +19,7 @@ var create = (element, parent, key) => {
   if (!parent) parent = tree
 
   // If element is not given
-  if (!element) return Report('CantCreateWithoutNode')
+  if (!element) return report('CantCreateWithoutNode')
 
   // run onInit
   if (element.on && typeof element.on.init === 'function') {

@@ -20,15 +20,15 @@
     "regenerator-runtime": "^0.13.3"
   },
   "devDependencies": {
-    "@babel/core": "^7.7.7",
-    "@babel/preset-env": "^7.7.7",
+    "@babel/core": "^7.10.4",
+    "@babel/preset-env": "^7.10.4",
     "babel-eslint": "^10.0.3",
-    "babel-jest": "^24.8.0",
+    "babel-jest": "^26.1.0",
     "babel-preset-env": "^1.7.0",
     "coveralls": "^3.0.5",
     "eslint": "^6.1.0",
     "eslint-plugin-jest": "^22.14.1",
-    "jest": "^24.8.0",
+    "jest": "^26.1.0",
     "nodemon": "^1.19.1",
     "parcel-bundler": "^1.12.4",
     "standard": "^13.1.0"

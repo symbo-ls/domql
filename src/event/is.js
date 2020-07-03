@@ -1,6 +1,6 @@
 'use strict'
 
-var node = (node) => {
+export const node = (node) => {
   var { Node } = window
   return (
     typeof Node === 'object' ? node instanceof Node : node &&
@@ -10,7 +10,7 @@ var node = (node) => {
   )
 }
 
-var element = (element) => {
+export const element = (element) => {
   var { HTMLElement } = window
   return (
     typeof HTMLElement === 'object'
@@ -20,5 +20,3 @@ var element = (element) => {
         typeof element.tag === 'string'
   )
 }
-
-export default { node, element }

@@ -3,9 +3,9 @@
 import create from './create'
 import cacheNode from './cache'
 
-import { exec, registry } from './params'
+import { registry } from './params'
+import { exec, isObject } from '../utils'
 import * as on from '../event/on'
-import { isObject } from '../utils'
 
 var createNode = (element) => {
   // create and assign a node

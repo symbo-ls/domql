@@ -1,6 +1,6 @@
 'use strict'
 
-var errors = {
+export const errors = {
   en: {
     DocumentNotDefined: {
       title: 'Document is undefined',
@@ -49,7 +49,7 @@ var errors = {
   }
 }
 
-var report = (err, arg, element) => {
+export const report = (err, arg, element) => {
   var currentLang = 'en'
   var errObj
   if (err && typeof err === 'string') errObj = errors[currentLang][err]
@@ -60,5 +60,3 @@ var report = (err, arg, element) => {
     element ? `\n\n${element}` : ''
   )
 }
-
-export default report

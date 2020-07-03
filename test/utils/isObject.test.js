@@ -1,4 +1,4 @@
-import isObject from '../../src/utils/isObject'
+import { isObject } from '../../src/utils'
 
 test('should check whether plain object is object and not object-like', () => {
   expect(isObject({})).toBeTruthy()

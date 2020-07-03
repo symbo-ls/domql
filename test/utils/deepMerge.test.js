@@ -1,4 +1,4 @@
-import deepMerge from '../../src/utils/deepMerge'
+import { deepMerge } from '../../src/utils'
 
 test('should set prototype from a original to a new element', () => {
   var proto = {
