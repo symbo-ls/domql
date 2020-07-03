@@ -17,7 +17,7 @@
   "dependencies": {
     "emotion": "^10.0.27",
     "lodash.clonedeep": "^4.5.0",
-    "regenerator-runtime": "^0.13.3"
+    "regenerator-runtime": "^0.13.5"
   },
   "devDependencies": {
     "@babel/core": "^7.10.4",
