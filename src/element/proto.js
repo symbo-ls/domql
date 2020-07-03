@@ -1,7 +1,7 @@
 'use strict'
 
 import cloneDeep from 'lodash.clonedeep'
-import { deepMerge } from '../utils'
+import { deepMerge, isArray } from '../utils'
 
 var mergeArrayProto = proto => {
   const clonedProto = cloneDeep(proto[0])
@@ -14,7 +14,7 @@ var mergeArrayProto = proto => {
  */
 var recursiveProto = (element, proto, clone = false) => {
   if (clone) proto = cloneDeep(proto)
-  if (Array.isArray(proto)) proto = mergeArrayProto(proto)
+  if (isArray(proto)) proto = mergeArrayProto(proto)
   deepMerge(element, proto)
   if (proto.proto) recursiveProto(element, proto.proto)
 }

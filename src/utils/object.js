@@ -1,6 +1,10 @@
 'use strict'
 
 export const isObject = arg => {
+  return typeof arg === 'object' && arg.constructor === Object
+}
+
+export const isObjectLike = arg => {
   if (arg === null) return false
   return (typeof arg === 'function') || (typeof arg === 'object')
 }
