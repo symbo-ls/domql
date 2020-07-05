@@ -6,7 +6,7 @@ import { deepMerge, isArray } from '../utils'
 /**
  * Merges array prototypes
  */
-var mergeArrayProto = proto => {
+export const mergeArrayProto = proto => {
   const clonedProto = cloneDeep(proto[0])
   for (let i = 1; i < proto.length; i++) deepMerge(clonedProto, proto[i])
   return clonedProto
@@ -15,29 +15,30 @@ var mergeArrayProto = proto => {
 /**
  * Applies multiple prototype level
  */
-var recursiveProto = (element, proto, clone = false) => {
-  if (clone) proto = cloneDeep(proto)
+export const deepProto = (element, proto) => {
+  proto = cloneDeep(proto) // TODO: remove for some cases
   if (isArray(proto)) proto = mergeArrayProto(proto)
   deepMerge(element, proto)
-  if (proto.proto) recursiveProto(element, proto.proto)
+  if (proto.proto) deepProto(element, proto.proto)
 }
 
 /**
  * Checks whether element has `proto` or is a part
  * of parent's `childProto` prototype
  */
-export default (element) => {
-  var { parent } = element
+export const applyPrototype = (element) => {
+  var { parent, proto } = element
 
-  /** If it has both `proto` and `childProto` */
-  if (element.proto && (parent && parent.childProto)) {
-    var clonedProto = cloneDeep(element.proto)
-    var clonedChildProto = cloneDeep(parent.childProto)
-    deepMerge(clonedProto, clonedChildProto)
-    recursiveProto(element, clonedProto)
-  } else if (element.proto) { /** If it has only `proto` */
-    recursiveProto(element, element.proto, true)
-  } else if (parent && parent.childProto) { /** If it has only `childProto` */
-    recursiveProto(element, parent.childProto, true)
+  /** Merge with `proto` */
+  if (proto) {
+    // var clonedProto = cloneDeep(proto)
+    deepProto(element, proto)
+    delete element.proto
+  }
+
+  /** Merge with parent's `childProto` */
+  if (parent && parent.childProto) {
+    // var clonedChildProto = cloneDeep(parent.childProto)
+    deepProto(element, parent.childProto)
   }
 }

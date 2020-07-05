@@ -1,14 +1,13 @@
 'use strict'
 
-import Report from '../../utils/report'
-import exec from './exec'
+import { exec, report } from '../../utils'
 
 /**
  * Recursively add attributes to a DOM node
  */
 export default (params, element, node) => {
   if (params) {
-    if (!(typeof params === 'object')) Report('HTMLInvalidAttr', params)
+    if (!(typeof params === 'object')) report('HTMLInvalidAttr', params)
     for (const attr in params) {
       // if (!node) node = element.node
       var val = exec(params[attr], element)

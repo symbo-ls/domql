@@ -1,35 +1,49 @@
-import applyPrototype from '../../src/element/proto'
+import { applyPrototype } from '../../src/element/proto'
 
-test('should merge multiple level prototypes', () => {
-  var proto1 = {
-    div1: 'div1'
+var proto1 = {
+  div1: 'div1'
+}
+
+var proto2 = {
+  proto: proto1,
+  div2: 'div2'
+}
+
+var proto3 = {
+  proto: proto2,
+  div3: {
+    text: 'div3'
   }
+}
 
-  var proto2 = {
-    proto: proto1,
-    div2: 'div2'
-  }
+var proto4 = {
+  proto: proto3,
+  div4: 'div4'
+}
 
-  var proto3 = {
-    proto: proto2,
-    div3: 'div3'
-  }
-
-  var proto4 = {
-    proto: proto3,
-    div4: 'div4'
-  }
-
+test('should not mutate prototype object', () => {
   applyPrototype(proto4)
 
+  expect(proto3).toStrictEqual({
+    proto: proto2,
+    div3: {
+      text: 'div3'
+    }
+  })
+})
+
+test('should merge multiple level prototypes', () => {
   expect(proto4).toStrictEqual({
-    proto: proto3,
     div1: 'div1',
     div2: 'div2',
-    div3: 'div3',
+    div3: {
+      text: 'div3'
+    },
     div4: 'div4'
   })
+})
 
+test('should merge prototypes with parent\'s child protos', () => {
   var proto5 = {
     div5: 'div5'
   }
@@ -41,13 +55,14 @@ test('should merge multiple level prototypes', () => {
     }
   }
 
-  applyPrototype(parent.one, parent)
+  applyPrototype(parent.one)
 
   expect(parent.one).toStrictEqual({
-    proto: proto5,
     div1: 'div1',
     div2: 'div2',
-    div3: 'div3',
+    div3: {
+      text: 'div3'
+    },
     div4: 'div4',
     div5: 'div5'
   })

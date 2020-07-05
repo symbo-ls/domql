@@ -1,7 +1,6 @@
 'use strict'
 
-import exec from './exec'
-// import { isObject } from '../../utils'
+import { exec } from '../../utils'
 
 // stringifies class object
 var classify = (obj, element) => {

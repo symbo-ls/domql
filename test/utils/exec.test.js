@@ -1,4 +1,4 @@
-import exec from '../../../src/element/params/exec'
+import { exec } from '../../src/utils'
 
 test('should check whether value is executable and if yes, return executed value', () => {
   var val1 = exec('val1')

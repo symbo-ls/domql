@@ -9,15 +9,13 @@ export const isObjectLike = arg => {
   return (typeof arg === 'function') || (typeof arg === 'object')
 }
 
-export const ifFunction = arg => typeof arg === 'function'
+export const isFunction = arg => typeof arg === 'function'
 
 export const isArray = arg => Array.isArray(arg)
 
 export const exec = (param, element) => {
-  if (param !== undefined) {
-    if (typeof param === 'function') { return param(element) }
-    return param
-  }
+  if (isFunction(param)) return param(element)
+  return param
 }
 
 export const map = (obj, extention, element) => {
@@ -26,17 +24,17 @@ export const map = (obj, extention, element) => {
   }
 }
 
-export const deepMerge = (obj, original) => {
-  for (const e in original) {
-    const objProp = obj[e]
-    const originalProp = original[e]
-    if (objProp === undefined) {
-      obj[e] = originalProp
-    } else if (isObject(objProp)) {
-      deepMerge(objProp, originalProp)
+export const deepMerge = (element, proto) => {
+  for (const e in proto) {
+    const elementProp = element[e]
+    const protoProp = proto[e]
+    if (elementProp === undefined) {
+      element[e] = protoProp
+    } else if (isObject(elementProp)) {
+      deepMerge(elementProp, protoProp)
     }
   }
-  return obj
+  return element
 }
 
 export const overwrite = (obj, params) => {

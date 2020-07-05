@@ -1,7 +1,5 @@
 module.exports = {
   "presets": [
-    ["env", {
-      "useBuiltIns": "usage"
-    }]
+    ["@babel/preset-env"]
   ]
 }
