@@ -2,7 +2,8 @@
 
 import {
   isObject,
-  ifFunction,
+  isObjectLike,
+  isFunction,
   isArray,
   exec,
   map,
@@ -16,7 +17,8 @@ import { report } from './report'
 
 export {
   isObject,
-  ifFunction,
+  isObjectLike,
+  isFunction,
   isArray,
   exec,
   map,
