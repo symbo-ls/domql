@@ -12,7 +12,8 @@ test('should set prototype from a original to a new element', () => {
       style: {
         fill: 'black'
       }
-    }
+    },
+    text: 'Button'
   }
 
   var element = {

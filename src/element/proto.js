@@ -1,25 +1,47 @@
 'use strict'
 
-import cloneDeep from 'lodash.clonedeep'
-import { deepMerge, isArray } from '../utils'
+import { deepMerge, isArray, deepClone } from '../utils'
+
+/**
+ * Flattens deep level prototypes into an array
+ */
+export const flattenProtosAsArray = (proto, protos = []) => {
+  protos.push(proto)
+  if (proto.proto) flattenProtosAsArray(proto.proto, protos)
+  return protos
+}
 
 /**
  * Merges array prototypes
  */
-export const mergeArrayProto = proto => {
-  const clonedProto = cloneDeep(proto[0])
-  for (let i = 1; i < proto.length; i++) deepMerge(clonedProto, proto[i])
-  return clonedProto
+export const mergeProtosArray = arr => {
+  return arr.reduce((a, c) => deepMerge(a, deepClone(c)), {})
+}
+
+/**
+ * Flattens deep level prototypes into an flat object
+ */
+export const flattenPrototype = (proto) => {
+  var flattenedArray = flattenProtosAsArray(proto)
+  var flattenedObj = mergeProtosArray(flattenedArray)
+
+  if (flattenedObj.proto) delete flattenedObj.proto
+
+  return deepClone(flattenedObj)
 }
 
 /**
  * Applies multiple prototype level
  */
 export const deepProto = (element, proto) => {
-  proto = cloneDeep(proto) // TODO: remove for some cases
-  if (isArray(proto)) proto = mergeArrayProto(proto)
-  deepMerge(element, proto)
-  if (proto.proto) deepProto(element, proto.proto)
+  // if proto presented as array
+  if (isArray(proto)) proto = mergeProtosArray(proto)
+
+  // flatten prototypal inheritances
+  var flatten = flattenPrototype(proto)
+
+  // merge with prototype
+  deepMerge(element, flatten)
 }
 
 /**
@@ -31,14 +53,10 @@ export const applyPrototype = (element) => {
 
   /** Merge with `proto` */
   if (proto) {
-    // var clonedProto = cloneDeep(proto)
     deepProto(element, proto)
     delete element.proto
   }
 
   /** Merge with parent's `childProto` */
-  if (parent && parent.childProto) {
-    // var clonedChildProto = cloneDeep(parent.childProto)
-    deepProto(element, parent.childProto)
-  }
+  if (parent && parent.childProto) deepProto(element, parent.childProto)
 }

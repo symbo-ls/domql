@@ -7,6 +7,7 @@ import {
   exec,
   map,
   deepMerge,
+  deepClone,
   overwrite,
   set
 } from './object'
@@ -20,6 +21,7 @@ export {
   exec,
   map,
   deepMerge,
+  deepClone,
   overwrite,
   set,
   report,

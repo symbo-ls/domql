@@ -30,11 +30,21 @@ export const deepMerge = (element, proto) => {
     const protoProp = proto[e]
     if (elementProp === undefined) {
       element[e] = protoProp
-    } else if (isObject(elementProp)) {
+    } else if (isObject(elementProp) && isObject(protoProp)) {
       deepMerge(elementProp, protoProp)
     }
   }
   return element
+}
+
+export const deepClone = (obj) => {
+  var o = {}
+  for (const prop in obj) {
+    const objProp = obj[prop]
+    if (typeof objProp === 'object') o[prop] = deepClone(objProp)
+    else o[prop] = objProp
+  }
+  return o
 }
 
 export const overwrite = (obj, params) => {
