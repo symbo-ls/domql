@@ -2,12 +2,7 @@
 DOM rendering Javascript framework at early stage.
 
 [![Build Status](https://travis-ci.org/rackai/domql.svg?branch=master)](https://travis-ci.org/rackai/domql)
-[![Coverage Status](https://coveralls.io/repos/github/rackai/domql/badge.svg?branch=master)](https://coveralls.io/github/rackai/domql?branch=master) 
-
-It's good in:
-- Translating JSON and GraphQL query results into HTML objecs.
-- Virtual DOM rendering and state management
-- Just to write a frontend code
+[![Coverage Status](https://coveralls.io/repos/github/rackai/domql/badge.svg?branch=master)](https://coveralls.io/github/rackai/domql?branch=master)
 
 Key features:
 - [x] error reporting
