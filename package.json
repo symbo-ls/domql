@@ -1,7 +1,7 @@
 {
   "name": "@rackai/domql",
   "description": "DOM rendering Javascript framework at early stage.",
-  "private": true,
+  "private": false,
   "author": "rackai",
   "version": "0.0.1",
   "repository": "https://github.com/rackai/domql",
