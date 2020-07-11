@@ -52,7 +52,7 @@ var parent = {
   }
 }
 
-test('should flatten deep prototypal inheritances', () => {
+test('should FLATTEN deep prototypal inheritances', () => {
   var arr = flattenProtosAsArray(proto4)
   expect(arr).toStrictEqual([
     proto4,
@@ -62,20 +62,7 @@ test('should flatten deep prototypal inheritances', () => {
   ])
 })
 
-test('should merge multiple level prototypes', () => {
-  var obj = flattenPrototype(proto4)
-
-  expect(obj).toStrictEqual({
-    div1: 'div1',
-    div2: 'div2',
-    div3: {
-      text: 'div3'
-    },
-    div4: 'div4'
-  })
-})
-
-test('should not mutate original prototype object', () => {
+test('should not MUTATE original prototype object', () => {
   applyPrototype(proto4)
 
   expect(proto2).toStrictEqual({
@@ -91,8 +78,9 @@ test('should not mutate original prototype object', () => {
   })
 })
 
-test('should apply multiple level prototypes', () => {
+test('should apply MULTIPLE level prototypes', () => {
   expect(proto4).toStrictEqual({
+    proto: proto3,
     div1: 'div1',
     div2: 'div2',
     div3: {
@@ -107,7 +95,7 @@ test('should merge prototypes with parent\'s childProtos', () => {
     div5: 'div5'
   }
 
-  var parent = {
+  const parent = {
     childProto: proto4,
     one: {
       proto: proto5
@@ -126,6 +114,100 @@ test('should merge prototypes with parent\'s childProtos', () => {
       text: 'div3'
     },
     div4: 'div4',
-    div5: 'div5'
+    div5: 'div5',
+    proto: proto5
+  })
+})
+
+test('should accept proto INSIDE childProto', () => {
+  var text = element => element.key
+  var proto = { text }
+  var childProto = { proto, tag: 'li' }
+  var list = {
+    childProto,
+    test: {}
+  }
+  list.test.parent = list
+  applyPrototype(list.test)
+  delete list.test.parent
+
+  expect(list.test).toStrictEqual({
+    tag: 'li',
+    text
+  })
+})
+
+test('should accept proto AND childProto together', () => {
+  var text = element => element.key
+  var proto = { text }
+  var childProto = { tag: 'li' }
+  var list = {
+    childProto,
+    test: { proto }
+  }
+  list.test.parent = list
+  applyPrototype(list.test)
+  delete list.test.parent
+
+  expect(list.test).toStrictEqual({
+    proto,
+    tag: 'li',
+    text
+  })
+})
+
+test('should merge HEAVY prototypal inheritances', () => {
+  var ListItem = {
+    tag: 'li'
+  }
+
+  var Dropdown = {
+    tag: 'ul',
+    childProto: ListItem
+  }
+
+  var Section = {
+    dropdown: {
+      proto: Dropdown
+    }
+  }
+
+  var Page = {
+    childProto: Section
+  }
+
+  var final = {
+    proto: Page,
+    section: {
+      dropdown: {
+        0: {}
+      }
+    }
+  }
+
+  final.section.parent = final
+  final.section.dropdown[0].parent = final.section.dropdown
+
+  applyPrototype(final)
+  applyPrototype(final.section)
+  applyPrototype(final.section.dropdown)
+  applyPrototype(final.section.dropdown[0])
+
+  delete final.section.parent
+  delete final.section.dropdown[0].parent
+
+  expect(final).toStrictEqual({
+    proto: Page,
+    childProto: Section,
+    section: {
+      dropdown: {
+        proto: Dropdown,
+        childProto: ListItem,
+        tag: 'ul',
+        0: {
+          tag: 'li'
+        }
+      }
+    }
   })
 })

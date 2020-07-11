@@ -54,9 +54,10 @@ export const applyPrototype = (element) => {
   /** Merge with `proto` */
   if (proto) {
     deepProto(element, proto)
-    delete element.proto
   }
 
   /** Merge with parent's `childProto` */
-  if (parent && parent.childProto) deepProto(element, parent.childProto)
+  if (parent && parent.childProto) {
+    deepProto(element, parent.childProto)
+  }
 }

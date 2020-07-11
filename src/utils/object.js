@@ -53,14 +53,7 @@ export const overwrite = (obj, params) => {
     const paramsProp = params[e]
     if (isObject(objProp) && isObject(paramsProp)) {
       overwrite(objProp, paramsProp)
-    } else obj[e] = paramsProp
+    } else if (paramsProp) obj[e] = paramsProp
   }
   return obj
-}
-
-export const set = (code) => {
-  var hasProperty = Object.prototype.hasOwnProperty.call(this.list, code)
-  if (hasProperty) {
-    this.current = code
-  }
 }

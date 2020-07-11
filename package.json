@@ -15,7 +15,6 @@
   },
   "source": true,
   "dependencies": {
-    "lodash.clonedeep": "^4.5.0",
     "regenerator-runtime": "^0.13.5"
   },
   "devDependencies": {
