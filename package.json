@@ -1,10 +1,10 @@
 {
-  "name": "domql",
-  "description": "",
+  "name": "@rackai/domql",
+  "description": "DOM rendering Javascript framework at early stage.",
   "private": true,
-  "author": "",
+  "author": "rackai",
   "version": "0.0.1",
-  "repository": "",
+  "repository": "https://github.com/rackai/domql",
   "main": "src/index.js",
   "scripts": {
     "start": "parcel example/index.html --no-cache",
