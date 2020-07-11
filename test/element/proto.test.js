@@ -1,25 +1,5 @@
 import { flattenProtosAsArray, mergeProtosArray, flattenPrototype, applyPrototype } from '../../src/element/proto'
 
-test('should flatten Array of objects as single object', () => {
-  var proto = mergeProtosArray([
-    { a: 1 },
-    { b: 2 },
-    { c: 3 },
-    { d: {
-      a: 1
-    } },
-    { a: 4 }
-  ])
-  expect(proto).toStrictEqual({
-    a: 1,
-    b: 2,
-    c: 3,
-    d: {
-      a: 1
-    }
-  })
-})
-
 var proto1 = {
   div1: 'div1'
 }
@@ -60,6 +40,45 @@ test('should FLATTEN deep prototypal inheritances', () => {
     proto2,
     proto1
   ])
+})
+
+test('should flatten Array of objects as SINGLE object', () => {
+  var proto = mergeProtosArray([
+    { a: 1 },
+    { b: 2 },
+    { c: 3 },
+    { d: {
+      a: 1
+    } },
+    { a: 4 }
+  ])
+  expect(proto).toStrictEqual({
+    a: 1,
+    b: 2,
+    c: 3,
+    d: {
+      a: 1
+    }
+  })
+})
+
+test('Should flatten deep level prototypes into an FLAT object', () => {
+  var proto = {
+    a: 1,
+    proto: {
+      b: 2,
+      proto: {
+        c: 3
+      }
+    }
+  }
+  var flatten = flattenPrototype(proto)
+
+  expect(flatten).toStrictEqual({
+    a: 1,
+    b: 2,
+    c: 3
+  })
 })
 
 test('should not MUTATE original prototype object', () => {
@@ -210,4 +229,51 @@ test('should merge HEAVY prototypal inheritances', () => {
       }
     }
   })
+})
+
+test('should apply childProto from proto', () => {
+  var proto = {
+    childProto: { tag: 'li' }
+  }
+
+  var list = {
+    tag: 'ul',
+    proto
+  }
+
+  applyPrototype(list)
+
+  expect(list).toStrictEqual({
+    proto,
+    tag: 'ul',
+    childProto: { tag: 'li' }
+  })
+})
+
+test('should merge DEEP prototypal inheritances woth ARRAYS', () => {
+  var ListItem = { tag: 'li' }
+  var Dropdown = { childProto: ListItem }
+
+  var Row = {
+    dropdown: {
+      proto: Dropdown,
+      define: { enabled: param => param }
+    }
+  }
+
+  var List = {
+    list: { childProto: Row }
+  }
+
+  var sidebar = applyPrototype({
+    proto: List,
+    list: [{}]
+  })
+
+  var equal = {
+    proto: List,
+    list: [{}]
+  }
+  equal.list['childProto'] = Row
+  expect(sidebar).toStrictEqual(equal)
 })

@@ -41,7 +41,7 @@ export const deepProto = (element, proto) => {
   var flatten = flattenPrototype(proto)
 
   // merge with prototype
-  deepMerge(element, flatten)
+  return deepMerge(element, flatten)
 }
 
 /**
@@ -60,4 +60,6 @@ export const applyPrototype = (element) => {
   if (parent && parent.childProto) {
     deepProto(element, parent.childProto)
   }
+
+  return element
 }

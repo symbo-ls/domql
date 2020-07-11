@@ -4,14 +4,14 @@ export const isObject = arg => {
   return typeof arg === 'object' && arg.constructor === Object
 }
 
-export const isObjectLike = arg => {
-  if (arg === null) return false
-  return (typeof arg === 'function') || (typeof arg === 'object')
-}
-
 export const isFunction = arg => typeof arg === 'function'
 
 export const isArray = arg => Array.isArray(arg)
+
+export const isObjectLike = arg => {
+  if (arg === null) return false
+  return (typeof arg === 'object')
+}
 
 export const exec = (param, element) => {
   if (isFunction(param)) return param(element)
@@ -30,7 +30,7 @@ export const deepMerge = (element, proto) => {
     const protoProp = proto[e]
     if (elementProp === undefined) {
       element[e] = protoProp
-    } else if (isObject(elementProp) && isObject(protoProp)) {
+    } else if (isObjectLike(elementProp) && isObjectLike(protoProp)) {
       deepMerge(elementProp, protoProp)
     }
   }
@@ -51,7 +51,7 @@ export const overwrite = (obj, params) => {
   for (const e in params) {
     const objProp = obj[e]
     const paramsProp = params[e]
-    if (isObject(objProp) && isObject(paramsProp)) {
+    if (isObjectLike(objProp) && isObjectLike(paramsProp)) {
       overwrite(objProp, paramsProp)
     } else if (paramsProp) obj[e] = paramsProp
   }

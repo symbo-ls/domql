@@ -1,13 +1,5 @@
 import { isObject, isObjectLike, isFunction, isArray } from '../../src/utils'
 
-var obj = {
-  tag: 'button'
-}
-
-var arr = [obj]
-
-var func = () => obj
-
 test('check if it\'s truly an array', () => {
   expect(isArray({})).toBeFalsy()
   expect(isArray([])).toBeTruthy()
@@ -32,6 +24,6 @@ test('check if it\'s truly a function', () => {
 test('check if it\'s an object-like', () => {
   expect(isObjectLike({})).toBeTruthy()
   expect(isObjectLike([])).toBeTruthy()
-  expect(isObjectLike(() => {})).toBeTruthy()
+  expect(isObjectLike(() => {})).toBeFalsy()
   expect(isObjectLike(1)).toBeFalsy()
 })
