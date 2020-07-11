@@ -1,5 +1,5 @@
 # DOMQL
-DOM rendering Javascript framework at early stage.
+DOM rendering Javascript framework at early stage. 
 
 [![Build Status](https://travis-ci.org/rackai/domql.svg?branch=master)](https://travis-ci.org/rackai/domql)
 [![Coverage Status](https://coveralls.io/repos/github/rackai/domql/badge.svg?branch=master)](https://coveralls.io/github/rackai/domql?branch=master)
