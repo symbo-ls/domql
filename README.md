@@ -125,7 +125,7 @@ var Increment = {
 | `content` | `Object`, `Array` | Fragment wrapper to use dynamic content loading | `undefined`
 
 ### Methods
-| Method | Description | Properties |
+| Method | Description | Params |
 | --- | --- | --- |
 | `update` | Updates element by passed object | `properties`: `Object` \| `Array` |
 | `set` | Sets passed element in the `content` property | `element`: `Object` \| `Array` |
