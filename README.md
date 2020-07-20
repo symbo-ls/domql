@@ -5,6 +5,7 @@ DOM rendering Javascript framework at early stage.
 - No deps
 - Extendable
 - No transpilations, simple ES6 code
+- One-time import only
 
 [![Build Status](https://travis-ci.org/rackai/domql.svg?branch=master)](https://travis-ci.org/rackai/domql)
 [![Coverage Status](https://coveralls.io/repos/github/rackai/domql/badge.svg?branch=master)](https://coveralls.io/github/rackai/domql?branch=master)
