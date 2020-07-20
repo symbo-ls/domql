@@ -110,7 +110,7 @@ var Increment = {
   text: 'Increment',
   on: {
     click: (e) => {
-      val.update({ text: text++ })
+      val.update({ text: val.text++ })
     }
   }
 }
@@ -122,14 +122,14 @@ var Increment = {
 
 | Property | Type | Description | Default |
 | --- | --- | --- | --- |
-| `key` | `Number`, `String` | Defines the key of the Element | The key of the object, or randomly generated name |
-| `proto` | `Object`, `Array` | Clones the other element | `undefined` |
-| `childProto` | `Object`, `Array` | Specifies the `proto` for all child elements | `undefined` |
+| `key` | `Number` `String` | Defines the key of the Element | The key of the object, or randomly generated name |
+| `proto` | `Object` `Array` | Clones the other element | `undefined` |
+| `childProto` | `Object` `Array` | Specifies the `proto` for all child elements | `undefined` |
 | `tag` | `String` | Specifis the HTML tag  | `div` or related HTML tag if the key matches |
 | `class` | `Any` | Specifies the HTML class | `undefined` |
 | `attr` | `Object` | Specifies the set of HTML attributes | `{}` |
 | `text` | `Any` | Text inside the element | `undefined` |
-| `content` | `Object`, `Array` | Fragment wrapper to use dynamic content loading | `undefined`
+| `content` | `Object` `Array` | Fragment wrapper to use dynamic content loading | `undefined`
 
 To specify your own property per Element, set the function inside `define` property like:
 
@@ -150,8 +150,8 @@ var Contact = {
 ### Methods
 | Method | Description | Params |
 | --- | --- | --- |
-| `update` | Updates element by passed object | `properties`: `Object` \| `Array` |
-| `set` | Sets passed element in the `content` property | `element`: `Object` \| `Array` |
+| `update` | Updates element by passed object | `properties`: `Object` `Array` |
+| `set` | Sets passed element in the `content` property | `element`: `Object` `Array` |
 
 
 ### Events
