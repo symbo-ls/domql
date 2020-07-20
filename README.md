@@ -34,26 +34,11 @@ To install all dependencies and run dev server, run:
 yarn && yarn start
 ```
 
-### Reserved keywords
-
-```
-key
-tag
-node
-proto
-on
-class
-text
-data
-style
-attr
-```
-
 ### Examples
 
 Attributes:
 
-```
+```javascript
 var link = {
   tag: 'a',
   class: 'menu link',
@@ -62,7 +47,7 @@ var link = {
   }
 }
 ```
-```
+```javascript
 var img = {
   tag: 'img',
   class: 'avatar',
@@ -73,7 +58,7 @@ var img = {
 ```
 
 Reusing: 
-```
+```javascript
 var Link = {
   tag: 'a'
 }
@@ -99,7 +84,7 @@ var header = {
 ```
 
 Array Support:
-```
+```javascript
 var navItems = ['Home', 'About', 'FAQ', 'Contact']
 
 var menu = {
@@ -109,7 +94,7 @@ var menu = {
 ```
 
 Update:
-```
+```javascript
 var val = {
   text: 0
 }
@@ -122,5 +107,41 @@ var Increment = {
       val.update({ text: text++ })
     }
   }
+}
+```
+
+
+
+### Reserved keywords
+
+```
+key
+tag
+node
+proto
+on
+class
+text
+data
+style
+attr
+update
+set
+```
+
+Anything except these keywords will create a new nested child element. The easier method to specify HTML tag is to use related nodeName as a key, for example: 
+
+```javascript
+var layout = {
+  header: {}, // will create <header>
+  aside: {}, // will create <aside>
+  main: { // will create <main>
+    article: { // will create <article>
+      title: {}, // will create <div>
+      description: {}, // will create <div>
+      _rating: {} // will create <div class="rating">
+    }
+  },
+  footer: {} //  will create <footer>
 }
 ```
