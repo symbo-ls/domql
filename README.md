@@ -36,6 +36,12 @@ yarn && yarn start
 
 ### Examples
 
+Initialization: 
+
+```javascript
+DOM.create({ text: 'Rendered' })
+```
+
 Attributes:
 
 ```javascript
@@ -118,17 +124,39 @@ var Increment = {
 | --- | --- | --- | --- |
 | `key` | `Number`, `String` | Defines the key of the Element | The key of the object, or randomly generated name |
 | `proto` | `Object`, `Array` | Clones the other element | `undefined` |
+| `childProto` | `Object`, `Array` | Specifies the `proto` for all child elements | `undefined` |
 | `tag` | `String` | Specifis the HTML tag  | `div` or related HTML tag if the key matches |
 | `class` | `Any` | Specifies the HTML class | `undefined` |
 | `attr` | `Object` | Specifies the set of HTML attributes | `{}` |
 | `text` | `Any` | Text inside the element | `undefined` |
 | `content` | `Object`, `Array` | Fragment wrapper to use dynamic content loading | `undefined`
 
+To specify your own property per Element, set the function inside `define` property like:
+
+```javascript
+var User = {
+  define: {
+    username: param => param.toUpperCase()
+  },
+  text: element => element.username
+}
+var Contact = {
+  proto: User,
+  username: 'nikoloza'
+}
+```
+
 ### Methods
 | Method | Description | Params |
 | --- | --- | --- |
 | `update` | Updates element by passed object | `properties`: `Object` \| `Array` |
 | `set` | Sets passed element in the `content` property | `element`: `Object` \| `Array` |
+
+
+### Events
+All native DOM events are supported and can be specified inside `on` parameter. Additionally, `init` and `render` can be also invoked. All events except these two receive `event` object as a first parameter, following the `element` object itself.
+
+
 
 ### Reserved keywords
 
@@ -145,6 +173,7 @@ style
 attr
 update
 set
+define
 ```
 
 Anything except these keywords will create a new nested child element. The easier method to specify HTML tag is to use related nodeName as a key, for example: 
