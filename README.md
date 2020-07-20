@@ -140,6 +140,7 @@ var User = {
   },
   text: element => element.username
 }
+
 var Contact = {
   proto: User,
   username: 'nikoloza'
