@@ -40,6 +40,8 @@ yarn && yarn start
 Initialization: 
 
 ```javascript
+import DOM from 'domql'
+
 DOM.create({ text: 'Rendered' })
 ```
 
