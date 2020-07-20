@@ -110,9 +110,9 @@ var Increment = {
 }
 ```
 
-### The API
+## API
 
-#### Properties
+### Properties
 
 | Property | Type | Description | Default |
 | --- | --- | --- | --- |
@@ -124,7 +124,7 @@ var Increment = {
 | `text` | `Any` | Text inside the element | `undefined` |
 | `content` | `Object`, `Array` | Fragment wrapper to use dynamic content loading | `undefined`
 
-#### Methods
+### Methods
 | Method | Description | Properties |
 | --- | --- | --- |
 | `update` | Updates element by passed object | `properties`: `Object` \| `Array` |
