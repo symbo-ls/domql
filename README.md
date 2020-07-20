@@ -132,7 +132,7 @@ set
 Anything except these keywords will create a new nested child element. The easier method to specify HTML tag is to use related nodeName as a key, for example: 
 
 ```javascript
-var layout = {
+var layout = { // this will be <div>
   header: {}, // will create <header>
   aside: {}, // will create <aside>
   main: { // will create <main>
