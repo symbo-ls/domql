@@ -40,7 +40,7 @@ yarn && yarn start
 Initialization: 
 
 ```javascript
-import DOM from 'domql'
+import DOM from '@rackai/domql'
 
 DOM.create({ text: 'Rendered' })
 ```
