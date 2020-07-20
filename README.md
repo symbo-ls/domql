@@ -184,11 +184,13 @@ var layout = { // this will be <div>
   header: {}, // will create <header>
   aside: {}, // will create <aside>
   main: { // will create <main>
-    article: { // will create <article>
-      title: {}, // will create <div>
-      description: {}, // will create <div>
-      _rating: {} // will create <div class="rating">
-    }
+    childProto: {
+      article: { // will create <article>
+        title: {}, // will create <div>
+        description: {}, // will create <div>
+        _rating: {} // will create <div class="rating">
+      }
+     }
   },
   footer: {} //  will create <footer>
 }
