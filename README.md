@@ -190,7 +190,7 @@ var layout = { // this will be <div>
         description: {}, // will create <div>
         _rating: {} // will create <div class="rating">
       }
-     }
+    }
   },
   footer: {} //  will create <footer>
 }
