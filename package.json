@@ -45,5 +45,6 @@
   "browserslist": [
     "> 1%",
     "ie >= 9"
-  ]
+  ],
+  "publishConfig": { "registry": "https://npm.pkg.github.com/" }
 }
