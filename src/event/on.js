@@ -18,19 +18,29 @@ export const change = (param, element) => {
   node.addEventListener('change', event => param(event, element, state), true)
 }
 
-export const down = (param, element) => {
+export const mouseDown = (param, element) => {
   var { node, state } = element
   node.addEventListener('mousedown', event => param(event, element, state), true)
 }
 
-export const move = (param, element) => {
+export const mouseMove = (param, element) => {
   var { node, state } = element
   node.addEventListener('mousemove', event => param(event, element, state), true)
 }
 
-export const up = (param, element) => {
+export const mouseUp = (param, element) => {
   var { node, state } = element
   node.addEventListener('mouseup', event => param(event, element, state), true)
+}
+
+export const keyDown = (param, element) => {
+  var { node, state } = element
+  node.addEventListener('keydown', event => param(event, element, state), true)
+}
+
+export const keyUp = (param, element) => {
+  var { node, state } = element
+  node.addEventListener('keyup', event => param(event, element, state), true)
 }
 
 export const load = (param, element) => {

@@ -9,14 +9,3 @@ export const node = (node) => {
       typeof node.tag === 'string'
   )
 }
-
-export const element = (element) => {
-  var { HTMLElement } = window
-  return (
-    typeof HTMLElement === 'object'
-      ? element instanceof HTMLElement
-      : element && typeof element === 'object' &&
-        element !== null && element.nodeType === 1 &&
-        typeof element.tag === 'string'
-  )
-}

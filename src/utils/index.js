@@ -12,7 +12,6 @@ import {
   overwrite,
   set
 } from './object'
-import { browser } from './device'
 import { report } from './report'
 
 export {
@@ -26,6 +25,5 @@ export {
   deepClone,
   overwrite,
   set,
-  report,
-  browser
+  report
 }

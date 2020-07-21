@@ -54,7 +54,7 @@ export const report = (err, arg, element) => {
   var errObj
   if (err && typeof err === 'string') errObj = errors[currentLang][err]
 
-  throw console.error(
+  return new Error(
     `"${err}", "${arg}"\n\n`,
     `${errObj.description}`,
     element ? `\n\n${element}` : ''

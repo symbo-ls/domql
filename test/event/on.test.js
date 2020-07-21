@@ -4,11 +4,13 @@ import 'regenerator-runtime/runtime'
 import create from '../../src/element/create'
 
 test('check if all element events are firing', () => {
-  create({
+  var events = {
     on: {
       init: (element) => {
+        expect(element).toStrictEqual(events)
       },
       render: (element, state) => {
+        expect(element).toStrictEqual(events)
       },
       click: (event, element) => {
         expect(event).toBeInstanceOf(window.Event)
@@ -32,5 +34,6 @@ test('check if all element events are firing', () => {
         expect(event).toBeInstanceOf(window.Event)
       }
     }
-  })
+  }
+  create(events)
 })
