@@ -7,7 +7,7 @@ DOM rendering Javascript framework at early stage.
 - No transpilations, simple ES6 code
 - One-time import only
 
-You can start with [domql-example](https://github.com/rackai/domql-example) as a boilerplate or jump to the live editor of [playground](https://github.com/rackai/playground).
+You can start with [domql-example](https://github.com/rackai/domql-example) as a boilerplate, or jump into the live editor of [playground](https://github.com/rackai/playground).
 
 [![Build Status](https://travis-ci.org/rackai/domql.svg?branch=master)](https://travis-ci.org/rackai/domql)
 [![Coverage Status](https://coveralls.io/repos/github/rackai/domql/badge.svg?branch=master)](https://coveralls.io/github/rackai/domql?branch=master)
