@@ -27,7 +27,7 @@ test('check if all element events are firing', () => {
       mouseUp: (event, element) => {
         expect(event).toBeInstanceOf(window.Event)
       },
-      keyMove: (event, element) => {
+      keyDown: (event, element) => {
         expect(event).toBeInstanceOf(window.Event)
       },
       keyUp: (event, element) => {

@@ -13,9 +13,4 @@ test('should UPDATE element', () => {
   })
 
   expect(element.text).toBe('test')
-
-  // var equal = element.node.isEqualNode(create({
-  //   text: 'test'
-  // }).node)
-  // expect(equal).toBeTruthy()
 })
