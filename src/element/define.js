@@ -3,7 +3,7 @@
 import { registry } from './params'
 import { report } from '../utils'
 
-export default (params, options) => {
+export default (params, options = {}) => {
   var { overwrite } = options
   for (const param in params) {
     if (registry[param] && !overwrite) {

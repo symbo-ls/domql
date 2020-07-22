@@ -22,3 +22,41 @@ test('should create valid DOM node', () => {
 test('must be able to create valid PATH', () => {
   expect(dom.path).toStrictEqual([dom.key])
 })
+
+test('if it HAS a NODE, don\'t recreate', () => {
+  var node = document.createElement('div')
+  var dom2 = create({ node })
+  expect(dom2.node.parentElement).toBe(document.body)
+})
+
+test('create with number', () => {
+  var numb = create(0)
+  expect(numb.text).toBe(0)
+  expect(numb.tag).toBe('string')
+  expect(numb.node.nodeType).toBe(3) // #text
+})
+
+test('create with string', () => {
+  var str = create('hello')
+  expect(str.text).toBe('hello')
+  expect(str.tag).toBe('string')
+  expect(str.node.nodeType).toBe(3) // #text
+})
+
+test('creating conditions', () => {
+  var element = create({
+    data: { visible: true },
+    if: element => element.data.visible
+  })
+  expect(element.tag).toBe('div')
+})
+
+test('creating nesting', () => {
+  var element = create({
+    header: {
+      h1: {}
+    }
+  })
+  expect(element.header.tag).toBe('header')
+  expect(element.header.h1.tag).toBe('h1')
+})

@@ -19,7 +19,8 @@ var create = (element, parent, key) => {
   if (!parent) parent = tree
 
   // If element is not given
-  if (!element) return report('CantCreateWithoutNode')
+  if (element === undefined) element = {}
+  if (element === null) return void 0
 
   // run onInit
   if (element.on && typeof element.on.init === 'function') {
