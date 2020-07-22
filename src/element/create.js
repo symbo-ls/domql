@@ -1,6 +1,5 @@
 'use strict'
 
-import { report } from '../utils'
 import tree from './tree'
 import createNode from './createNode'
 import { assignNode } from './assign'
