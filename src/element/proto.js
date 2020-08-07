@@ -1,6 +1,8 @@
 'use strict'
 
-import { deepMerge, isArray, deepClone } from '../utils'
+import { deepMerge, overwrite, isArray, deepClone } from '../utils'
+
+export const cleanWithNode = proto => delete proto.node && proto
 
 /**
  * Flattens deep level prototypes into an array
@@ -42,6 +44,7 @@ export const deepProto = (element, proto) => {
 
   // merge with prototype
   return deepMerge(element, flatten)
+  // return overwrite(element, flatten)
 }
 
 /**

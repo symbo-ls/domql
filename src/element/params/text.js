@@ -8,7 +8,7 @@ import cacheNode from '../cache'
  * an original one as a child
  */
 export default (param, element) => {
-  if ((element.tag) === 'string') element.node.innerText = param
+  if (element.tag === 'string') element.node.innerText = param
   else {
     param = { tag: 'string', text: param }
 

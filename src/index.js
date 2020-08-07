@@ -2,11 +2,12 @@
 
 import 'regenerator-runtime/runtime'
 
-import { create, parse, define, tree } from './element'
+import { create, parse, set, define, tree } from './element'
 
 export default {
   create,
   parse,
+  set,
   define,
   tree
 }

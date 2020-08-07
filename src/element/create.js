@@ -9,6 +9,7 @@ import nodes from './nodes'
 import set from './set'
 import update from './update'
 import * as on from '../event/on'
+import { clone, overwrite } from '../utils/object'
 
 /**
  * Creating a domQL element using passed parameters
@@ -29,11 +30,6 @@ var create = (element, parent, key) => {
   // define key
   var assignedKey = element.key || key || ID.next().value
 
-  // if it already has a node
-  if (element.node) {
-    return assignNode(element, parent, assignedKey)
-  }
-
   // If element is string
   if (typeof element === 'string' || typeof element === 'number') {
     element = {
@@ -50,8 +46,17 @@ var create = (element, parent, key) => {
   if (!parent.path) parent.path = []
   element.path = parent.path.concat(assignedKey)
 
+  // cache params
+  // var _cached = clone(element)
   // if proto, or inherited proto
   applyPrototype(element)
+  // overwrite _cached params to keep original ordering
+  // overwrite(element, _cached)
+
+  // if it already has a node
+  if (element.node) {
+    return assignNode(element, parent, assignedKey)
+  }
 
   // generate a class name
   if (element.class === true) element.class = assignedKey
