@@ -9,7 +9,6 @@ import nodes from './nodes'
 import set from './set'
 import update from './update'
 import * as on from '../event/on'
-import { clone, overwrite } from '../utils/object'
 
 /**
  * Creating a domQL element using passed parameters
