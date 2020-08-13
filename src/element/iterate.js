@@ -14,8 +14,9 @@ export const applyEvents = element => {
     if (param === 'init' || param === 'render') continue
     var appliedFunction = element.on[param]
     var registeredFunction = on[param]
+    // console.log(param, appliedFunction, registeredFunction)
     if (typeof appliedFunction === 'function' &&
-    typeof registeredFunction === 'function') {
+        typeof registeredFunction === 'function') {
       registeredFunction(appliedFunction, element)
     }
 

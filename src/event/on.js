@@ -12,6 +12,11 @@ export const update = (param, element) => {
   param(element, element.state)
 }
 
+export const popstate = (param, element) => {
+  var { state } = element
+  window.addEventListener('popstate', event => param(event, element, state), true)
+}
+
 export const click = (param, element) => {
   var { node, state } = element
   node.addEventListener('click', event => param(event, element, state), true)
