@@ -9,7 +9,6 @@ import nodes from './nodes'
 import set from './set'
 import update from './update'
 import * as on from '../event/on'
-import { clone, overwrite } from '../utils/object'
 
 /**
  * Creating a domQL element using passed parameters
@@ -47,11 +46,7 @@ var create = (element, parent, key) => {
   element.path = parent.path.concat(assignedKey)
 
   // cache params
-  // var _cached = clone(element)
-  // if proto, or inherited proto
   applyPrototype(element)
-  // overwrite _cached params to keep original ordering
-  // overwrite(element, _cached)
 
   // if it already has a node
   if (element.node) {
