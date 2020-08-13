@@ -8,6 +8,10 @@ export const render = (param, element) => {
   param(element, element.state)
 }
 
+export const update = (param, element) => {
+  param(element, element.state)
+}
+
 export const click = (param, element) => {
   var { node, state } = element
   node.addEventListener('click', event => param(event, element, state), true)

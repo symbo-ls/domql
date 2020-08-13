@@ -11,6 +11,7 @@ import remove from './remove'
 import update from './update'
 import parse from './parse'
 import set from './set'
+import get from './get'
 
 export {
   nodes,
@@ -19,9 +20,10 @@ export {
   create,
   createNode,
   assign,
-  parse,
   define,
   remove,
   update,
-  set
+  parse,
+  set,
+  get
 }

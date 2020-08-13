@@ -3,9 +3,14 @@
 import create from './create'
 import cacheNode from './cache'
 
-import { registry } from './params'
 import { exec, isObject } from '../utils'
-import * as on from '../event/on'
+import {
+  applyDefined,
+  throughDefine,
+  throughTransform,
+  applyEvents
+} from './iterate'
+import { registry } from './params'
 
 var createNode = (element) => {
   // create and assign a node
@@ -18,63 +23,28 @@ var createNode = (element) => {
     node.ref = element
   }
 
-  // run define iteration to set params
-  if (element.define && isObject(element.define)) {
-    for (const param in element.define) {
-      if (!element[param]) element[param] = element.define[param](void 0, element)
-    }
-  }
+  // run iteration for params which are under define
+  if (element.define && isObject(element.define)) applyDefined(element)
 
-  // Apply element parameters
+  // iterate through all given  params
   if (element.tag !== 'string' || element.tag !== 'fragment') {
-    // apply define
-    if (isObject(element.define)) {
-      var { define } = element
-      for (const param in define) {
-        var execParam = exec(element[param], element)
-        element.data[param] = execParam
-        element[param] = define[param](execParam, element)
-      }
-    }
+    // iterate through define
+    if (isObject(element.define)) throughDefine(element)
 
-    // apply transform
-    if (isObject(element.transform)) {
-      var { transform } = element
-      for (const param in transform) {
-        execParam = exec(element[param], element)
-        if (element.data[param]) {
-          execParam = exec(element.data[param], element)
-        } else {
-          execParam = exec(element[param], element)
-          element.data[param] = execParam
-        }
-        element[param] = transform[param](execParam, element)
-      }
-    }
+    // iterate through transform
+    if (isObject(element.transform)) throughTransform(element)
 
     // apply events
-    if (isNewNode && isObject(element.on)) {
-      for (const param in element.on) {
-        if (param === 'init' || param === 'render') continue
-        var appliedFunction = element.on[param]
-        var registeredFunction = on[param]
-        if (typeof appliedFunction === 'function' &&
-        typeof registeredFunction === 'function') {
-          registeredFunction(appliedFunction, element)
-        }
-
-        // var definedFunction = element.define && element.define[param]
-        // else console.error('Not such function', appliedFunction, registeredFunction)
-        // if (typeof appliedFunction === 'function' && typeof definedFunction === 'function') definedFunction(appliedFunction, element)
-      }
-    }
+    if (isNewNode && isObject(element.on)) applyEvents(element)
 
     for (const param in element) {
-      if ((param === 'set' || param === 'update') || !element[param] === undefined) return
+      if (
+        (param === 'set' || param === 'update') || !element[param] === undefined
+      ) return
 
-      execParam = exec(element[param], element)
+      var execParam = exec(element[param], element)
 
-      var hasDefine = element.define && element.define[param]
+      var hasDefined = element.define && element.define[param]
       var registeredParam = registry[param]
 
       if (registeredParam) {
@@ -84,7 +54,7 @@ var createNode = (element) => {
         }
 
         if (param === 'style') registry['class'](element['class'], element, node)
-      } else if (element[param] && !hasDefine) {
+      } else if (element[param] && !hasDefined) {
         // Create element
         create(execParam, element, param)
         // if (isNewNode) create(execParam, element, param)

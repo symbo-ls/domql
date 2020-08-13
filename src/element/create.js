@@ -75,8 +75,10 @@ var create = (element, parent, key) => {
   // create Element class
   createNode(element)
 
+  // Assign methods
   element.set = set
   element.update = update
+
   assignNode(element, parent, key)
 
   // run onRender
