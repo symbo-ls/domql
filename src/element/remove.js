@@ -1,8 +1,9 @@
 'use strict'
 
 var remove = function (params) {
-  params.node.remove()
-  delete params.parent[params.key]
+  var element = this
+  element.node.remove()
+  delete element.parent[element.key]
 }
 
 export default remove

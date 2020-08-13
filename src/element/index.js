@@ -3,9 +3,10 @@
 import nodes from './nodes'
 import root from './root'
 import tree from './tree'
+import cache from './cache'
 import create from './create'
 import createNode from './createNode'
-import assign from './assign'
+import * as assign from './assign'
 import define from './define'
 import remove from './remove'
 import update from './update'
@@ -17,6 +18,7 @@ export {
   nodes,
   root,
   tree,
+  cache,
   create,
   createNode,
   assign,

@@ -8,6 +8,7 @@ import ID from './id'
 import nodes from './nodes'
 import set from './set'
 import update from './update'
+import remove from './remove'
 import * as on from '../event/on'
 
 /**
@@ -73,6 +74,7 @@ var create = (element, parent, key) => {
   // Assign methods
   element.set = set
   element.update = update
+  element.remove = remove
 
   assignNode(element, parent, key)
 

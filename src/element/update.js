@@ -4,11 +4,15 @@ import { overwrite, exec, isObject } from '../utils'
 import { throughDefine, throughTransform } from './iterate'
 import { registry } from './params'
 import * as on from '../event/on'
-import create from './create'
 
-var update = function (params = {}) {
+var update = function (params = {}, force = false) {
   var element = this
   var { node } = element
+
+  // If element is string
+  if (typeof params === 'string' || typeof params === 'number') {
+    params = { text: params }
+  }
 
   overwrite(element, params)
 
@@ -17,12 +21,12 @@ var update = function (params = {}) {
 
   // iterate through transform
   if (isObject(params.transform)) throughTransform(element)
-  console.log(params)
 
-  for (const param in (params || element)) {
+  for (const param in (force ? element : params) || element) {
     if ((param === 'set' || param === 'update') || !element[param] === undefined) return
 
     var execParam = exec(params[param], element)
+    var execElementParam = exec(element[param], element)
 
     var hasDefined = element.define && element.define[param]
     var registeredParam = registry[param]
@@ -30,13 +34,13 @@ var update = function (params = {}) {
     if (registeredParam) {
       // Check if it's registered param
       if (typeof registeredParam === 'function') {
-        registeredParam(execParam, element, node)
+        registeredParam(force ? execElementParam : execParam, element, node)
       }
 
       if (param === 'style') registry['class'](element['class'], element, node)
     } else if (element[param] && !hasDefined) {
       // Create element
-      // update.call(execParam, execParam, element, param)
+      update.call(execElementParam, execParam, true)
     } // else if (element[param]) create(execParam, element, param)
   }
 
