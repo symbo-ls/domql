@@ -5,9 +5,11 @@ import { throughDefine, throughTransform } from './iterate'
 import { registry } from './params'
 import * as on from '../event/on'
 
-var update = function (params = {}, force = false) {
+var update = function (params = {}, forceIteration = false) {
   var element = this
   var { node } = element
+
+  if (typeof element.if === 'function' && !element.if(element)) return void 0
 
   // If element is string
   if (typeof params === 'string' || typeof params === 'number') {
@@ -22,7 +24,7 @@ var update = function (params = {}, force = false) {
   // iterate through transform
   if (isObject(params.transform)) throughTransform(element)
 
-  for (const param in (force ? element : params) || element) {
+  for (const param in (forceIteration ? element : params) || element) {
     if ((param === 'set' || param === 'update') || !element[param] === undefined) return
 
     var execParam = exec(params[param], element)
@@ -34,7 +36,7 @@ var update = function (params = {}, force = false) {
     if (registeredParam) {
       // Check if it's registered param
       if (typeof registeredParam === 'function') {
-        registeredParam(force ? execElementParam : execParam, element, node)
+        registeredParam(forceIteration ? execElementParam : execParam, element, node)
       }
 
       if (param === 'style') registry['class'](element['class'], element, node)

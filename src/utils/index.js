@@ -8,8 +8,10 @@ import {
   exec,
   map,
   deepMerge,
+  clone,
   deepClone,
   overwrite,
+  fillTheRest,
   set
 } from './object'
 import { report } from './report'
@@ -22,8 +24,10 @@ export {
   exec,
   map,
   deepMerge,
+  clone,
   deepClone,
   overwrite,
+  fillTheRest,
   set,
   report
 }

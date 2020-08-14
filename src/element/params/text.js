@@ -10,8 +10,6 @@ export default (param, element) => {
   if (element.tag === 'string') element.node.innerText = param
   else {
     if (element.__text) element.__text.node.nodeValue = param
-    else {
-      create({ tag: 'string', text: param }, element, '__text')
-    }
+    else create({ tag: 'string', text: param }, element, '__text')
   }
 }

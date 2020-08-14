@@ -39,13 +39,17 @@ export const deepMerge = (element, proto) => {
 
 export const clone = (obj) => {
   var o = {}
-  for (const prop in obj) o[prop] = obj[prop]
+  for (const prop in obj) {
+    if (prop === 'node') continue
+    o[prop] = obj[prop]
+  }
   return o
 }
 
 export const deepClone = (obj) => {
   var o = {}
   for (const prop in obj) {
+    if (prop === 'node') continue
     const objProp = obj[prop]
     if (typeof objProp === 'object') o[prop] = deepClone(objProp)
     else o[prop] = objProp
@@ -55,6 +59,7 @@ export const deepClone = (obj) => {
 
 export const overwrite = (obj, params) => {
   for (const e in params) {
+    if (e === 'node') continue
     const objProp = obj[e]
     const paramsProp = params[e]
     if (isObjectLike(objProp) && isObjectLike(paramsProp)) {
