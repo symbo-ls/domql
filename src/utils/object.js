@@ -63,3 +63,12 @@ export const overwrite = (obj, params) => {
   }
   return obj
 }
+
+export const fillTheRest = (obj, params) => {
+  for (const e in obj) {
+    if (e === 'node') continue
+    const paramsProp = params[e]
+    if (paramsProp !== undefined) obj[e] = paramsProp
+  }
+  return obj
+}
