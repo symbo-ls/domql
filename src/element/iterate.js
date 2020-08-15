@@ -17,7 +17,7 @@ export const applyEvents = element => {
     // console.log(param, appliedFunction, registeredFunction)
     if (typeof appliedFunction === 'function' &&
         typeof registeredFunction === 'function') {
-      registeredFunction(appliedFunction, element)
+      registeredFunction(appliedFunction, element, element.node)
     }
 
     // var definedFunction = element.define && element.define[param]

@@ -16,8 +16,8 @@ var classify = (obj, element) => {
   return className
 }
 
-var classList = (params, element) => {
-  var { node, key } = element
+var classList = (params, element, node) => {
+  var { key } = element
   if (typeof params === 'string') element.class = { default: params }
   if (params === true) params = element.class = { key }
   var className = classify(element.class, element)
