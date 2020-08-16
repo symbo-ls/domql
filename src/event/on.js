@@ -13,51 +13,41 @@ export const update = (param, element) => {
 }
 
 export const popstate = (param, element) => {
-  var { state } = element
-  window.addEventListener('popstate', event => param(event, element, state), true)
+  window.addEventListener('popstate', event => param(event, element), true)
 }
 
 export const click = (param, element, node) => {
-  var { state } = element
-  node.addEventListener('click', event => param(event, element, state), true)
+  node.addEventListener('click', event => param(event, element, node), true)
 }
 
 export const change = (param, element, node) => {
-  var { state } = element
-  node.addEventListener('change', event => param(event, element, state), true)
+  node.addEventListener('change', event => param(event, element, node), true)
 }
 
 export const mouseDown = (param, element, node) => {
-  var { state } = element
-  node.addEventListener('mousedown', event => param(event, element, state), true)
+  node.addEventListener('mousedown', event => param(event, element, node), true)
 }
 
 export const mouseMove = (param, element, node) => {
-  var { state } = element
-  node.addEventListener('mousemove', event => param(event, element, state), true)
+  node.addEventListener('mousemove', event => param(event, element, node), true)
 }
 
 export const mouseUp = (param, element, node) => {
-  var { state } = element
-  node.addEventListener('mouseup', event => param(event, element, state), true)
+  node.addEventListener('mouseup', event => param(event, element, node), true)
 }
 
 export const keyDown = (param, element, node) => {
-  var { state } = element
-  node.addEventListener('keydown', event => param(event, element, state), true)
+  node.addEventListener('keydown', event => param(event, element, node), true)
 }
 
 export const keyUp = (param, element, node) => {
-  var { state } = element
-  node.addEventListener('keyup', event => param(event, element, state), true)
+  node.addEventListener('keyup', event => param(event, element, node), true)
 }
 
 export const load = (param, element, node) => {
-  var { state } = element
-  node.addEventListener('load', event => param(event, element, state), true)
+  node.addEventListener('load', event => param(event, element, node), true)
 }
 
 export const input = (param, element, node) => {
-  var { state } = element
-  node.addEventListener('input', event => param(event, element, state), true)
+  node.addEventListener('input', event => param(event, element, node), true)
 }
