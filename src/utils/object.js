@@ -47,7 +47,7 @@ export const deepClone = (obj) => {
   var o = {}
   for (const prop in obj) {
     const objProp = obj[prop]
-    if (typeof objProp === 'object') o[prop] = deepClone(objProp)
+    if (isObjectLike(objProp)) o[prop] = deepClone(objProp)
     else o[prop] = objProp
   }
   return o
