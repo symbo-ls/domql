@@ -24,6 +24,14 @@ export const change = (param, element, node) => {
   node.addEventListener('change', event => param(event, element, node), true)
 }
 
+export const scroll = (param, element, node) => {
+  node.addEventListener('scroll', event => param(event, element, node), true)
+}
+
+export const wheel = (param, element, node) => {
+  node.addEventListener('wheel', event => param(event, element, node), true)
+}
+
 export const mouseDown = (param, element, node) => {
   node.addEventListener('mousedown', event => param(event, element, node), true)
 }
