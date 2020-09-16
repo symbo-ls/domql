@@ -40,15 +40,15 @@ var create = (element, parent, key) => {
     }
   }
 
+  // cache params
+  applyPrototype(element)
+
   // Assign parent reference to the element
   element.parent = parent
 
   // Set the path
   if (!parent.path) parent.path = []
   element.path = parent.path.concat(assignedKey)
-
-  // cache params
-  applyPrototype(element)
 
   // if it already has a node
   if (element.node) {
