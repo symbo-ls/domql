@@ -57,7 +57,7 @@ var create = (element, parent, key) => {
 
   // generate a class name
   if (element.class === true) element.class = assignedKey
-  else if (!element.class && typeof assignedKey === 'string' && assignedKey.charAt(0) === '_') {
+  else if (!element.class && typeof assignedKey === 'string' && assignedKey.charAt(0) === '_' && assignedKey.charAt(1) !== '_') {
     element.class = assignedKey.slice(1)
   }
 

@@ -19,12 +19,24 @@ var update = function (params = {}, forceIteration = false) {
   overwrite(element, params)
 
   // iterate through define
-  if (isObject(params.define)) throughDefine(element)
+  if (isObject(element.define)) {
+    var { define } = element
+    for (const param in define) {
+      if (params[param] !== undefined) {
+        let execParam = exec(params[param], element)
+        element.data[param] = execParam
+        element[param] = define[param](execParam, element)
+      } else {
+        let execParam = exec(element[param], element)
+        element[param] = define[param](element.data[param], element)
+      }
+    }
+  }
 
   // iterate through transform
   if (isObject(params.transform)) throughTransform(element)
 
-  for (const param in (forceIteration ? element : params) || element) {
+  for (const param in (forceIteration ? element : params)) {
     if ((param === 'set' || param === 'update') || !element[param] === undefined) return
 
     var execParam = exec(params[param], element)

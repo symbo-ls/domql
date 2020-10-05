@@ -11,8 +11,8 @@ export default (params, element, node) => {
     for (const attr in params) {
       // if (!node) node = element.node
       var val = exec(params[attr], element)
-      if (val) node.setAttribute(attr, val)
-      else node.removeAttribute(attr)
+      if (val && node.setAttribute) node.setAttribute(attr, val)
+      else if (node.removeAttribute) node.removeAttribute(attr)
     }
   }
 }

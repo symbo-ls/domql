@@ -3,8 +3,9 @@
 import { exec } from '../utils'
 import * as on from '../event/on'
 
-export const applyDefined = element => {
+export const applyDefined = (element, force) => {
   for (const param in element.define) {
+    // if (!element[param]) element[param] = element.define[param](void 0, element)
     if (!element[param]) element[param] = element.define[param](void 0, element)
   }
 }

@@ -23,6 +23,7 @@ var classList = (params, element, node) => {
   var className = classify(element.class, element)
   var trimmed = className.replace(/\s+/g, ' ').trim()
   node.classList = trimmed
+  return element
 }
 
 export default classList

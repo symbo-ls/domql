@@ -64,7 +64,9 @@ export const overwrite = (obj, params) => {
     const paramsProp = params[e]
     if (isObjectLike(objProp) && isObjectLike(paramsProp)) {
       overwrite(objProp, paramsProp)
-    } else if (paramsProp !== undefined) obj[e] = paramsProp
+    } else if (paramsProp !== undefined) {
+      obj[e] = paramsProp
+    }
   }
   return obj
 }
