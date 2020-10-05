@@ -10,7 +10,7 @@ import set from './set'
 import update from './update'
 import remove from './remove'
 import * as on from '../event/on'
-import { overwrite, clone, fillTheRest } from '../utils'
+// import { overwrite, clone, fillTheRest } from '../utils'
 
 /**
  * Creating a domQL element using passed parameters

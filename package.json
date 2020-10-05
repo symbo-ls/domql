@@ -3,8 +3,11 @@
   "description": "DOM rendering Javascript framework at early stage.",
   "private": false,
   "author": "rackai",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "repository": "https://github.com/rackai/domql",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
   "main": "src/index.js",
   "scripts": {
     "start": "parcel example/index.html --no-cache",
@@ -45,6 +48,5 @@
   "browserslist": [
     "> 1%",
     "ie >= 9"
-  ],
-  "publishConfig": { "registry": "https://npm.pkg.github.com/" }
+  ]
 }

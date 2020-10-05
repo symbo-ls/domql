@@ -1,6 +1,6 @@
 'use strict'
 
-import { deepMerge, overwrite, isArray, deepClone } from '../utils'
+import { deepMerge, isArray, deepClone } from '../utils'
 
 export const cleanWithNode = proto => delete proto.node && proto
 

@@ -2,7 +2,7 @@
 DOM rendering Javascript framework at early stage.
 
 - Minimalistic
-- No deps
+- No dependencies
 - Extendable
 - No transpilations, simple ES6 code
 - One-time import only
