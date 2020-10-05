@@ -16,7 +16,7 @@ var update = function (params = {}, forceIteration = false) {
     params = { text: params }
   }
 
-  console.log(element, params)
+  // TODO: check bottlecap
   overwrite(element, params)
 
   // iterate through define
