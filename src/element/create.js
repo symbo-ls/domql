@@ -40,11 +40,11 @@ var create = (element, parent, key) => {
     }
   }
 
-  // cache params
-  applyPrototype(element)
-
   // Assign parent reference to the element
   element.parent = parent
+
+  // cache params
+  applyPrototype(element)
 
   // Set the path
   if (!parent.path) parent.path = []
