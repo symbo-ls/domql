@@ -1,7 +1,7 @@
 'use strict'
 
 import { overwrite, exec, isObject } from '../utils'
-import { throughDefine, throughTransform } from './iterate'
+import { throughTransform } from './iterate'
 import { registry } from './params'
 import * as on from '../event/on'
 
@@ -16,6 +16,7 @@ var update = function (params = {}, forceIteration = false) {
     params = { text: params }
   }
 
+  console.log(element, params)
   overwrite(element, params)
 
   // iterate through define
@@ -23,11 +24,10 @@ var update = function (params = {}, forceIteration = false) {
     var { define } = element
     for (const param in define) {
       if (params[param] !== undefined) {
-        let execParam = exec(params[param], element)
+        const execParam = exec(params[param], element)
         element.data[param] = execParam
         element[param] = define[param](execParam, element)
       } else {
-        let execParam = exec(element[param], element)
         element[param] = define[param](element.data[param], element)
       }
     }
