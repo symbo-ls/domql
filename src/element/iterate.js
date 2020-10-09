@@ -1,7 +1,6 @@
 'use strict'
 
 import { exec } from '../utils'
-import * as on from '../event/on'
 
 export const applyDefined = (element, force) => {
   for (const param in element.define) {
@@ -11,19 +10,14 @@ export const applyDefined = (element, force) => {
 }
 
 export const applyEvents = element => {
-  for (const param in element.on) {
+  var { node, on } = element
+  for (const param in on) {
     if (param === 'init' || param === 'render') continue
-    var appliedFunction = element.on[param]
-    var registeredFunction = on[param]
-    // console.log(param, appliedFunction, registeredFunction)
-    if (typeof appliedFunction === 'function' &&
-        typeof registeredFunction === 'function') {
-      registeredFunction(appliedFunction, element, element.node)
-    }
 
-    // var definedFunction = element.define && element.define[param]
-    // else console.error('Not such function', appliedFunction, registeredFunction)
-    // if (typeof appliedFunction === 'function' && typeof definedFunction === 'function') definedFunction(appliedFunction, element)
+    var appliedFunction = element.on[param]
+    if (typeof appliedFunction === 'function') {
+      node.addEventListener(param, event => appliedFunction(event, element), true)
+    }
   }
 }
 
