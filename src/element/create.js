@@ -9,6 +9,7 @@ import nodes from './nodes'
 import set from './set'
 import update from './update'
 import remove from './remove'
+import lookup from './lookup'
 import * as on from '../event/on'
 // import { overwrite, clone, fillTheRest } from '../utils'
 
@@ -76,6 +77,7 @@ var create = (element, parent, key) => {
   element.set = set
   element.update = update
   element.remove = remove
+  element.lookup = lookup
 
   assignNode(element, parent, key)
 
