@@ -3,10 +3,9 @@
   "description": "DOM rendering Javascript framework at early stage.",
   "private": false,
   "author": "rackai",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "repository": "https://github.com/rackai/domql",
-  "publishConfig": {
-  },
+  "publishConfig": {},
   "main": "src/index.js",
   "scripts": {
     "start": "parcel example/index.html --no-cache",
