@@ -6,7 +6,6 @@
   "version": "0.0.12",
   "repository": "https://github.com/rackai/domql",
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com/"
   },
   "main": "src/index.js",
   "scripts": {
