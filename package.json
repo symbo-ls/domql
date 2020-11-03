@@ -10,8 +10,8 @@
   },
   "main": "src/index.js",
   "scripts": {
-    "start": "parcel example/index.html --no-cache",
-    "build": "parcel build example/index.html",
+    "start": "parcel examples/index.html --no-cache",
+    "build": "parcel build examples/index.html",
     "standard": "npx standard \"src/**/*.js\"",
     "test": "yarn standard && jest --coverage --coverageReporters=text-lcov | coveralls",
     "test-watch": "jest --watch"
