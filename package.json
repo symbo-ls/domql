@@ -30,9 +30,9 @@
     "eslint": "^7.12.1",
     "eslint-plugin-jest": "^22.14.1",
     "jest": "^26.1.0",
-    "nodemon": "^1.19.1",
+    "nodemon": "^2.0.6",
     "parcel-bundler": "^1.12.4",
-    "standard": "^13.1.0"
+    "standard": "^16.0.1"
   },
   "jest": {
     "collectCoverageFrom": [
