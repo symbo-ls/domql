@@ -41,11 +41,8 @@ const create = (element, parent, key) => {
     }
   }
 
-  // Assign parent reference to the element
-  element.parent = parent
-
-  // cache params
-  applyPrototype(element)
+  // create prototypal inheritance
+  applyPrototype(element, parent)
 
   // Set the path
   if (!parent.path) parent.path = []

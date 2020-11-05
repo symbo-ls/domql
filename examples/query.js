@@ -1,42 +1,43 @@
-var movieTable = {
-  $post: '/asddasdsa/dsadas',
+const DOM = {}
+
+const movieTable = {
+  $fetch: 'https://pretty-whale-82.hasura.app/v1/graphql',
   query: 'movies',
 
-  on: {
-    beforeDataLoad 
-  }
+  if: element => !element.data,
 
   childProto: {
     icon: { name: 'movie' },
     title: {
       tag: 'h1',
-      style: {
-        
-      },
-      query: true,
+      query: true
     },
     p: {
-      query: 'description',
+      query: 'description'
     },
     director: {
-      query: true,
+      query: true
     },
     actors: {
-      true
-      ...[,,,,]
+      query: true,
+      ...[0, 1, 2, 3, 4]
     }
   },
 
-  ...[,,,,]
+  ...[ // received data
+    { title: 'book on' },
+    { title: 'book on1' }
+  ]
 }
 
-{
-  movies {
-    title
-    description
-    director
-    actors {
+DOM.create(movieTable)
 
-    }
-  }
-}
+// {
+//   movies {
+//     title
+//     description
+//     director
+//     actors {
+//     }
+//   }
+// }

@@ -1,73 +1,59 @@
 'use strict'
 
-import { deepMerge, isArray, deepClone } from '../utils'
-
-export const cleanWithNode = proto => delete proto.node && proto
+import { deepMerge, mergeIfArray, mergeIfExisted, deepClone, mergeArray } from '../utils'
 
 /**
  * Flattens deep level prototypes into an array
  */
-export const flattenProtosAsArray = (proto, protos = []) => {
+export const flattenDeepProtosAsArray = (proto, protos = []) => {
+  proto = mergeIfArray(proto)
   protos.push(proto)
-  let protoOfProto = proto.proto
-  if (protoOfProto) {
-    if (isArray(protoOfProto)) protoOfProto = mergeProtosArray(protoOfProto)
-    flattenProtosAsArray(protoOfProto, protos)
-  }
-  return protos
-}
 
-/**
- * Merges array prototypes
- */
-export const mergeProtosArray = arr => {
-  return arr.reduce((a, c) => deepMerge(a, deepClone(c)), {})
+  const protoOfProto = proto.proto
+  if (protoOfProto) {
+    flattenDeepProtosAsArray(protoOfProto, protos)
+  }
+
+  return protos
 }
 
 /**
  * Flattens deep level prototypes into an flat object
  */
 export const flattenPrototype = (proto) => {
-  const flattenedArray = mergeProtosArray(flattenProtosAsArray(proto))
+  const flattenedArray = mergeArray(flattenDeepProtosAsArray(proto))
 
+  // proto cleanup
   if (flattenedArray.proto) delete flattenedArray.proto
 
   return deepClone(flattenedArray)
 }
 
 /**
- * Applies multiple prototype level
- */
-export const deepProto = (element, proto) => {
-  // if proto presented as array
-  if (isArray(proto)) {
-    proto = mergeProtosArray(proto)
-  }
-
-  // flatten prototypal inheritances
-  const flatten = flattenPrototype(proto)
-
-  // merge with prototype
-  return deepMerge(element, flatten)
-  // return overwrite(element, flatten)
-}
-
-/**
  * Checks whether element has `proto` or is a part
  * of parent's `childProto` prototype
  */
-export const applyPrototype = (element) => {
-  const { parent, proto } = element
+export const applyPrototype = (element, parent) => {
+  // Assign parent reference to the element
+  element.parent = parent
 
-  /** Merge with `proto` */
-  if (proto) {
-    deepProto(element, proto)
-  }
+  // merge if proto is array
+  let { proto } = element
+  proto = mergeIfArray(proto)
 
-  /** Merge with parent's `childProto` */
-  if (parent && parent.childProto) {
-    deepProto(element, parent.childProto)
-  }
+  // merge if parent proto is array
+  let { childProto } = parent
+  childProto = mergeIfArray(childProto)
 
-  return element
+  if (!proto && !childProto) return element
+
+  // merge if both applied
+  const mergedProto = mergeIfExisted(proto, childProto)
+
+  // flatten prototypal inheritances
+  const flattenedProtos = flattenPrototype(mergedProto)
+
+  // merge with prototype
+  return deepMerge(element, flattenedProtos)
+
 }

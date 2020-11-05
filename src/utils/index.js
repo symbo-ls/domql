@@ -12,7 +12,10 @@ import {
   deepClone,
   overwrite,
   fillTheRest,
-  set
+  set,
+  mergeArray,
+  mergeIfArray,
+  mergeIfExisted
 } from './object'
 import { report } from './report'
 
@@ -29,5 +32,8 @@ export {
   overwrite,
   fillTheRest,
   set,
+  mergeArray,
+  mergeIfArray,
+  mergeIfExisted,
   report
 }

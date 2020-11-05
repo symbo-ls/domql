@@ -10,6 +10,7 @@ export const isArray = arg => Array.isArray(arg)
 
 export const isObjectLike = arg => {
   if (arg === null) return false
+  // if (isArray(arg)) return false
   return (typeof arg === 'object')
 }
 
@@ -28,16 +29,17 @@ export const deepMerge = (element, proto) => {
   for (const e in proto) {
     const elementProp = element[e]
     const protoProp = proto[e]
+    if (e === 'parent') continue
     if (elementProp === undefined) {
       element[e] = protoProp
-    } else if (isObjectLike(elementProp) && isObjectLike(protoProp)) {
+    } else if (isObject(elementProp) && isObject(protoProp)) {
       deepMerge(elementProp, protoProp)
     }
   }
   return element
 }
 
-export const clone = (obj) => {
+export const clone = obj => {
   const o = {}
   for (const prop in obj) {
     if (prop === 'node') continue
@@ -46,17 +48,36 @@ export const clone = (obj) => {
   return o
 }
 
+/**
+ * Deep cloning of object
+ */
 export const deepClone = (obj) => {
   const o = {}
   for (const prop in obj) {
+    if (prop === 'parent') continue
     if (prop === 'node') continue
     const objProp = obj[prop]
-    if (isObjectLike(objProp)) o[prop] = deepClone(objProp)
+    if (isObject(objProp)) o[prop] = deepClone(objProp)
     else o[prop] = objProp
   }
   return o
 }
 
+/**
+ * Merges array prototypes
+ */
+export const mergeArray = arr => {
+  return arr.reduce((a, c) => deepMerge(a, deepClone(c)), {})
+}
+
+/**
+ * Merges array prototypes
+ */
+export const mergeIfArray = obj => isArray(obj) ? mergeArray(obj) : obj
+
+/**
+ * Overwrites object properties with another
+ */
 export const overwrite = (obj, params) => {
   for (const e in params) {
     if (e === 'node') continue
@@ -69,4 +90,12 @@ export const overwrite = (obj, params) => {
     }
   }
   return obj
+}
+
+/**
+ * Overwrites object properties with another
+ */
+export const mergeIfExisted = (a, b) => {
+  if (isObjectLike(a) && isObjectLike(b)) return deepMerge(a, b)
+  return a || b
 }
