@@ -38,12 +38,10 @@ export const applyPrototype = (element, parent) => {
   element.parent = parent
 
   // merge if proto is array
-  let { proto } = element
-  proto = mergeIfArray(proto)
+  const proto = mergeIfArray(element.proto)
 
   // merge if parent proto is array
-  let { childProto } = parent
-  childProto = mergeIfArray(childProto)
+  const childProto = mergeIfArray(parent.childProto)
 
   if (!proto && !childProto) return element
 
@@ -55,5 +53,4 @@ export const applyPrototype = (element, parent) => {
 
   // merge with prototype
   return deepMerge(element, flattenedProtos)
-
 }
