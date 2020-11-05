@@ -6,7 +6,7 @@ var lookup = function (key) {
 
   while (parent.key !== key) {
     parent = parent.parent
-    if (!parent) break
+    if (!parent) return
   }
 
   return parent
