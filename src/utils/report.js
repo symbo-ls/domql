@@ -8,7 +8,7 @@ export const errors = {
     },
     OverwriteToBuiltin: {
       title: 'Overwriting to builtin method',
-      description: `Overwriting a builtin method in the global define is not possible, please choose different name`
+      description: 'Overwriting a builtin method in the global define is not possible, please choose different name'
     },
     BrowserNotDefined: {
       title: 'Can\'t recognize environment',
@@ -50,8 +50,8 @@ export const errors = {
 }
 
 export const report = (err, arg, element) => {
-  var currentLang = 'en'
-  var errObj
+  const currentLang = 'en'
+  let errObj
   if (err && typeof err === 'string') errObj = errors[currentLang][err]
 
   return new Error(

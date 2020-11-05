@@ -1,8 +1,8 @@
 'use strict'
 
-var lookup = function (key) {
-  var element = this
-  var { parent } = element
+const lookup = function (key) {
+  const element = this
+  let { parent } = element
 
   while (parent.key !== key) {
     parent = parent.parent

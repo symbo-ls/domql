@@ -12,10 +12,10 @@ import {
 } from './iterate'
 import { registry } from './params'
 
-var createNode = (element) => {
+const createNode = (element) => {
   // create and assign a node
-  var { node } = element
-  var isNewNode
+  let { node } = element
+  let isNewNode
   if (!node) {
     isNewNode = true
     node = cacheNode(element)
@@ -42,10 +42,10 @@ var createNode = (element) => {
         (param === 'set' || param === 'update' || param === 'remove') || !element[param] === undefined
       ) return
 
-      var execParam = exec(element[param], element)
+      const execParam = exec(element[param], element)
 
-      var hasDefined = element.define && element.define[param]
-      var registeredParam = registry[param]
+      const hasDefined = element.define && element.define[param]
+      const registeredParam = registry[param]
 
       if (registeredParam) {
         // Check if it's registered param
@@ -53,7 +53,7 @@ var createNode = (element) => {
           registeredParam(execParam, element, node)
         }
 
-        if (param === 'style') registry['class'](element['class'], element, node)
+        if (param === 'style') registry.class(element.class, element, node)
       } else if (element[param] && !hasDefined) {
         // Create element
         create(execParam, element, param)

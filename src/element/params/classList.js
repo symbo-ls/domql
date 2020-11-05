@@ -3,10 +3,10 @@
 import { exec } from '../../utils'
 
 // stringifies class object
-var classify = (obj, element) => {
-  var className = ''
-  for (var item in obj) {
-    var param = obj[item]
+const classify = (obj, element) => {
+  let className = ''
+  for (const item in obj) {
+    const param = obj[item]
     if (typeof param === 'boolean' && param) className += ` ${item}`
     else if (typeof param === 'string') className += ` ${param}`
     else if (typeof param === 'function') {
@@ -16,12 +16,12 @@ var classify = (obj, element) => {
   return className
 }
 
-var classList = (params, element, node) => {
-  var { key } = element
+const classList = (params, element, node) => {
+  const { key } = element
   if (typeof params === 'string') element.class = { default: params }
   if (params === true) params = element.class = { key }
-  var className = classify(element.class, element)
-  var trimmed = className.replace(/\s+/g, ' ').trim()
+  const className = classify(element.class, element)
+  const trimmed = className.replace(/\s+/g, ' ').trim()
   node.classList = trimmed
   return element
 }

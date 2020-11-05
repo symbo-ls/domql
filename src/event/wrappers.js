@@ -4,11 +4,11 @@ export const getScrollPositions = () => {
   if (window.pageYOffset !== undefined) {
     return [window.pageXOffset, window.pageYOffset]
   } else {
-    var d = document
-    var r = d.documentElement
-    var b = d.body
-    var sx = r.scrollLeft || b.scrollLeft || 0
-    var sy = r.scrollTop || b.scrollTop || 0
+    const d = document
+    const r = d.documentElement
+    const b = d.body
+    const sx = r.scrollLeft || b.scrollLeft || 0
+    const sy = r.scrollTop || b.scrollTop || 0
     return [sx, sy]
   }
 }

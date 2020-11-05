@@ -3,8 +3,8 @@
 import create from './create'
 import { assignNode } from './assign'
 
-var parse = (element) => {
-  var virtualTree = {
+const parse = (element) => {
+  const virtualTree = {
     node: document.createElement('div')
   }
 

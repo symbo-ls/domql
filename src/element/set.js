@@ -2,8 +2,8 @@
 
 import create from './create'
 
-var set = function (params, enter, leave) {
-  var element = this
+const set = function (params, enter, leave) {
+  const element = this
 
   if (element.content && element.content.node) {
     // leave(element, () => {

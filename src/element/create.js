@@ -16,13 +16,13 @@ import * as on from '../event/on'
 /**
  * Creating a domQL element using passed parameters
  */
-var create = (element, parent, key) => {
+const create = (element, parent, key) => {
   // If parent is not given
   if (!parent) parent = tree
 
   // If element is not given
   if (element === undefined) element = {}
-  if (element === null) return void 0
+  if (element === null) return
 
   // run onInit
   if (element.on && typeof element.on.init === 'function') {
@@ -30,7 +30,7 @@ var create = (element, parent, key) => {
   }
 
   // define key
-  var assignedKey = element.key || key || ID.next().value
+  const assignedKey = element.key || key || ID.next().value
 
   // If element is string
   if (typeof element === 'string' || typeof element === 'number') {
@@ -65,7 +65,7 @@ var create = (element, parent, key) => {
   // create and assign a key
   element.key = assignedKey
 
-  if (typeof element.if === 'function' && !element.if(element)) return void 0
+  if (typeof element.if === 'function' && !element.if(element)) return
 
   // enable caching in data
   if (!element.data) element.data = {}

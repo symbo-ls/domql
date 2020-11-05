@@ -1,7 +1,7 @@
 'use strict'
 
-var get = function (param) {
-  var element = this
+const get = function (param) {
+  const element = this
   return element[param]
 }
 

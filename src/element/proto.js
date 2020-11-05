@@ -9,7 +9,7 @@ export const cleanWithNode = proto => delete proto.node && proto
  */
 export const flattenProtosAsArray = (proto, protos = []) => {
   protos.push(proto)
-  var protoOfProto = proto.proto
+  let protoOfProto = proto.proto
   if (protoOfProto) {
     if (isArray(protoOfProto)) protoOfProto = mergeProtosArray(protoOfProto)
     flattenProtosAsArray(protoOfProto, protos)
@@ -28,7 +28,7 @@ export const mergeProtosArray = arr => {
  * Flattens deep level prototypes into an flat object
  */
 export const flattenPrototype = (proto) => {
-  var flattenedArray = mergeProtosArray(flattenProtosAsArray(proto))
+  const flattenedArray = mergeProtosArray(flattenProtosAsArray(proto))
 
   if (flattenedArray.proto) delete flattenedArray.proto
 
@@ -45,7 +45,7 @@ export const deepProto = (element, proto) => {
   }
 
   // flatten prototypal inheritances
-  var flatten = flattenPrototype(proto)
+  const flatten = flattenPrototype(proto)
 
   // merge with prototype
   return deepMerge(element, flatten)
@@ -57,7 +57,7 @@ export const deepProto = (element, proto) => {
  * of parent's `childProto` prototype
  */
 export const applyPrototype = (element) => {
-  var { parent, proto } = element
+  const { parent, proto } = element
 
   /** Merge with `proto` */
   if (proto) {

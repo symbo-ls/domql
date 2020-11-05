@@ -5,10 +5,10 @@ import { report } from '../utils'
 
 import nodes from './nodes'
 
-var cachedElements = {}
+const cachedElements = {}
 
-var createNode = (element) => {
-  var { tag } = element
+const createNode = (element) => {
+  const { tag } = element
   if (tag) {
     if (tag === 'string') return document.createTextNode(element.text)
     else if (tag === 'fragment') {
@@ -22,8 +22,8 @@ var createNode = (element) => {
 }
 
 export default (element) => {
-  var { tag, key } = element
-  var tagFromKey = nodes.body.indexOf(key) > -1
+  let { tag, key } = element
+  const tagFromKey = nodes.body.indexOf(key) > -1
 
   if (typeof tag !== 'string') {
     if (tagFromKey && tag === true) tag = key
@@ -36,10 +36,10 @@ export default (element) => {
     return report('HTMLInvalidTag')
   }
 
-  var cachedTag = cachedElements[tag]
+  let cachedTag = cachedElements[tag]
   if (!cachedTag) cachedTag = cachedElements[tag] = createNode(element)
 
-  var clonedNode = cachedTag.cloneNode(true)
+  const clonedNode = cachedTag.cloneNode(true)
   if (tag === 'string') clonedNode.nodeValue = element.text
   return clonedNode
 }

@@ -5,11 +5,11 @@ import { throughTransform } from './iterate'
 import { registry } from './params'
 import * as on from '../event/on'
 
-var update = function (params = {}, forceIteration = false) {
-  var element = this
-  var { node } = element
+const update = function (params = {}, forceIteration = false) {
+  const element = this
+  const { node } = element
 
-  if (typeof element.if === 'function' && !element.if(element)) return void 0
+  if (typeof element.if === 'function' && !element.if(element)) return
 
   // If element is string
   if (typeof params === 'string' || typeof params === 'number') {
@@ -21,7 +21,7 @@ var update = function (params = {}, forceIteration = false) {
 
   // iterate through define
   if (isObject(element.define)) {
-    var { define } = element
+    const { define } = element
     for (const param in define) {
       if (params[param] !== undefined) {
         const execParam = exec(params[param], element)
@@ -39,11 +39,11 @@ var update = function (params = {}, forceIteration = false) {
   for (const param in (forceIteration ? element : params)) {
     if ((param === 'set' || param === 'update') || !element[param] === undefined) return
 
-    var execParam = exec(params[param], element)
-    var execElementParam = exec(element[param], element)
+    const execParam = exec(params[param], element)
+    const execElementParam = exec(element[param], element)
 
-    var hasDefined = element.define && element.define[param]
-    var registeredParam = registry[param]
+    const hasDefined = element.define && element.define[param]
+    const registeredParam = registry[param]
 
     if (registeredParam) {
       // Check if it's registered param
@@ -51,7 +51,7 @@ var update = function (params = {}, forceIteration = false) {
         registeredParam(forceIteration ? execElementParam : execParam, element, node)
       }
 
-      if (param === 'style') registry['class'](element['class'], element, node)
+      if (param === 'style') registry.class(element.class, element, node)
     } else if (element[param] && !hasDefined) {
       // Create element
       update.call(execElementParam, execParam, true)

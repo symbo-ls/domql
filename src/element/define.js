@@ -4,7 +4,7 @@ import { registry } from './params'
 import { report } from '../utils'
 
 export default (params, options = {}) => {
-  var { overwrite } = options
+  const { overwrite } = options
   for (const param in params) {
     if (registry[param] && !overwrite) {
       report('OverwriteToBuiltin', param)
