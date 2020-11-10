@@ -12,6 +12,8 @@ import {
 } from './iterate'
 import { registry } from './params'
 
+const ENV = process.env.NODE_ENV
+
 const createNode = (element) => {
   // create and assign a node
   let { node } = element
@@ -20,8 +22,9 @@ const createNode = (element) => {
     isNewNode = true
     node = cacheNode(element)
     element.node = node
-    node.ref = element
   }
+
+  if (ENV === 'test' || ENV === 'development') node.ref = element
 
   // run iteration for params which are under define
   if (element.define && isObject(element.define)) applyDefined(element)
