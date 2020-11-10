@@ -287,7 +287,6 @@ test('should apply recursive childProto', () => {
 
   const expected = {
     parent: app,
-    childProto: table,
     tag: 'table',
     0: {
       tag: 'tr',
@@ -300,24 +299,13 @@ test('should apply recursive childProto', () => {
     }
   }
 
-  expected[0].parent = {
-    tag: 'table',
-    childProto: row,
-    0: {}
-  }
-  expected[0].a.parent = expected[0]
-  expected[0].b.parent = expected[0]
+  console.log('================ result:')
+  console.log(app.table)
+  console.log('================ expected:')
+  console.log(expected)
 
-  // console.log('================ result:')
-  // console.log(app)
-  // console.log('================ expected:')
-  // console.log({
-  //   childProto: table,
-  //   table: expected
-  // })
-
-  // expect(true).toBe(false)
-  expect(app.table).toStrictEqual(expected)
+  expect(true).toBe(false)
+  // expect(app.table).toStrictEqual(expected)
 })
 
 // const input = { tag: 'input' }

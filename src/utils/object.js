@@ -99,3 +99,18 @@ export const mergeIfExisted = (a, b) => {
   if (isObjectLike(a) && isObjectLike(b)) return deepMerge(a, b)
   return a || b
 }
+
+/**
+ * Overwrites object properties with another
+ */
+export const flattenRecursive = (object, prop, stack = []) => {
+  const objectized = mergeIfArray(object)
+  stack.push(objectized)
+
+  const child = objectized[prop]
+  if (child) flattenRecursive(child, prop, stack)
+
+  delete objectized[prop]
+
+  return stack
+}

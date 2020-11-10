@@ -15,7 +15,8 @@ import {
   set,
   mergeArray,
   mergeIfArray,
-  mergeIfExisted
+  mergeIfExisted,
+  flattenRecursive
 } from './object'
 import { report } from './report'
 
@@ -35,5 +36,6 @@ export {
   mergeArray,
   mergeIfArray,
   mergeIfExisted,
+  flattenRecursive,
   report
 }
