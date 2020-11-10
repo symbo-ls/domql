@@ -9,6 +9,7 @@ DOM rendering Javascript framework at early stage.
 
 You can start with [domql-example](https://github.com/rackai/domql-example) as a boilerplate, or jump into the live editor [playground](https://rackai.github.io/playground/).
 
+[![npm version](https://badge.fury.io/js/%40rackai%2Fdomql.svg)](https://badge.fury.io/js/%40rackai%2Fdomql)
 [![Build Status](https://travis-ci.org/rackai/domql.svg?branch=master)](https://travis-ci.org/rackai/domql)
 [![Coverage Status](https://coveralls.io/repos/github/rackai/domql/badge.svg?branch=master)](https://coveralls.io/github/rackai/domql?branch=master)
 
@@ -200,3 +201,6 @@ var layout = { // this will be <div>
   footer: {} //  will create <footer>
 }
 ```
+
+### Credits
+Inspired by [vigour-io/brisky](https://github.com/vigour-io/brisky)
