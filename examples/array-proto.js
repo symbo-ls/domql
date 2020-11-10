@@ -2,15 +2,15 @@
 
 import DOM from '../src'
 
-var one = {
+const one = {
   a: 1
 }
 
-var two = {
+const two = {
   b: 2
 }
 
-var root = {
+const root = {
   proto: [one, two]
 }
 
