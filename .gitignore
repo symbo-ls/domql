@@ -35,6 +35,3 @@ node_modules
 # Parcel files
 .cache
 dist
-
-# Yarn lock
-yarn.lock
