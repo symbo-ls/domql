@@ -1,5 +1,5 @@
 import { applyPrototype } from '../../src/element/proto'
-import { deepMerge, mergeAndCloneIfArray, mergeIfExisted, mergeArray, flattenRecursive } from '../../src/utils'
+import { mergeArray, flattenRecursive } from '../../src/utils'
 
 const proto1 = {
   div1: 'div1'
@@ -20,10 +20,6 @@ const proto3 = {
 const proto4 = {
   proto: proto3,
   div4: 'div4'
-}
-
-const proto5 = {
-  div5: 'div5'
 }
 
 test('should FLATTEN deep prototypal inheritances', () => {
