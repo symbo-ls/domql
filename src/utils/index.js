@@ -14,7 +14,7 @@ import {
   fillTheRest,
   set,
   mergeArray,
-  mergeIfArray,
+  mergeAndCloneIfArray,
   mergeIfExisted,
   flattenRecursive
 } from './object'
@@ -34,7 +34,7 @@ export {
   fillTheRest,
   set,
   mergeArray,
-  mergeIfArray,
+  mergeAndCloneIfArray,
   mergeIfExisted,
   flattenRecursive,
   report

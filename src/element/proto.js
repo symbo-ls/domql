@@ -1,34 +1,34 @@
 'use strict'
 
-import { deepMerge, mergeIfArray, mergeIfExisted, deepClone, mergeArray, flattenRecursive } from '../utils'
+import { deepMerge, mergeAndCloneIfArray, mergeIfExisted, mergeArray, flattenRecursive } from '../utils'
 
 /**
  * Checks whether element has `proto` or is a part
  * of parent's `childProto` prototype
  */
 export const applyPrototype = (element, parent) => {
-  // Assign parent reference to the element
-  element.parent = parent
-
   // merge if proto is array
-  const proto = mergeIfArray(element.proto)
+  const proto = mergeAndCloneIfArray(element.proto)
+  delete element.proto
+  let childProto
 
-  // merge if parent proto is array
-  const childProto = mergeIfArray(parent.childProto)
+  if (parent) {
+    // Assign parent reference to the element
+    element.parent = parent
+    childProto = parent && mergeAndCloneIfArray(parent.childProto)
+  }
 
   if (!proto && !childProto) return element
 
   // merge if both applied
   const mergedProto = mergeIfExisted(proto, childProto)
 
-  // flatten prototypal inheritances
-  const flattenedProto = mergeArray(
-    flattenRecursive(mergedProto, 'proto')
-  )
+  // flatten inheritances into flat array
+  const flattenedArray = flattenRecursive(mergedProto, 'proto')
 
-  // deep clone the prototype
-  const clonedProto = deepClone(flattenedProto)
+  // flatten prototypal inheritances
+  const flattenedProto = mergeArray(flattenedArray)
 
   // final merging with prototype
-  return deepMerge(element, clonedProto)
+  return deepMerge(element, flattenedProto)
 }

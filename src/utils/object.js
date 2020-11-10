@@ -64,18 +64,6 @@ export const deepClone = (obj) => {
 }
 
 /**
- * Merges array prototypes
- */
-export const mergeArray = arr => {
-  return arr.reduce((a, c) => deepMerge(a, deepClone(c)), {})
-}
-
-/**
- * Merges array prototypes
- */
-export const mergeIfArray = obj => isArray(obj) ? mergeArray(obj) : obj
-
-/**
  * Overwrites object properties with another
  */
 export const overwrite = (obj, params) => {
@@ -101,14 +89,26 @@ export const mergeIfExisted = (a, b) => {
 }
 
 /**
+ * Merges array prototypes
+ */
+export const mergeArray = arr => {
+  return arr.reduce((a, c) => deepMerge(a, deepClone(c)), {})
+}
+
+/**
+ * Merges array prototypes
+ */
+export const mergeAndCloneIfArray = obj => isArray(obj) ? mergeArray(obj) : deepClone(obj)
+
+/**
  * Overwrites object properties with another
  */
-export const flattenRecursive = (object, prop, stack = []) => {
-  const objectized = mergeIfArray(object)
+export const flattenRecursive = (param, prop, stack = []) => {
+  const objectized = mergeAndCloneIfArray(param)
   stack.push(objectized)
 
-  const child = objectized[prop]
-  if (child) flattenRecursive(child, prop, stack)
+  const protoOfProto = objectized[prop]
+  if (protoOfProto) flattenRecursive(protoOfProto, prop, stack)
 
   delete objectized[prop]
 
