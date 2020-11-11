@@ -67,14 +67,14 @@ const create = (element, parent, key) => {
   // enable caching in data
   if (!element.data) element.data = {}
 
-  // create Element class
-  createNode(element)
-
   // Assign methods
   element.set = set
   element.update = update
   element.remove = remove
   element.lookup = lookup
+
+  // create Element class
+  createNode(element)
 
   assignNode(element, parent, key)
 

@@ -37,7 +37,7 @@ const update = function (params = {}, forceIteration = false) {
   if (isObject(params.transform)) throughTransform(element)
 
   for (const param in (forceIteration ? element : params)) {
-    if ((param === 'set' || param === 'update') || !element[param] === undefined) return
+    if ((param === 'set' || param === 'update' || param === 'remove' || param === 'lookup') || !element[param] === undefined) return
 
     const execParam = exec(params[param], element)
     const execElementParam = exec(element[param], element)

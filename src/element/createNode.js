@@ -42,7 +42,7 @@ const createNode = (element) => {
 
     for (const param in element) {
       if (
-        (param === 'set' || param === 'update' || param === 'remove') || !element[param] === undefined
+        (param === 'set' || param === 'update' || param === 'remove' || param === 'lookup') || !element[param] === undefined
       ) return
 
       const execParam = exec(element[param], element)
