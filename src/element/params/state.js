@@ -1,8 +1,15 @@
 'use strict'
 
-import { exec } from '../../utils'
+import { exec, isObject } from '../../utils'
 
-export default (param, element, node) => {
-  if (param) element.state = exec(param, element)
+export default (params, element, node) => {
+  const state = exec(params, element)
+
+  if (isObject(state)) {
+    for (const param in state) {
+      element.state[param] = exec(state[param], element)
+    }
+  }
+
   return element
 }

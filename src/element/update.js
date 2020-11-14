@@ -1,11 +1,11 @@
 'use strict'
 
-import { overwrite, exec, isObject } from '../utils'
+import { overwrite, exec, isObject, isFunction } from '../utils'
 import { throughTransform } from './iterate'
 import { registry } from './params'
 import * as on from '../event/on'
 
-const update = function (params = {}, forceIteration = false) {
+const update = function (params = {}) {
   const element = this
   const { node } = element
 
@@ -36,8 +36,8 @@ const update = function (params = {}, forceIteration = false) {
   // iterate through transform
   if (isObject(params.transform)) throughTransform(element)
 
-  for (const param in (forceIteration ? element : params)) {
-    if ((param === 'set' || param === 'update' || param === 'remove' || param === 'lookup') || !element[param] === undefined) return
+  for (const param in element) {
+    if ((param === 'set' || param === 'update') || !element[param] === undefined) return
 
     const execParam = exec(params[param], element)
     const execElementParam = exec(element[param], element)
@@ -46,9 +46,8 @@ const update = function (params = {}, forceIteration = false) {
     const registeredParam = registry[param]
 
     if (registeredParam) {
-      // Check if it's registered param
-      if (typeof registeredParam === 'function') {
-        registeredParam(forceIteration ? execElementParam : execParam, element, node)
+      if (isFunction(registeredParam)) {
+        registeredParam(execElementParam, element, node)
       }
 
       if (param === 'style') registry.class(element.class, element, node)
@@ -59,7 +58,8 @@ const update = function (params = {}, forceIteration = false) {
   }
 
   // run onUpdate
-  if (element.on && typeof element.on.update === 'function') {
+  if (element.on && isFunction(element.on.update)) {
+    console.log('on updateee', element, params)
     on.update(element.on.update, element)
   }
 
