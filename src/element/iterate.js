@@ -1,6 +1,6 @@
 'use strict'
 
-import { exec } from '../utils'
+import { exec, isFunction } from '../utils'
 
 export const applyDefined = (element, force) => {
   for (const param in element.define) {
@@ -12,11 +12,17 @@ export const applyDefined = (element, force) => {
 export const applyEvents = element => {
   const { node, on } = element
   for (const param in on) {
-    if (param === 'init' || param === 'render') continue
+    if (
+      param === 'init' ||
+      param === 'render' ||
+      param === 'update'
+    ) continue
 
     const appliedFunction = element.on[param]
-    if (typeof appliedFunction === 'function') {
-      node.addEventListener(param, event => appliedFunction(event, element), true)
+    if (isFunction(appliedFunction)) {
+      node.addEventListener(param, event =>
+        appliedFunction(event, element, element.state),
+      true)
     }
   }
 }
@@ -24,8 +30,12 @@ export const applyEvents = element => {
 export const throughDefine = (element) => {
   const { define } = element
   for (const param in define) {
-    const execParam = exec(element[param], element)
-    element.data[param] = execParam
+    const prop = element[param]
+    // if (isFunction(prop)) {
+    //   element.transform[param] = (p, e) => prop(e, e.state)
+    // }
+    const execParam = exec(prop, element)
+    element.__cached[param] = prop
     element[param] = define[param](execParam, element)
   }
   return element
@@ -35,11 +45,11 @@ export const throughTransform = element => {
   const { transform } = element
   for (const param in transform) {
     let execParam = exec(element[param], element)
-    if (element.data[param]) {
-      execParam = exec(element.data[param], element)
+    if (element.__cached[param]) {
+      execParam = exec(element.__cached[param], element)
     } else {
       execParam = exec(element[param], element)
-      element.data[param] = execParam
+      element.__cached[param] = execParam
     }
     element[param] = transform[param](execParam, element)
   }

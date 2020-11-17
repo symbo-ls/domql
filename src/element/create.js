@@ -11,28 +11,30 @@ import update from './update'
 import remove from './remove'
 import lookup from './lookup'
 import * as on from '../event/on'
+import { assignClass } from './params/classList'
+import { isFunction } from '../utils'
 // import { overwrite, clone, fillTheRest } from '../utils'
 
 /**
  * Creating a domQL element using passed parameters
  */
 const create = (element, parent, key) => {
-  // If parent is not given
+  // if PARENT is not given
   if (!parent) parent = tree
 
-  // If element is not given
+  // if ELEMENT is not given
   if (element === undefined) element = {}
   if (element === null) return
 
-  // run onInit
-  if (element.on && typeof element.on.init === 'function') {
+  // run `on.init`
+  if (element.on && isFunction(element.on.init)) {
     on.init(element.on.init, element)
   }
 
-  // define key
+  // define KEY
   const assignedKey = element.key || key || ID.next().value
 
-  // If element is string
+  // if element is STRING
   if (typeof element === 'string' || typeof element === 'number') {
     element = {
       text: element,
@@ -41,45 +43,56 @@ const create = (element, parent, key) => {
     }
   }
 
-  // create prototypal inheritance
+  // create PROTOtypal inheritance
   applyPrototype(element, parent)
 
-  // Set the path
+  // set the PATH
   if (!parent.path) parent.path = []
   element.path = parent.path.concat(assignedKey)
 
-  // if it already has a node
+  // if it already HAS A NODE
   if (element.node) {
     return assignNode(element, parent, assignedKey)
   }
 
-  // generate a class name
-  if (element.class === true) element.class = assignedKey
-  else if (!element.class && typeof assignedKey === 'string' && assignedKey.charAt(0) === '_' && assignedKey.charAt(1) !== '_') {
-    element.class = assignedKey.slice(1)
-  }
-
-  // create and assign a key
+  // create and assign a KEY
   element.key = assignedKey
 
-  if (typeof element.if === 'function' && !element.if(element)) return
+  // generate a CLASS name
+  assignClass(element)
 
-  // enable caching in data
-  if (!element.data) element.data = {}
+  // don't render IF in condition
+  if (isFunction(element.if) && !element.if(element)) return
 
-  // Assign methods
+  // enable CACHING in data
+  if (!element.__cached) element.__cached = {}
+
+  // enable TRANSFORM in data
+  if (!element.transform) element.transform = {}
+
+  // enable TRANSFORM in data
+  if (!element.__exec) element.__exec = {}
+
+  // enable STATE
+  if (!element.state) {
+    element.state = parent.state || {}
+    element.__cached.isOwnState = false
+  }
+
+  // CREATE a real NODE
+  createNode(element)
+
+  // assign METHODS
   element.set = set
   element.update = update
   element.remove = remove
   element.lookup = lookup
 
-  // create Element class
-  createNode(element)
-
+  // assign NODE
   assignNode(element, parent, key)
 
-  // run onRender
-  if (element.on && typeof element.on.render === 'function') {
+  // run `on.render`
+  if (element.on && isFunction(element.on.render)) {
     on.render(element.on.render, element)
   }
 

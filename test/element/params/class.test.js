@@ -4,7 +4,7 @@ import 'regenerator-runtime/runtime'
 import { create } from '../../../src/element'
 
 test('should assign class as string', () => {
-  var element = create({
+  const element = create({
     class: 'text'
   })
 
@@ -12,7 +12,7 @@ test('should assign class as string', () => {
 })
 
 test('should assign class as boolean', () => {
-  var element = create({
+  const element = create({
     class: { green: true }
   })
 
@@ -20,7 +20,7 @@ test('should assign class as boolean', () => {
 })
 
 test('should assign class as object', () => {
-  var element = create({
+  const element = create({
     class: { green: true, size: 'big' }
   })
 

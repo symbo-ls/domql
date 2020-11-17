@@ -3,11 +3,11 @@
 import 'regenerator-runtime/runtime'
 import { create } from '../../src/element'
 
-var dom = create({})
+const dom = create({})
 
 test('should create EMPTY element', () => {
   expect(dom).toHaveProperty('key')
-  expect(dom).toHaveProperty('data')
+  expect(dom).toHaveProperty('state')
   expect(dom).toHaveProperty('parent')
   expect(dom).toHaveProperty('node')
   expect(dom).toHaveProperty('path')
@@ -24,27 +24,27 @@ test('must be able to create valid PATH', () => {
 })
 
 test('if it HAS a NODE, don\'t recreate', () => {
-  var node = document.createElement('div')
-  var dom2 = create({ node })
+  const node = document.createElement('div')
+  const dom2 = create({ node })
   expect(dom2.node.parentElement).toBe(document.body)
 })
 
 test('create with number', () => {
-  var numb = create(0)
+  const numb = create(0)
   expect(numb.text).toBe(0)
   expect(numb.tag).toBe('string')
   expect(numb.node.nodeType).toBe(3) // #text
 })
 
 test('create with string', () => {
-  var str = create('hello')
+  const str = create('hello')
   expect(str.text).toBe('hello')
   expect(str.tag).toBe('string')
   expect(str.node.nodeType).toBe(3) // #text
 })
 
 test('creating conditions', () => {
-  var element = create({
+  const element = create({
     data: { visible: true },
     if: element => element.data.visible
   })
@@ -52,7 +52,7 @@ test('creating conditions', () => {
 })
 
 test('creating nesting', () => {
-  var element = create({
+  const element = create({
     header: {
       h1: {}
     }

@@ -2,8 +2,16 @@
 
 import { exec } from '../../utils'
 
+export const assignClass = (element) => {
+  const { key } = element
+  if (element.class === true) element.class = key
+  else if (!element.class && typeof key === 'string' && key.charAt(0) === '_' && key.charAt(1) !== '_') {
+    element.class = key.slice(1)
+  }
+}
+
 // stringifies class object
-const classify = (obj, element) => {
+export const classify = (obj, element) => {
   let className = ''
   for (const item in obj) {
     const param = obj[item]
@@ -16,14 +24,13 @@ const classify = (obj, element) => {
   return className
 }
 
-const classList = (params, element, node) => {
+export default (params, element, node) => {
   const { key } = element
   if (typeof params === 'string') element.class = { default: params }
   if (params === true) params = element.class = { key }
-  const className = classify(element.class, element)
+  // TODO: fails on string
+  const className = classify(params, element)
   const trimmed = className.replace(/\s+/g, ' ').trim()
   node.classList = trimmed
   return element
 }
-
-export default classList

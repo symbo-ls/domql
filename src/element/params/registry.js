@@ -28,6 +28,7 @@ export default {
   define: {},
   transform: {},
   __cached: {},
+  __exec: {},
   key: {},
   tag: {},
   parent: {},

@@ -1,7 +1,6 @@
 'use strict'
 
-import { overwrite, exec, isObject, isFunction } from '../utils'
-import { throughTransform } from './iterate'
+import { overwrite, exec, isFunction } from '../utils'
 import { registry } from './params'
 import * as on from '../event/on'
 
@@ -19,47 +18,42 @@ const update = function (params = {}) {
   // TODO: check bottlecap
   overwrite(element, params)
 
-  // iterate through define
-  if (isObject(element.define)) {
-    const { define } = element
-    for (const param in define) {
-      if (params[param] !== undefined) {
-        const execParam = exec(params[param], element)
-        element.data[param] = execParam
-        element[param] = define[param](execParam, element)
-      } else {
-        element[param] = define[param](element.data[param], element)
-      }
-    }
-  }
-
-  // iterate through transform
-  if (isObject(params.transform)) throughTransform(element)
-
   for (const param in element) {
-    if ((param === 'set' || param === 'update') || !element[param] === undefined) return
+    if (
+      (
+        param === 'set' ||
+        param === 'update' ||
+        param === 'remove' ||
+        param === 'node' ||
+        param === 'lookup'
+      ) ||
+      element[param] === undefined
+    ) continue
+
+    const hasExec = __exec && __exec[param]
+    if (hasExec) {
+      if (params[param]) delete __exec[param]
+    }
+    if (params[param] && hasExec) delete __exec[param]
+
+    const elementParam = hasExec ? __exec[param] : element[param]
 
     const execParam = exec(params[param], element)
-    const execElementParam = exec(element[param], element)
+    const execElementParam = exec(elementParam, element)
 
     const hasDefined = element.define && element.define[param]
-    const registeredParam = registry[param]
+    const ourMethod = registry[param]
 
-    if (registeredParam) {
-      if (isFunction(registeredParam)) {
-        registeredParam(execElementParam, element, node)
-      }
-
+    if (ourMethod) {
+      if (isFunction(ourMethod)) ourMethod(execElementParam, element, node)
       if (param === 'style') registry.class(element.class, element, node)
     } else if (element[param] && !hasDefined) {
-      // Create element
       update.call(execElementParam, execParam, true)
     } // else if (element[param]) create(execParam, element, param)
   }
 
   // run onUpdate
   if (element.on && isFunction(element.on.update)) {
-    console.log('on updateee', element, params)
     on.update(element.on.update, element)
   }
 

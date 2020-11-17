@@ -14,8 +14,8 @@ export const isObjectLike = arg => {
   return (typeof arg === 'object')
 }
 
-export const exec = (param, element) => {
-  if (isFunction(param)) return param(element)
+export const exec = (param, element = {}) => {
+  if (isFunction(param)) return param(element, element.state)
   return param
 }
 

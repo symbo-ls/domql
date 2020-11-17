@@ -3,7 +3,7 @@
 import create from './create'
 import cacheNode from './cache'
 
-import { exec, isObject } from '../utils'
+import { exec, isFunction, isObject } from '../utils'
 import {
   applyDefined,
   throughDefine,
@@ -11,8 +11,21 @@ import {
   applyEvents
 } from './iterate'
 import { registry } from './params'
+import { defineSetter } from './methods'
 
 const ENV = process.env.NODE_ENV
+
+// const defineSetter = (element, key) => Object.defineProperty(element, key, {
+//   get: function () {
+//     console.log('GET', key)
+//     return element.__data[key]
+//   },
+//   set: function (new_value) {
+//     console.log('SET', key, new_value)
+//     element.__data[key] = new_value
+//     element.__data['modified'] = (new Date()).getTime()
+//   }
+// })
 
 const createNode = (element) => {
   // create and assign a node
@@ -31,37 +44,45 @@ const createNode = (element) => {
 
   // iterate through all given  params
   if (element.tag !== 'string' || element.tag !== 'fragment') {
-    // iterate through define
-    if (isObject(element.define)) throughDefine(element)
-
     // iterate through transform
     if (isObject(element.transform)) throughTransform(element)
+
+    // iterate through define
+    if (isObject(element.define)) throughDefine(element)
 
     // apply events
     if (isNewNode && isObject(element.on)) applyEvents(element)
 
     for (const param in element) {
-      if (
-        (param === 'set' || param === 'update' || param === 'remove' || param === 'lookup') || !element[param] === undefined
-      ) return
+      let prop = element[param]
 
-      const execParam = exec(element[param], element)
+      if (prop === undefined) continue
+
+      if (isFunction(prop)) {
+        defineSetter(
+          element,
+          param,
+          () => element.__cached[param],
+          set => {
+            console.log('set')
+            console.log(set)
+            element.__cached[param] = set(element, element.state)
+          }
+        )
+        element[param] = prop
+        prop = element[param]
+      }
+
+      // console.log(element[param])
 
       const hasDefined = element.define && element.define[param]
-      const registeredParam = registry[param]
+      const ourMethod = registry[param]
 
-      if (registeredParam) {
-        // Check if it's registered param
-        if (typeof registeredParam === 'function') {
-          registeredParam(execParam, element, node)
-        }
-
+      if (ourMethod) { // Check if param is in our method registry
+        if (isFunction(ourMethod)) ourMethod(prop, element, node)
         if (param === 'style') registry.class(element.class, element, node)
       } else if (element[param] && !hasDefined) {
-        // Create element
-        create(execParam, element, param)
-        // if (isNewNode) create(execParam, element, param)
-        // else createNode(execParam)
+        create(prop, element, param) // Create element
       }
     }
   }
