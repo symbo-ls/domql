@@ -40,6 +40,9 @@ const update = function (params = {}) {
     const hasDefined = element.define && element.define[param]
     const ourMethod = registry[param]
 
+    if (hasDefined)
+      prop = element.define[param](prop, element, element.state)
+
     if (ourMethod) {
       if (isFunction(ourMethod)) ourMethod(prop, element, node)
       if (param === 'style') registry.class(element.class, element, node)

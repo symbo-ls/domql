@@ -36,7 +36,7 @@ export const throughDefine = (element) => {
       prop = exec(prop, element)
     }
     element.__cached[param] = prop
-    element[param] = define[param](prop, element)
+    element[param] = define[param](prop, element, element.state)
   }
   return element
 }
