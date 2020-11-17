@@ -30,13 +30,13 @@ export const applyEvents = element => {
 export const throughDefine = (element) => {
   const { define } = element
   for (const param in define) {
-    const prop = element[param]
-    // if (isFunction(prop)) {
-    //   element.transform[param] = (p, e) => prop(e, e.state)
-    // }
-    const execParam = exec(prop, element)
+    let prop = element[param]
+    if (isFunction(prop)) {
+      element.__exec[param] = prop
+      prop = exec(prop, element)
+    }
     element.__cached[param] = prop
-    element[param] = define[param](execParam, element)
+    element[param] = define[param](prop, element)
   }
   return element
 }

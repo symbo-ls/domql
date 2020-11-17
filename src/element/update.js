@@ -19,6 +19,8 @@ const update = function (params = {}) {
   overwrite(element, params)
 
   for (const param in element) {
+    let prop = element[param]
+
     if (
       (
         param === 'set' ||
@@ -27,28 +29,22 @@ const update = function (params = {}) {
         param === 'node' ||
         param === 'lookup'
       ) ||
-      element[param] === undefined
+      prop === undefined
     ) continue
 
-    const hasExec = __exec && __exec[param]
-    if (hasExec) {
-      if (params[param]) delete __exec[param]
-    }
-    if (params[param] && hasExec) delete __exec[param]
-
-    const elementParam = hasExec ? __exec[param] : element[param]
+    const hasExec = element.__exec[param]
+    if (hasExec) prop = exec(hasExec, element)
 
     const execParam = exec(params[param], element)
-    const execElementParam = exec(elementParam, element)
 
     const hasDefined = element.define && element.define[param]
     const ourMethod = registry[param]
 
     if (ourMethod) {
-      if (isFunction(ourMethod)) ourMethod(execElementParam, element, node)
+      if (isFunction(ourMethod)) ourMethod(prop, element, node)
       if (param === 'style') registry.class(element.class, element, node)
     } else if (element[param] && !hasDefined) {
-      update.call(execElementParam, execParam, true)
+      update.call(prop, execParam, true)
     } // else if (element[param]) create(execParam, element, param)
   }
 

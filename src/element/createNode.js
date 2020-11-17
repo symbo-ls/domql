@@ -59,21 +59,9 @@ const createNode = (element) => {
       if (prop === undefined) continue
 
       if (isFunction(prop)) {
-        defineSetter(
-          element,
-          param,
-          () => element.__cached[param],
-          set => {
-            console.log('set')
-            console.log(set)
-            element.__cached[param] = set(element, element.state)
-          }
-        )
-        element[param] = prop
-        prop = element[param]
+        element.__exec[param] = prop
+        prop = exec(element[param], element)
       }
-
-      // console.log(element[param])
 
       const hasDefined = element.define && element.define[param]
       const ourMethod = registry[param]
