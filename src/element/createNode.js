@@ -42,7 +42,7 @@ const createNode = (element) => {
   // run iteration for params which are under define
   if (element.define && isObject(element.define)) applyDefined(element)
 
-  // iterate through all given  params
+  // iterate through all given params
   if (element.tag !== 'string' || element.tag !== 'fragment') {
     // iterate through transform
     if (isObject(element.transform)) throughTransform(element)
