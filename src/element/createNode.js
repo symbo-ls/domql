@@ -11,7 +11,7 @@ import {
   applyEvents
 } from './iterate'
 import { registry } from './params'
-import { defineSetter } from './methods'
+// import { defineSetter } from './methods'
 
 const ENV = process.env.NODE_ENV
 
@@ -54,13 +54,12 @@ const createNode = (element) => {
     if (isNewNode && isObject(element.on)) applyEvents(element)
 
     for (const param in element) {
-      let prop = element[param]
+      const prop = element[param]
 
       if (prop === undefined) continue
-
       if (isFunction(prop)) {
         element.__exec[param] = prop
-        prop = exec(element[param], element)
+        element[param] = exec(prop, element)
       }
 
       const hasDefined = element.define && element.define[param]

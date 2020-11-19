@@ -8,11 +8,10 @@ import ID from './id'
 import nodes from './nodes'
 import set from './set'
 import update from './update'
-import remove from './remove'
-import lookup from './lookup'
 import * as on from '../event/on'
 import { assignClass } from './params/classList'
 import { isFunction } from '../utils'
+import { remove, lookup, log, keys } from './methods'
 // import { overwrite, clone, fillTheRest } from '../utils'
 
 /**
@@ -87,6 +86,8 @@ const create = (element, parent, key) => {
   element.update = update
   element.remove = remove
   element.lookup = lookup
+  element.keys = keys
+  element.log = log
 
   // assign NODE
   assignNode(element, parent, key)

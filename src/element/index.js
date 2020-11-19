@@ -8,11 +8,11 @@ import create from './create'
 import createNode from './createNode'
 import * as assign from './assign'
 import define from './define'
-import remove from './remove'
 import update from './update'
 import parse from './parse'
 import set from './set'
-import get from './get'
+
+import { remove, get, log, keys } from './methods'
 
 export {
   nodes,
@@ -27,5 +27,7 @@ export {
   update,
   parse,
   set,
-  get
+  get,
+  log,
+  keys
 }

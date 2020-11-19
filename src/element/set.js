@@ -12,11 +12,7 @@ const set = function (params, enter, leave) {
     // })
   }
 
-  if (params) {
-    // enter(element, () => {
-    create(params, element, 'content')
-    // })
-  }
+  if (params) create(params, element, 'content')
 
   return element
 }

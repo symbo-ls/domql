@@ -1,7 +1,6 @@
 'use strict'
 
 import { exec, isFunction } from '../utils'
-import { defineSetter } from './methods'
 
 export const applyDefined = (element, force) => {
   for (const param in element.define) {
@@ -31,19 +30,6 @@ export const applyEvents = element => {
 export const throughDefine = (element) => {
   const { define } = element
   for (const param in define) {
-    if (isFunction(define[param])) {
-      defineSetter(
-        element,
-        param,
-        () => element.__cached[param],
-        set => {
-          console.log('set')
-          console.log(set)
-          element.__exec[param] = set(element, element.state)
-        }
-      )
-    }
-
     let prop = element[param]
     if (isFunction(prop)) {
       element.__exec[param] = prop

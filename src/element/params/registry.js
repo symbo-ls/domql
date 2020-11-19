@@ -22,6 +22,7 @@ export default {
   state,
 
   proto: {},
+  log: {},
   path: {},
   childProto: {},
   if: {},
@@ -35,5 +36,8 @@ export default {
   node: {},
   set: {},
   update: {},
+  remove: {},
+  lookup: {},
+  keys: {},
   on: {}
 }
