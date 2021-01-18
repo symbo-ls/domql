@@ -4,6 +4,10 @@ export const isObject = arg => {
   return typeof arg === 'object' && arg.constructor === Object
 }
 
+export const isString = arg => typeof arg === 'string'
+
+export const isNumber = arg => typeof arg === 'number'
+
 export const isFunction = arg => typeof arg === 'function'
 
 export const isArray = arg => Array.isArray(arg)
@@ -14,7 +18,8 @@ export const isObjectLike = arg => {
   return (typeof arg === 'object')
 }
 
-export const exec = (param, element = {}) => {
+export const exec = (param, element) => {
+  if (!element) console.error('No element for', param)
   if (isFunction(param)) return param(element, element.state)
   return param
 }

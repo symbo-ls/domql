@@ -60,27 +60,6 @@ const create = (element, parent, key) => {
   // generate a CLASS name
   assignClass(element)
 
-  // don't render IF in condition
-  if (isFunction(element.if) && !element.if(element)) return
-
-  // enable CACHING in data
-  if (!element.__cached) element.__cached = {}
-
-  // enable TRANSFORM in data
-  if (!element.transform) element.transform = {}
-
-  // enable TRANSFORM in data
-  if (!element.__exec) element.__exec = {}
-
-  // enable STATE
-  if (!element.state) {
-    element.state = parent.state || {}
-    element.__cached.isOwnState = false
-  }
-
-  // CREATE a real NODE
-  createNode(element)
-
   // assign METHODS
   element.set = set
   element.update = update
@@ -88,6 +67,27 @@ const create = (element, parent, key) => {
   element.lookup = lookup
   element.keys = keys
   element.log = log
+
+  // enable TRANSFORM in data
+  if (!element.transform) element.transform = {}
+
+  // enable CACHING in data
+  if (!element.__cached) element.__cached = {}
+
+  // enable TRANSFORM in data
+  if (!element.__exec) element.__exec = {}
+
+  // enable STATE
+  if (!element.state) {
+    element.state = parent.state || {}
+    element.__isOwnState = false
+  }
+
+  // don't render IF in condition
+  if (isFunction(element.if) && !element.if(element)) return
+
+  // CREATE a real NODE
+  createNode(element)
 
   // assign NODE
   assignNode(element, parent, key)

@@ -1,6 +1,6 @@
 'use strict'
 
-import { exec } from '../../utils'
+import { exec, isObject, isString } from '../../utils'
 
 export const assignClass = (element) => {
   const { key } = element
@@ -25,12 +25,13 @@ export const classify = (obj, element) => {
 }
 
 export default (params, element, node) => {
+  if (!params) return
   const { key } = element
-  if (typeof params === 'string') element.class = { default: params }
   if (params === true) params = element.class = { key }
+  if (isString(params)) element.class = { default: params }
+  if (isObject(params)) params = classify(params, element)
   // TODO: fails on string
-  const className = classify(params, element)
-  const trimmed = className.replace(/\s+/g, ' ').trim()
-  node.classList = trimmed
+  const className = params.replace(/\s+/g, ' ').trim()
+  node.classList = className
   return element
 }

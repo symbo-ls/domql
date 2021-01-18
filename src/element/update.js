@@ -3,16 +3,11 @@
 import { overwrite, exec, isFunction, isObject } from '../utils'
 import { registry } from './params'
 import * as on from '../event/on'
+import { isMethod } from './methods'
 
 const update = function (params = {}) {
   const element = this
-  const { node, state } = element
-
-  if (!element.log) {
-    console.log('---log', element)
-    debugger
-  }
-  element.log('key', '*')
+  const { node, state, __exec, define } = element
 
   if (isFunction(element.if) && !element.if(element, element.state)) return
 
@@ -21,38 +16,30 @@ const update = function (params = {}) {
     params = { text: params }
   }
 
-  // TODO: check bottlecap
+  // console.log(params, element)
+
   overwrite(element, params)
+
+  if (typeof element === 'string') return
 
   for (const param in element) {
     let prop = element[param]
 
-    if (isObject(registry[param]) || prop === undefined) continue
+    if (isMethod(param) || isObject(registry[param]) || prop === undefined) continue
 
-    const hasExec = element.__exec[param]
-    if (hasExec) {
-      console.log('--hasExec:1', hasExec, prop, param)
-      element[param] = prop = hasExec(element, state)
-      console.log('--hasExec:2', prop, param)
-    }
+    const hasExec = __exec && __exec[param]
+    if (hasExec) element[param] = prop = hasExec(element, state)
 
-    const hasDefined = element.define && element.define[param]
-    if (hasDefined) {
-      console.log('--hasDefined:1', prop, param)
-      element[param] = prop = hasDefined(prop, element, state)
-      console.log('--hasDefined:2', prop, param)
-    }
-
-    // if (isFunction(prop)) debugger // console.log('--isfunction', prop)
+    const hasDefined = define && define[param]
+    if (hasDefined) element[param] = prop = hasDefined(prop, element, state)
 
     const execParam = exec(params[param], element)
-    const ourMethod = registry[param]
-    if (ourMethod) {
-      if (isFunction(ourMethod)) ourMethod(prop, element, node)
+    const ourParam = registry[param]
+    if (ourParam) {
+      if (isFunction(ourParam)) ourParam(prop, element, node)
       if (param === 'style') registry.class(element.class, element, node)
     } else if (prop && !hasDefined) {
-      console.log('--prop', prop, param, element)
-      update.call(prop, execParam, true)
+      update.call(prop, execParam)
     }
   }
 
@@ -60,8 +47,6 @@ const update = function (params = {}) {
   if (element.on && isFunction(element.on.update)) {
     on.update(element.on.update, element)
   }
-
-  console.groupEnd()
 
   return this
 }

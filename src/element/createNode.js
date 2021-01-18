@@ -11,6 +11,7 @@ import {
   applyEvents
 } from './iterate'
 import { registry } from './params'
+import { isMethod } from './methods'
 // import { defineSetter } from './methods'
 
 const ENV = process.env.NODE_ENV
@@ -56,17 +57,18 @@ const createNode = (element) => {
     for (const param in element) {
       const prop = element[param]
 
-      if (prop === undefined) continue
+      if (isMethod(param) || isObject(registry[param]) || prop === undefined) continue
+
       if (isFunction(prop)) {
         element.__exec[param] = prop
         element[param] = exec(prop, element)
       }
 
       const hasDefined = element.define && element.define[param]
-      const ourMethod = registry[param]
+      const ourParam = registry[param]
 
-      if (ourMethod) { // Check if param is in our method registry
-        if (isFunction(ourMethod)) ourMethod(prop, element, node)
+      if (ourParam) { // Check if param is in our method registry
+        if (isFunction(ourParam)) ourParam(prop, element, node)
         if (param === 'style') registry.class(element.class, element, node)
       } else if (element[param] && !hasDefined) {
         create(prop, element, param) // Create element
