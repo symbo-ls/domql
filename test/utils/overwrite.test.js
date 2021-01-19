@@ -1,7 +1,7 @@
-import { overwrite } from '../../src/utils'
+import { overwriteDeep } from '../../src/utils/object'
 
 test('should overwrite object with new properties', () => {
-  var element = {
+  const element = {
     tag: 'button',
     style: {
       backgroundColor: 'white',
@@ -16,7 +16,7 @@ test('should overwrite object with new properties', () => {
     text: 'Button'
   }
 
-  var update = {
+  const update = {
     style: {
       backgroundColor: 'green',
       color: 'white'
@@ -24,7 +24,7 @@ test('should overwrite object with new properties', () => {
     text: 'Submit'
   }
 
-  overwrite(element, update)
+  overwriteDeep(element, update)
 
   expect(element).toStrictEqual({
     tag: 'button',

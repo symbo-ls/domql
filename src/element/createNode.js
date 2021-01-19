@@ -5,9 +5,8 @@ import cacheNode from './cache'
 
 import { exec, isFunction, isObject } from '../utils'
 import {
-  applyDefined,
-  throughDefine,
-  throughTransform,
+  throughInitialDefine,
+  throughInitialExec,
   applyEvents
 } from './iterate'
 import { registry } from './params'
@@ -40,16 +39,13 @@ const createNode = (element) => {
 
   if (ENV === 'test' || ENV === 'development') node.ref = element
 
-  // run iteration for params which are under define
-  if (element.define && isObject(element.define)) applyDefined(element)
-
   // iterate through all given params
   if (element.tag !== 'string' || element.tag !== 'fragment') {
-    // iterate through transform
-    if (isObject(element.transform)) throughTransform(element)
-
     // iterate through define
-    if (isObject(element.define)) throughDefine(element)
+    if (isObject(element.define)) throughInitialDefine(element)
+
+    // iterate through exec
+    throughInitialExec(element)
 
     // apply events
     if (isNewNode && isObject(element.on)) applyEvents(element)
@@ -59,17 +55,11 @@ const createNode = (element) => {
 
       if (isMethod(param) || isObject(registry[param]) || prop === undefined) continue
 
-      if (isFunction(prop)) {
-        element.__exec[param] = prop
-        element[param] = exec(prop, element)
-      }
-
       const hasDefined = element.define && element.define[param]
       const ourParam = registry[param]
 
       if (ourParam) { // Check if param is in our method registry
         if (isFunction(ourParam)) ourParam(prop, element, node)
-        if (param === 'style') registry.class(element.class, element, node)
       } else if (element[param] && !hasDefined) {
         create(prop, element, param) // Create element
       }

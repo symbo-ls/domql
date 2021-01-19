@@ -30,6 +30,17 @@ export const map = (obj, extention, element) => {
   }
 }
 
+export const merge = (element, obj) => {
+  for (const e in obj) {
+    const elementProp = element[e]
+    const objProp = obj[e]
+    if (elementProp === undefined) {
+      element[e] = objProp
+    }
+  }
+  return element
+}
+
 export const deepMerge = (element, proto) => {
   for (const e in proto) {
     const elementProp = element[e]
@@ -71,13 +82,34 @@ export const deepClone = (obj) => {
 /**
  * Overwrites object properties with another
  */
-export const overwrite = (obj, params) => {
+export const overwrite = (element, params, options) => {
+  const changes = {}
+
+  for (const e in params) {
+    const elementProp = element[e]
+    const paramsProp = params[e]
+
+    if (paramsProp) {
+      element.__cached[e] = changes[e] = elementProp
+      element[e] = paramsProp
+    }
+
+    if (options.cleanExec) delete element.__exec[e]
+  }
+
+  return changes
+}
+
+/**
+ * Overwrites DEEPly object properties with another
+ */
+export const overwriteDeep = (obj, params) => {
   for (const e in params) {
     if (e === 'node') continue
     const objProp = obj[e]
     const paramsProp = params[e]
     if (isObjectLike(objProp) && isObjectLike(paramsProp)) {
-      overwrite(objProp, paramsProp)
+      overwriteDeep(objProp, paramsProp)
     } else if (paramsProp !== undefined) {
       obj[e] = paramsProp
     }

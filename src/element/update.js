@@ -1,54 +1,71 @@
 'use strict'
 
-import { overwrite, exec, isFunction, isObject } from '../utils'
+import { overwrite, isFunction, isObject, isString, isNumber } from '../utils'
 import { registry } from './params'
 import * as on from '../event/on'
 import { isMethod } from './methods'
+import { throughUpdatedDefine, throughUpdatedExec } from './iterate'
+import { merge, overwriteDeep } from '../utils/object'
 
-const update = function (params = {}) {
+const UPDATE_DEFAULT_OPTIONS = {
+  changes: true,
+  cleanExec: true
+}
+
+const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
   const element = this
-  const { node, state, __exec, define } = element
 
   if (isFunction(element.if) && !element.if(element, element.state)) return
 
-  // If element is string
-  if (typeof params === 'string' || typeof params === 'number') {
+  // if element is string
+  if (isString(params) || isNumber(params)) {
     params = { text: params }
   }
 
-  // console.log(params, element)
+  iterate(element, params, options)
 
-  overwrite(element, params)
+  return this
+}
 
-  if (typeof element === 'string') return
+const iterate = (element, params = {}, options) => {
+  const { node, define } = element
+
+  const overwriteChanges = overwrite(element, params, options)
+  const execChanges = throughUpdatedExec(element)
+  const definedChanges = throughUpdatedDefine(element)
+
+  const changes = merge(definedChanges, merge(execChanges, overwriteChanges))
 
   for (const param in element) {
-    let prop = element[param]
+    const prop = element[param]
 
     if (isMethod(param) || isObject(registry[param]) || prop === undefined) continue
 
-    const hasExec = __exec && __exec[param]
-    if (hasExec) element[param] = prop = hasExec(element, state)
-
     const hasDefined = define && define[param]
-    if (hasDefined) element[param] = prop = hasDefined(prop, element, state)
-
-    const execParam = exec(params[param], element)
     const ourParam = registry[param]
+
     if (ourParam) {
       if (isFunction(ourParam)) ourParam(prop, element, node)
-      if (param === 'style') registry.class(element.class, element, node)
     } else if (prop && !hasDefined) {
-      update.call(prop, execParam)
+      iterate(prop, params[prop], options)
     }
   }
 
-  // run onUpdate
+  if (options.changes && element.__changes) element.__changes.push(changes)
+
+  runOnUpdate(element)
+}
+
+const runOnUpdate = function (element) {
   if (element.on && isFunction(element.on.update)) {
     on.update(element.on.update, element)
   }
+}
 
-  return this
+export const updateState = function (obj) {
+  const state = this
+  overwriteDeep(state, obj)
+  state.__element.update()
 }
 
 export default update

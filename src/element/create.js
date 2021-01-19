@@ -7,10 +7,10 @@ import { applyPrototype } from './proto'
 import ID from './id'
 import nodes from './nodes'
 import set from './set'
-import update from './update'
+import update, { updateState } from './update'
 import * as on from '../event/on'
 import { assignClass } from './params/classList'
-import { isFunction } from '../utils'
+import { isFunction, isNumber, isString } from '../utils'
 import { remove, lookup, log, keys } from './methods'
 // import { overwrite, clone, fillTheRest } from '../utils'
 
@@ -34,7 +34,7 @@ const create = (element, parent, key) => {
   const assignedKey = element.key || key || ID.next().value
 
   // if element is STRING
-  if (typeof element === 'string' || typeof element === 'number') {
+  if (isString(element) || isNumber(element)) {
     element = {
       text: element,
       tag: (!element.proto && parent.childProto && parent.childProto.tag) ||
@@ -71,16 +71,21 @@ const create = (element, parent, key) => {
   // enable TRANSFORM in data
   if (!element.transform) element.transform = {}
 
-  // enable CACHING in data
+  // enable CACHING
   if (!element.__cached) element.__cached = {}
 
-  // enable TRANSFORM in data
+  // enable EXEC
   if (!element.__exec) element.__exec = {}
+
+  // enable CHANGES storing
+  if (!element.__changes) element.__changes = []
 
   // enable STATE
   if (!element.state) {
-    element.state = parent.state || {}
-    element.__isOwnState = false
+    element.state = parent.state
+  } else {
+    element.state.__element = element
+    element.state.update = updateState
   }
 
   // don't render IF in condition

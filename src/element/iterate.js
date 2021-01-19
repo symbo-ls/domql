@@ -1,13 +1,7 @@
 'use strict'
 
-import { exec, isFunction } from '../utils'
-
-export const applyDefined = (element, force) => {
-  for (const param in element.define) {
-    // if (!element[param]) element[param] = element.define[param](void 0, element)
-    if (!element[param]) element[param] = element.define[param](undefined, element)
-  }
-}
+import { isFunction } from '../utils'
+import { isMethod } from './methods'
 
 export const applyEvents = element => {
   const { node, on } = element
@@ -27,33 +21,48 @@ export const applyEvents = element => {
   }
 }
 
-export const throughDefine = (element) => {
+export const throughInitialExec = element => {
+  for (const param in element) {
+    const prop = element[param]
+    if (isFunction(prop) && !isMethod(param)) {
+      element.__exec[param] = prop
+      element[param] = prop(element, element.state)
+    }
+  }
+}
+
+export const throughUpdatedExec = element => {
+  const { __exec } = element
+  const changes = {}
+
+  for (const param in __exec) {
+    const prop = element[param]
+    const newExec = __exec[param](element, element.state)
+    if (newExec !== prop) {
+      element.__cached[param] = changes[param] = prop
+      element[param] = newExec
+    }
+  }
+
+  return changes
+}
+
+export const throughInitialDefine = element => {
   const { define } = element
   for (const param in define) {
-    let prop = element[param]
-    if (isFunction(prop)) {
-      element.__exec[param] = prop
-      prop = exec(prop, element)
-    }
+    const prop = element[param]
     element.__cached[param] = prop
     element[param] = define[param](prop, element, element.state)
   }
   return element
 }
 
-export const throughTransform = element => {
-  const { transform } = element
-  for (const param in transform) {
-    let execParam = exec(element[param], element)
-    if (element.__cached[param]) {
-      execParam = exec(element.__cached[param], element)
-    } else {
-      execParam = exec(element[param], element)
-      element.__cached[param] = execParam
-    }
-    element[param] = transform[param](execParam, element)
+export const throughUpdatedDefine = element => {
+  const { define } = element
+  const changes = {}
+  for (const param in define) {
+    const prop = element[param]
+    element[param] = define[param](prop, element, element.state)
   }
-}
-
-export const throughRegisteredParams = element => {
+  return changes
 }
