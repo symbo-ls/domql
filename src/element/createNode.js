@@ -3,7 +3,7 @@
 import create from './create'
 import cacheNode from './cache'
 
-import { exec, isFunction, isObject } from '../utils'
+import { isFunction, isObject } from '../utils'
 import {
   throughInitialDefine,
   throughInitialExec,

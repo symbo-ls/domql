@@ -82,10 +82,20 @@ const create = (element, parent, key) => {
 
   // enable STATE
   if (!element.state) {
-    element.state = parent.state
+    element.state = parent.state || {}
   } else {
     element.state.__element = element
     element.state.update = updateState
+    element.state.pure = function () {
+      const state = this
+      const pureState = {}
+      for (const param in state) {
+        if (param !== '__element' || param !== 'update' || param !== 'pure') {
+          pureState[param] = state[param]
+        }
+      }
+      return pureState
+    }
   }
 
   // don't render IF in condition

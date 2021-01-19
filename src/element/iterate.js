@@ -1,6 +1,6 @@
 'use strict'
 
-import { isFunction } from '../utils'
+import { exec, isFunction } from '../utils'
 import { isMethod } from './methods'
 
 export const applyEvents = element => {
@@ -50,7 +50,7 @@ export const throughUpdatedExec = element => {
 export const throughInitialDefine = element => {
   const { define } = element
   for (const param in define) {
-    const prop = element[param]
+    const prop = exec(element[param], element)
     element.__cached[param] = prop
     element[param] = define[param](prop, element, element.state)
   }
@@ -61,8 +61,9 @@ export const throughUpdatedDefine = element => {
   const { define } = element
   const changes = {}
   for (const param in define) {
-    const prop = element[param]
-    element[param] = define[param](prop, element, element.state)
+    // const prop = exec(element[param], element)
+    const cached = exec(element.__cached[param], element)
+    element[param] = define[param](cached, element, element.state)
   }
   return changes
 }

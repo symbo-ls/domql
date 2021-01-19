@@ -30,6 +30,8 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
 const iterate = (element, params = {}, options) => {
   const { node, define } = element
 
+  if (isFunction(element.if) && !element.if(element, element.state)) return
+
   const overwriteChanges = overwrite(element, params, options)
   const execChanges = throughUpdatedExec(element)
   const definedChanges = throughUpdatedDefine(element)
@@ -46,7 +48,7 @@ const iterate = (element, params = {}, options) => {
 
     if (ourParam) {
       if (isFunction(ourParam)) ourParam(prop, element, node)
-    } else if (prop && !hasDefined) {
+    } else if (prop && isObject(prop) && !hasDefined) {
       iterate(prop, params[prop], options)
     }
   }
