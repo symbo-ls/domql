@@ -7,11 +7,12 @@ import { applyPrototype } from './proto'
 import ID from './id'
 import nodes from './nodes'
 import set from './set'
-import update, { updateState } from './update'
+import update from './update'
 import * as on from '../event/on'
 import { assignClass } from './params/classList'
 import { isFunction, isNumber, isString } from '../utils'
 import { remove, lookup, log, keys } from './methods'
+import { pureState, updateState } from './params/state'
 // import { overwrite, clone, fillTheRest } from '../utils'
 
 /**
@@ -86,16 +87,7 @@ const create = (element, parent, key) => {
   } else {
     element.state.__element = element
     element.state.update = updateState
-    element.state.pure = function () {
-      const state = this
-      const pureState = {}
-      for (const param in state) {
-        if (param !== '__element' || param !== 'update' || param !== 'pure') {
-          pureState[param] = state[param]
-        }
-      }
-      return pureState
-    }
+    element.state.pure = pureState
   }
 
   // don't render IF in condition

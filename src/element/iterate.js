@@ -1,6 +1,6 @@
 'use strict'
 
-import { exec, isFunction } from '../utils'
+import { exec, isFunction, isNumber, isString, overwrite } from '../utils'
 import { isMethod } from './methods'
 
 export const applyEvents = element => {
@@ -31,14 +31,18 @@ export const throughInitialExec = element => {
   }
 }
 
-export const throughUpdatedExec = element => {
+export const throughUpdatedExec = (element, options) => {
   const { __exec } = element
   const changes = {}
 
   for (const param in __exec) {
     const prop = element[param]
     const newExec = __exec[param](element, element.state)
-    if (newExec !== prop) {
+
+    // if element is string
+    if (prop && prop.node && (isString(newExec) || isNumber(newExec))) {
+      overwrite(prop, { text: newExec }, options)
+    } else if (newExec !== prop) {
       element.__cached[param] = changes[param] = prop
       element[param] = newExec
     }
@@ -50,7 +54,13 @@ export const throughUpdatedExec = element => {
 export const throughInitialDefine = element => {
   const { define } = element
   for (const param in define) {
-    const prop = exec(element[param], element)
+    let prop = element[param]
+
+    if (isFunction(prop) && !isMethod(param)) {
+      element.__exec[param] = prop
+      element[param] = prop = exec(prop, element)
+    }
+
     element.__cached[param] = prop
     element[param] = define[param](prop, element, element.state)
   }

@@ -33,7 +33,7 @@ const iterate = (element, params = {}, options) => {
   if (isFunction(element.if) && !element.if(element, element.state)) return
 
   const overwriteChanges = overwrite(element, params, options)
-  const execChanges = throughUpdatedExec(element)
+  const execChanges = throughUpdatedExec(element, options)
   const definedChanges = throughUpdatedDefine(element)
 
   const changes = merge(definedChanges, merge(execChanges, overwriteChanges))
