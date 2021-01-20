@@ -23,6 +23,7 @@ export default function (element) {
   let { state } = element
   if (!state) return element.parent.state || {}
   if (isFunction(state)) state = exec(state, element)
+
   state = deepClone(state)
   state.__element = element
   state.update = updateState
