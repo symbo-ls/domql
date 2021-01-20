@@ -14,23 +14,14 @@ const UPDATE_DEFAULT_OPTIONS = {
 
 const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
   const element = this
-
-  if (isFunction(element.if) && !element.if(element, element.state)) return
-
-  // if element is string
-  if (isString(params) || isNumber(params)) {
-    params = { text: params }
-  }
-
-  iterate(element, params, options)
-
-  return this
-}
-
-const iterate = (element, params = {}, options) => {
   const { node, define } = element
 
   if (isFunction(element.if) && !element.if(element, element.state)) return
+
+  // if params is string
+  if (isString(params) || isNumber(params)) {
+    params = { text: params }
+  }
 
   const overwriteChanges = overwrite(element, params, options)
   const execChanges = throughUpdatedExec(element, options)
@@ -49,7 +40,7 @@ const iterate = (element, params = {}, options) => {
     if (ourParam) {
       if (isFunction(ourParam)) ourParam(prop, element, node)
     } else if (prop && isObject(prop) && !hasDefined) {
-      iterate(prop, params[prop], options)
+      update.call(prop, params[prop], options)
     }
   }
 
