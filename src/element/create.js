@@ -7,12 +7,12 @@ import { applyPrototype } from './proto'
 import ID from './id'
 import nodes from './nodes'
 import set from './set'
+import createState from './state'
 import update from './update'
 import * as on from '../event/on'
 import { assignClass } from './params/classList'
 import { isFunction, isNumber, isString } from '../utils'
 import { remove, lookup, log, keys } from './methods'
-import { pureState, updateState } from './params/state'
 // import { overwrite, clone, fillTheRest } from '../utils'
 
 /**
@@ -81,17 +81,11 @@ const create = (element, parent, key) => {
   // enable CHANGES storing
   if (!element.__changes) element.__changes = []
 
-  // enable STATE
-  if (!element.state) {
-    element.state = parent.state || {}
-  } else {
-    element.state.__element = element
-    element.state.update = updateState
-    element.state.pure = pureState
-  }
-
   // don't render IF in condition
   if (isFunction(element.if) && !element.if(element)) return
+
+  // enable STATE
+  element.state = createState(element)
 
   // CREATE a real NODE
   createNode(element)

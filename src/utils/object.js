@@ -67,11 +67,10 @@ export const clone = obj => {
 /**
  * Deep cloning of object
  */
-export const deepClone = (obj) => {
+export const deepClone = (obj, excluding = ['parent', 'node']) => {
   const o = {}
   for (const prop in obj) {
-    if (prop === 'parent') continue
-    if (prop === 'node') continue
+    if (excluding.indexOf(prop) > -1) continue
     const objProp = obj[prop]
     if (isObject(objProp)) o[prop] = deepClone(objProp)
     else o[prop] = objProp
@@ -103,9 +102,9 @@ export const overwrite = (element, params, options) => {
 /**
  * Overwrites DEEPly object properties with another
  */
-export const overwriteDeep = (obj, params) => {
+export const overwriteDeep = (obj, params, excluding = ['node']) => {
   for (const e in params) {
-    if (e === 'node') continue
+    if (excluding.indexOf(e) > -1) continue
     const objProp = obj[e]
     const paramsProp = params[e]
     if (isObjectLike(objProp) && isObjectLike(paramsProp)) {

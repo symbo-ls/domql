@@ -5,7 +5,7 @@ import { registry } from './params'
 import * as on from '../event/on'
 import { isMethod } from './methods'
 import { throughUpdatedDefine, throughUpdatedExec } from './iterate'
-import { merge, overwriteDeep } from '../utils/object'
+import { merge } from '../utils/object'
 
 const UPDATE_DEFAULT_OPTIONS = {
   changes: true,
@@ -62,12 +62,6 @@ const runOnUpdate = function (element) {
   if (element.on && isFunction(element.on.update)) {
     on.update(element.on.update, element)
   }
-}
-
-export const updateState = function (obj) {
-  const state = this
-  overwriteDeep(state, obj)
-  state.__element.update()
 }
 
 export default update
