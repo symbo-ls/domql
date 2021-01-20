@@ -41,11 +41,11 @@ const createNode = (element) => {
 
   // iterate through all given params
   if (element.tag !== 'string' || element.tag !== 'fragment') {
-    // iterate through exec
-    throughInitialExec(element)
-
     // iterate through define
     if (isObject(element.define)) throughInitialDefine(element)
+
+    // iterate through exec
+    throughInitialExec(element)
 
     // apply events
     if (isNewNode && isObject(element.on)) applyEvents(element)

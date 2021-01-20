@@ -71,7 +71,6 @@ export const throughUpdatedDefine = element => {
   const { define } = element
   const changes = {}
   for (const param in define) {
-    // const prop = exec(element[param], element)
     const cached = exec(element.__cached[param], element)
     element[param] = define[param](cached, element, element.state)
   }

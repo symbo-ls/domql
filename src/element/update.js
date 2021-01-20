@@ -34,9 +34,9 @@ const iterate = (element, params = {}, options) => {
 
   const overwriteChanges = overwrite(element, params, options)
   const execChanges = throughUpdatedExec(element, options)
-  const definedChanges = throughUpdatedDefine(element)
+  // const definedChanges = throughUpdatedDefine(element)
 
-  const changes = merge(definedChanges, merge(execChanges, overwriteChanges))
+  // const changes = merge(definedChanges, merge(execChanges, overwriteChanges))
 
   for (const param in element) {
     const prop = element[param]
@@ -53,7 +53,7 @@ const iterate = (element, params = {}, options) => {
     }
   }
 
-  if (options.changes && element.__changes) element.__changes.push(changes)
+  // if (options.changes && element.__changes) element.__changes.push(changes)
 
   runOnUpdate(element)
 }
