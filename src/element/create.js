@@ -81,11 +81,11 @@ const create = (element, parent, key) => {
   // enable CHANGES storing
   if (!element.__changes) element.__changes = []
 
-  // don't render IF in condition
-  if (isFunction(element.if) && !element.if(element)) return
-
   // enable STATE
   element.state = createState(element)
+
+  // don't render IF in condition
+  if (isFunction(element.if) && !element.if(element, element.state)) return
 
   // CREATE a real NODE
   createNode(element)

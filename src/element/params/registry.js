@@ -32,6 +32,7 @@ export default {
   __defined: {},
   __exec: {},
   __changes: {},
+  __trash: {},
   key: {},
   tag: {},
   parent: {},

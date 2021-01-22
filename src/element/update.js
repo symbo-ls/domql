@@ -6,6 +6,8 @@ import * as on from '../event/on'
 import { isMethod } from './methods'
 import { throughUpdatedDefine, throughUpdatedExec } from './iterate'
 import { merge } from '../utils/object'
+import cacheNode from './cache'
+import { appendNode } from './assign'
 
 const UPDATE_DEFAULT_OPTIONS = {
   changes: true,
@@ -14,9 +16,8 @@ const UPDATE_DEFAULT_OPTIONS = {
 
 const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
   const element = this
-  const { node, define } = element
-
-  if (isFunction(element.if) && !element.if(element, element.state)) return
+  const { define } = element
+  let { node } = element
 
   // if params is string
   if (isString(params) || isNumber(params)) {
@@ -26,6 +27,20 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
   const overwriteChanges = overwrite(element, params, options)
   const execChanges = throughUpdatedExec(element, options)
   const definedChanges = throughUpdatedDefine(element)
+
+  if (Object.prototype.hasOwnProperty.call(element, 'if')) {
+    // TODO: trash and insertbefore
+    if (element.if === true && !element.node) {
+      element.node = node = cacheNode(element)
+      appendNode(node, element.parent.node)
+    } else if (element.if === false && element.node) {
+      delete element.node
+      node.remove()
+      return
+    }
+  }
+
+  if (!node) return
 
   const changes = merge(definedChanges, merge(execChanges, overwriteChanges))
 
