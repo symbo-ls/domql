@@ -42,7 +42,10 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
 
   if (!node) return
 
-  const changes = merge(definedChanges, merge(execChanges, overwriteChanges))
+  if (options.changes && element.__changes) {
+    const changes = merge(definedChanges, merge(execChanges, overwriteChanges))
+    element.__changes.push(changes)
+  }
 
   for (const param in element) {
     const prop = element[param]
@@ -59,12 +62,6 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     }
   }
 
-  if (options.changes && element.__changes) element.__changes.push(changes)
-
-  runOnUpdate(element)
-}
-
-const runOnUpdate = function (element) {
   if (element.on && isFunction(element.on.update)) {
     on.update(element.on.update, element)
   }

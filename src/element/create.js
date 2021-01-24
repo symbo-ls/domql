@@ -12,8 +12,10 @@ import update from './update'
 import * as on from '../event/on'
 import { assignClass } from './params/classList'
 import { isFunction, isNumber, isString } from '../utils'
-import { remove, lookup, log, keys } from './methods'
+import { remove, lookup, log, keys, parse } from './methods'
 // import { overwrite, clone, fillTheRest } from '../utils'
+
+const ENV = process.env.NODE_ENV
 
 /**
  * Creating a domQL element using passed parameters
@@ -47,8 +49,10 @@ const create = (element, parent, key) => {
   applyPrototype(element, parent)
 
   // set the PATH
-  if (!parent.path) parent.path = []
-  element.path = parent.path.concat(assignedKey)
+  if (ENV === 'test' || ENV === 'development') {
+    if (!parent.path) parent.path = []
+    element.path = parent.path.concat(assignedKey)
+  }
 
   // if it already HAS A NODE
   if (element.node) {
@@ -66,8 +70,11 @@ const create = (element, parent, key) => {
   element.update = update
   element.remove = remove
   element.lookup = lookup
-  element.keys = keys
-  element.log = log
+  if (ENV === 'test' || ENV === 'development') {
+    element.keys = keys
+    element.parse = parse
+    element.log = log
+  }
 
   // enable TRANSFORM in data
   if (!element.transform) element.transform = {}

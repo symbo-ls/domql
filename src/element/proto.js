@@ -2,6 +2,8 @@
 
 import { deepMerge, mergeAndCloneIfArray, mergeIfExisted, mergeArray, flattenRecursive } from '../utils'
 
+const ENV = process.env.NODE_ENV
+
 /**
  * Checks whether element has `proto` or is a part
  * of parent's `childProto` prototype
@@ -9,7 +11,7 @@ import { deepMerge, mergeAndCloneIfArray, mergeIfExisted, mergeArray, flattenRec
 export const applyPrototype = (element, parent) => {
   // merge if proto is array
   const proto = mergeAndCloneIfArray(element.proto)
-  delete element.proto
+  if (ENV !== 'test' && ENV !== 'development') delete element.proto
   let childProto
 
   if (parent) {

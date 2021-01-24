@@ -7,7 +7,7 @@ export default (params, element, node) => {
 
   if (isObject(state)) {
     for (const param in state) {
-      if (param === 'update' || param === '__element' || param === 'pure') continue
+      if (param === 'update' || param === '__element' || param === 'parse') continue
       element.state[param] = exec(state[param], element)
     }
   }

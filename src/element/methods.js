@@ -36,24 +36,33 @@ export const update = function () {
 export const defineSetter = (element, key, get, set) =>
   Object.defineProperty(element, key, { get, set })
 
-export const log = function (...args) {
-  const element = this
-  const newArgs = []
-  for (const param in args) {
-    const key = args[param]
-    if (key === '*' || key === undefined) {
-      const obj = {}
-      element.keys().map(v => (obj[v] = element[v]))
-      newArgs.push(obj)
-    } else newArgs.push(element[key])
-  }
-}
-
 export const keys = function () {
   const element = this
   const keys = []
   for (const param in element) if (!isObject(registry[param])) keys.push(param)
   return keys
+}
+
+export const parse = function () {
+  const element = this
+  const obj = {}
+  const keys = element.keys()
+  keys.forEach(v => (obj[v] = element[v]))
+  return obj
+}
+
+export const log = function (...args) {
+  const element = this
+  console.group(element.key)
+  if (args.length) {
+    args.forEach(v => console.log(`%c${v}:\n`, 'font-weight: bold', element[v]))
+  } else {
+    console.log(element.path)
+    const keys = element.keys()
+    keys.forEach(v => console.log(`%c${v}:\n`, 'font-weight: bold', element[v]))
+  }
+  console.groupEnd(element.key)
+  return element
 }
 
 export const isMethod = function (param) {
@@ -62,5 +71,6 @@ export const isMethod = function (param) {
     param === 'remove' ||
     param === 'lookup' ||
     param === 'keys' ||
+    param === 'parse' ||
     param === 'log'
 }
