@@ -25,7 +25,7 @@ Key features:
   - [x] with state
 - [x] update
   - [x] set (recreate)
-  - [ ] change what's in diff
+  - [ ] only iterate with diff
 - [x] events
   - [x] event handling
   - [ ] bubbling and propogation
