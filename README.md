@@ -19,10 +19,10 @@ Key features:
 - [x] create
   - [x] create using prototype class
   - [x] support multiple level prototypes
-- [ ] state
-- [ ] binding
-  - [ ] with other component
-  - [ ] with state
+- [x] state
+- [x] binding
+  - [x] with other component
+  - [x] with state
 - [x] update
   - [x] set (recreate)
   - [ ] change what's in diff
