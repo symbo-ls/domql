@@ -1,5 +1,6 @@
 'use strict'
 
+import { exec, isObject } from '../../utils'
 import Report from '../../utils/report'
 
 /**
@@ -8,11 +9,13 @@ import Report from '../../utils/report'
  */
 export default (params, element, node) => {
   if (params && params.showOnNode) {
-    if (!(typeof params === 'object')) Report('HTMLInvalidData', params)
+    if (!isObject(params)) Report('HTMLInvalidData', params)
 
     // Apply data params on node
     for (const dataset in params) {
-      if (dataset !== 'showOnNode') { node.dataset[dataset] = params[dataset] }
+      if (dataset !== 'showOnNode') {
+        node.dataset[dataset] = exec(params[dataset], element)
+      }
     }
   }
 }
