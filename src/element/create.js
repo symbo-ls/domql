@@ -28,11 +28,6 @@ const create = (element, parent, key) => {
   if (element === undefined) element = {}
   if (element === null) return
 
-  // run `on.init`
-  if (element.on && isFunction(element.on.init)) {
-    on.init(element.on.init, element)
-  }
-
   // define KEY
   const assignedKey = element.key || key || ID.next().value
 
@@ -76,6 +71,11 @@ const create = (element, parent, key) => {
     element.log = log
   }
 
+  // run `on.init`
+  if (element.on && isFunction(element.on.init)) {
+    on.init(element.on.init, element, element.state)
+  }
+
   // enable TRANSFORM in data
   if (!element.transform) element.transform = {}
 
@@ -102,7 +102,7 @@ const create = (element, parent, key) => {
 
   // run `on.render`
   if (element.on && isFunction(element.on.render)) {
-    on.render(element.on.render, element)
+    on.render(element.on.render, element, element.state)
   }
 
   return element

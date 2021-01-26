@@ -24,6 +24,10 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     params = { text: params }
   }
 
+  if (element.on && isFunction(element.on.initUpdate)) {
+    on.initUpdate(element.on.initUpdate, element, element.state)
+  }
+
   const overwriteChanges = overwrite(element, params, options)
   const execChanges = throughUpdatedExec(element, options)
   const definedChanges = throughUpdatedDefine(element)
@@ -63,7 +67,7 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
   }
 
   if (element.on && isFunction(element.on.update)) {
-    on.update(element.on.update, element)
+    on.update(element.on.update, element, element.state)
   }
 }
 

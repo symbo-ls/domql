@@ -1,5 +1,6 @@
 'use strict'
 
+import { on } from '../event'
 import { deepClone, exec, isFunction, overwriteDeep } from '../utils'
 
 export const parseState = function () {
@@ -13,10 +14,17 @@ export const parseState = function () {
   return parseState
 }
 
-export const updateState = function (obj) {
+export const updateState = function (obj, options = {}) {
   const state = this
+  const element = state.__element
   overwriteDeep(state, obj, ['update', 'parse', '__element'])
-  this.__element.update()
+
+  if (!options.preventUpdate) element.update()
+
+  // run `on.init`
+  if (element.on && isFunction(element.on.state)) {
+    on.init(element.on.state, element, state)
+  }
 }
 
 export default function (element) {

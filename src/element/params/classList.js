@@ -28,7 +28,7 @@ export default (params, element, node) => {
   if (!params) return
   const { key } = element
   if (params === true) params = element.class = { key }
-  if (isString(params)) element.class = { default: params }
+  if (isString(params)) params = element.class = { default: params }
   if (isObject(params)) params = classify(params, element)
   // TODO: fails on string
   const className = params.replace(/\s+/g, ' ').trim()
