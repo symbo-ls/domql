@@ -33,5 +33,5 @@ export default (params, element, node) => {
   // TODO: fails on string
   const className = params.replace(/\s+/g, ' ').trim()
   node.classList = className
-  return element
+  return className
 }

@@ -33,9 +33,10 @@ const createNode = (element) => {
   let isNewNode
   if (!node) {
     isNewNode = true
-    node = cacheNode(element)
-    element.node = node
+    node = element.node = cacheNode(element)
   }
+
+  // node.dataset // .key = element.key
 
   if (ENV === 'test' || ENV === 'development') node.ref = element
 

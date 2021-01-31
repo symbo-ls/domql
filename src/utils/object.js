@@ -71,7 +71,8 @@ export const deepClone = (obj, excluding = ['parent', 'node']) => {
   const o = {}
   for (const prop in obj) {
     if (excluding.indexOf(prop) > -1) continue
-    const objProp = obj[prop]
+    let objProp = obj[prop]
+    if (prop === 'proto' && isArray(objProp)) objProp = mergeArray(objProp)
     if (isObjectLike(objProp)) o[prop] = deepClone(objProp)
     else o[prop] = objProp
   }
@@ -134,7 +135,9 @@ export const mergeArray = arr => {
 /**
  * Merges array prototypes
  */
-export const mergeAndCloneIfArray = obj => isArray(obj) ? mergeArray(obj) : deepClone(obj)
+export const mergeAndCloneIfArray = obj => {
+  return isArray(obj) ? mergeArray(obj) : deepClone(obj)
+}
 
 /**
  * Overwrites object properties with another
