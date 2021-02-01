@@ -1,7 +1,8 @@
 'use strict'
 
 export const isObject = arg => {
-  return typeof arg === 'object' && arg.constructor === Object
+  if (arg === null) return false
+  return (typeof arg === 'object') && (arg.constructor === Object)
 }
 
 export const isString = arg => typeof arg === 'string'
