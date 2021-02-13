@@ -1,5 +1,5 @@
 # DOMQL
-DOM rendering Javascript framework at early stage.
+DOM rendering Javascript framework.
 
 - Minimalistic
 - No dependencies
