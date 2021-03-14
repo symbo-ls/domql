@@ -9,7 +9,7 @@ import {
   throughInitialExec,
   applyEvents
 } from './iterate'
-import { registry } from './params'
+import { registry } from './mixins'
 import { isMethod } from './methods'
 // import { defineSetter } from './methods'
 

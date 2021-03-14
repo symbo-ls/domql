@@ -1,7 +1,7 @@
 'use strict'
 
 import { isObject } from '../utils'
-import { registry } from './params'
+import { registry } from './mixins'
 
 // TODO: update these files
 export const lookup = function (key) {

@@ -1,6 +1,6 @@
 'use strict'
 
-import { registry } from './params'
+import { registry } from './mixins'
 import { report } from '../utils'
 
 export default (params, options = {}) => {

@@ -15,14 +15,14 @@ export const applyPrototype = (element, parent) => {
 
   let childProto
   if (parent) {
-    // Assign parent reference to the element
+    // Assign parent attr to the element
     element.parent = parent
     childProto = parent && mergeAndCloneIfArray(parent.childProto)
   }
 
   if (!proto && !childProto) return element
 
-  // merge if both applied
+  // merge if both `proto` and `parent.childProto ` applied
   const mergedProto = mergeIfExisted(proto, childProto)
 
   // flatten inheritances into flat array
