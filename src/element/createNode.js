@@ -2,6 +2,7 @@
 
 import create from './create'
 import cacheNode from './cache'
+import * as on from '../event/on'
 
 import { isFunction, isObject } from '../utils'
 import {
@@ -29,11 +30,21 @@ const ENV = process.env.NODE_ENV
 
 const createNode = (element) => {
   // create and assign a node
-  let { node } = element
+  let { node, tag } = element
+
   let isNewNode
+
   if (!node) {
     isNewNode = true
-    node = element.node = cacheNode(element)
+
+    if (tag === 'shadow') {
+      node = element.node = element.parent.node.attachShadow({ mode: 'open' })
+    } else node = element.node = cacheNode(element)
+
+    // run `on.attachNode`
+    if (element.on && isFunction(element.on.attachNode)) {
+      on.attachNode(element.on.attachNode, element, element.state)
+    }
   }
 
   // node.dataset // .key = element.key

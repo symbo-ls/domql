@@ -12,6 +12,10 @@ export const initUpdate = (param, element, state) => {
   param(element, state)
 }
 
+export const attachNode = (param, element, state) => {
+  param(element, state)
+}
+
 export const update = (param, element, state) => {
   param(element, state)
 }

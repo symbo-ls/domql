@@ -10,7 +10,7 @@ import cacheNode from './cache'
 import { appendNode } from './assign'
 
 const UPDATE_DEFAULT_OPTIONS = {
-  changes: true,
+  stackChanges: false,
   cleanExec: true
 }
 
@@ -46,9 +46,9 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
 
   if (!node) return
 
-  if (options.changes && element.__changes) {
-    const changes = merge(definedChanges, merge(execChanges, overwriteChanges))
-    element.__changes.push(changes)
+  if (options.stackChanges && element.__stackChanges) {
+    const stackChanges = merge(definedChanges, merge(execChanges, overwriteChanges))
+    element.__stackChanges.push(stackChanges)
   }
 
   for (const param in element) {

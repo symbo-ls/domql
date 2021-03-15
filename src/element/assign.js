@@ -15,6 +15,8 @@ export const appendNode = (node, parentNode) => {
  */
 export const assignNode = (element, parent, key) => {
   parent[key || element.key] = element
-  appendNode(element.node, parent.node)
+  if (element.tag !== 'shadow') {
+    appendNode(element.node, parent.node)
+  }
   return element
 }
