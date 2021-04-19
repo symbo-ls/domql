@@ -28,10 +28,11 @@ Key features:
   - [x] with state
 - [x] update
   - [x] set (recreate)
-  - [ ] only iterate with diff
+  - [x] only iterate with diff
 - [x] events
   - [x] event handling
   - [ ] bubbling and propogation
+- [ ] run changes inside animationFrame
 
 ### Getting started
 
