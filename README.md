@@ -5,7 +5,7 @@ DOM rendering Javascript framework.
 - No dependencies
 - Extendable
 - No transpilations, simple ES6 code
-- One-time import only
+- One-time import and subtrees
 
 You can start with [starter-kit](https://github.com/rackai/starter-kit) as a boilerplate, or jump into the live editor [playground](https://rackai.github.io/playground/).
 
