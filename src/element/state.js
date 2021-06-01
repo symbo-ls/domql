@@ -21,9 +21,9 @@ export const updateState = function (obj, options = {}) {
 
   if (!options.preventUpdate) element.update()
 
-  // run `on.init`
-  if (element.on && isFunction(element.on.state)) {
-    on.init(element.on.state, element, state)
+  // run `on.stateChange`
+  if (element.on && isFunction(element.on.stateChange)) {
+    on.stateChange(element.on.stateChange, element, state)
   }
 }
 
@@ -34,8 +34,8 @@ export default function (element) {
 
   state = deepClone(state)
   state.__element = element
-  state.update = updateState
   state.parse = parseState
+  state.update = updateState
 
   return state
 }
