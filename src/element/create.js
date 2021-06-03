@@ -95,7 +95,7 @@ const create = (element, parent, key) => {
   // don't render IF in condition
   if (isFunction(element.if) && !element.if(element, element.state)) {
     // TODO: move as fragment
-    const ifFragment = cacheNode({ tag: 'div' })
+    const ifFragment = cacheNode({ tag: 'fragment' })
     element.__ifFragment = appendNode(ifFragment, parent.node)
     element.__ifFalsy = true
     return
