@@ -6,8 +6,8 @@ import * as on from '../event/on'
 import { isMethod } from './methods'
 import { throughUpdatedDefine, throughUpdatedExec } from './iterate'
 import { merge } from '../utils/object'
-import cacheNode from './cache'
 import { appendNode } from './assign'
+import { createNode } from '.'
 
 const UPDATE_DEFAULT_OPTIONS = {
   stackChanges: false,
@@ -17,7 +17,7 @@ const UPDATE_DEFAULT_OPTIONS = {
 const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
   const element = this
   const { define } = element
-  let { node } = element
+  const { node } = element
 
   // if params is string
   if (isString(params) || isNumber(params)) {
@@ -32,24 +32,27 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
   const execChanges = throughUpdatedExec(element, options)
   const definedChanges = throughUpdatedDefine(element)
 
-  if (Object.prototype.hasOwnProperty.call(element, 'if')) {
-    // TODO: trash and insertbefore
-    if (element.if === true && !element.node) {
-      element.node = node = cacheNode(element)
-      appendNode(node, element.parent.node)
-    } else if (element.if === false && element.node) {
-      delete element.node
-      node.remove()
-      return
-    }
-  }
-
-  if (!node) return
-
   if (options.stackChanges && element.__stackChanges) {
     const stackChanges = merge(definedChanges, merge(execChanges, overwriteChanges))
     element.__stackChanges.push(stackChanges)
   }
+
+  if (isFunction(element.if)) {
+    // TODO: move as fragment
+    const ifPassed = element.if(element, element.state)
+    if (element.__ifFalsy && ifPassed) {
+      console.log(element.if)
+      createNode(element)
+      appendNode(element.node, element.__ifFragment)
+      delete element.__ifFalsy
+      // return
+    } else if (element.node && !ifPassed) {
+      element.node.remove()
+      element.__ifFalsy = true
+    }
+  }
+
+  if (!node) return
 
   for (const param in element) {
     const prop = element[param]
