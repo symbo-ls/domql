@@ -2,7 +2,7 @@
 
 import root from './root'
 import createNode from './createNode'
-import { assignNode } from './assign'
+import { appendNode, assignNode } from './assign'
 import { applyPrototype } from './proto'
 import ID from './id'
 import nodes from './nodes'
@@ -13,6 +13,7 @@ import * as on from '../event/on'
 import { assignClass } from './mixins/classList'
 import { isFunction, isNumber, isString } from '../utils'
 import { remove, lookup, log, keys, parse } from './methods'
+import cacheNode from './cache'
 // import { overwrite, clone, fillTheRest } from '../utils'
 
 const ENV = process.env.NODE_ENV
@@ -96,7 +97,13 @@ const create = (element, parent, key, options = {}) => {
   element.state = createState(element)
 
   // don't render IF in condition
-  if (isFunction(element.if) && !element.if(element, element.state)) return
+  if (isFunction(element.if) && !element.if(element, element.state)) {
+    // TODO: move as fragment
+    const ifFragment = cacheNode({ tag: 'fragment' })
+    element.__ifFragment = appendNode(ifFragment, parent.node)
+    element.__ifFalsy = true
+    return
+  }
 
   // CREATE a real NODE
   createNode(element)

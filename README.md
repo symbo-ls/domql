@@ -5,9 +5,9 @@ DOM rendering Javascript framework.
 - No dependencies
 - Extendable
 - No transpilations, simple ES6 code
-- One-time import only
+- One-time import and subtrees
 
-You can start with [starter-kit](https://github.com/rackai/starter-kit) as a boilerplate, or jump into the live editor [playground](https://rackai.github.io/playground/).
+You can start with [starter-kit](https://github.com/rackai/starter-kit) as a boilerplate, or jump into the live editor [playground](https://domql.com/playground/).
 
 [![npm version](https://badge.fury.io/js/%40rackai%2Fdomql.svg)](https://badge.fury.io/js/%40rackai%2Fdomql)
 [![Build Status](https://travis-ci.org/rackai/domql.svg?branch=master)](https://travis-ci.org/rackai/domql)
@@ -28,10 +28,11 @@ Key features:
   - [x] with state
 - [x] update
   - [x] set (recreate)
-  - [ ] only iterate with diff
+  - [x] only iterate with diff
 - [x] events
   - [x] event handling
   - [ ] bubbling and propogation
+- [ ] run changes inside animationFrame
 
 ### Getting started
 

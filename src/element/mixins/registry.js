@@ -33,6 +33,8 @@ export default {
   __changes: {},
   __trash: {},
   __root: {},
+  __ifFragment: {},
+  __ifFalsy: {},
   key: {},
   tag: {},
   parent: {},
