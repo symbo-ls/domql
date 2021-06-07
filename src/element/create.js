@@ -1,6 +1,6 @@
 'use strict'
 
-import tree from './tree'
+import root from './root'
 import createNode from './createNode'
 import { assignNode } from './assign'
 import { applyPrototype } from './proto'
@@ -13,7 +13,6 @@ import * as on from '../event/on'
 import { assignClass } from './mixins/classList'
 import { isFunction, isNumber, isString } from '../utils'
 import { remove, lookup, log, keys, parse } from './methods'
-import root from './root'
 // import { overwrite, clone, fillTheRest } from '../utils'
 
 const ENV = process.env.NODE_ENV
@@ -41,12 +40,7 @@ const create = (element, parent, key, options = {}) => {
     }
   }
 
-  console.log('-----')
-  console.log(element)
-  console.log(parent)
-
   // create PROTOtypal inheritance
-  console.log('---proto')
   applyPrototype(element, parent, options)
 
   // set the PATH
@@ -56,7 +50,6 @@ const create = (element, parent, key, options = {}) => {
   }
 
   // if it already HAS A NODE
-  console.log('---assignNode')
   if (element.node) {
     return assignNode(element, parent, assignedKey)
   }
@@ -65,7 +58,6 @@ const create = (element, parent, key, options = {}) => {
   element.key = assignedKey
 
   // generate a CLASS name
-  console.log('---assignClass')
   assignClass(element)
 
   // assign METHODS
@@ -101,18 +93,15 @@ const create = (element, parent, key, options = {}) => {
   if (!element.__root) element.__root = hasRoot ? parent : parent.__root
 
   // enable STATE
-  console.log('---state')
   element.state = createState(element)
 
   // don't render IF in condition
   if (isFunction(element.if) && !element.if(element, element.state)) return
 
   // CREATE a real NODE
-  console.log('---node')
   createNode(element)
 
   // assign NODE
-  console.log('---assigm')
   assignNode(element, parent, key)
 
   // run `on.render`

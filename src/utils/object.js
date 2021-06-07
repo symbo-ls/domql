@@ -68,14 +68,15 @@ export const clone = obj => {
 /**
  * Deep cloning of object
  */
-export const deepClone = (obj, excluding = ['parent', 'node', '__element']) => {
+export const deepClone = (obj, excluding = ['parent', 'node', '__element', '__root']) => {
   const o = {}
   for (const prop in obj) {
     if (excluding.indexOf(prop) > -1) continue
     let objProp = obj[prop]
     if (prop === 'proto' && isArray(objProp)) objProp = mergeArray(objProp)
-    if (isObjectLike(objProp)) o[prop] = deepClone(objProp)
-    else o[prop] = objProp
+    if (isObjectLike(objProp)) {
+      o[prop] = deepClone(objProp)
+    } else o[prop] = objProp
   }
   return o
 }
@@ -137,7 +138,6 @@ export const mergeArray = arr => {
  * Merges array prototypes
  */
 export const mergeAndCloneIfArray = obj => {
-  console.log(obj)
   return isArray(obj) ? mergeArray(obj) : deepClone(obj)
 }
 

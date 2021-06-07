@@ -2,7 +2,6 @@
 
 import { on } from '../event'
 import { deepClone, exec, isFunction, overwriteDeep } from '../utils'
-import root from './root'
 
 export const parseState = function () {
   const state = this
@@ -33,7 +32,6 @@ export default function (element) {
   if (!state) return element.parent.state || {}
   if (isFunction(state)) state = exec(state, element)
 
-  console.log(state)
   state = deepClone(state, [])
   state.__element = element
   state.update = updateState
