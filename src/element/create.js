@@ -13,6 +13,7 @@ import * as on from '../event/on'
 import { assignClass } from './mixins/classList'
 import { isFunction, isNumber, isString } from '../utils'
 import { remove, lookup, log, keys, parse } from './methods'
+import root from './root'
 // import { overwrite, clone, fillTheRest } from '../utils'
 
 const ENV = process.env.NODE_ENV
@@ -20,9 +21,9 @@ const ENV = process.env.NODE_ENV
 /**
  * Creating a domQL element using passed parameters
  */
-const create = (element, parent, key) => {
+const create = (element, parent, key, options = {}) => {
   // if PARENT is not given
-  if (!parent) parent = tree
+  if (!parent) parent = root
 
   // if ELEMENT is not given
   if (element === undefined) element = {}
@@ -40,8 +41,13 @@ const create = (element, parent, key) => {
     }
   }
 
+  console.log('-----')
+  console.log(element)
+  console.log(parent)
+
   // create PROTOtypal inheritance
-  applyPrototype(element, parent)
+  console.log('---proto')
+  applyPrototype(element, parent, options)
 
   // set the PATH
   if (ENV === 'test' || ENV === 'development') {
@@ -50,6 +56,7 @@ const create = (element, parent, key) => {
   }
 
   // if it already HAS A NODE
+  console.log('---assignNode')
   if (element.node) {
     return assignNode(element, parent, assignedKey)
   }
@@ -58,6 +65,7 @@ const create = (element, parent, key) => {
   element.key = assignedKey
 
   // generate a CLASS name
+  console.log('---assignClass')
   assignClass(element)
 
   // assign METHODS
@@ -88,16 +96,23 @@ const create = (element, parent, key) => {
   // enable CHANGES storing
   if (!element.__changes) element.__changes = []
 
+  // enable CHANGES storing
+  const hasRoot = parent.parent && parent.parent.key === ':root'
+  if (!element.__root) element.__root = hasRoot ? parent : parent.__root
+
   // enable STATE
+  console.log('---state')
   element.state = createState(element)
 
   // don't render IF in condition
   if (isFunction(element.if) && !element.if(element, element.state)) return
 
   // CREATE a real NODE
+  console.log('---node')
   createNode(element)
 
   // assign NODE
+  console.log('---assigm')
   assignNode(element, parent, key)
 
   // run `on.render`

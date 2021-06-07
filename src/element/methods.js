@@ -72,5 +72,6 @@ export const isMethod = function (param) {
     param === 'lookup' ||
     param === 'keys' ||
     param === 'parse' ||
+    param === '__root' ||
     param === 'log'
 }

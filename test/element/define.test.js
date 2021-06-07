@@ -2,13 +2,13 @@
 
 import 'regenerator-runtime/runtime'
 import { create, define } from '../../src/element'
-import { registry } from '../../src/element/params'
+import { registry } from '../../src/element/mixins'
 
 define({
   stand: param => `stands ${param}min`
 }, { overwrite: false })
 
-var dude = create({
+const dude = create({
   walk: 84,
   define: {
     walk: param => `walks ${param}km`
@@ -16,6 +16,6 @@ var dude = create({
 })
 
 test('should SET element', () => {
-  expect(dude.walk).toBe(`walks 84km`)
-  expect(registry.stand(12)).toBe(`stands 12min`)
+  expect(dude.walk).toBe('walks 84km')
+  expect(registry.stand(12)).toBe('stands 12min')
 })

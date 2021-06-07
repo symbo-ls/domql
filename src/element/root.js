@@ -2,6 +2,9 @@
 
 import { report } from '../utils'
 
-export default {
+const root = {
+  key: ':root',
   node: document ? document.body : report('DocumentNotDefined', document)
 }
+
+export default root

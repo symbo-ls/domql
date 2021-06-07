@@ -68,7 +68,7 @@ export const clone = obj => {
 /**
  * Deep cloning of object
  */
-export const deepClone = (obj, excluding = ['parent', 'node']) => {
+export const deepClone = (obj, excluding = ['parent', 'node', '__element']) => {
   const o = {}
   for (const prop in obj) {
     if (excluding.indexOf(prop) > -1) continue
@@ -104,7 +104,7 @@ export const overwrite = (element, params, options) => {
 /**
  * Overwrites DEEPly object properties with another
  */
-export const overwriteDeep = (obj, params, excluding = ['node']) => {
+export const overwriteDeep = (obj, params, excluding = ['node', '__root']) => {
   for (const e in params) {
     if (excluding.indexOf(e) > -1) continue
     const objProp = obj[e]
@@ -137,6 +137,7 @@ export const mergeArray = arr => {
  * Merges array prototypes
  */
 export const mergeAndCloneIfArray = obj => {
+  console.log(obj)
   return isArray(obj) ? mergeArray(obj) : deepClone(obj)
 }
 
