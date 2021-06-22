@@ -17,13 +17,18 @@ export const parseState = function () {
 export const updateState = function (obj, options = {}) {
   const state = this
   const element = state.__element
-  overwriteDeep(state, obj, ['update', 'parse', '__element'])
 
+  // run `on.stateUpdated`
+  if (element.on && isFunction(element.on.initStateUpdated)) {
+    on.initStateUpdated(element.on.initStateUpdated, element, state)
+  }
+
+  overwriteDeep(state, obj, ['update', 'parse', '__element'])
   if (!options.preventUpdate) element.update()
 
-  // run `on.stateChange`
-  if (element.on && isFunction(element.on.stateChange)) {
-    on.stateChange(element.on.stateChange, element, state)
+  // run `on.stateUpdated`
+  if (element.on && isFunction(element.on.stateUpdated)) {
+    on.stateUpdated(element.on.stateUpdated, element, state)
   }
 }
 
@@ -36,6 +41,11 @@ export default function (element) {
   state.__element = element
   state.parse = parseState
   state.update = updateState
+
+  // run `on.stateCreated`
+  if (element.on && isFunction(element.on.stateCreated)) {
+    on.stateCreated(element.on.stateCreated, element, element.state)
+  }
 
   return state
 }

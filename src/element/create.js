@@ -96,6 +96,8 @@ const create = (element, parent, key, options = {}) => {
   // enable STATE
   element.state = createState(element)
 
+  if (!element.props) element.props = element.parent.props || {}
+
   // don't render IF in condition
   if (isFunction(element.if) && !element.if(element, element.state)) {
     // TODO: move as fragment
