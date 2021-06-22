@@ -1,6 +1,6 @@
 'use strict'
 
-import { exec, isFunction, isObject } from '../../utils'
+import { exec } from '../../utils'
 
 export default (params, element, node) => {
   element.props = exec(element.props, element)
