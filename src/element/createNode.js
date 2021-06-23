@@ -49,7 +49,10 @@ const createNode = (element) => {
 
   // node.dataset // .key = element.key
 
-  if (ENV === 'test' || ENV === 'development') node.ref = element
+  if (ENV === 'test' || ENV === 'development') {
+    node.ref = element
+    if (isFunction(node.setAttribute)) node.setAttribute('key', element.key)
+  }
 
   // iterate through all given params
   if (element.tag !== 'string' || element.tag !== 'fragment') {
