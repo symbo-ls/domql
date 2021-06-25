@@ -1,6 +1,6 @@
 'use strict'
 
-import { deepMerge, mergeAndCloneIfArray, mergeIfExisted, mergeArray, flattenRecursive } from '../utils'
+import { deepMerge, mergeAndCloneIfArray, mergeIfExisted, mergeArray, flattenRecursive, isFunction } from '../utils'
 
 const ENV = process.env.NODE_ENV
 
@@ -9,6 +9,8 @@ const ENV = process.env.NODE_ENV
  * of parent's `childProto` prototype
  */
 export const applyPrototype = (element, parent, options = {}) => {
+  if (isFunction(element)) element = exec(element, parent)
+
   // merge if proto is array
   const proto = mergeAndCloneIfArray(element.proto)
   if (ENV !== 'test' || ENV !== 'development') delete element.proto

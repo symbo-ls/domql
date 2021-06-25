@@ -13,7 +13,7 @@ export default (param, element, node) => {
   else {
     if (element.__text) {
       element.__text.text = prop
-      element.__text.node.nodeValue = prop
+      if (element.__text.node) element.__text.node.nodeValue = prop
     } else create({ tag: 'string', text: prop }, element, '__text')
   }
 }

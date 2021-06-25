@@ -1,7 +1,7 @@
 'use strict'
 
 import { can } from '../event'
-import { report } from '../utils'
+import { isString, report } from '../utils'
 
 import nodes from './nodes'
 
@@ -25,7 +25,7 @@ export default (element) => {
   let { tag, key } = element
   const tagFromKey = nodes.body.indexOf(key) > -1
 
-  if (typeof tag !== 'string') {
+  if (!isString(tag)) {
     if (tagFromKey && tag === true) tag = key
     else tag = tagFromKey ? key : 'div'
   }
