@@ -1,6 +1,6 @@
 'use strict'
 
-import { deepMerge, mergeAndCloneIfArray, mergeIfExisted, mergeArray, flattenRecursive, isFunction } from '../utils'
+import { deepMerge, mergeAndCloneIfArray, mergeIfExisted, mergeArray, flattenRecursive, isFunction, exec } from '../utils'
 
 const ENV = process.env.NODE_ENV
 
