@@ -24,13 +24,13 @@ export const isObjectLike = arg => {
 }
 
 export const isDefined = arg => {
-  return isObject(arg)
-    || isObjectLike(arg)
-    || isString(arg)
-    || isNumber(arg)
-    || isFunction(arg)
-    || isArray(arg)
-    || isObjectLike(arg)
+  return isObject(arg) ||
+    isObjectLike(arg) ||
+    isString(arg) ||
+    isNumber(arg) ||
+    isFunction(arg) ||
+    isArray(arg) ||
+    isObjectLike(arg)
 }
 
 export const exec = (param, element) => {

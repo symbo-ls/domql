@@ -3,8 +3,6 @@
 import { can } from '../event'
 import { exec, isString, isTagRegistered, report } from '../utils'
 
-import nodes from './nodes'
-
 const cachedElements = {}
 
 const createNode = (element) => {
