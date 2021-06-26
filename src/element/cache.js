@@ -31,8 +31,8 @@ const detectTag = element => {
     const tagExists = isTagRegistered(tag) > -1
     if (tagExists) return tag
   } else {
-    const isTagAKey = isTagRegistered(key) > -1
-    if (isTagAKey) return key
+    const isKeyATag = isTagRegistered(key) > -1
+    if (isKeyATag) return key
   }
 
   return 'div'

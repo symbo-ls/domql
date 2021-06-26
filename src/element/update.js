@@ -28,11 +28,11 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     on.initUpdate(element.on.initUpdate, element, element.state)
   }
 
-  const overwriteChanges = overwrite(element, params, options)
-  const execChanges = throughUpdatedExec(element, options)
+  const overwriteChanges = overwrite(element, params, UPDATE_DEFAULT_OPTIONS)
+  const execChanges = throughUpdatedExec(element, UPDATE_DEFAULT_OPTIONS)
   const definedChanges = throughUpdatedDefine(element)
 
-  if (options.stackChanges && element.__stackChanges) {
+  if (UPDATE_DEFAULT_OPTIONS.stackChanges && element.__stackChanges) {
     const stackChanges = merge(definedChanges, merge(execChanges, overwriteChanges))
     element.__stackChanges.push(stackChanges)
   }
@@ -41,18 +41,16 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     // TODO: move as fragment
     const ifPassed = element.if(element, element.state)
     if (element.__ifFalsy && ifPassed) {
-      console.log(element.if)
       createNode(element)
       appendNode(element.node, element.__ifFragment)
       delete element.__ifFalsy
-      // return
     } else if (element.node && !ifPassed) {
       element.node.remove()
       element.__ifFalsy = true
     }
   }
 
-  if (!node) return
+  if (!node || options.preventRecursive) return
 
   for (const param in element) {
     const prop = element[param]
@@ -65,7 +63,7 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     if (ourParam) {
       if (isFunction(ourParam)) ourParam(prop, element, node)
     } else if (prop && isObject(prop) && !hasDefined) {
-      update.call(prop, params[prop], options)
+      update.call(prop, params[prop], UPDATE_DEFAULT_OPTIONS)
     }
   }
 

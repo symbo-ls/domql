@@ -22,6 +22,7 @@ export default {
   state,
 
   proto: {},
+  props: {},
   path: {},
   childProto: {},
   if: {},
