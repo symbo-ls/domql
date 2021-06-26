@@ -1,12 +1,14 @@
 'use strict'
 
 import {
+  isTagRegistered,
   isObject,
   isObjectLike,
   isFunction,
   isNumber,
   isString,
   isArray,
+  isDefined,
   exec,
   map,
   deepMerge,
@@ -22,12 +24,14 @@ import {
 import { report } from './report'
 
 export {
+  isTagRegistered,
   isObject,
   isObjectLike,
   isFunction,
   isNumber,
   isString,
   isArray,
+  isDefined,
   exec,
   map,
   deepMerge,

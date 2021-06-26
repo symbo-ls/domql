@@ -39,7 +39,11 @@ export const defineSetter = (element, key, get, set) =>
 export const keys = function () {
   const element = this
   const keys = []
-  for (const param in element) if (!isObject(registry[param])) keys.push(param)
+  for (const param in element) {
+    if (!isObject(registry[param])) {
+      keys.push(param)
+    }
+  }
   return keys
 }
 

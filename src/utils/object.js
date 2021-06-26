@@ -1,5 +1,9 @@
 'use strict'
 
+import nodes from '../element/nodes'
+
+export const isTagRegistered = arg => nodes.body.indexOf(arg)
+
 export const isObject = arg => {
   if (arg === null) return false
   return (typeof arg === 'object') && (arg.constructor === Object)
@@ -17,6 +21,16 @@ export const isObjectLike = arg => {
   if (arg === null) return false
   // if (isArray(arg)) return false
   return (typeof arg === 'object')
+}
+
+export const isDefined = arg => {
+  return isObject(arg)
+    || isObjectLike(arg)
+    || isString(arg)
+    || isNumber(arg)
+    || isFunction(arg)
+    || isArray(arg)
+    || isObjectLike(arg)
 }
 
 export const exec = (param, element) => {
@@ -49,7 +63,7 @@ export const deepMerge = (element, proto) => {
     if (e === 'parent') continue
     if (elementProp === undefined) {
       element[e] = protoProp
-    } else if (isObject(elementProp) && isObject(protoProp)) {
+    } else if (isObjectLike(elementProp) && isObject(protoProp)) {
       deepMerge(elementProp, protoProp)
     }
   }

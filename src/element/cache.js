@@ -1,7 +1,7 @@
 'use strict'
 
 import { can } from '../event'
-import { report } from '../utils'
+import { exec, isString, isTagRegistered, report } from '../utils'
 
 import nodes from './nodes'
 
@@ -21,16 +21,25 @@ const createNode = (element) => {
   }
 }
 
-export default (element) => {
+const detectTag = element => {
   let { tag, key } = element
-  const tagFromKey = nodes.body.indexOf(key) > -1
+  tag = exec(tag, element)
 
-  if (typeof tag !== 'string') {
-    if (tagFromKey && tag === true) tag = key
-    else tag = tagFromKey ? key : 'div'
+  if (tag === true) tag = key
+
+  if (isString(tag)) {
+    const tagExists = isTagRegistered(tag) > -1
+    if (tagExists) return tag
+  } else {
+    const isTagAKey = isTagRegistered(key) > -1
+    if (isTagAKey) return key
   }
 
-  element.tag = tag
+  return 'div'
+}
+
+export default (element) => {
+  const tag = element.tag = detectTag(element)
 
   if (!can.render(element)) {
     return report('HTMLInvalidTag')
