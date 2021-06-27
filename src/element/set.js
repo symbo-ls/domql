@@ -2,14 +2,26 @@
 
 import create from './create'
 
+const removeContentElement = (params, element) => {
+  if (params && element.content) {
+    if (element.content.node) {
+      if (element.content.tag === 'fragment') element.node.innerHTML = ''
+      else element.node.removeChild(element.content.node)
+    }
+
+    if (element.__cached && element.__cached.content) {
+      if (element.__cached.content.tag === 'fragment') element.__cached.content.parent.node.innerHTML = ''
+      else element.__cached.content.remove()
+    }
+
+    delete element.content
+  }
+}
+
 const set = function (params, enter, leave) {
   const element = this
 
-  if (params && element.content) {
-    if (element.content.node) element.node.removeChild(element.content.node)
-    if (element.__cached && element.__cached.content) element.__cached.content.remove()
-    delete element.content
-  }
+  removeContentElement(params, element)
 
   if (params) {
     const { childProto } = params
