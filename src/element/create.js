@@ -41,6 +41,9 @@ const create = (element, parent, key, options = {}) => {
     }
   }
 
+  // enable STATE
+  element.state = createState(element, parent)
+
   // create PROTOtypal inheritance
   applyPrototype(element, parent, options)
 
@@ -92,9 +95,6 @@ const create = (element, parent, key, options = {}) => {
   // enable CHANGES storing
   const hasRoot = parent.parent && parent.parent.key === ':root'
   if (!element.__root) element.__root = hasRoot ? parent : parent.__root
-
-  // enable STATE
-  element.state = createState(element)
 
   if (!element.props) element.props = parent.props || {}
 

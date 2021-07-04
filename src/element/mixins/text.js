@@ -10,7 +10,7 @@ import { exec } from '../../utils'
 export default (param, element, node) => {
   const prop = exec(param, element)
   if (element.tag === 'string') node.nodeValue = prop
-  else {
+  else if (param) {
     if (element.__text) {
       element.__text.text = prop
       if (element.__text.node) element.__text.node.nodeValue = prop

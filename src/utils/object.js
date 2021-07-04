@@ -33,9 +33,8 @@ export const isDefined = arg => {
     isObjectLike(arg)
 }
 
-export const exec = (param, element) => {
-  if (!element) console.error('No element for', param)
-  if (isFunction(param)) return param(element, element.state)
+export const exec = (param, element, state) => {
+  if (isFunction(param)) return param(element, state || element.state)
   return param
 }
 
@@ -60,23 +59,16 @@ export const deepMerge = (element, proto) => {
   for (const e in proto) {
     let elementProp = element[e]
     let protoProp = proto[e]
-    console.group('merge')
-    console.log('init:')
-    console.log(elementProp, protoProp)
     if (e === 'parent') continue
     if (e === 'props') {
-      if (isFunction(elementProp)) elementProp = exec(elementProp, element)
-      if (isFunction(protoProp)) protoProp = exec(protoProp, element)
+      if (isFunction(elementProp)) elementProp = element[e] = exec(element[e], element)
+      if (isFunction(protoProp)) protoProp = proto[e] = exec(proto[e], proto, element.state)
     }
-    console.log('exec:')
-    console.log(elementProp, protoProp)
     if (elementProp === undefined) {
       element[e] = protoProp
     } else if (isObjectLike(elementProp) && isObject(protoProp)) {
       deepMerge(elementProp, protoProp)
     }
-    console.log('result:', element[e])
-    console.groupEnd('merge')
   }
   return element
 }
