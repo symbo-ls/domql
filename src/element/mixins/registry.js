@@ -8,8 +8,9 @@ import {
   content,
   data,
   classList,
-  state
-} from './'
+  state,
+  props
+} from '.'
 
 export default {
   attr,
@@ -20,9 +21,9 @@ export default {
   data,
   class: classList,
   state,
+  props,
 
   proto: {},
-  props: {},
   path: {},
   childProto: {},
   if: {},

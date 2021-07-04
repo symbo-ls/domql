@@ -58,14 +58,25 @@ export const merge = (element, obj) => {
 
 export const deepMerge = (element, proto) => {
   for (const e in proto) {
-    const elementProp = element[e]
-    const protoProp = proto[e]
+    let elementProp = element[e]
+    let protoProp = proto[e]
+    console.group('merge')
+    console.log('init:')
+    console.log(elementProp, protoProp)
     if (e === 'parent') continue
+    if (e === 'props') {
+      if (isFunction(elementProp)) elementProp = exec(elementProp, element)
+      if (isFunction(protoProp)) protoProp = exec(protoProp, element)
+    }
+    console.log('exec:')
+    console.log(elementProp, protoProp)
     if (elementProp === undefined) {
       element[e] = protoProp
     } else if (isObjectLike(elementProp) && isObject(protoProp)) {
       deepMerge(elementProp, protoProp)
     }
+    console.log('result:', element[e])
+    console.groupEnd('merge')
   }
   return element
 }
