@@ -24,6 +24,9 @@ export const applyPrototype = (element, parent, options = {}) => {
 
   if (!proto && !childProto) return element
 
+  console.log('childProto:')
+  console.log(proto, childProto)
+
   // merge if both `proto` and `parent.childProto ` applied
   const mergedProto = mergeIfExisted(proto, childProto)
 

@@ -1,5 +1,6 @@
 'use strict'
 
+import { cache } from '../element/createProps'
 import nodes from '../element/nodes'
 
 export const isTagRegistered = arg => nodes.body.indexOf(arg)
@@ -56,13 +57,18 @@ export const merge = (element, obj) => {
 }
 
 export const deepMerge = (element, proto) => {
+  console.groupCollapsed('deepMerge:')
   for (const e in proto) {
-    let elementProp = element[e]
-    let protoProp = proto[e]
+    const elementProp = element[e]
+    const protoProp = proto[e]
+    const cachedProps = cache.props
     if (e === 'parent') continue
     if (e === 'props') {
-      if (isFunction(elementProp)) elementProp = element[e] = exec(element[e], element)
-      if (isFunction(protoProp)) protoProp = proto[e] = exec(proto[e], proto, element.state)
+      cachedProps.push(protoProp)
+      console.log(element)
+      console.log('Pushed', protoProp, 'to', cache.props)
+      // if (cachedProps.length > 10) debugger
+      // continue
     }
     if (elementProp === undefined) {
       element[e] = protoProp
@@ -70,6 +76,7 @@ export const deepMerge = (element, proto) => {
       deepMerge(elementProp, protoProp)
     }
   }
+  console.groupEnd('deepMerge:')
   return element
 }
 
@@ -90,7 +97,9 @@ export const deepClone = (obj, excluding = ['parent', 'node', '__element', '__ro
   for (const prop in obj) {
     if (excluding.indexOf(prop) > -1) continue
     let objProp = obj[prop]
-    if (prop === 'proto' && isArray(objProp)) objProp = mergeArray(objProp)
+    if (prop === 'proto' && isArray(objProp)) {
+      objProp = mergeArray(objProp)
+    }
     if (isObjectLike(objProp)) {
       o[prop] = deepClone(objProp)
     } else o[prop] = objProp
@@ -147,7 +156,7 @@ export const mergeIfExisted = (a, b) => {
 /**
  * Merges array prototypes
  */
-export const mergeArray = arr => {
+export const mergeArray = (arr) => {
   return arr.reduce((a, c) => deepMerge(a, deepClone(c)), {})
 }
 

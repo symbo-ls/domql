@@ -37,7 +37,7 @@ export default function (element, parent) {
   if (!state) return parent.state || {}
   if (isFunction(state)) state = exec(state, element)
 
-  state = deepClone(state, [])
+  state = deepClone(state, ['update', 'parse', '__element'])
   state.__element = element
   state.parse = parseState
   state.update = updateState

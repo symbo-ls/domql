@@ -8,8 +8,7 @@ import {
   content,
   data,
   classList,
-  state,
-  props
+  state
 } from '.'
 
 export default {
@@ -21,9 +20,9 @@ export default {
   data,
   class: classList,
   state,
-  props,
 
   proto: {},
+  props: {},
   path: {},
   childProto: {},
   if: {},
@@ -35,6 +34,7 @@ export default {
   __changes: {},
   __trash: {},
   __root: {},
+  __props: {},
   __ifFragment: {},
   __ifFalsy: {},
   key: {},

@@ -7,7 +7,8 @@ import { applyPrototype } from './proto'
 import ID from './id'
 import nodes from './nodes'
 import set from './set'
-import createState from './state'
+import createState from './createState'
+import createProps, { cache } from './createProps'
 import update from './update'
 import * as on from '../event/on'
 import { assignClass } from './mixins/classList'
@@ -32,6 +33,8 @@ const create = (element, parent, key, options = {}) => {
   // define KEY
   const assignedKey = element.key || key || ID.next().value
 
+  // if (assignedKey === 'all') debugger
+
   // if element is STRING
   if (isString(element) || isNumber(element)) {
     element = {
@@ -43,6 +46,12 @@ const create = (element, parent, key, options = {}) => {
 
   // enable STATE
   element.state = createState(element, parent)
+
+  console.groupCollapsed('Create:')
+  console.log(element)
+
+  // stack props
+  cache.props = []
 
   // create PROTOtypal inheritance
   applyPrototype(element, parent, options)
@@ -96,7 +105,17 @@ const create = (element, parent, key, options = {}) => {
   const hasRoot = parent.parent && parent.parent.key === ':root'
   if (!element.__root) element.__root = hasRoot ? parent : parent.__root
 
-  if (!element.props) element.props = parent.props || {}
+  // apply props settings
+  createProps(element, parent)
+
+  console.log('cache.props:')
+  console.log(cache.props)
+  console.log('applied props:')
+  console.log(element.props)
+  console.log('element:')
+  console.log(element)
+
+  console.groupEnd('Create:')
 
   // don't render IF in condition
   if (isFunction(element.if) && !element.if(element, element.state)) {
@@ -118,6 +137,7 @@ const create = (element, parent, key, options = {}) => {
     on.render(element.on.render, element, element.state)
   }
 
+  cache.props = []
   return element
 }
 

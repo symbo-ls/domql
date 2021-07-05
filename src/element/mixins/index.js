@@ -8,7 +8,6 @@ import html from './html'
 import style from './style'
 import text from './text'
 import state from './state'
-import props from './props'
 import registry from './registry'
 
 export {
@@ -20,6 +19,5 @@ export {
   text,
   html,
   state,
-  props,
   registry
 }
