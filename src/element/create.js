@@ -64,6 +64,8 @@ const create = (element, parent, key, options = {}) => {
 
   // if it already HAS A NODE
   if (element.node) {
+    console.log('hasNode!')
+    console.groupEnd('Create:')
     return assignNode(element, parent, assignedKey)
   }
 
