@@ -8,7 +8,7 @@ import ID from './id'
 import nodes from './nodes'
 import set from './set'
 import createState from './createState'
-import createProps, { cache } from './createProps'
+import createProps from './createProps'
 import update from './update'
 import * as on from '../event/on'
 import { assignClass } from './mixins/classList'
@@ -50,9 +50,6 @@ const create = (element, parent, key, options = {}) => {
   console.groupCollapsed('Create:')
   console.log(element)
 
-  // stack props
-  cache.props = []
-
   // create PROTOtypal inheritance
   applyPrototype(element, parent, options)
 
@@ -64,7 +61,7 @@ const create = (element, parent, key, options = {}) => {
 
   // if it already HAS A NODE
   if (element.node) {
-    console.log('hasNode!')
+    // console.log('hasNode!')
     console.groupEnd('Create:')
     return assignNode(element, parent, assignedKey)
   }
@@ -110,13 +107,12 @@ const create = (element, parent, key, options = {}) => {
   // apply props settings
   createProps(element, parent)
 
-  console.log('cache.props:')
-  console.log(cache.props)
-  console.log('applied props:')
-  console.log(element.props)
-  console.log('element:')
-  console.log(element)
-
+  // console.log('cache.props:')
+  // console.log(cache.props)
+  // console.log('applied props:')
+  // console.log(element.props)
+  // console.log('element:')
+  // console.log(element)
   console.groupEnd('Create:')
 
   // don't render IF in condition
@@ -139,7 +135,6 @@ const create = (element, parent, key, options = {}) => {
     on.render(element.on.render, element, element.state)
   }
 
-  cache.props = []
   return element
 }
 

@@ -1,6 +1,5 @@
 'use strict'
 
-import { cache } from '../element/createProps'
 import nodes from '../element/nodes'
 
 export const isTagRegistered = arg => nodes.body.indexOf(arg)
@@ -57,26 +56,19 @@ export const merge = (element, obj) => {
 }
 
 export const deepMerge = (element, proto) => {
-  console.groupCollapsed('deepMerge:')
+  // console.groupCollapsed('deepMerge:')
   for (const e in proto) {
     const elementProp = element[e]
     const protoProp = proto[e]
-    const cachedProps = cache.props
-    if (e === 'parent') continue
-    if (e === 'props') {
-      cachedProps.push(protoProp)
-      console.log(element)
-      console.log('Pushed', protoProp, 'to', cache.props)
-      // if (cachedProps.length > 10) debugger
-      // continue
-    }
+    // const cachedProps = cache.props
+    if (e === 'parent' || e === 'props') continue
     if (elementProp === undefined) {
       element[e] = protoProp
     } else if (isObjectLike(elementProp) && isObject(protoProp)) {
       deepMerge(elementProp, protoProp)
     }
   }
-  console.groupEnd('deepMerge:')
+  // console.groupEnd('deepMerge:')
   return element
 }
 

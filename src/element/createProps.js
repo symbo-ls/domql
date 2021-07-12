@@ -1,6 +1,6 @@
 'use strict'
 
-import { deepClone, deepMerge, exec } from '../utils'
+import { deepClone, deepMerge, exec, isArray } from '../utils'
 
 export const cache = {
   props: []
@@ -9,7 +9,7 @@ export const cache = {
 export const syncProps = (props, element) => {
   element.props = {}
   const mergedProps = {}
-  props.reverse().forEach(v => {
+  props.forEach(v => {
     if (v === 'update') return
     return deepMerge(mergedProps, deepClone(exec(v, element)))
   })
@@ -18,9 +18,17 @@ export const syncProps = (props, element) => {
 }
 
 const createProps = function (element, parent, cached) {
-  const cachedProps = cached || element.__props || cache.props
+  const cachedProps = [] // || element.__props
 
   if (element.props) cachedProps.push(element.props)
+
+  // collect props from protos
+  if (isArray(element.__proto)) {
+    element.__proto.map(proto => {
+      if (proto.props) cachedProps.push(proto.props)
+      return proto.props
+    })
+  }
 
   if (cachedProps.length) {
     element.__props = cachedProps
@@ -40,7 +48,7 @@ export const updateProps = (newProps, element) => {
     if (cachedProps) cachedProps.push(newProps) // [newProps]
     createProps(element, element.parent, cachedProps)
   }
-  console.log(cachedProps)
+  // console.log(cachedProps)
   return element
 }
 

@@ -1,6 +1,6 @@
 'use strict'
 
-import { deepMerge, mergeAndCloneIfArray, mergeIfExisted, mergeArray, flattenRecursive, isFunction, exec } from '../utils'
+import { isFunction, exec, getProtoStack, jointStacks, cloneAndMergeArrayProto, deepMergeProto } from '../utils'
 
 const ENV = process.env.NODE_ENV
 
@@ -11,31 +11,52 @@ const ENV = process.env.NODE_ENV
 export const applyPrototype = (element, parent, options = {}) => {
   if (isFunction(element)) element = exec(element, parent)
 
+  const { proto } = element
+
   // merge if proto is array
-  const proto = mergeAndCloneIfArray(element.proto)
+  // const proto = mergeAndCloneIfArray(element.proto, v => {
+  //   if (v.props) cache.props.push(v.props)
+  // console.log('v.propsIN_PROTO:')
+  // console.log(v.props)
+  // })
+
+  // console.log(proto)
+  const protoStack = getProtoStack(proto)
+  console.log(proto)
+
   if (ENV !== 'test' || ENV !== 'development') delete element.proto
 
-  let childProto
+  // console.log(parent.childProto)
+
+  let childProtoStack = []
   if (parent) {
     // Assign parent attr to the element
     element.parent = parent
-    if (!options.ignoreChildProto) childProto = parent && mergeAndCloneIfArray(parent.childProto)
+    if (!options.ignoreChildProto) {
+      childProtoStack = getProtoStack(parent.childProto)
+    }
   }
 
-  if (!proto && !childProto) return element
+  // console.log(proto, parent && parent.childProto)
+  // console.log(protoStack, childProtoStack)
 
-  console.log('childProto:')
-  console.log(proto, childProto)
+  const protoLength = protoStack.length
+  const childProtoLength = childProtoStack.length
 
-  // merge if both `proto` and `parent.childProto ` applied
-  const mergedProto = mergeIfExisted(proto, childProto)
+  let stack = []
+  if (protoLength && childProtoLength) {
+    stack = jointStacks(protoStack, childProtoStack)
+  } else if (protoLength) {
+    stack = protoStack
+  } else if (childProtoLength) {
+    stack = childProtoStack
+  } else return element
 
-  // flatten inheritances into flat array
-  const flattenedArray = flattenRecursive(mergedProto, 'proto')
+  element.__proto = stack
+  const mergedProto = cloneAndMergeArrayProto(stack)
 
-  // flatten prototypal inheritances
-  const flattenedProto = mergeArray(flattenedArray)
+  // console.log(mergedProto)
+  return deepMergeProto(element, mergedProto)
 
   // final merging with prototype
-  return deepMerge(element, flattenedProto)
 }

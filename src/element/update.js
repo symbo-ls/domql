@@ -20,8 +20,8 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
   const { define } = element
   const { node } = element
 
-  console.groupCollapsed('Update:')
-  console.log(params, element)
+  // console.groupCollapsed('Update:')
+  // console.log(params, element)
   // if params is string
   if (isString(params) || isNumber(params)) {
     params = { text: params }
@@ -57,7 +57,7 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     }
   }
 
-  console.groupEnd('Update:')
+  // console.groupEnd('Update:')
 
   if (!node || options.preventRecursive) return
 
