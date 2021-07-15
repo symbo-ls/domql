@@ -47,8 +47,8 @@ const create = (element, parent, key, options = {}) => {
   // enable STATE
   element.state = createState(element, parent)
 
-  console.groupCollapsed('Create:')
-  console.log(element)
+  // console.groupCollapsed('Create:')
+  // console.log(element)
 
   // create PROTOtypal inheritance
   applyPrototype(element, parent, options)
@@ -62,7 +62,7 @@ const create = (element, parent, key, options = {}) => {
   // if it already HAS A NODE
   if (element.node) {
     // console.log('hasNode!')
-    console.groupEnd('Create:')
+    // console.groupEnd('Create:')
     return assignNode(element, parent, assignedKey)
   }
 
@@ -113,7 +113,7 @@ const create = (element, parent, key, options = {}) => {
   // console.log(element.props)
   // console.log('element:')
   // console.log(element)
-  console.groupEnd('Create:')
+  // console.groupEnd('Create:')
 
   // don't render IF in condition
   if (isFunction(element.if) && !element.if(element, element.state)) {

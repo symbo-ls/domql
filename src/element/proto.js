@@ -22,7 +22,6 @@ export const applyPrototype = (element, parent, options = {}) => {
 
   // console.log(proto)
   const protoStack = getProtoStack(proto)
-  console.log(proto)
 
   if (ENV !== 'test' || ENV !== 'development') delete element.proto
 

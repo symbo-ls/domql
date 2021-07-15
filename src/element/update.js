@@ -8,7 +8,7 @@ import { throughUpdatedDefine, throughUpdatedExec } from './iterate'
 import { merge } from '../utils/object'
 import { appendNode } from './assign'
 import { createNode } from '.'
-import { cache, updateProps } from './createProps'
+import { updateProps } from './createProps'
 
 const UPDATE_DEFAULT_OPTIONS = {
   stackChanges: false,
@@ -33,8 +33,8 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
 
   const overwriteChanges = overwrite(element, params, UPDATE_DEFAULT_OPTIONS)
 
-  cache.props = []
   updateProps(params.props, element)
+  // console.log(element.path)
 
   const execChanges = throughUpdatedExec(element, UPDATE_DEFAULT_OPTIONS)
   const definedChanges = throughUpdatedDefine(element)

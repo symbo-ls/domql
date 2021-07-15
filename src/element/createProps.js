@@ -2,13 +2,10 @@
 
 import { deepClone, deepMerge, exec, isArray } from '../utils'
 
-export const cache = {
-  props: []
-}
-
 export const syncProps = (props, element) => {
   element.props = {}
   const mergedProps = {}
+  // console.log(element.path, props, element)
   props.forEach(v => {
     if (v === 'update') return
     return deepMerge(mergedProps, deepClone(exec(v, element)))
@@ -40,21 +37,24 @@ const createProps = function (element, parent, cached) {
 }
 
 export const updateProps = (newProps, element) => {
-  const cachedProps = element.__props || cache.props
-  if (element.props) {
-    cachedProps.push(newProps)
-    syncProps(cachedProps, element)
+  const cachedProps = element.__props
+
+  if (newProps) element.__props = [].concat(newProps, cachedProps)
+
+  if (element.props && newProps) {
+    element.__props = [newProps].concat(cachedProps)
+    syncProps(element.__props, element)
   } else if (newProps) {
-    if (cachedProps) cachedProps.push(newProps) // [newProps]
+    if (cachedProps) element.__props = [newProps].concat(cachedProps)
     createProps(element, element.parent, cachedProps)
   }
   // console.log(cachedProps)
   return element
 }
 
-export default createProps
-
 function update (props) {
   const element = this
   element.update({ props })
 }
+
+export default createProps
