@@ -13,7 +13,7 @@ import update from './update'
 import * as on from '../event/on'
 import { assignClass } from './mixins/classList'
 import { isFunction, isNumber, isString } from '../utils'
-import { remove, lookup, log, keys, parse } from './methods'
+import { remove, lookup, log, keys, parse, parseDeep } from './methods'
 import cacheNode from './cache'
 // import { overwrite, clone, fillTheRest } from '../utils'
 
@@ -47,7 +47,7 @@ const create = (element, parent, key, options = {}) => {
   // enable STATE
   element.state = createState(element, parent)
 
-  // console.groupCollapsed('Create:')
+  // console.groupCollapsed('Create:', assignedKey)
   // console.log(element)
 
   // create PROTOtypal inheritance
@@ -80,6 +80,7 @@ const create = (element, parent, key, options = {}) => {
   if (ENV === 'test' || ENV === 'development') {
     element.keys = keys
     element.parse = parse
+    element.parseDeep = parseDeep
     element.log = log
   }
 

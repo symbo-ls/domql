@@ -50,5 +50,6 @@ export default {
   keys: {},
   log: {},
   parse: {},
+  parseDeep: {},
   on: {}
 }

@@ -57,6 +57,7 @@ export const flattenProto = (proto, stack) => {
 export const deepCloneProto = obj => {
   const o = {}
   for (const prop in obj) {
+    if (['parent', 'node', '__element', '__root', '__key'].indexOf(prop) > -1) continue
     const objProp = obj[prop]
     if (isObject(objProp)) {
       o[prop] = deepCloneProto(objProp)
@@ -69,9 +70,9 @@ export const deepCloneProto = obj => {
 
 export const deepMergeProto = (element, proto) => {
   for (const e in proto) {
+    if (['parent', 'node', '__element', '__root', '__key'].indexOf(e) > -1) continue
     const elementProp = element[e]
     const protoProp = proto[e]
-    if (e === '__hash') continue
     if (elementProp === undefined) {
       element[e] = protoProp
     } else if (isObjectLike(elementProp) && isObject(protoProp)) {

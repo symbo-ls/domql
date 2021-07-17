@@ -8,6 +8,10 @@ import set from '../set'
  */
 export default (param, element, node) => {
   if (param && element) {
-    set.call(element, param)
+    if (param.__hash === element.content.__hash && element.content.update) {
+      element.content.update(param)
+    } else {
+      set.call(element, param)
+    }
   }
 }

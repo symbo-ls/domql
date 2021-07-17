@@ -12,16 +12,24 @@ import { updateProps } from './createProps'
 
 const UPDATE_DEFAULT_OPTIONS = {
   stackChanges: false,
-  cleanExec: true
+  cleanExec: true,
+  preventRecursive: false
 }
 
 const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
   const element = this
-  const { define } = element
-  const { node } = element
+  const { define, parent, node } = element
 
-  // console.groupCollapsed('Update:')
-  // console.log(params, element)
+  // console.groupCollapsed('Update:', element.path)
+  // console.log('params:')
+  // console.log(params)
+  // console.log('props:')
+  // console.log(element.props)
+  // console.log('element:')
+  // console.log(element)
+  // console.log('PARAMS.PROPS:')
+  // console.log(params.props)
+  // console.groupEnd('Update:')
   // if params is string
   if (isString(params) || isNumber(params)) {
     params = { text: params }
@@ -31,11 +39,11 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     on.initUpdate(element.on.initUpdate, element, element.state)
   }
 
+  updateProps(params.props, element, parent)
+  // // console.log(element.path)
+  // // console.log(element)
+
   const overwriteChanges = overwrite(element, params, UPDATE_DEFAULT_OPTIONS)
-
-  updateProps(params.props, element)
-  // console.log(element.path)
-
   const execChanges = throughUpdatedExec(element, UPDATE_DEFAULT_OPTIONS)
   const definedChanges = throughUpdatedDefine(element)
 
@@ -57,6 +65,7 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     }
   }
 
+  // console.log(node)
   // console.groupEnd('Update:')
 
   if (!node || options.preventRecursive) return
@@ -68,6 +77,8 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
 
     const hasDefined = define && define[param]
     const ourParam = registry[param]
+
+    // // console.log(prop)
 
     if (ourParam) {
       if (isFunction(ourParam)) ourParam(prop, element, node)
