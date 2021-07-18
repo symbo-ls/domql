@@ -106,6 +106,8 @@ export const overwrite = (element, params, options) => {
   const changes = {}
 
   for (const e in params) {
+    if (e === 'props') continue
+
     const elementProp = element[e]
     const paramsProp = params[e]
 

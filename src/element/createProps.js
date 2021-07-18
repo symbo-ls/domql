@@ -21,8 +21,8 @@ const inheritProps = (element, parent) => {
 }
 
 export const syncProps = (props, element) => {
-  element.props = { update }
-  const mergedProps = {}
+  element.props = {}
+  const mergedProps = { update, __element: element }
   props.forEach(v => {
     if (v === 'update' || v === '__element') return
     element.props = deepMerge(mergedProps, deepClone(exec(v, element)))
@@ -56,7 +56,7 @@ export const updateProps = (newProps, element, parent) => {
 }
 
 function update (props) {
-  const element = this
+  const element = this.__element
   // element.update({ props })
   element.update()
 }
