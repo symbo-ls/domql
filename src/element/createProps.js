@@ -17,7 +17,7 @@ const initProps = (element, parent) => {
 }
 
 const inheritProps = (element, parent) => {
-  element.props = parent.props || { update, __element: element }
+  element.props = (parent && parent.props) || { update, __element: element }
 }
 
 export const syncProps = (props, element) => {

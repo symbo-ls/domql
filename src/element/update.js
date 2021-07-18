@@ -39,6 +39,7 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     on.initUpdate(element.on.initUpdate, element, element.state)
   }
 
+  // console.log(element, parent)
   updateProps(params.props, element, parent)
   // // console.log(element.path)
   // // console.log(element)
