@@ -27,6 +27,11 @@ export const applyPrototype = (element, parent, options = {}) => {
 
   // console.log(parent.childProto)
 
+  // console.log(element)
+  // console.log(proto)
+  // console.log(protoStack)
+  // debugger
+
   let childProtoStack = []
   if (parent) {
     // Assign parent attr to the element

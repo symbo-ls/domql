@@ -50,6 +50,9 @@ const create = (element, parent, key, options = {}) => {
   // console.groupCollapsed('Create:', assignedKey)
   // console.log(element)
 
+  // create and assign a KEY
+  element.key = assignedKey
+
   // create PROTOtypal inheritance
   applyPrototype(element, parent, options)
 
@@ -65,9 +68,6 @@ const create = (element, parent, key, options = {}) => {
     // console.groupEnd('Create:')
     return assignNode(element, parent, assignedKey)
   }
-
-  // create and assign a KEY
-  element.key = assignedKey
 
   // generate a CLASS name
   assignClass(element)

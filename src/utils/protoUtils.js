@@ -1,6 +1,6 @@
 'use strict'
 
-import { isArray, isObject, isObjectLike } from './object'
+import { isArray, isObject } from './object'
 
 export const generateHash = () => Math.random().toString(36).substring(2)
 
@@ -70,13 +70,18 @@ export const deepCloneProto = obj => {
 
 export const deepMergeProto = (element, proto) => {
   for (const e in proto) {
-    if (['parent', 'node', '__element', '__root', '__key'].indexOf(e) > -1) continue
+    if (['parent', 'node', '__element', '__root'].indexOf(e) > -1) continue
     const elementProp = element[e]
     const protoProp = proto[e]
     if (elementProp === undefined) {
       element[e] = protoProp
-    } else if (isObjectLike(elementProp) && isObject(protoProp)) {
+    } else if (isObject(elementProp) && isObject(protoProp)) {
       deepMergeProto(elementProp, protoProp)
+    } else if (isArray(elementProp) && isArray(protoProp)) {
+      element[e] = elementProp.concat(protoProp)
+    } else if (isArray(elementProp) && isObject(protoProp)) {
+      const obj = deepMergeProto({}, elementProp)
+      element[e] = deepMergeProto(obj, protoProp)
     }
   }
   return element
