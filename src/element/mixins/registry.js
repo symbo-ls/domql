@@ -9,7 +9,7 @@ import {
   data,
   classList,
   state
-} from './'
+} from '.'
 
 export default {
   attr,
@@ -28,12 +28,15 @@ export default {
   if: {},
   define: {},
   transform: {},
+  __hash: {},
   __cached: {},
   __defined: {},
   __exec: {},
   __changes: {},
   __trash: {},
   __root: {},
+  __props: {},
+  __proto: {},
   __ifFragment: {},
   __ifFalsy: {},
   key: {},
@@ -47,5 +50,6 @@ export default {
   keys: {},
   log: {},
   parse: {},
+  parseDeep: {},
   on: {}
 }

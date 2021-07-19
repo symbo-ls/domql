@@ -7,12 +7,13 @@ import { applyPrototype } from './proto'
 import ID from './id'
 import nodes from './nodes'
 import set from './set'
-import createState from './state'
+import createState from './createState'
+import createProps from './createProps'
 import update from './update'
 import * as on from '../event/on'
 import { assignClass } from './mixins/classList'
 import { isFunction, isNumber, isString } from '../utils'
-import { remove, lookup, log, keys, parse } from './methods'
+import { remove, lookup, log, keys, parse, parseDeep } from './methods'
 import cacheNode from './cache'
 // import { overwrite, clone, fillTheRest } from '../utils'
 
@@ -32,6 +33,8 @@ const create = (element, parent, key, options = {}) => {
   // define KEY
   const assignedKey = element.key || key || ID.next().value
 
+  // if (assignedKey === 'all') debugger
+
   // if element is STRING
   if (isString(element) || isNumber(element)) {
     element = {
@@ -40,6 +43,15 @@ const create = (element, parent, key, options = {}) => {
       ((nodes.body.indexOf(key) > -1) && key) || 'string'
     }
   }
+
+  // enable STATE
+  element.state = createState(element, parent)
+
+  // console.groupCollapsed('Create:', assignedKey)
+  // console.log(element)
+
+  // create and assign a KEY
+  element.key = assignedKey
 
   // create PROTOtypal inheritance
   applyPrototype(element, parent, options)
@@ -52,11 +64,10 @@ const create = (element, parent, key, options = {}) => {
 
   // if it already HAS A NODE
   if (element.node) {
+    // console.log('hasNode!')
+    // console.groupEnd('Create:')
     return assignNode(element, parent, assignedKey)
   }
-
-  // create and assign a KEY
-  element.key = assignedKey
 
   // generate a CLASS name
   assignClass(element)
@@ -69,6 +80,7 @@ const create = (element, parent, key, options = {}) => {
   if (ENV === 'test' || ENV === 'development') {
     element.keys = keys
     element.parse = parse
+    element.parseDeep = parseDeep
     element.log = log
   }
 
@@ -93,10 +105,16 @@ const create = (element, parent, key, options = {}) => {
   const hasRoot = parent.parent && parent.parent.key === ':root'
   if (!element.__root) element.__root = hasRoot ? parent : parent.__root
 
-  // enable STATE
-  element.state = createState(element)
+  // apply props settings
+  createProps(element, parent)
 
-  if (!element.props) element.props = element.parent.props || {}
+  // console.log('cache.props:')
+  // console.log(cache.props)
+  // console.log('applied props:')
+  // console.log(element.props)
+  // console.log('element:')
+  // console.log(element)
+  // console.groupEnd('Create:')
 
   // don't render IF in condition
   if (isFunction(element.if) && !element.if(element, element.state)) {
