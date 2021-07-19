@@ -11,7 +11,7 @@ You can start with [starter-kit](https://github.com/rackai/starter-kit) as a boi
 
 [![npm version](https://badge.fury.io/js/%40rackai%2Fdomql.svg)](https://badge.fury.io/js/%40rackai%2Fdomql)
 [![Build Status](https://travis-ci.org/rackai/domql.svg?branch=master)](https://travis-ci.org/rackai/domql)
-[![Coverage Status](https://coveralls.io/repos/github/rackai/domql/badge.svg?branch=master)](https://coveralls.io/github/rackai/domql?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/rackai/domql/badge.svg?branch=main)](https://coveralls.io/github/rackai/domql?branch=main)
 
 Key features:
 - [x] error reporting

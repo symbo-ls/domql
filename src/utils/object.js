@@ -33,9 +33,8 @@ export const isDefined = arg => {
     isObjectLike(arg)
 }
 
-export const exec = (param, element) => {
-  if (!element) console.error('No element for', param)
-  if (isFunction(param)) return param(element, element.state)
+export const exec = (param, element, state) => {
+  if (isFunction(param)) return param(element, state || element.state)
   return param
 }
 
@@ -57,16 +56,19 @@ export const merge = (element, obj) => {
 }
 
 export const deepMerge = (element, proto) => {
+  // console.groupCollapsed('deepMerge:')
   for (const e in proto) {
     const elementProp = element[e]
     const protoProp = proto[e]
-    if (e === 'parent') continue
+    // const cachedProps = cache.props
+    if (e === 'parent' || e === 'props') continue
     if (elementProp === undefined) {
       element[e] = protoProp
     } else if (isObjectLike(elementProp) && isObject(protoProp)) {
       deepMerge(elementProp, protoProp)
     }
   }
+  // console.groupEnd('deepMerge:')
   return element
 }
 
@@ -87,7 +89,9 @@ export const deepClone = (obj, excluding = ['parent', 'node', '__element', '__ro
   for (const prop in obj) {
     if (excluding.indexOf(prop) > -1) continue
     let objProp = obj[prop]
-    if (prop === 'proto' && isArray(objProp)) objProp = mergeArray(objProp)
+    if (prop === 'proto' && isArray(objProp)) {
+      objProp = mergeArray(objProp)
+    }
     if (isObjectLike(objProp)) {
       o[prop] = deepClone(objProp)
     } else o[prop] = objProp
@@ -102,6 +106,8 @@ export const overwrite = (element, params, options) => {
   const changes = {}
 
   for (const e in params) {
+    if (e === 'props') continue
+
     const elementProp = element[e]
     const paramsProp = params[e]
 
@@ -144,7 +150,7 @@ export const mergeIfExisted = (a, b) => {
 /**
  * Merges array prototypes
  */
-export const mergeArray = arr => {
+export const mergeArray = (arr) => {
   return arr.reduce((a, c) => deepMerge(a, deepClone(c)), {})
 }
 

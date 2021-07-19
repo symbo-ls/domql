@@ -1,6 +1,6 @@
 'use strict'
 
-import { isObject } from '../utils'
+import { isObject, isObjectLike } from '../utils'
 import { registry } from './mixins'
 
 // TODO: update these files
@@ -55,6 +55,20 @@ export const parse = function () {
   return obj
 }
 
+export const parseDeep = function (param) {
+  const element = this
+  const orig = param || element
+  const obj = {}
+  const keys = orig.keys && orig.keys()
+  if (!keys) return
+  keys.forEach(v => {
+    const prop = orig[v]
+    if (isObjectLike(prop)) parseDeep(prop)
+    else obj[v] = prop
+  })
+  return obj
+}
+
 export const log = function (...args) {
   const element = this
   console.group(element.key)
@@ -76,6 +90,7 @@ export const isMethod = function (param) {
     param === 'lookup' ||
     param === 'keys' ||
     param === 'parse' ||
+    param === 'parseDeep' ||
     param === 'if' ||
     param === 'log'
 }

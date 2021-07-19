@@ -8,17 +8,28 @@ import { throughUpdatedDefine, throughUpdatedExec } from './iterate'
 import { merge } from '../utils/object'
 import { appendNode } from './assign'
 import { createNode } from '.'
+import { updateProps } from './createProps'
 
 const UPDATE_DEFAULT_OPTIONS = {
   stackChanges: false,
-  cleanExec: true
+  cleanExec: true,
+  preventRecursive: false
 }
 
 const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
   const element = this
-  const { define } = element
-  const { node } = element
+  const { define, parent, node } = element
 
+  // console.groupCollapsed('Update:', element.path)
+  // console.log('params:')
+  // console.log(params)
+  // console.log('props:')
+  // console.log(element.props)
+  // console.log('element:')
+  // console.log(element)
+  // console.log('PARAMS.PROPS:')
+  // console.log(params.props)
+  // console.groupEnd('Update:')
   // if params is string
   if (isString(params) || isNumber(params)) {
     params = { text: params }
@@ -27,6 +38,15 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
   if (element.on && isFunction(element.on.initUpdate)) {
     on.initUpdate(element.on.initUpdate, element, element.state)
   }
+
+  // console.log(element, parent)
+  updateProps(params.props, element, parent)
+  // // console.log(element.path)
+  // // console.log(element)
+
+  // console.groupCollapsed('UPDATE:')
+  // console.log(element)
+  // console.groupEnd('UPDATE:')
 
   const overwriteChanges = overwrite(element, params, UPDATE_DEFAULT_OPTIONS)
   const execChanges = throughUpdatedExec(element, UPDATE_DEFAULT_OPTIONS)
@@ -50,6 +70,9 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     }
   }
 
+  // console.log(node)
+  // console.groupEnd('Update:')
+
   if (!node || options.preventRecursive) return
 
   for (const param in element) {
@@ -59,6 +82,8 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
 
     const hasDefined = define && define[param]
     const ourParam = registry[param]
+
+    // // console.log(prop)
 
     if (ourParam) {
       if (isFunction(ourParam)) ourParam(prop, element, node)
