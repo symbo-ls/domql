@@ -34,6 +34,10 @@ const createNode = (element) => {
 
   let isNewNode
 
+  // console.groupCollapsed('CREATE:')
+  // console.log(element)
+  // console.groupEnd('CREATE:')
+
   if (!node) {
     isNewNode = true
 

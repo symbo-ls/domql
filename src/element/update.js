@@ -44,6 +44,10 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
   // // console.log(element.path)
   // // console.log(element)
 
+  // console.groupCollapsed('UPDATE:')
+  // console.log(element)
+  // console.groupEnd('UPDATE:')
+
   const overwriteChanges = overwrite(element, params, UPDATE_DEFAULT_OPTIONS)
   const execChanges = throughUpdatedExec(element, UPDATE_DEFAULT_OPTIONS)
   const definedChanges = throughUpdatedDefine(element)
