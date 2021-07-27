@@ -1,6 +1,6 @@
 'use strict'
 
-import { isArray, isObject } from './object'
+import { isArray, isFunction, isObject } from './object'
 
 export const generateHash = () => Math.random().toString(36).substring(2)
 
@@ -82,6 +82,8 @@ export const deepMergeProto = (element, proto) => {
     } else if (isArray(elementProp) && isObject(protoProp)) {
       const obj = deepMergeProto({}, elementProp)
       element[e] = deepMergeProto(obj, protoProp)
+    } else if (elementProp === undefined && isFunction(protoProp)) {
+      element[e] = protoProp
     }
   }
   return element
