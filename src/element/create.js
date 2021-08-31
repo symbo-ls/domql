@@ -4,7 +4,6 @@ import root from './root'
 import createNode from './createNode'
 import { appendNode, assignNode } from './assign'
 import { applyPrototype } from './proto'
-import ID from './id'
 import nodes from './nodes'
 import set from './set'
 import createState from './createState'
@@ -12,7 +11,7 @@ import createProps from './createProps'
 import update from './update'
 import * as on from '../event/on'
 import { assignClass } from './mixins/classList'
-import { isFunction, isNumber, isString } from '../utils'
+import { isFunction, isNumber, isString, createID } from '../utils'
 import { remove, lookup, log, keys, parse, parseDeep } from './methods'
 import cacheNode from './cache'
 // import { overwrite, clone, fillTheRest } from '../utils'
@@ -31,7 +30,7 @@ const create = (element, parent, key, options = {}) => {
   if (element === null) return
 
   // define KEY
-  const assignedKey = element.key || key || ID.next().value
+  const assignedKey = element.key || key || createID.next().value
 
   // if (assignedKey === 'all') debugger
 

@@ -34,7 +34,7 @@ export const updateState = function (obj, options = {}) {
 
 export default function (element, parent) {
   let { state } = element
-  if (!state) return parent.state || {}
+  if (!state) return (parent && parent.state) || {}
   if (isFunction(state)) state = exec(state, element)
 
   state = deepClone(state, ['update', 'parse', '__element'])
