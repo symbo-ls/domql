@@ -43,6 +43,9 @@ const create = (element, parent, key, options = {}) => {
     }
   }
 
+  // create PROTOtypal inheritance
+  applyPrototype(element, parent, options)
+
   // enable STATE
   element.state = createState(element, parent)
 
@@ -51,9 +54,6 @@ const create = (element, parent, key, options = {}) => {
 
   // create and assign a KEY
   element.key = assignedKey
-
-  // create PROTOtypal inheritance
-  applyPrototype(element, parent, options)
 
   // set the PATH
   if (ENV === 'test' || ENV === 'development') {
