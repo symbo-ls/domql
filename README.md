@@ -204,4 +204,4 @@ var layout = { // this will be <div>
 ```
 
 ### Credits
-Inspired by [vigour-io/brisky](https://github.com/vigour-io/brisky)
+Inspired by [brisky](https://github.com/vigour-io/brisky)
