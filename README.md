@@ -19,6 +19,7 @@ Key features:
 - [x] create
   - [x] create using prototype class
   - [x] support multiple level prototypes
+  - [x] DOM caching
 - [x] state
 - [x] binding
   - [x] with other component
