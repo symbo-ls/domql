@@ -11,7 +11,7 @@ import createProps from './createProps'
 import update from './update'
 import * as on from '../event/on'
 import { assignClass } from './mixins/classList'
-import { isFunction, isNumber, isString, createID } from '../utils'
+import { isFunction, isNumber, isString, createID, isNode } from '../utils'
 import { remove, lookup, log, keys, parse, parseDeep } from './methods'
 import cacheNode from './cache'
 // import { overwrite, clone, fillTheRest } from '../utils'
@@ -22,15 +22,20 @@ const ENV = process.env.NODE_ENV
  * Creating a domQL element using passed parameters
  */
 const create = (element, parent, key, options = {}) => {
-  // if PARENT is not given
-  if (!parent) parent = root
-
   // if ELEMENT is not given
   if (element === undefined) element = {}
   if (element === null) return
 
   // define KEY
   const assignedKey = element.key || key || createID.next().value
+
+  // if PARENT is not given
+  // if (parent === null) parent = root
+  // if (parent === undefined) parent = root
+  if (!parent) parent = root
+  if (isNode(parent)) parent = root[`${key}_parent`] = { node: parent }
+
+  console.log(root, parent)
 
   // if (assignedKey === 'all') debugger
 
