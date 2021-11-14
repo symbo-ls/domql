@@ -25,16 +25,18 @@ export const isObjectLike = arg => {
 
 export const isNode = obj => {
   return (
-    typeof Node === "object" ? obj instanceof Node :
-    obj && typeof obj === "object" && typeof obj.nodeType === "number" && typeof obj.nodeName==="string"
-  );
+    typeof window.Node === 'object'
+      ? obj instanceof window.Node
+      : obj && typeof obj === 'object' && typeof obj.nodeType === 'number' && typeof obj.nodeName === 'string'
+  )
 }
 
 export const isHtmlElement = obj => {
   return (
-    typeof HTMLElement === "object" ? obj instanceof HTMLElement : //DOM2
-    obj && typeof obj === "object" && obj !== null && obj.nodeType === 1 && typeof obj.nodeName==="string"
-)
+    typeof window.HTMLElement === 'object'
+      ? obj instanceof window.HTMLElement // DOM2
+      : obj && typeof obj === 'object' && obj !== null && obj.nodeType === 1 && typeof obj.nodeName === 'string'
+  )
 }
 
 export const isDefined = arg => {
