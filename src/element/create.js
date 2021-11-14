@@ -35,8 +35,6 @@ const create = (element, parent, key, options = {}) => {
   if (!parent) parent = root
   if (isNode(parent)) parent = root[`${key}_parent`] = { node: parent }
 
-  console.log(root, parent)
-
   // if (assignedKey === 'all') debugger
 
   // if element is STRING
