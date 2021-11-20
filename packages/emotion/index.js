@@ -7,9 +7,10 @@ import { classList } from '../../src/element/mixins'
 import { css } from 'emotion'
 
 const style = (params, element, node) => {
+  const execPareams = exec(params, element)
   if (params) {
-    if (isObjectLike(element.class)) element.class.style = params
-    else element.class = { style: params }
+    if (isObjectLike(element.class)) element.class.style = execPareams
+    else element.class = { style: execPareams }
   }
   classf(element.class, element, node)
 }
