@@ -1,6 +1,7 @@
 {
   "name": "@domql/object",
-  "version": "0.0.0",
+  "version": "0.0.1",
+  "private": false,
   "description": "",
   "main": "index.js",
   "scripts": {
