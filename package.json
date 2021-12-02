@@ -9,10 +9,7 @@
     "registry": "https://registry.npmjs.org"
   },
   "main": "src/index.js",
-  "files": [
-    "src",
-    "packages"
-  ],
+  "files": [ "src" ],
   "scripts": {
     "start": "parcel examples/index.html --no-cache --port 1200",
     "build": "parcel build examples/index.html",
