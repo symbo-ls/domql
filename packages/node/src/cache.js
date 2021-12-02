@@ -1,7 +1,7 @@
 'use strict'
 
 import { can } from '@domql/event'
-import { exec, isString, isTagRegistered, report } from '@domql/utils'
+import { exec, isString, isValidHtmlTag, report } from '@domql/utils'
 
 const cachedElements = {}
 
@@ -26,10 +26,10 @@ const detectTag = element => {
   if (tag === true) tag = key
 
   if (isString(tag)) {
-    const tagExists = isTagRegistered(tag) > -1
+    const tagExists = isValidHtmlTag(tag) > -1
     if (tagExists) return tag
   } else {
-    const isKeyATag = isTagRegistered(key) > -1
+    const isKeyATag = isValidHtmlTag(key) > -1
     if (isKeyATag) return key
   }
 

@@ -4,7 +4,7 @@
   "main": "src/index.js",
   "license": "MIT",
   "scripts": {
-    "patch": "npm version patch && npm publish"
+    "vpatch": "npm version patch && npm publish --access public"
   },
   "dependencies": {
     "@domql/node": "^0.0.1",

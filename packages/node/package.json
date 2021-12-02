@@ -1,12 +1,12 @@
 {
   "name": "@domql/node",
-  "version": "0.0.4",
+  "version": "0.0.7",
   "main": "src/index.js",
   "license": "MIT",
   "dependencies": {
     "@domql/define": "^0.0.1"
   },
   "scripts": {
-    "patch": "npm version patch && npm publish"
+    "vpatch": "npm version patch && npm publish --access public"
   }
 }
