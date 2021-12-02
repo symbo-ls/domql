@@ -1,6 +1,9 @@
 {
   "name": "@domql/cookie",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "main": "index.js",
-  "license": "MIT"
+  "license": "MIT",
+  "scripts": {
+    "vpatch": "npm version patch && npm publish --access public"
+  }
 }
