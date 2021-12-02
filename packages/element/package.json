@@ -1,19 +1,19 @@
 {
   "name": "@domql/element",
-  "version": "0.0.4",
+  "version": "1.2.14",
   "main": "src/index.js",
   "license": "MIT",
   "scripts": {
     "vpatch": "npm version patch && npm publish --access public"
   },
   "dependencies": {
-    "@domql/node": "latest",
-    "@domql/tree": "latest",
-    "@domql/state": "latest",
-    "@domql/proto": "latest",
     "@domql/event": "latest",
-    "@domql/utils": "latest",
     "@domql/mixins": "latest",
-    "@domql/props": "latest"
+    "@domql/node": "latest",
+    "@domql/props": "latest",
+    "@domql/proto": "latest",
+    "@domql/state": "latest",
+    "@domql/tree": "latest",
+    "@domql/utils": "latest"
   }
 }

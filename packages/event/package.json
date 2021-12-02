@@ -1,10 +1,9 @@
 {
   "name": "@domql/event",
-  "version": "0.0.5",
+  "version": "1.2.14",
   "main": "src/index.js",
   "license": "MIT",
   "scripts": {
     "vpatch": "npm version patch && npm publish --access public"
-  },
-  "dependencies": {}
+  }
 }

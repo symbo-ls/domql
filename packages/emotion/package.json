@@ -1,13 +1,13 @@
 {
   "name": "@domql/emotion",
-  "version": "1.0.2",
+  "version": "1.2.14",
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
-    "@emotion/css": "^11.5.0",
     "@domql/define": "latest",
     "@domql/mixins": "latest",
-    "@domql/utils": "latest"
+    "@domql/utils": "latest",
+    "@emotion/css": "^11.5.0"
   },
   "scripts": {
     "vpatch": "npm version patch && npm publish --access public"

@@ -1,6 +1,6 @@
 {
   "name": "@domql/proto",
-  "version": "0.0.2",
+  "version": "1.2.14",
   "main": "index.js",
   "license": "MIT"
 }
