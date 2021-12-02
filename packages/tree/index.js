@@ -3,4 +3,4 @@
 import { root } from './root'
 
 export const tree = root
-export { root }
+export { root } from './root'

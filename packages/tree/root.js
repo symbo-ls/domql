@@ -2,9 +2,7 @@
 
 import { report } from '@domql/report'
 
-const root = {
+export const root = {
   key: ':root',
   node: document ? document.body : report('DocumentNotDefined', document)
 }
-
-export default root

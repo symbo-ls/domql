@@ -1,7 +1,7 @@
 'use strict'
 
 import { exec } from '@domql/utils'
-import { create } from '..'
+import { create } from '@domql/element'
 
 /**
  * Creates a text node and appends into

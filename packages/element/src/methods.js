@@ -27,11 +27,11 @@ export const get = function (param) {
   return element[param]
 }
 
-export const set = function () {
-}
+// export const set = function () {
+// }
 
-export const update = function () {
-}
+// export const update = function () {
+// }
 
 export const defineSetter = (element, key, get, set) =>
   Object.defineProperty(element, key, { get, set })

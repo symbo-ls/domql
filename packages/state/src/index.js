@@ -32,7 +32,7 @@ export const updateState = function (obj, options = {}) {
   }
 }
 
-export function state (element, parent) {
+export function createState (element, parent) {
   let { state } = element
   if (!state) return (parent && parent.state) || {}
   if (isFunction(state)) state = exec(state, element)
