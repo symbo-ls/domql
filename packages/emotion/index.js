@@ -1,6 +1,6 @@
 'use strict'
 
-import DOM from '../../src'
+import { define } from '@domql/define'
 import { isObjectLike, exec } from '@domql/utils'
 import { classList } from '@domql/mixins'
 
@@ -27,7 +27,7 @@ const classf = (params, element, node) => {
   }
 }
 
-DOM.define({
+define({
   style,
   class: classf
 }, {

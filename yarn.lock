@@ -947,6 +947,16 @@
   resolved "https://registry.yarnpkg.com/@domql/mixins/-/mixins-0.0.1.tgz#8b7723ee48eeb53c21d67e5684a6495b0fdb34b6"
   integrity sha512-MqIL4pSwwqYitok7v+EcI6LMNaVLwMF55pT1oB/xF1HHR1yddHxUo9bY5+svpA/+FDNGYBmVvCL1VeCZ23pR9A==
 
+"@domql/report@^0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@domql/report/-/report-0.0.1.tgz#2ac4d5f009377a5dc875534a382e83bf8edce616"
+  integrity sha512-vQqS0qojd1DExNrrnXQkfJwkP44zH6WnBklaqkg+4Ul16KZO+9rLpk7mn7Jz48QEhC2kes+/XiA+mGJJYyATcw==
+
+"@domql/utils@^0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@domql/utils/-/utils-0.0.1.tgz#78ec795da9e4c21acb96edac0969f85b6fd4df0d"
+  integrity sha512-dUsCIcxv+FrI784rU7Du3XdS9X4FE+sbxc6+uoknYX+tN7baHWsoc684VqQTDdybwEj9XJIbC2Nmg71Ojq2rUA==
+
 "@eslint/eslintrc@^0.3.0":
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/@eslint/eslintrc/-/eslintrc-0.3.0.tgz#d736d6963d7003b6514e6324bec9c602ac340318"

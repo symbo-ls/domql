@@ -1,5 +1,7 @@
 'use strict'
 
+import 'regenerator-runtime/runtime'
+
 const createID = function * () {
   let index = 1
   while (index < index + 1) {

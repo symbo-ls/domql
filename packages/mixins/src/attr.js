@@ -1,6 +1,7 @@
 'use strict'
 
-import { exec, report } from '@domql/utils'
+import { exec } from '@domql/utils'
+import { report } from '@domql/report'
 
 /**
  * Recursively add attributes to a DOM node

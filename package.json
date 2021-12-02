@@ -14,7 +14,7 @@
     "packages"
   ],
   "scripts": {
-    "start": "parcel examples/index.html --no-cache",
+    "start": "parcel examples/index.html --no-cache --port 1200",
     "build": "parcel build examples/index.html",
     "standard": "npx standard \"src/**/*.js\"",
     "test": "yarn standard && jest --coverage --coverageReporters=text-lcov | coveralls",
@@ -24,7 +24,8 @@
   "source": true,
   "dependencies": {
     "@domql/mixins": "^0.0.1",
-    "regenerator-runtime": "^0.13.5"
+    "@domql/report": "^0.0.1",
+    "@domql/utils": "^0.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.10.4",

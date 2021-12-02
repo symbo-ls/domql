@@ -1,8 +1,8 @@
 'use strict'
 
 import { Link } from '@rackai/symbols'
-import { deepMerge } from '../../src/utils'
-import route from './router'
+import { deepMerge } from '@domql/utils'
+import { router } from '@domql/router'
 
 const RouteLink = {
   on: {
@@ -11,7 +11,7 @@ const RouteLink = {
       const { href } = element.props
       const firstThree = href[0] + href[1] + href[2]
       if (href && firstThree !== 'htt' && firstThree !== 'ske') {
-        route(root, href, {})
+        router(root, href, {})
         event.preventDefault()
       }
     }
