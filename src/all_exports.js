@@ -1,5 +1,7 @@
 'use strict'
 
+import { createNode } from '@domql/node'
+
 export * from '@domql/cache'
 export * from '@domql/cookie'
 export * from '@domql/define'

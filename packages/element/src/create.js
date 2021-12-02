@@ -6,12 +6,12 @@ import { createNode, NODE_REGISTRY, cacheNode } from '@domql/node'
 import { createState } from '@domql/state'
 import { createProps } from '@domql/props'
 import { assignClass } from '@domql/mixins'
-import * as on from '@domql/event/src/on'
+import { on } from '@domql/event'
 import { isFunction, isNumber, isString, createID, isNode } from '@domql/utils'
 
 import { appendNode, assignNode } from './assign'
-import set from './set'
-import update from './update'
+import { set } from './set'
+import { update } from './update'
 import { remove, lookup, log, keys, parse, parseDeep } from './methods'
 
 const ENV = process.env.NODE_ENV

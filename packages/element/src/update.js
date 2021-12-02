@@ -4,7 +4,7 @@ import { overwrite, isFunction, isObject, isString, isNumber, merge } from '@dom
 import { registry } from '@domql/mixins'
 import { updateProps } from '@domql/props'
 import { createNode } from '@domql/node'
-import * as on from '@domql/event/src/on'
+import { on } from '@domql/event'
 
 import { isMethod } from './methods'
 import { throughUpdatedDefine, throughUpdatedExec } from './iterate'
@@ -16,7 +16,7 @@ const UPDATE_DEFAULT_OPTIONS = {
   preventRecursive: false
 }
 
-const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
+export const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
   const element = this
   const { define, parent, node } = element
 
@@ -96,5 +96,3 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     on.update(element.on.update, element, element.state)
   }
 }
-
-export default update

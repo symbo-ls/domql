@@ -1,6 +1,6 @@
 'use strict'
 
-import create from './create'
+import { create } from './create'
 
 const removeContentElement = (params, element) => {
   if (params && element.content) {
