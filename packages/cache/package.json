@@ -1,6 +1,9 @@
 {
   "name": "@domql/cache",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "main": "index.js",
-  "license": "MIT"
+  "license": "MIT",
+  "scripts": {
+    "patch": "npm version patch && npm publish"
+  }
 }
