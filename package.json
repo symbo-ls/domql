@@ -3,13 +3,15 @@
   "description": "DOM rendering Javascript framework at early stage.",
   "private": false,
   "author": "rackai",
-  "version": "1.2.11",
+  "version": "1.2.12",
   "repository": "https://github.com/domql/domql",
   "publishConfig": {
     "registry": "https://registry.npmjs.org"
   },
   "main": "src/index.js",
-  "files": [ "src" ],
+  "files": [
+    "src"
+  ],
   "scripts": {
     "start": "parcel examples/index.html --no-cache --port 1200",
     "build": "parcel build examples/index.html",
