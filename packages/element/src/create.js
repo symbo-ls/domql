@@ -2,18 +2,17 @@
 
 import { root } from '@domql/tree'
 import { applyPrototype } from '@domql/proto'
-import nodes, { createNode } from '@domql/node'
+import { createNode, NODE_REGISTRY, cacheNode } from '@domql/node'
+import { createState } from '@domql/state'
+import { createProps } from '@domql/props'
+import { assignClass } from '@domql/mixins'
+import * as on from '@domql/event/src/on'
+import { isFunction, isNumber, isString, createID, isNode } from '@domql/utils'
+
 import { appendNode, assignNode } from './assign'
 import set from './set'
-import createState from './createState'
-import createProps from './createProps'
 import update from './update'
-import * as on from '../event/on'
-import { assignClass } from '../../../src/element/mixins/classList'
-import { isFunction, isNumber, isString, createID, isNode } from '../utils'
 import { remove, lookup, log, keys, parse, parseDeep } from './methods'
-import cacheNode from '../../node/src/cache'
-// import { overwrite, clone, fillTheRest } from '../utils'
 
 const ENV = process.env.NODE_ENV
 
@@ -34,14 +33,12 @@ export const create = (element, parent, key, options = {}) => {
   if (!parent) parent = root
   if (isNode(parent)) parent = root[`${key}_parent`] = { node: parent }
 
-  // if (assignedKey === 'all') debugger
-
   // if element is STRING
   if (isString(element) || isNumber(element)) {
     element = {
       text: element,
       tag: (!element.proto && parent.childProto && parent.childProto.tag) ||
-      ((nodes.body.indexOf(key) > -1) && key) || 'string'
+      ((NODE_REGISTRY.body.indexOf(key) > -1) && key) || 'string'
     }
   }
 
@@ -50,9 +47,6 @@ export const create = (element, parent, key, options = {}) => {
 
   // create PROTOtypal inheritance
   applyPrototype(element, parent, options)
-
-  // console.groupCollapsed('Create:', assignedKey)
-  // console.log(element)
 
   // create and assign a KEY
   element.key = assignedKey
@@ -65,8 +59,6 @@ export const create = (element, parent, key, options = {}) => {
 
   // if it already HAS A NODE
   if (element.node) {
-    // console.log('hasNode!')
-    // console.groupEnd('Create:')
     return assignNode(element, parent, assignedKey)
   }
 
@@ -108,14 +100,6 @@ export const create = (element, parent, key, options = {}) => {
 
   // apply props settings
   createProps(element, parent)
-
-  // console.log('cache.props:')
-  // console.log(cache.props)
-  // console.log('applied props:')
-  // console.log(element.props)
-  // console.log('element:')
-  // console.log(element)
-  // console.groupEnd('Create:')
 
   // don't render IF in condition
   if (isFunction(element.if) && !element.if(element, element.state)) {

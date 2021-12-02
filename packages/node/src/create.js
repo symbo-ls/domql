@@ -28,7 +28,10 @@ const ENV = process.env.NODE_ENV
 //   }
 // })
 
-const createNode = (element) => {
+export * from './cache'
+export * from './registry'
+
+export const createNode = (element) => {
   // create and assign a node
   let { node, tag } = element
 
@@ -88,5 +91,3 @@ const createNode = (element) => {
   // node.dataset.key = key
   return element
 }
-
-export default createNode

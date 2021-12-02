@@ -18,7 +18,7 @@ const removeContentElement = (params, element) => {
   }
 }
 
-const set = function (params, enter, leave) {
+export const set = function (params, enter, leave) {
   const element = this
 
   removeContentElement(params, element)
@@ -33,8 +33,6 @@ const set = function (params, enter, leave) {
 
   return element
 }
-
-export default set
 
 // if (element.content && (isFunction(element.content) || element.content.node)) {
 //   // leave(element, () => {

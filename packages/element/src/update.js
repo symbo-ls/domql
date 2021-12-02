@@ -2,13 +2,13 @@
 
 import { overwrite, isFunction, isObject, isString, isNumber, merge } from '@domql/utils'
 import { registry } from '@domql/mixins'
-import * as on from '@domql/event/src/on'
 import { updateProps } from '@domql/props'
+import { createNode } from '@domql/node'
+import * as on from '@domql/event/src/on'
 
 import { isMethod } from './methods'
 import { throughUpdatedDefine, throughUpdatedExec } from './iterate'
 import { appendNode } from './assign'
-import { createNode } from '.'
 
 const UPDATE_DEFAULT_OPTIONS = {
   stackChanges: false,

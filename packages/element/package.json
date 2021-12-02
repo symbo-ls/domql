@@ -1,6 +1,19 @@
 {
   "name": "@domql/element",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "main": "src/index.js",
-  "license": "MIT"
+  "license": "MIT",
+  "scripts": {
+    "patch": "npm version patch && npm publish"
+  },
+  "dependencies": {
+    "@domql/node": "^0.0.1",
+    "@domql/tree": "^0.0.1",
+    "@domql/state": "^0.0.1",
+    "@domql/proto": "^0.0.1",
+    "@domql/event": "^0.0.1",
+    "@domql/utils": "^0.0.1",
+    "@domql/mixins": "^0.0.1",
+    "@domql/props": "^0.0.1"
+  }
 }

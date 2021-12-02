@@ -1,17 +1,14 @@
 'use strict'
 
-export * from '@domql/cache'
-export * from '@domql/cookie'
-export * from '@domql/define'
-export * from '@domql/element'
-export * from '@domql/event'
-export * from '@domql/id'
-export * from '@domql/mixins'
-export * from '@domql/node'
-export * from '@domql/parse'
-export * from '@domql/props'
-export * from '@domql/proto'
-export * from '@domql/report'
-export * from '@domql/state'
-export * from '@domql/tree'
-export * from '@domql/utils'
+import { create } from '@domql/element'
+import { define } from '@domql/define'
+
+export { parse } from '@domql/parse'
+export { define } from '@domql/define'
+export { tree } from '@domql/tree'
+export { create, set } from '@domql/element'
+
+export default {
+  create,
+  define
+}

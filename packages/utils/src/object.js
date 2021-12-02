@@ -1,8 +1,8 @@
 'use strict'
 
-import nodes from '../element/nodes'
+import { NODE_REGISTRY } from '@domql/node'
 
-export const isTagRegistered = arg => nodes.body.indexOf(arg)
+export const isTagRegistered = arg => NODE_REGISTRY.body.indexOf(arg)
 
 export const isObject = arg => {
   if (arg === null) return false

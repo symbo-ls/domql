@@ -942,17 +942,79 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@domql/mixins@^0.0.1":
+"@domql/cache@0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@domql/cache/-/cache-0.0.1.tgz#5a51ba4144bb222d31c78dc9d98d7a0ebca1781e"
+  integrity sha512-XMXYeRHc+wBgteEx6INhkBJ4BnbqL1Tw9z9mG8quBGNcDWFZDgbvuI0K/Bz87qOuOEluv03CGhq2W79MUNvpmw==
+
+"@domql/cookie@0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@domql/cookie/-/cookie-0.0.1.tgz#da60f7ac268004b81cb1817c0d60168b5f158914"
+  integrity sha512-9rgQWmY+NwhAWyYsrQfoi0KMTwzDlX4OAo3kvvWk7RG9puGg4Ta2U0z1qgy2Zvm66ERG9QM3QvE/EN2rBvDv3g==
+
+"@domql/define@0.0.1", "@domql/define@^0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@domql/define/-/define-0.0.1.tgz#2a020737cfc6e3ac063771ab3403cea6327aeabc"
+  integrity sha512-BvBj0kKXeIkPPIRf9XYVEshaVlkMRu3vDcqQQWcobnLl88QA4gwE/FrAx6M+kGaFr8sbyjixqjTESdh55i6/oA==
+
+"@domql/element@0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@domql/element/-/element-0.0.1.tgz#007ea7ee8b49dbb8e55fab25a0504be79e6a0a20"
+  integrity sha512-+Zp2sO+eYgeCeqtlJw+3LQQ14mLWzxmiYEkEX6jB2iiKkM+6d1dbl0vD5qHEc6YEGNTBFnS9V3f6p6uWTrNIag==
+
+"@domql/event@0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@domql/event/-/event-0.0.1.tgz#14451c05eb0ac45e3fa1be10c928ced9d9fc4655"
+  integrity sha512-s5Ho2CWI2JT23sqHrO/PiVeADUCnby5i01F105tLM2crBaeVHNGrCoqv03TD20/UalOAMs18su4bfulvroDJhA==
+
+"@domql/id@0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@domql/id/-/id-0.0.1.tgz#76531b7aa21b5b9b2d84649cd2c5606098248730"
+  integrity sha512-CSexAUDDIGtziw0IOFm3iUzbVc/c5VJ3Pr1K3zi2lqI1UwBdAztZguNC5C/pA0AcW1SP8cCHTqHN/98Kf9LJRQ==
+
+"@domql/mixins@0.0.1":
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/@domql/mixins/-/mixins-0.0.1.tgz#8b7723ee48eeb53c21d67e5684a6495b0fdb34b6"
   integrity sha512-MqIL4pSwwqYitok7v+EcI6LMNaVLwMF55pT1oB/xF1HHR1yddHxUo9bY5+svpA/+FDNGYBmVvCL1VeCZ23pR9A==
 
-"@domql/report@^0.0.1":
+"@domql/node@0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@domql/node/-/node-0.0.1.tgz#125ec4ff483d425e6999a0f464fe27ba823d28a8"
+  integrity sha512-967qTbA95OXh47Uu7Mys/9XgjCNT2cVxgnZAnFPhYJX/9aBttsnoAi1uL9UD5AlMr9aXuVvhyeXbPeY6DNMvaA==
+  dependencies:
+    "@domql/define" "^0.0.1"
+
+"@domql/parse@0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@domql/parse/-/parse-0.0.1.tgz#724fd57a5cdbe7fec5fd6962e57779146a0ffe9b"
+  integrity sha512-6FnsWpPwko38Mdi/qZbyUdFGAKMVMKG+qo3+wcrbZHH96ELmcwljw+oKwZSVceEhev5yk+nE7e4KsbA/HVCg1g==
+
+"@domql/props@0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@domql/props/-/props-0.0.1.tgz#b468214aeef72b3bc2bb460a82f86bb03fb358db"
+  integrity sha512-bx47DzOOH5INDniDNHe4C7Zdo1lZ92qusfKPu7GaAck2lDRJC+TqpVU5I8oigQuSG+I/25eEm+sRW/zIF3+1xw==
+
+"@domql/proto@0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@domql/proto/-/proto-0.0.1.tgz#23fc4ae92148fdbc54e64467f2a13a751b725145"
+  integrity sha512-vIX+RAMukFYVtdtaqWc6vP6WW2ErLqvwM834G5nw89pvY9cxHZ9WNq79tfAxb3S0E6+NJgT2YCYyvC3V4V6GhQ==
+
+"@domql/report@0.0.1":
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/@domql/report/-/report-0.0.1.tgz#2ac4d5f009377a5dc875534a382e83bf8edce616"
   integrity sha512-vQqS0qojd1DExNrrnXQkfJwkP44zH6WnBklaqkg+4Ul16KZO+9rLpk7mn7Jz48QEhC2kes+/XiA+mGJJYyATcw==
 
-"@domql/utils@^0.0.1":
+"@domql/state@0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@domql/state/-/state-0.0.1.tgz#68c63dad1c7b99b45169677e9fecdf480666c3b2"
+  integrity sha512-VRdsnZQgCxj1QDnmhSeiia6e+lEO6FmetY9Tk9C5zWd16JwoOI6KjBO9PdlvgEsiZrZfkXYd6rQc1AsK3s4syQ==
+
+"@domql/tree@0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@domql/tree/-/tree-0.0.1.tgz#f735942b56507da2e149c9819ae8c041d6717db2"
+  integrity sha512-RgxNx9dnyXxJ9FDJeiS45KB56DJM2y3ixJOdBOOvWgsQRLUKyCrSOFXupfFJGLqn99yEsUU1KrS7tcZAXMDaPg==
+
+"@domql/utils@0.0.1":
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/@domql/utils/-/utils-0.0.1.tgz#78ec795da9e4c21acb96edac0969f85b6fd4df0d"
   integrity sha512-dUsCIcxv+FrI784rU7Du3XdS9X4FE+sbxc6+uoknYX+tN7baHWsoc684VqQTDdybwEj9XJIbC2Nmg71Ojq2rUA==
@@ -8464,7 +8526,7 @@ regenerator-runtime@^0.11.0:
   resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.11.1.tgz#be05ad7f9bf7d22e056f9726cee5017fbf19e2e9"
   integrity sha512-MguG95oij0fC3QV3URf4V2SDYGJhJnJGqvIIgdECeODCT98wSWDAJ94SSuVpYQUoTcGUIL6L4yNB7j1DFFHSBg==
 
-regenerator-runtime@^0.13.4, regenerator-runtime@^0.13.5:
+regenerator-runtime@^0.13.4:
   version "0.13.9"
   resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.13.9.tgz#8925742a98ffd90814988d7566ad30ca3b263b52"
   integrity sha512-p3VT+cOEgxFsRRA9X4lkI1E+k2/CtnKtU4gcxyaCUreilL/vqI6CdZ3wxVUx3UOUg+gnUOQQcRI7BmSI656MYA==

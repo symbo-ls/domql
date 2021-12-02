@@ -1,6 +1,6 @@
 'use strict'
 
-import set from '../set'
+import set from '@domql/element'
 
 /**
  * Appends anything as content
