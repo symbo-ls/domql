@@ -1,10 +1,10 @@
 {
-  "name": "@symbols/domql",
+  "name": "@domql/domql",
   "description": "DOM rendering Javascript framework at early stage.",
   "private": false,
   "author": "rackai",
   "version": "1.2.9",
-  "repository": "https://github.com/rackai/domql",
+  "repository": "https://github.com/domql/domql",
   "publishConfig": {
     "registry": "https://registry.npmjs.org"
   },
@@ -23,6 +23,7 @@
   },
   "source": true,
   "dependencies": {
+    "@domql/mixins": "^0.0.1",
     "regenerator-runtime": "^0.13.5"
   },
   "devDependencies": {

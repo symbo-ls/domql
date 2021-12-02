@@ -1,20 +1,6 @@
 {
   "name": "@domql/object",
-  "version": "0.0.1",
-  "private": false,
+  "version": "0.0.2",
   "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/domql/domql.git"
-  },
-  "author": "Rackai",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/domql/domql/issues"
-  },
-  "homepage": "https://github.com/domql/domql#readme"
+  "main": "index.js"
 }

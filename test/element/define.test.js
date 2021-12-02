@@ -2,7 +2,7 @@
 
 import 'regenerator-runtime/runtime'
 import { create, define } from '../../src/element'
-import { registry } from '../../src/element/mixins'
+import { registry } from '@domql/mixins'
 
 define({
   stand: param => `stands ${param}min`

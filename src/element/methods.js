@@ -1,7 +1,7 @@
 'use strict'
 
 import { isObject, isObjectLike } from '../utils'
-import { registry } from './mixins'
+import { registry } from '@domql/mixins'
 
 // TODO: update these files
 export const lookup = function (key) {

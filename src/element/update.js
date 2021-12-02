@@ -1,7 +1,7 @@
 'use strict'
 
 import { overwrite, isFunction, isObject, isString, isNumber } from '../utils'
-import { registry } from './mixins'
+import { registry } from '@domql/mixins'
 import * as on from '../event/on'
 import { isMethod } from './methods'
 import { throughUpdatedDefine, throughUpdatedExec } from './iterate'

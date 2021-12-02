@@ -10,7 +10,7 @@ import {
   throughInitialExec,
   applyEvents
 } from './iterate'
-import { registry } from './mixins'
+import { registry } from '@domql/mixins'
 import { isMethod } from './methods'
 // import { defineSetter } from './methods'
 

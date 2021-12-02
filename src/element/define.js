@@ -1,6 +1,6 @@
 'use strict'
 
-import { registry } from './mixins'
+import { registry } from '@domql/mixins'
 import { report } from '../utils'
 
 export default (params, options = {}) => {

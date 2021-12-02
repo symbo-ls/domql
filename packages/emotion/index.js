@@ -1,8 +1,8 @@
 'use strict'
 
 import DOM from '../../src'
-import { isObjectLike, exec } from '../../src/utils'
-import { classList } from '../../src/element/mixins'
+import { isObjectLike, exec } from '@domql/utils'
+import { classList } from '@domql/mixins'
 
 import { css } from '@emotion/css'
 
