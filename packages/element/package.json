@@ -7,13 +7,13 @@
     "vpatch": "npm version patch && npm publish --access public"
   },
   "dependencies": {
-    "@domql/node": "^0.0.1",
-    "@domql/tree": "^0.0.1",
-    "@domql/state": "^0.0.1",
-    "@domql/proto": "^0.0.1",
-    "@domql/event": "^0.0.1",
-    "@domql/utils": "^0.0.1",
-    "@domql/mixins": "^0.0.1",
-    "@domql/props": "^0.0.1"
+    "@domql/node": "latest",
+    "@domql/tree": "latest",
+    "@domql/state": "latest",
+    "@domql/proto": "latest",
+    "@domql/event": "latest",
+    "@domql/utils": "latest",
+    "@domql/mixins": "latest",
+    "@domql/props": "latest"
   }
 }

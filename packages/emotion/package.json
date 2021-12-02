@@ -5,9 +5,9 @@
   "license": "MIT",
   "dependencies": {
     "@emotion/css": "^11.5.0",
-    "@domql/define": "^0.0.1",
-    "@domql/mixins": "^0.0.1",
-    "@domql/utils": "^0.0.1"
+    "@domql/define": "latest",
+    "@domql/mixins": "latest",
+    "@domql/utils": "latest"
   },
   "scripts": {
     "vpatch": "npm version patch && npm publish --access public"

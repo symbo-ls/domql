@@ -37,7 +37,8 @@
     "@domql/report": "latest",
     "@domql/state": "latest",
     "@domql/tree": "latest",
-    "@domql/utils": "latest"
+    "@domql/utils": "latest",
+    "lerna": "^4.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.10.4",
@@ -67,4 +68,3 @@
   },
   "browserslist": "> 0.25%, not dead"
 }
-

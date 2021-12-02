@@ -12,6 +12,7 @@ You can start with [starter-kit](https://github.com/rackai/starter-kit) as a boi
 [![npm version](https://badge.fury.io/js/%40rackai%2Fdomql.svg)](https://badge.fury.io/js/%40rackai%2Fdomql)
 [![Build Status](https://travis-ci.org/rackai/domql.svg?branch=master)](https://travis-ci.org/rackai/domql)
 [![Coverage Status](https://coveralls.io/repos/github/rackai/domql/badge.svg?branch=main)](https://coveralls.io/github/rackai/domql?branch=main)
+[![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://lerna.js.org/)
 
 Key features:
 - [x] error reporting
@@ -42,7 +43,7 @@ yarn && yarn start
 
 ### Examples
 
-Initialization: 
+Initialization:
 
 ```javascript
 import DOM from '@rackai/domql'
@@ -71,7 +72,7 @@ var img = {
 }
 ```
 
-Reusing: 
+Reusing:
 ```javascript
 var Link = {
   tag: 'a'
@@ -185,7 +186,7 @@ set
 define
 ```
 
-Anything except these keywords will create a new nested child element. The easier method to specify HTML tag is to use related nodeName as a key, for example: 
+Anything except these keywords will create a new nested child element. The easier method to specify HTML tag is to use related nodeName as a key, for example:
 
 ```javascript
 var layout = { // this will be <div>
