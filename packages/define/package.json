@@ -4,6 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
-    "@domql/mixins": "^1.2.14"
+    "@domql/mixins": "^1.2.14",
+    "@domql/report": "^1.2.14"
   }
 }
