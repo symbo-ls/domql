@@ -3,7 +3,7 @@
 import { registry } from '@domql/mixins'
 import { report } from '@domql/report'
 
-export default (params, options = {}) => {
+export const define = (params, options = {}) => {
   const { overwrite } = options
   for (const param in params) {
     if (registry[param] && !overwrite) {
