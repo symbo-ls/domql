@@ -67,8 +67,5 @@
       "jest"
     ]
   },
-  "workspaces": [
-    "packages/*"
-  ],
   "browserslist": "> 0.25%, not dead"
 }
