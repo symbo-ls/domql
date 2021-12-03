@@ -1,10 +1,10 @@
 {
   "name": "@domql/state",
-  "version": "1.2.14",
+  "version": "1.2.23",
   "main": "src/index.js",
   "license": "MIT",
   "dependencies": {
-    "@domql/event": "^1.2.14",
-    "@domql/utils": "^1.2.20"
+    "@domql/event": "^1.2.23",
+    "@domql/utils": "^1.2.23"
   }
 }
