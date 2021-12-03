@@ -14,8 +14,6 @@ import { set } from './set'
 import { update } from './update'
 import { remove, lookup, log, keys, parse, parseDeep } from './methods'
 
-console.log(root)
-
 const ENV = process.env.NODE_ENV
 
 /**
