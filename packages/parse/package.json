@@ -5,5 +5,6 @@
   "license": "MIT",
   "dependencies": {
     "@domql/element": "^1.2.19"
-  }
+  },
+  "gitHead": "46e382475a6cc0e62ec0b588d18866aa7e4ff83e"
 }

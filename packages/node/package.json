@@ -12,5 +12,6 @@
   },
   "scripts": {
     "vpatch": "npm version patch && npm publish --access public"
-  }
+  },
+  "gitHead": "46e382475a6cc0e62ec0b588d18866aa7e4ff83e"
 }
