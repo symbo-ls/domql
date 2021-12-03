@@ -5,5 +5,8 @@
   "license": "MIT",
   "scripts": {
     "vpatch": "npm version patch && npm publish --access public"
+  },
+  "dependencies": {
+    "@domql/node": "^1.2.14"
   }
 }
