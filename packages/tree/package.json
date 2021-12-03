@@ -2,5 +2,8 @@
   "name": "@domql/tree",
   "version": "1.2.14",
   "main": "index.js",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@domql/report": "^1.2.14"
+  }
 }

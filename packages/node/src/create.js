@@ -1,17 +1,10 @@
 'use strict'
 
-import {
-  create,
-  throughInitialDefine,
-  throughInitialExec,
-  applyEvents
-  , isMethod
-} from '@domql/element'
-import { cacheNode } from './cache'
-import * as on from '@domql/event/src/on'
-
+import { create, throughInitialDefine, throughInitialExec, applyEvents, isMethod } from '@domql/element'
 import { isFunction, isObject } from '@domql/utils'
+import { on } from '@domql/event'
 import { registry } from '@domql/mixins'
+import { cacheNode } from './cache'
 // import { defineSetter } from './methods'
 
 const ENV = process.env.NODE_ENV

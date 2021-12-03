@@ -20,7 +20,7 @@
     "test-watch": "jest --watch",
     "vpatch": "npm version patch && npm publish",
     "vpush": "git add . && git commit -am 'version update' && git push",
-    "publish-all": "lerna publish && yarn vpatch",
+    "publish-all": "lerna publish && yarn vpatch && vpush",
     "bump": "npx np"
   },
   "source": true,
