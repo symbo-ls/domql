@@ -18,8 +18,8 @@
     "standard": "npx standard \"src/**/*.js\"",
     "test": "yarn standard && jest --coverage --coverageReporters=text-lcov | coveralls",
     "test-watch": "jest --watch",
-    "vpatch": "npm version patch && npm publish --access public",
-    "publish-all": "lerna publish && npm version patch && npm publish",
+    "vpatch": "npm version patch && npm publish",
+    "publish-all": "lerna publish && yarn vpatch",
     "bump": "npx np"
   },
   "source": true,
