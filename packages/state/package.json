@@ -1,11 +1,11 @@
 {
   "name": "@domql/state",
-  "version": "1.2.23",
+  "version": "1.2.24",
   "main": "src/index.js",
   "license": "MIT",
   "dependencies": {
-    "@domql/event": "^1.2.23",
-    "@domql/utils": "^1.2.23"
+    "@domql/event": "^1.2.24",
+    "@domql/utils": "^1.2.24"
   },
   "gitHead": "46e382475a6cc0e62ec0b588d18866aa7e4ff83e"
 }
