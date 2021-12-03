@@ -3,7 +3,7 @@
   "description": "DOM rendering Javascript framework at early stage.",
   "private": false,
   "author": "rackai",
-  "version": "1.2.19",
+  "version": "1.2.20",
   "repository": "https://github.com/domql/domql",
   "publishConfig": {
     "registry": "https://registry.npmjs.org"
@@ -19,7 +19,8 @@
     "test": "yarn standard && jest --coverage --coverageReporters=text-lcov | coveralls",
     "test-watch": "jest --watch",
     "vpatch": "npm version patch && npm publish",
-    "publish-all": "lerna publish && yarn vpatch",
+    "vpush": "git add . && git commit -am 'version update'",
+    "publish-all": "yarn vpush && lerna publish && yarn vpatch",
     "bump": "npx np"
   },
   "source": true,
