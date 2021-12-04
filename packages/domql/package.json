@@ -1,0 +1,29 @@
+{
+  "name": "@domql/domql",
+  "description": "DOM rendering Javascript framework at early stage.",
+  "private": false,
+  "version": "1.2.24",
+  "main": "src/index.js",
+  "files": [
+    "src"
+  ],
+  "source": true,
+  "dependencies": {
+    "@domql/cache": "latest",
+    "@domql/cookie": "latest",
+    "@domql/define": "latest",
+    "@domql/element": "latest",
+    "@domql/event": "latest",
+    "@domql/id": "latest",
+    "@domql/mixins": "latest",
+    "@domql/node": "latest",
+    "@domql/parse": "latest",
+    "@domql/props": "latest",
+    "@domql/proto": "latest",
+    "@domql/report": "latest",
+    "@domql/state": "latest",
+    "@domql/tree": "latest",
+    "@domql/utils": "latest"
+  },
+  "browserslist": "> 0.25%, not dead"
+}
