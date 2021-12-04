@@ -4,7 +4,7 @@ import React, { useEffect, useRef } from 'react'
 import { create } from '@domql/element'
 import { clone } from '@domql/utils'
 
-function DOMQLRenderer (component, parent, props) {
+export function DOMQLRenderer (component, parent, props) {
   create({
     proto: component,
     props: clone(props)
