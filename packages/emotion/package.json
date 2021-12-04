@@ -1,6 +1,6 @@
 {
   "name": "@domql/emotion",
-  "version": "1.3.2",
+  "version": "1.3.7",
   "main": "dist/index.js",
   "license": "MIT",
   "dependencies": {
