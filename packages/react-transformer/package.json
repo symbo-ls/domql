@@ -1,0 +1,11 @@
+{
+  "name": "@domql/react-transformer",
+  "version": "0.0.1",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@domql/domql": "^1.2.23",
+    "@domql/utils": "^1.2.24",
+    "react": "^17.0.2"
+  }
+}
