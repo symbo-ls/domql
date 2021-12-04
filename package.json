@@ -10,10 +10,7 @@
     "standard": "npx standard \"src/**/*.js\"",
     "test": "yarn standard && jest --coverage --coverageReporters=text-lcov | coveralls",
     "test-watch": "jest --watch",
-    "vpatch": "npm version patch && npm publish",
-    "vpush": "git add . && git commit -am 'version update' && git push",
-    "publish-all": "lerna publish && yarn vpatch && yarn vpush",
-    "bump": "npx np"
+    "vpush": "git add . && git commit -am 'version update' && git push"
   },
   "devDependencies": {
     "lerna": "^4.0.0",
