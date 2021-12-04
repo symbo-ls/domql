@@ -1,7 +1,8 @@
 'use strict'
 
 import { can } from '@domql/event'
-import { exec, isString, isValidHtmlTag, report } from '@domql/utils'
+import { exec, isString, isValidHtmlTag } from '@domql/utils'
+import { report } from '@domql/report'
 
 const cachedElements = {}
 

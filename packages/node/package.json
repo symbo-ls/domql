@@ -4,10 +4,11 @@
   "main": "src/index.js",
   "license": "MIT",
   "dependencies": {
-    "@domql/define": "latest",
+    "@domql/define": "^1.3.3",
     "@domql/element": "^1.3.3",
     "@domql/event": "^1.3.3",
     "@domql/mixins": "^1.3.3",
+    "@domql/report": "^1.3.0",
     "@domql/utils": "^1.3.3"
   },
   "scripts": {
