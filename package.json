@@ -1,16 +1,8 @@
 {
-  "name": "@domql/domql",
-  "description": "DOM rendering Javascript framework at early stage.",
-  "private": false,
-  "author": "rackai",
-  "version": "1.2.23",
+  "private": true,
   "repository": "https://github.com/domql/domql",
-  "publishConfig": {
-    "registry": "https://registry.npmjs.org"
-  },
-  "main": "src/index.js",
   "files": [
-    "src"
+    "packages"
   ],
   "scripts": {
     "start": "parcel examples/index.html --no-cache --port 1200",
@@ -22,24 +14,6 @@
     "vpush": "git add . && git commit -am 'version update' && git push",
     "publish-all": "lerna publish && yarn vpatch && yarn vpush",
     "bump": "npx np"
-  },
-  "source": true,
-  "dependencies": {
-    "@domql/cache": "latest",
-    "@domql/cookie": "latest",
-    "@domql/define": "latest",
-    "@domql/element": "latest",
-    "@domql/event": "latest",
-    "@domql/id": "latest",
-    "@domql/mixins": "latest",
-    "@domql/node": "latest",
-    "@domql/parse": "latest",
-    "@domql/props": "latest",
-    "@domql/proto": "latest",
-    "@domql/report": "latest",
-    "@domql/state": "latest",
-    "@domql/tree": "latest",
-    "@domql/utils": "latest"
   },
   "devDependencies": {
     "lerna": "^4.0.0",

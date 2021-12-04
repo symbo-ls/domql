@@ -25,5 +25,8 @@
     "@domql/tree": "latest",
     "@domql/utils": "latest"
   },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
+  },
   "browserslist": "> 0.25%, not dead"
 }
