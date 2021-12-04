@@ -1,14 +1,14 @@
 {
   "name": "@domql/node",
-  "version": "1.3.0",
+  "version": "1.3.3",
   "main": "src/index.js",
   "license": "MIT",
   "dependencies": {
     "@domql/define": "latest",
-    "@domql/element": "^1.3.0",
-    "@domql/event": "^1.3.0",
-    "@domql/mixins": "^1.3.0",
-    "@domql/utils": "^1.3.0"
+    "@domql/element": "^1.3.3",
+    "@domql/event": "^1.3.3",
+    "@domql/mixins": "^1.3.3",
+    "@domql/utils": "^1.3.3"
   },
   "scripts": {
     "vpatch": "npm version patch && npm publish --access public"
