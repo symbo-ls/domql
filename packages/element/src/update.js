@@ -95,4 +95,6 @@ export const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
   if (element.on && isFunction(element.on.update)) {
     on.update(element.on.update, element, element.state)
   }
+
+  return element
 }
