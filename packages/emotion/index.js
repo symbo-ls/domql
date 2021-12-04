@@ -30,6 +30,4 @@ const classf = (params, element, node) => {
 define({
   style,
   class: classf
-}, {
-  overwrite: true
-})
+}, { overwrite: true })

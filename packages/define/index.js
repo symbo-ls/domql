@@ -10,4 +10,5 @@ export const define = (params, options = {}) => {
       report('OverwriteToBuiltin', param)
     } else registry[param] = params[param]
   }
+  return registry
 }
