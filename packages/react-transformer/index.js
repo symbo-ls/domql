@@ -17,10 +17,10 @@ export const reactTransformer = (component, props, state) => {
     <React.Fragment ref={ref}>
       {props.text}
       {
-      useEffect(() => {
-        DOMQLRenderer(component, ref.current, props)
-      })
-    }
+        useEffect(() => {
+          DOMQLRenderer(component, ref.current, props)
+        })
+      }
     </React.Fragment>
   )
 }
