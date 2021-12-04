@@ -1,20 +1,20 @@
 'use strict'
 
-import DOM from '../src'
+import DOM from '../packages/domql'
 
 import header from './header'
 import footer from './footer'
 import Icon from './icon'
 
-var icon = {
+const icon = {
   proto: Icon,
   name: 'toke'
 }
 
-var { performance } = window
-var now = performance.now()
+const { performance } = window
+const now = performance.now()
 
-var list = []
+const list = []
 
 for (let i = 0; i < 35; i++) {
   const afrika = {
@@ -47,7 +47,7 @@ for (let i = 0; i < 35; i++) {
   list[i] = afrika
 }
 
-var root = {
+const root = {
   header,
   list,
 
@@ -57,5 +57,5 @@ var root = {
 
 DOM.create(root)
 
-var later = performance.now()
+const later = performance.now()
 console.log(later - now)
