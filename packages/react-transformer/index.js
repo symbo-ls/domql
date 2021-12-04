@@ -40,7 +40,6 @@ export const reactTransformer = (component, props, state) => {
   const ref = useRef(null)
   return (
     <span ref={ref}>
-      {props.text}
       {
         useEffect(() => {
           DOMQLRenderer(component, ref, props, state)
