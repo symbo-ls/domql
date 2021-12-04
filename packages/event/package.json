@@ -1,14 +1,14 @@
 {
   "name": "@domql/event",
-  "version": "1.2.24",
+  "version": "1.2.25",
   "main": "src/index.js",
   "license": "MIT",
   "scripts": {
     "vpatch": "npm version patch && npm publish --access public"
   },
   "dependencies": {
-    "@domql/node": "^1.2.24",
-    "@domql/report": "^1.2.14"
+    "@domql/node": "^1.2.25",
+    "@domql/report": "^1.2.25"
   },
   "gitHead": "46e382475a6cc0e62ec0b588d18866aa7e4ff83e"
 }
