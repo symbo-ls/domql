@@ -114,7 +114,7 @@ export const create = (element, parent, key, options = {}) => {
   createNode(element)
 
   // assign NODE
-  assignNode(element, parent, key)
+  assignNode(element, parent, key, options.insertAfter)
 
   // run `on.render`
   if (element.on && isFunction(element.on.render)) {
