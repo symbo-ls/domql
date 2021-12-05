@@ -1,12 +1,12 @@
 {
   "name": "@domql/mixins",
-  "version": "1.3.3",
+  "version": "1.3.8",
   "main": "src/index.js",
   "license": "MIT",
   "dependencies": {
-    "@domql/element": "^1.3.3",
-    "@domql/report": "^1.3.0",
-    "@domql/utils": "^1.3.3"
+    "@domql/element": "^1.3.8",
+    "@domql/report": "^1.3.8",
+    "@domql/utils": "^1.3.8"
   },
   "gitHead": "46e382475a6cc0e62ec0b588d18866aa7e4ff83e"
 }
