@@ -1,15 +1,15 @@
 {
   "name": "@domql/react-transformer",
-  "version": "2.0.0",
+  "version": "1.3.10",
   "main": "dist/index.js",
   "license": "MIT",
   "files": [
     "dist"
   ],
   "dependencies": {
-    "@domql/domql": "^1.3.9",
-    "@domql/element": "^1.3.9",
-    "@domql/utils": "^1.3.9",
+    "@domql/domql": "^1.3.10",
+    "@domql/element": "^1.3.10",
+    "@domql/utils": "^1.3.10",
     "react": "16.14.0",
     "react-dom": "16.14.0"
   },
