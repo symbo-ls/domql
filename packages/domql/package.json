@@ -7,7 +7,7 @@
     "dist"
   ],
   "main": "dist/index.js",
-  "source": "src/index.js",
+  "source": "index.js",
   "dependencies": {
     "@domql/cache": "latest",
     "@domql/cookie": "latest",
