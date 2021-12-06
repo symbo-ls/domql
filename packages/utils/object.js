@@ -1,8 +1,8 @@
 'use strict'
 
-import { NODE_REGISTRY } from '@domql/node'
+import { TAGS } from '@domql/registry'
 
-export const isValidHtmlTag = arg => NODE_REGISTRY.body.indexOf(arg)
+export const isValidHtmlTag = arg => TAGS.body.indexOf(arg)
 
 export const isObject = arg => {
   if (arg === null) return false

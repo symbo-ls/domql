@@ -1,7 +1,7 @@
 'use strict'
 
 import { isObject, isObjectLike } from '@domql/utils'
-import { registry } from '@domql/mixins'
+import { DEFAULT_METHODS } from '@domql/registry'
 
 // TODO: update these files
 export const lookup = function (key) {
@@ -40,7 +40,7 @@ export const keys = function () {
   const element = this
   const keys = []
   for (const param in element) {
-    if (!isObject(registry[param])) {
+    if (!isObject(DEFAULT_METHODS[param])) {
       keys.push(param)
     }
   }

@@ -2,7 +2,7 @@
 
 import { create, assignNode } from '@domql/element'
 
-const parse = (element) => {
+export const parse = (element) => {
   const virtualTree = {
     node: document.createElement('div')
   }
@@ -12,5 +12,3 @@ const parse = (element) => {
 
   return virtualTree.node.innerHTML
 }
-
-export default parse

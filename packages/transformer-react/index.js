@@ -14,8 +14,6 @@ export function DOMQLRenderer (component, ref, receivedProps, receivedState) {
   const props = clone(p)
   const state = clone(receivedState)
 
-  console.log(ref)
-
   if (!DOMQLElement) {
     const el = create({
       proto: component,
@@ -23,11 +21,6 @@ export function DOMQLRenderer (component, ref, receivedProps, receivedState) {
       state: state,
       props: props,
       content: (el) => {
-        console.log('content')
-        console.log(el)
-        console.log(children)
-
-        console.log(receivedProps.children, el.node)
         // const portal = ReactDOM.createPortal(receivedProps.children, el.node)
         return {
           node: ReactDOM.createPortal(receivedProps.children, el.node)

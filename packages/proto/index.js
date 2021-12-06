@@ -17,20 +17,12 @@ export const applyPrototype = (element, parent, options = {}) => {
   // merge if proto is array
   // const proto = mergeAndCloneIfArray(element.proto, v => {
   //   if (v.props) cache.props.push(v.props)
-  // console.log('v.propsIN_PROTO:')
-  // console.log(v.props)
   // })
 
-  // console.log(proto)
   const protoStack = getProtoStack(proto)
 
   if (ENV !== 'test' || ENV !== 'development') delete element.proto
 
-  // console.log(parent.childProto)
-
-  // console.log(element)
-  // console.log(proto)
-  // console.log(protoStack)
   // debugger
 
   let childProtoStack = []
@@ -41,9 +33,6 @@ export const applyPrototype = (element, parent, options = {}) => {
       childProtoStack = getProtoStack(parent.childProto)
     }
   }
-
-  // console.log(proto, parent && parent.childProto)
-  // console.log(protoStack, childProtoStack)
 
   const protoLength = protoStack.length
   const childProtoLength = childProtoStack.length
@@ -60,7 +49,6 @@ export const applyPrototype = (element, parent, options = {}) => {
   element.__proto = stack
   const mergedProto = cloneAndMergeArrayProto(stack)
 
-  // console.log(mergedProto)
   return deepMergeProto(element, mergedProto)
 
   // final merging with prototype

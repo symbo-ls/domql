@@ -1,7 +1,7 @@
 'use strict'
 
 import { overwrite, isFunction, isObject, isString, isNumber, merge } from '@domql/utils'
-import { registry } from '@domql/mixins'
+import { defaultMethods } from '@domql/mixins'
 import { updateProps } from '@domql/props'
 import { createNode } from '@domql/node'
 import { on } from '@domql/event'
@@ -21,14 +21,6 @@ export const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
   const { define, parent, node } = element
 
   // console.groupCollapsed('Update:', element.path)
-  // console.log('params:')
-  // console.log(params)
-  // console.log('props:')
-  // console.log(element.props)
-  // console.log('element:')
-  // console.log(element)
-  // console.log('PARAMS.PROPS:')
-  // console.log(params.props)
   // console.groupEnd('Update:')
   // if params is string
   if (isString(params) || isNumber(params)) {
@@ -39,13 +31,9 @@ export const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     on.initUpdate(element.on.initUpdate, element, element.state)
   }
 
-  // console.log(element, parent)
   updateProps(params.props, element, parent)
-  // // console.log(element.path)
-  // // console.log(element)
 
   // console.groupCollapsed('UPDATE:')
-  // console.log(element)
   // console.groupEnd('UPDATE:')
 
   const overwriteChanges = overwrite(element, params, UPDATE_DEFAULT_OPTIONS)
@@ -70,7 +58,6 @@ export const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     }
   }
 
-  // console.log(node)
   // console.groupEnd('Update:')
 
   if (!node || options.preventRecursive) return
@@ -78,12 +65,10 @@ export const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
   for (const param in element) {
     const prop = element[param]
 
-    if (isMethod(param) || isObject(registry[param]) || prop === undefined) continue
+    if (isMethod(param) || isObject(defaultMethods[param]) || prop === undefined) continue
 
     const hasDefined = define && define[param]
-    const ourParam = registry[param]
-
-    // // console.log(prop)
+    const ourParam = defaultMethods[param]
 
     if (ourParam) {
       if (isFunction(ourParam)) ourParam(prop, element, node)

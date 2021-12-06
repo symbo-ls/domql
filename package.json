@@ -6,38 +6,29 @@
   ],
   "scripts": {
     "start": "parcel examples/index.html --no-cache --port 1200",
-    "build": "parcel build examples/index.html",
-    "standard": "npx standard \"src/**/*.js\"",
-    "test": "yarn standard && jest --coverage --coverageReporters=text-lcov | coveralls",
-    "test-watch": "jest --watch",
-    "vpush": "git add . && git commit -am 'version update' && git push"
+    "build": "lerna run build",
+    "build:all": "lerna exec -- npx parcel build index.js",
+    "test": "echo running all tests is not supported, maybe run: \"yarn test:coverage\" or \"yarn test:lint\"",
+    "test:watch": "jest 'packages/**/*.js' --watch",
+    "test:unit": "echo run unit tests is not yet supported",
+    "test:lint": "npx standard \"packages/**/*.js\"",
+    "test:build": "echo test how it builds is not yet supported",
+    "test:coverage": "yarn jest --coverage --coverageReporters=text-lcov | coveralls",
+    "push": "echo push is not yet supported",
+    "push:version": "git add . && git commit -am 'version update' && git push"
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.16.4",
+    "eslint": "^8.4.0",
+    "eslint-plugin-jest": "^25.3.0",
+    "jest": "^27.4.3",
     "lerna": "^4.0.0",
-    "@babel/core": "^7.10.4",
-    "@babel/preset-env": "^7.10.4",
-    "babel-eslint": "^10.0.3",
-    "babel-jest": "^27.0.2",
-    "babel-preset-env": "^1.7.0",
-    "coveralls": "^3.0.5",
-    "eslint": "^7.12.1",
-    "eslint-plugin-jest": "^24.1.0",
-    "jest": "^27.0.6",
     "nodemon": "^2.0.6",
     "np": "^7.2.0",
     "parcel": "^2.0.1",
     "standard": "^16.0.1"
   },
-  "jest": {
-    "collectCoverageFrom": [
-      "src/**/*.js"
-    ]
-  },
-  "standard": {
-    "parser": "babel-eslint",
-    "env": [
-      "jest"
-    ]
-  },
-  "browserslist": "> 0.25%, not dead"
+  "workspaces": [ "packages/*" ],
+  "browserslist": "> 0.25%, not dead",
+  "dependencies": {}
 }

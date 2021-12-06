@@ -3,10 +3,9 @@
   "version": "2.0.2",
   "main": "dist/index.js",
   "license": "MIT",
-  "scripts": {
-    "vpatch": "npm version patch && npm publish --access public"
-  },
   "dependencies": {
+    "@domql/registry": "latest",
+    "@domql/id": "latest",
     "@domql/event": "latest",
     "@domql/mixins": "latest",
     "@domql/node": "latest",

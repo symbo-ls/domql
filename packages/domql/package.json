@@ -1,16 +1,11 @@
 {
-  "name": "@domql/domql",
-  "description": "DOM rendering Javascript framework at early stage.",
-  "private": false,
-  "version": "2.0.2",
-  "files": [
-    "dist"
-  ],
+  "name": "domql",
+  "version": "0.0.1",
   "main": "dist/index.js",
+  "license": "MIT",
   "source": "index.js",
   "dependencies": {
     "@domql/cache": "latest",
-    "@domql/cookie": "latest",
     "@domql/define": "latest",
     "@domql/element": "latest",
     "@domql/event": "latest",
@@ -20,14 +15,10 @@
     "@domql/parse": "latest",
     "@domql/props": "latest",
     "@domql/proto": "latest",
+    "@domql/registry": "latest",
     "@domql/report": "latest",
     "@domql/state": "latest",
     "@domql/tree": "latest",
     "@domql/utils": "latest"
-  },
-  "publishConfig": {
-    "registry": "https://registry.npmjs.org"
-  },
-  "browserslist": "> 0.25%, not dead",
-  "gitHead": "3e0e9bc168da768f454332e9252b77f90cf87f9c"
+  }
 }

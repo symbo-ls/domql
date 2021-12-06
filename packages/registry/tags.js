@@ -1,6 +1,6 @@
 'use strict'
 
-export const NODE_REGISTRY = {
+export const TAGS = {
   root: [
     'body',
     'html'

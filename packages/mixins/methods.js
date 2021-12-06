@@ -11,7 +11,7 @@ import {
   state
 } from '.'
 
-export const registry = {
+export const defaultMethods = {
   attr,
   style,
   text,

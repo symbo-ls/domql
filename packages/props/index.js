@@ -51,7 +51,6 @@ export const updateProps = (newProps, element, parent) => {
   if (propsStack) syncProps(propsStack, element)
   else inheritProps(element, parent)
 
-  // console.log(cachedProps)
   return element
 }
 

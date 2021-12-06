@@ -3,7 +3,7 @@
 import { create, throughInitialDefine, throughInitialExec, applyEvents, isMethod } from '@domql/element'
 import { isFunction, isObject } from '@domql/utils'
 import { on } from '@domql/event'
-import { registry } from '@domql/mixins'
+import { defaultMethods } from '@domql/mixins'
 import { cacheNode } from './cache'
 // import { defineSetter } from './methods'
 
@@ -22,7 +22,6 @@ const ENV = process.env.NODE_ENV
 // })
 
 export * from './cache'
-export * from './registry'
 
 export const createNode = (element) => {
   // create and assign a node
@@ -68,13 +67,13 @@ export const createNode = (element) => {
     for (const param in element) {
       const prop = element[param]
 
-      if (isMethod(param) || isObject(registry[param]) || prop === undefined) continue
+      if (isMethod(param) || isObject(defaultMethods[param]) || prop === undefined) continue
 
       const hasDefined = element.define && element.define[param]
-      const ourParam = registry[param]
+      const ourMethod = defaultMethods[param]
 
-      if (ourParam) { // Check if param is in our method registry
-        if (isFunction(ourParam)) ourParam(prop, element, node)
+      if (ourMethod) { // Check if param is in our method defaultMethods
+        if (isFunction(ourMethod)) ourMethod(prop, element, node)
       } else if (element[param] && !hasDefined) {
         create(prop, element, param) // Create element
       }

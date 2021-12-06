@@ -1,6 +1,6 @@
 'use strict'
 
-import { isArray, isFunction, isObject } from '@domql/utils/src/object'
+import { isArray, isFunction, isObject } from '@domql/utils'
 
 export const generateHash = () => Math.random().toString(36).substring(2)
 
@@ -109,7 +109,6 @@ export const getProtoStack = proto => {
   if (!proto) return []
   if (proto.__hash) return getHashedProto(proto)
   const stack = flattenProto(proto, [])
-  // console.log(stack)
   return getProtoStackRegistry(proto, stack)
 }
 
