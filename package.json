@@ -21,7 +21,6 @@
   },
   "devDependencies": {
     "@babel/preset-env": "^7.16.4",
-    "@parcel/compressor-brotli": "^2.0.1",
     "@parcel/compressor-gzip": "^2.0.1",
     "@parcel/reporter-bundle-buddy": "^2.0.1",
     "lerna": "^4.0.0",
