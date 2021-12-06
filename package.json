@@ -15,10 +15,15 @@
     "test:build": "echo test how it builds is not yet supported",
     "test:coverage": "yarn jest --coverage --coverageReporters=text-lcov | coveralls",
     "push": "echo push is not yet supported",
-    "push:version": "git add . && git commit -am 'version update' && git push"
+    "push:version": "git add . && git commit -am 'version update' && git push",
+    "clean": "rm -rf dist node_modules yarn.lock .parcel-cache yarn-error.log",
+    "clean:all": "lerna exec -- rm -rf dist node_modules yarn.lock .parcel-cache yarn-error.log"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.16.4",
+    "@parcel/compressor-brotli": "^2.0.1",
+    "@parcel/compressor-gzip": "^2.0.1",
+    "@parcel/reporter-bundle-buddy": "^2.0.1",
     "eslint": "^8.4.0",
     "eslint-plugin-jest": "^25.3.0",
     "jest": "^27.4.3",
@@ -28,7 +33,9 @@
     "parcel": "^2.0.1",
     "standard": "^16.0.1"
   },
-  "workspaces": [ "packages/*" ],
+  "workspaces": [
+    "packages/*"
+  ],
   "browserslist": "> 0.25%, not dead",
   "dependencies": {}
 }

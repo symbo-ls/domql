@@ -8,7 +8,6 @@
     "@domql/id": "latest",
     "@domql/event": "latest",
     "@domql/mixins": "latest",
-    "@domql/node": "latest",
     "@domql/props": "latest",
     "@domql/proto": "latest",
     "@domql/state": "latest",

@@ -3,12 +3,12 @@
 import { overwrite, isFunction, isObject, isString, isNumber, merge } from '@domql/utils'
 import { defaultMethods } from '@domql/mixins'
 import { updateProps } from '@domql/props'
-import { createNode } from '@domql/node'
+// import { createNode } from '@domql/node'
 import { on } from '@domql/event'
 
 import { isMethod } from './methods'
 import { throughUpdatedDefine, throughUpdatedExec } from './iterate'
-import { appendNode } from './assign'
+// import { appendNode } from './assign'
 
 const UPDATE_DEFAULT_OPTIONS = {
   stackChanges: false,
@@ -49,8 +49,8 @@ export const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     // TODO: move as fragment
     const ifPassed = element.if(element, element.state)
     if (element.__ifFalsy && ifPassed) {
-      createNode(element)
-      appendNode(element.node, element.__ifFragment)
+      // createNode(element)
+      // appendNode(element.node, element.__ifFragment)
       delete element.__ifFalsy
     } else if (element.node && !ifPassed) {
       element.node.remove()
