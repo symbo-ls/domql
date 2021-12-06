@@ -24,18 +24,12 @@
     "@parcel/compressor-brotli": "^2.0.1",
     "@parcel/compressor-gzip": "^2.0.1",
     "@parcel/reporter-bundle-buddy": "^2.0.1",
-    "eslint": "^8.4.0",
-    "eslint-plugin-jest": "^25.3.0",
-    "jest": "^27.4.3",
     "lerna": "^4.0.0",
     "nodemon": "^2.0.6",
     "np": "^7.2.0",
     "parcel": "^2.0.1",
     "standard": "^16.0.1"
   },
-  "workspaces": [
-    "packages/*"
-  ],
   "browserslist": "> 0.25%, not dead",
   "dependencies": {}
 }

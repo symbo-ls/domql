@@ -3,7 +3,7 @@
 import { create } from '@domql/element'
 import { define } from '@domql/define'
 
-export * as _ from './all_exports'
+export * as _ from './allExports'
 
 export { parse } from '@domql/parse'
 export { define } from '@domql/define'

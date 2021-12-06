@@ -8,8 +8,6 @@
     "jest": true
   },
   "overrides": [{
-    "files": ["packages/**/*.test.js"],
-    "env": { "jest": true },
-    "plugins": ["jest"]
+    "files": ["packages/**/*.test.js"]
   }]
 }
