@@ -57,5 +57,5 @@ const root = {
 
 DOM.create(root)
 
-const later = performance.now()
-console.log(later - now)
+// const later = performance.now()
+// console.log(later - now)

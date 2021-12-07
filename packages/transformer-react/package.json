@@ -1,7 +1,7 @@
 {
   "name": "@domql/react-transformer",
   "version": "2.0.2",
-  "main": "dist/index.js",
+  "main": "index.js",
   "license": "MIT",
   "files": [
     "dist"

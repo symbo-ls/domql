@@ -2,7 +2,7 @@
   "name": "@domql/object",
   "version": "2.0.2",
   "description": "",
-  "main": "dist/index.js",
+  "main": "index.js",
   "gitHead": "3e0e9bc168da768f454332e9252b77f90cf87f9c",
   "source": "index.js"
 }

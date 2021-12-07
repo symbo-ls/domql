@@ -20,14 +20,26 @@
     "clean:all": "lerna exec -- rm -rf dist node_modules yarn.lock .parcel-cache yarn-error.log"
   },
   "devDependencies": {
+    "@babel/core": "^7.16.0",
     "@babel/preset-env": "^7.16.4",
     "@parcel/compressor-gzip": "^2.0.1",
     "@parcel/reporter-bundle-buddy": "^2.0.1",
+    "babel-eslint": "^10.1.0",
+    "babel-jest": "^27.4.2",
+    "eslint": "^8.4.0",
+    "eslint-plugin-jest": "^25.3.0",
+    "jest": "^27.4.3",
     "lerna": "^4.0.0",
     "nodemon": "^2.0.6",
     "np": "^7.2.0",
     "parcel": "^2.0.1",
     "standard": "^16.0.1"
+  },
+  "standard": {
+    "parser": "babel-eslint",
+    "env": [
+      "jest"
+    ]
   },
   "browserslist": "> 0.25%, not dead",
   "dependencies": {}

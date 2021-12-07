@@ -1,52 +1,67 @@
 'use strict'
 
 import { root } from '@domql/tree'
-import { createID } from '@domql/id'
+import { createId } from '@domql/id'
 import { isNumber, isString, isNode } from '@domql/utils'
+import { assignClass } from '../mixins'
+
+const OPTIONS = {}
 
 /**
  * Creating a domQL element using passed parameters
  */
 
-const init = (element) => {
-  // if element is STRING
+const init = (element, key) => {
+  const ref = {}
+  if (isObject(element)) {
+    if (!element.ref) element.ref = {}
+    return element
+  }
   if (isString(element) || isNumber(element)) {
     return {
-      ref: {},
+      key,
+      ref,
       props: {
         value: element
       }
     }
   }
-  if (!element.ref) element.ref = {}
-  return {}
+  // if (element.ref) element.ref = {}
+  if (!element) return { ref }
+  return element
 }
 
 const assignKey = (element, key) => {
-  if (element.key) return
-  element.key = key || createID.next().value
+  if (element.key) return element
+  element.key = key || createId.next().value
+  return element
 }
 
 const applyParent = (element, key) => {
-  const { parent } = element
+  const { ref } = element
+  const { parent } = ref
   if (isNode(parent)) {
-    element.parent = root[`${key}_parent`] = { node: parent }
+    ref.parent = root.ref[`parent`] = { node: parent }
   }
-  if (!element.parent) {
-    element.parent = root
-  }
+  if (!parent) ref.parent = root
+  return element
+}
+
+const applyClass = (element, key) => {
+  assignClass
 }
 
 export const create = (element, parent, key, options = {}) => {
-  if (element === undefined) { element = {} }
+  // if (element === undefined) { element = {} }
 
   [
     init,
     assignKey,
-    applyParent
-  ].reduce(
-    (prev, currentCall, element) => currentCall.call(prev, key, options)
-  )
+    applyParent,
+    applyClass
+  ].reduce((prev, current) => current(prev, key, options), element)
 
   console.log(element)
+
+  return element
 }
