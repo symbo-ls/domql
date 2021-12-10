@@ -55,7 +55,21 @@ const root = {
   footer
 }
 
-DOM.create(root)
+const transformReact = (element, key) => {
+  const { ref } = element
+  const { tag, props, children, ...rest } = ref
+  return {
+    type: tag,
+    props,
+    children
+  }
+}
+
+DOM.create(root, null, null, {
+  transform: {
+    react: transformReact
+  }
+})
 
 // const later = performance.now()
 // console.log(later - now)

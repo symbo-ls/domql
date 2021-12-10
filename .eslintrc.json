@@ -1,13 +1,15 @@
 {
   "extends": "standard",
+  "parser": "@babel/eslint-parser",
   "plugins": ["jest"],
   "env": {
     "es6": true,
     "browser": true,
+    "document": true,
     "node": true,
     "jest": true
   },
   "overrides": [{
     "files": ["packages/**/*.test.js"]
-  }]
+  }],
 }

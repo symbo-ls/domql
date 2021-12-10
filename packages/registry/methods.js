@@ -13,7 +13,7 @@ export const DEFAULT_METHODS = {
   props: {},
   state: {},
 
-  define: {},
+  method: {},
   transform: {},
 
   on: {},

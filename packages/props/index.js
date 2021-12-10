@@ -6,10 +6,10 @@ const initProps = (element, parent) => {
   const propsStack = []
   if (element.props) propsStack.push(element.props)
 
-  if (isArray(element.__proto)) {
-    element.__proto.map(proto => {
-      if (proto.props) propsStack.push(proto.props)
-      return proto.props
+  if (isArray(element.ref.__extendStack)) {
+    element.ref.__extendStack.map(extendUnit => {
+      if (extendUnit.props) propsStack.push(extendUnit.props)
+      return extendUnit.props
     })
   }
 
@@ -17,30 +17,28 @@ const initProps = (element, parent) => {
 }
 
 const inheritProps = (element, parent) => {
-  element.props = (parent && parent.props) || { update, __element: element }
+  element.ref.props = (parent && parent.ref.props)
 }
 
 export const syncProps = (props, element) => {
-  element.props = {}
-  const mergedProps = { update, __element: element }
+  element.ref.props = {}
+  const mergedProps = {}
   props.forEach(v => {
-    if (v === 'update' || v === '__element') return
-    element.props = deepMerge(mergedProps, deepClone(exec(v, element)))
+    element.ref.props = deepMerge(mergedProps, exec(v, element))
   })
-  element.props = mergedProps
-  return element.props
+  element.ref.props = mergedProps
+  return element.ref.props
 }
 
 export const createProps = function (element, parent, cached) {
   const propsStack = cached || initProps(element, parent)
 
   if (propsStack.length) {
-    element.__props = propsStack
+    element.ref.__propsStack = propsStack
     syncProps(propsStack, element)
-    element.props.update = update
   } else inheritProps(element, parent)
 
-  return element
+  return element.ref.props
 }
 
 export const updateProps = (newProps, element, parent) => {
