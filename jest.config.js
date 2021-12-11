@@ -9,7 +9,8 @@ const packages = readdirSync(basePath).filter(name => {
 module.exports = {
   verbose: true,
   projects: ['packages/*'],
-  testEnvironment: 'node',
+  // testEnvironment: 'node',
+  testEnvironment: 'jsdom',
   moduleDirectories: ['packages'],
   collectCoverageFrom: [
     'packages/**/*.js'

@@ -65,11 +65,11 @@ const transformReact = (element, key) => {
   }
 }
 
-DOM.create(root, null, null, {
-  transform: {
-    react: transformReact
-  }
-})
+// DOM.create(root, null, null, {
+//   transform: {
+//     react: transformReact
+//   }
+// })
 
 // const later = performance.now()
 // console.log(later - now)

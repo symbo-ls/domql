@@ -3,7 +3,7 @@
 import { root } from '@domql/tree'
 import { createId } from '@domql/id'
 import { isNumber, isString, isObject, isNode, isFunction, isArray } from '@domql/utils'
-import { DEFAULT_METHODS } from '@domql/registry'
+import { DEFAULT_METHODS, TAGS } from '@domql/registry'
 import { createState } from '@domql/state'
 import { createProps } from '@domql/props'
 
@@ -34,14 +34,13 @@ const assignKey = (element, key) => {
 
 const applyTag = (element, key) => {
   if (element.tag) return element
-  const keyIsTag = NODE_REGISTRY.body.indexOf(key) > -1
-  element.tag = keyIsTag ? key : 'div'
+  const keyIsTag = TAGS.body.indexOf(key) > -1
+  element.tag = element.ref.tag = keyIsTag ? key : 'div'
   return element
 }
 
 const applyParent = (element, key) => {
   const { ref } = element
-  console.log(element)
   const { parent } = ref
   if (isNode(parent)) {
     ref.parent = root.ref[`parent`] = { node: parent }
@@ -78,9 +77,6 @@ const onEachAvailable = (element, key, options) => {
 
   // move value to ref.children
   children.push({key, ...value})
-
-  // create children
-  create(value, element, key, options)
 }
 
 const onEach = (element, key, options) => {
@@ -95,15 +91,35 @@ const onEach = (element, key, options) => {
 const applyTransform = (element, key, options) => {
   const { ref, transform } = element
   if (!ref.transform) ref.transform = {}
-  const defaultTransforms = options.transform
-  if (!transform && !defaultTransforms) return element
-  const transformKeys = Object.keys(transform || {})
-  const defaultTransformKeys = Object.keys(defaultTransforms || {})
-  const keys = transformKeys.concat(defaultTransformKeys)
+  if (!transform) return element
+  const keys = Object.keys(transform || {})
   keys.map(key => {
-    const transformer = (transform || defaultTransforms)[key]
+    const transformer = transform[key]
     ref.transform[key] = transformer(element, key)
   })
+  return element
+}
+
+const applyChildren = (element, key, options) => {
+  const { ref } = element
+  const { children } = ref
+
+  if (children && children.length)
+    children.map(child => create(child, element, key, options))
+
+  return element
+}
+
+const applyGlobalTransform = (element, key, options) => {
+  const { ref } = element
+  const { transform } = options
+
+  const keys = Object.keys(transform || {})
+  keys.map(key => {
+    const transformer = transform[key]
+    ref.transform[key] = transformer(element, key)
+  })
+
   return element
 }
 
@@ -114,35 +130,27 @@ export const create = (element, parent, key, options = OPTIONS) => {
   [
     init,
     assignKey,
+    applyTag,
     applyParent,
     applyState,
     applyExtends,
     applyProps,
     onEach,
-    applyTransform
+    applyTransform,
+    applyChildren,
+    applyGlobalTransform
   ].reduce((prev, current) => current(prev, key, options), element)
 
-  console.log(element)
+  document.innerHTML = `<pre>${element}</pre>`
   return element
 }
 
-const transformReact = (element, key) => {
-  const { ref } = element
-  const { tag, props, children: ch, ...rest } = ref
-  const children = isArray(ch) && ch.map(child => transformReact(child, key))
-  return {
-    type: tag,
-    props,
-    children
-  }
-}
-
-create({
-  test: {
-    test2: {}
-  }
-}, null, null, {
-  transform: {
-    react: transformReact
-  }
-})
+// create({
+//   test: {
+//     test2: {}
+//   }
+// }, null, null, {
+//   transform: {
+//     react: transformReact
+//   }
+// })
