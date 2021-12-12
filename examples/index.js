@@ -5,6 +5,7 @@ import DOM from '../packages/domql'
 import header from './header'
 import footer from './footer'
 import Icon from './icon'
+import { transformReact } from '../packages/transform-react'
 
 const icon = {
   proto: Icon,
@@ -49,27 +50,16 @@ for (let i = 0; i < 35; i++) {
 
 const root = {
   header,
-  list,
+  // list,
 
-  icon,
+  // icon,
   footer
 }
 
-const transformReact = (element, key) => {
-  const { ref } = element
-  const { tag, props, children, ...rest } = ref
-  return {
-    type: tag,
-    props,
-    children
-  }
-}
+DOM.create(root, null, null, {
+  transform: { react: transformReact }
+})
 
-// DOM.create(root, null, null, {
-//   transform: {
-//     react: transformReact
-//   }
-// })
 
 // const later = performance.now()
 // console.log(later - now)

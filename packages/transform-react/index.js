@@ -52,10 +52,11 @@ export const transformReact = (element, key) => {
   let children = ref.children
   if (children && children.length)
     children = children.map(child => child.ref.transform.react)
+  if (rest.ref.class) props.className = rest.class
   return {
     type: tag,
     props,
-    ...children
+    children
   }
 }
 
@@ -65,21 +66,26 @@ const renderReact = (element, key) => {
   React.createElement(tag, props, transform.react)
 }
 
-const onEachAvailable = (element, key) => {
-  return transformReact(element, key)
-}
+// const onEachAvailable = (element, key) => {
+//   return transformReact(element, key)
+// }
 
-const createCompoonent = (extnds, props, state) => {
-  return create({extends: extnds, props, state}, {
-    transform: {
-      react: transformReact
-    },
-    onEachAvailable
-  })
-}
+// const createCompoonent = (extnds, props, state) => {
+//   return create({extends: extnds, props, state}, {
+//     transform: {
+//       react: transformReact
+//     },
+//     onEachAvailable
+//   })
+// }
 
 export const DOMQLReact = (component, props, state) => {
-  return createCompoonent(component, props, state)
+  const element = DOM.create({
+    extends: component,
+    props,
+    state
+  }, null, null, { transform: { react: renderReact } })
+  return renderReact(element, props, state)
   // return ({
   //   useEffect(() => {
   //     createCompoonent(component, props, state)

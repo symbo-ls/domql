@@ -22,6 +22,7 @@ export const DEFAULT_METHODS = {
 
   extends: {},
   childExtends: {},
+  text: {},
 
   set: {},
   update: {},

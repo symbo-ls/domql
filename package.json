@@ -34,9 +34,7 @@
   },
   "standard": {
     "parser": "@babel/eslint-parser",
-    "env": [
-      "jest"
-    ]
+    "env": ["jest"]
   },
   "browserslist": "> 0.25%, not dead",
   "dependencies": {}

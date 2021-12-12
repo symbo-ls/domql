@@ -2,27 +2,28 @@
 
 import { root } from '@domql/tree'
 import { createId } from '@domql/id'
-import { isNumber, isString, isObject, isNode, isFunction, isArray } from '@domql/utils'
+import { isNumber, isString, isObject, isNode, isFunction, isArray, exec } from '@domql/utils'
 import { DEFAULT_METHODS, TAGS } from '@domql/registry'
 import { createState } from '@domql/state'
 import { createProps } from '@domql/props'
 
 const OPTIONS = {}
 
-const init = (element, key) => {
+const init = (element, key, options, parent) => {
   const ref = {}
-  if (isObject(element)) {
-    if (!element.ref) element.ref = {}
-    if (element.on && element.on.init) element.on.init(element, element.state)
-    return element
-  }
   if (isString(element) || isNumber(element)) return {
     key,
     ref,
-    props: { value: element  }
+    text: element
   }
-  if (isArray(element)) Object.assign({}, element)
-  if (!element) return { ref }
+  else if (isArray(element)) return Object.assign({}, element)
+  else if (isObject(element)) {
+    if (!element.ref) element.ref = ref
+    if (element.on && element.on.init) element.on.init(element, element.state)
+    return element
+  }
+  else if (isFunction(element)) return exec(parent, parent.ref.state)
+  else if (!element) return { ref }
   return element
 }
 
@@ -68,15 +69,17 @@ const applyProps = (element, key) => {
 const onEachAvailable = (element, key, options) => {
   const { ref } = element
   const value = element[key]
-  let { children } = ref
+  let { children, childrenKeys } = ref
   if (!children) children = ref.children = []
+  if (!childrenKeys) childrenKeys = ref.childrenKeys = []
 
   // add to ref.children
-  const useOption = OPTIONS[onEachAvailable]
+  const useOption = options[onEachAvailable]
   if (useOption) useOption(element, key)
 
   // move value to ref.children
-  children.push({key, ...value})
+  children.push(value)
+  childrenKeys.push(key)
 }
 
 const onEach = (element, key, options) => {
@@ -113,37 +116,30 @@ const applyChildren = (element, key, options) => {
 const applyGlobalTransform = (element, key, options) => {
   const { ref } = element
   const { transform } = options
-
   const keys = Object.keys(transform || {})
   keys.map(key => {
     const transformer = transform[key]
     ref.transform[key] = transformer(element, key)
   })
-
   return element
 }
 
 /**
  * Creating a DOMQL element
  */
-export const create = (element, parent, key, options = OPTIONS) => {
-  [
-    init,
-    assignKey,
-    applyTag,
-    applyParent,
-    applyState,
-    applyExtends,
-    applyProps,
-    onEach,
-    applyTransform,
-    applyChildren,
-    applyGlobalTransform
-  ].reduce((prev, current) => current(prev, key, options), element)
-
-  document.innerHTML = `<pre>${element}</pre>`
-  return element
-}
+export const create = (element, parent, key, options = OPTIONS) => [
+  init,
+  assignKey,
+  applyTag,
+  applyParent,
+  applyState,
+  applyExtends,
+  applyProps,
+  onEach,
+  applyTransform,
+  applyChildren,
+  applyGlobalTransform
+].reduce((prev, current) => current(prev, key, options, parent), element)
 
 // create({
 //   test: {

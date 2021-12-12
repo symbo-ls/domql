@@ -38,7 +38,7 @@ export const createProps = function (element, parent, cached) {
     syncProps(propsStack, element)
   } else inheritProps(element, parent)
 
-  return element.ref.props
+  return element.ref.props || {}
 }
 
 export const updateProps = (newProps, element, parent) => {

@@ -22,8 +22,7 @@ module.exports = {
     ...packages.reduce(
       (acc, name) => ({
         ...acc,
-        [`@symbo.ls/${name}(.*)$`]:
-           `<rootDir>/packages/./${name}/$1`
+        [`@symbo.ls/${name}(.*)$`]: `<rootDir>/packages/./${name}/$1`
       }),
       {}
     )
