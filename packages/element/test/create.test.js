@@ -3,51 +3,49 @@
 import { tree } from '@domql/tree'
 import { create } from '../create'
 
-// describe('Should create DOMQL element', () => {
-//   const dom = create({})
+describe('Should create DOMQL element', () => {
+  const dom = create({})
 
-//   test('should create EMPTY element', () => {
-//     expect(dom.key).toBe(1)
-//     expect(dom.tag).toBe('div')
-//   })
+  test('should create EMPTY element', () => {
+    expect(dom.key).toBe(1)
+    expect(dom.tag).toBe('div')
+  })
 
-//   test('should create REF', () => {
-//     const { ref } = dom
-//     expect(ref.tag).toBe('div')
-//     expect(ref.parent).toEqual(tree)
-//     expect(ref.state).toEqual({})
-//     expect(ref.props).toEqual({})
-//     expect(ref.transform).toEqual({})
-//   })
-// })
+  test('should create REF', () => {
+    const { ref } = dom
+    expect(ref.tag).toBe('div')
+    expect(ref.parent).toEqual(tree)
+    expect(ref.state).toEqual({})
+    expect(ref.props).toEqual({})
+  })
+})
 
-// describe('Should create DOMQL element from PRIMITIVES', () => {
-//   const ref = {
-//     tag: 'div',
-//     parent: tree,
-//     state: {},
-//     props: {},
-//     transform: {}
-//   }
-//   test('should create element from Int', () => {
-//     const number = create(123)
-//     expect(number).toEqual({
-//       key: 1,
-//       tag: 'div',
-//       text: 123,
-//       ref
-//     })
-//   })
-//   test('should create element from String', () => {
-//     const string = create('test')
-//     expect(string).toEqual({
-//       key: 2,
-//       tag: 'div',
-//       text: 'test',
-//       ref
-//     })
-//   })
-// })
+describe('Should create DOMQL element from PRIMITIVES', () => {
+  const ref = {
+    tag: 'div',
+    parent: tree,
+    state: {},
+    props: {}
+  }
+  test('should create element from Int', () => {
+    const number = create(123)
+    expect(number).toEqual({
+      key: 6,
+      tag: 'div',
+      text: 123,
+      ref
+    })
+  })
+  test('should create element from String', () => {
+    const string = create('test')
+    expect(string).toEqual({
+      key: 7,
+      tag: 'div',
+      text: 'test',
+      ref
+    })
+  })
+})
 
 describe('Should create NESTED DOMQL element', () => {
   const dom = create({
@@ -59,8 +57,7 @@ describe('Should create NESTED DOMQL element', () => {
     tag: 'div',
     parent: tree,
     state: {},
-    props: {},
-    transform: {}
+    props: {}
   }
   test('element must have children', () => {
     const { children, childrenKeys } = dom.ref
@@ -68,7 +65,27 @@ describe('Should create NESTED DOMQL element', () => {
     expect(childrenKeys).toEqual(expect.any(Array))
     expect(childrenKeys).toHaveLength(3)
     expect(childrenKeys).toEqual(['test', 'test2', 'test3'])
-    console.log(children)
+  })
+  test('should structure proper children', () => {
+    const { children, childrenKeys } = dom.ref
+    expect(dom.ref.children[0]).toEqual({
+      key: 3,
+      tag: 'div',
+      text: 123,
+      ref
+    })
+    expect(dom.ref.children[1]).toEqual({
+      key: 4,
+      tag: 'div',
+      text: 'test2',
+      ref
+    })
+    expect(dom.ref.children[2]).toEqual({
+      key: 5,
+      tag: 'div',
+      text: 'test3',
+      ref
+    })
   })
 })
 

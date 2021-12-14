@@ -20,10 +20,13 @@
     "@babel/core": "^7.16.0",
     "@babel/eslint-parser": "^7.16.3",
     "@babel/preset-env": "^7.16.4",
+    "@parcel/babel-preset-env": "^2.0.1",
     "babel-jest": "^27.4.4",
     "eslint": "^8.4.0",
     "eslint-config-standard": "^16.0.3",
+    "eslint-plugin-import": "^2.25.3",
     "eslint-plugin-jest": "^25.3.0",
+    "eslint-plugin-node": "^11.1.0",
     "jest": "^27.4.4",
     "jsdom": "^19.0.0",
     "lerna": "^4.0.0",
@@ -34,8 +37,11 @@
   },
   "standard": {
     "parser": "@babel/eslint-parser",
-    "env": ["jest"]
+    "env": [
+      "jest"
+    ]
   },
+  "babel": {},
   "browserslist": "> 0.25%, not dead",
   "dependencies": {}
 }

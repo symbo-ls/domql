@@ -11,18 +11,18 @@ const OPTIONS = {}
 
 const init = (element, key, options, parent) => {
   const ref = {}
-  if (isString(element) || isNumber(element)) return {
-    key,
-    ref,
-    text: element
-  }
-  else if (isArray(element)) return Object.assign({}, element)
+  if (isString(element) || isNumber(element)) {
+    return {
+      key,
+      ref,
+      text: element
+    }
+  } else if (isArray(element)) return Object.assign({}, element)
   else if (isObject(element)) {
     if (!element.ref) element.ref = ref
     if (element.on && element.on.init) element.on.init(element, element.state)
     return element
-  }
-  else if (isFunction(element)) return exec(parent, parent.ref.state)
+  } else if (isFunction(element)) return exec(parent, parent.ref.state)
   else if (!element) return { ref }
   return element
 }
@@ -44,14 +44,14 @@ const applyParent = (element, key) => {
   const { ref } = element
   const { parent } = ref
   if (isNode(parent)) {
-    ref.parent = root.ref[`parent`] = { node: parent }
+    ref.parent = root.ref.parent = { node: parent }
   }
   if (!parent) ref.parent = root
   return element
 }
 
 const applyState = (element, key) => {
-  const { ref, state } = element
+  const { ref } = element
   ref.state = createState(element, element.ref.parent)
   return element
 }
@@ -61,7 +61,7 @@ const applyExtends = (element, key) => {
 }
 
 const applyProps = (element, key) => {
-  const { ref, props } = element
+  const { ref } = element
   ref.props = createProps(element, element.ref.parent)
   return element
 }
@@ -93,22 +93,26 @@ const onEach = (element, key, options) => {
 
 const applyTransform = (element, key, options) => {
   const { ref, transform } = element
-  if (!ref.transform) ref.transform = {}
   if (!transform) return element
+  if (!ref.transform) ref.transform = {}
   const keys = Object.keys(transform || {})
   keys.map(key => {
     const transformer = transform[key]
     ref.transform[key] = transformer(element, key)
+    return key
   })
   return element
 }
 
-const applyChildren = (element, key, options) => {
+const addChildren = (element, key, options) => {
   const { ref } = element
   const { children } = ref
 
-  if (children && children.length)
-    children.map(child => create(child, element, key, options))
+  if (children && children.length) {
+    ref.children = children.map(child => {
+      return create(child, element, key, options)
+    })
+  }
 
   return element
 }
@@ -116,10 +120,13 @@ const applyChildren = (element, key, options) => {
 const applyGlobalTransform = (element, key, options) => {
   const { ref } = element
   const { transform } = options
+  if (!transform) return element
+  if (!ref.transform) ref.transform = {}
   const keys = Object.keys(transform || {})
   keys.map(key => {
     const transformer = transform[key]
     ref.transform[key] = transformer(element, key)
+    return key
   })
   return element
 }
@@ -137,7 +144,7 @@ export const create = (element, parent, key, options = OPTIONS) => [
   applyProps,
   onEach,
   applyTransform,
-  applyChildren,
+  addChildren,
   applyGlobalTransform
 ].reduce((prev, current) => current(prev, key, options, parent), element)
 

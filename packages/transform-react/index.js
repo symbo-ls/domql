@@ -1,11 +1,10 @@
 'use strict'
 
-import React from 'react'
+import React, { useRef } from 'react'
 
 // import React, { useEffect, useRef } from 'react'
-// import ReactDOM from 'react-dom'
 
-// import { create } from '@domql/element'
+import { create } from '@domql/element'
 // import { clone } from '@domql/utils'
 
 // export function DOMQLRenderer (component, ref, receivedProps, receivedState) {
@@ -50,9 +49,8 @@ export const transformReact = (element, key) => {
   const { ref } = element
   const { tag, props, ...rest } = ref
   let children = ref.children
-  if (children && children.length)
-    children = children.map(child => child.ref.transform.react)
-  if (rest.ref.class) props.className = rest.class
+  if (children && children.length) { children = children.map(child => child.ref.transform.react) }
+  if (rest.class) props.className = rest.class
   return {
     type: tag,
     props,
@@ -62,8 +60,10 @@ export const transformReact = (element, key) => {
 
 const renderReact = (element, key) => {
   const { ref } = element
-  const { tag, props, transform, ...rest } = ref
-  React.createElement(tag, props, transform.react)
+  const { props, transform } = ref
+  const { react } = transform
+  props.ref = useRef(ref)
+  return React.createElement(react.type, react.props, react.children)
 }
 
 // const onEachAvailable = (element, key) => {
@@ -80,12 +80,14 @@ const renderReact = (element, key) => {
 // }
 
 export const DOMQLReact = (component, props, state) => {
-  const element = DOM.create({
+  const element = create({
     extends: component,
     props,
     state
-  }, null, null, { transform: { react: renderReact } })
-  return renderReact(element, props, state)
+  }, null, null, { transform: { react: transformReact } })
+  const ReactElement = renderReact(element, element.key)
+  console.log(ReactElement)
+  return ReactElement
   // return ({
   //   useEffect(() => {
   //     createCompoonent(component, props, state)

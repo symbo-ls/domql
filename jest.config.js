@@ -1,5 +1,5 @@
 const path = require('path')
-const { lstatSync, readdirSync } = require('fs')
+const { lstatSync, readdirSync, readFileSync } = require('fs')
 // get listing of packages in the mono repo
 const basePath = path.resolve(__dirname, 'packages')
 const packages = readdirSync(basePath).filter(name => {
@@ -11,12 +11,12 @@ module.exports = {
   projects: ['packages/*'],
   // testEnvironment: 'node',
   testEnvironment: 'jsdom',
-  moduleDirectories: ['packages'],
-  collectCoverageFrom: [
-    'packages/**/*.js'
-  ],
+  moduleDirectories: ['node_modules', 'packages'],
+  // collectCoverageFrom: [
+  //   'packages/**/test/**/*.js'
+  // ],
   transform: {
-    '^.+\\.(js|jsx)$': 'babel-jest'
+    '\\.js$': ['babel-jest', { configFile: './babel.config.json' }]
   },
   moduleNameMapper: {
     ...packages.reduce(
