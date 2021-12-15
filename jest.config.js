@@ -1,5 +1,5 @@
 const path = require('path')
-const { lstatSync, readdirSync, readFileSync } = require('fs')
+const { lstatSync, readdirSync } = require('fs')
 // get listing of packages in the mono repo
 const basePath = path.resolve(__dirname, 'packages')
 const packages = readdirSync(basePath).filter(name => {

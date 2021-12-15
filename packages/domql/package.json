@@ -14,7 +14,7 @@
     "@domql/node": "latest",
     "@domql/parse": "latest",
     "@domql/props": "latest",
-    "@domql/proto": "latest",
+    "@domql/extends": "latest",
     "@domql/registry": "latest",
     "@domql/report": "latest",
     "@domql/state": "latest",

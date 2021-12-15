@@ -5,6 +5,7 @@ import React, { useRef } from 'react'
 // import React, { useEffect, useRef } from 'react'
 
 import { create } from '@domql/element'
+import { merge } from '@domql/utils'
 // import { clone } from '@domql/utils'
 
 // export function DOMQLRenderer (component, ref, receivedProps, receivedState) {
@@ -63,7 +64,10 @@ const renderReact = (element, key) => {
   const { props, transform } = ref
   const { react } = transform
   props.ref = useRef(ref)
-  return React.createElement(react.type, react.props, react.children)
+
+  console.warn('transform react:')
+  console.log(react)
+  return React.createElement(react.type, react.props, Object.assign(react.props.children, react.children))
 }
 
 // const onEachAvailable = (element, key) => {
@@ -86,6 +90,8 @@ export const DOMQLReact = (component, props, state) => {
     state
   }, null, null, { transform: { react: transformReact } })
   const ReactElement = renderReact(element, element.key)
+  console.warn('create react:')
+  console.log(element)
   console.log(ReactElement)
   return ReactElement
   // return ({

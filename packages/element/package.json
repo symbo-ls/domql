@@ -9,7 +9,7 @@
     "@domql/event": "latest",
     "@domql/mixins": "latest",
     "@domql/props": "latest",
-    "@domql/proto": "latest",
+    "@domql/extends": "latest",
     "@domql/state": "latest",
     "@domql/tree": "latest",
     "@domql/utils": "latest"

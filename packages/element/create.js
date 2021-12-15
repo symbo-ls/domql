@@ -6,6 +6,7 @@ import { isNumber, isString, isObject, isNode, isFunction, isArray, exec } from 
 import { DEFAULT_METHODS, TAGS } from '@domql/registry'
 import { createState } from '@domql/state'
 import { createProps } from '@domql/props'
+import { extendElement } from '@domql/extends'
 
 const OPTIONS = {}
 
@@ -57,6 +58,8 @@ const applyState = (element, key) => {
 }
 
 const applyExtends = (element, key) => {
+  extendElement(element, element.ref.parent)
+
   return element
 }
 
