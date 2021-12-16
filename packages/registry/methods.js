@@ -4,6 +4,9 @@ export const DEFAULT_METHODS = {
   key: {},
   tag: {},
 
+  if: {},
+  define: {},
+
   attr: {},
   style: {},
 
@@ -23,6 +26,8 @@ export const DEFAULT_METHODS = {
   extends: {},
   childExtends: {},
   text: {},
+
+  html: {},
 
   set: {},
   update: {},

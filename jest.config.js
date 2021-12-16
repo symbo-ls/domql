@@ -12,9 +12,9 @@ module.exports = {
   // testEnvironment: 'node',
   testEnvironment: 'jsdom',
   moduleDirectories: ['node_modules', 'packages'],
-  // collectCoverageFrom: [
-  //   'packages/**/test/**/*.js'
-  // ],
+  collectCoverageFrom: [
+    'packages/**/test/**/*.js'
+  ],
   transform: {
     '\\.js$': ['babel-jest', { configFile: './babel.config.json' }]
   },

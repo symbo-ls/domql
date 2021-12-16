@@ -34,13 +34,6 @@ const assignKey = (element, key) => {
   return element
 }
 
-const applyTag = (element, key) => {
-  if (element.tag) return element
-  const keyIsTag = TAGS.body.indexOf(key) > -1
-  element.tag = element.ref.tag = keyIsTag ? key : 'div'
-  return element
-}
-
 const applyParent = (element, key) => {
   const { ref } = element
   const { parent } = ref
@@ -60,6 +53,16 @@ const applyState = (element, key) => {
 const applyExtends = (element, key) => {
   extendElement(element, element.ref.parent)
 
+  return element
+}
+
+const applyTag = (element, key) => {
+  if (element.tag) {
+    element.ref.tag = element.tag
+    return element
+  }
+  const keyIsTag = TAGS.body.indexOf(key) > -1
+  element.tag = element.ref.tag = keyIsTag ? key : 'div'
   return element
 }
 
@@ -88,8 +91,10 @@ const onEachAvailable = (element, key, options) => {
 const onEach = (element, key, options) => {
   for (const key in element) {
     const isMethod = DEFAULT_METHODS[key]
-    if (isMethod && isFunction(isMethod)) isMethod(element, element.state)
-    if (!isMethod) onEachAvailable(element, key, options)
+    if (isMethod && isFunction(isMethod)) isMethod(element, element.ref.state)
+    const hasDefine = element.define && element.define[key]
+    if (hasDefine && isFunction(hasDefine)) element.ref[key] = hasDefine(element, element.ref.state)
+    if (!isMethod && !hasDefine) onEachAvailable(element, key, options)
   }
   return element
 }
@@ -140,10 +145,10 @@ const applyGlobalTransform = (element, key, options) => {
 export const create = (element, parent, key, options = OPTIONS) => [
   init,
   assignKey,
-  applyTag,
   applyParent,
   applyState,
   applyExtends,
+  applyTag,
   applyProps,
   onEach,
   applyTransform,

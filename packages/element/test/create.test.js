@@ -67,20 +67,20 @@ describe('Should create NESTED DOMQL element', () => {
     expect(childrenKeys).toEqual(['test', 'test2', 'test3'])
   })
   test('should structure proper children', () => {
-    const { children, childrenKeys } = dom.ref
-    expect(dom.ref.children[0]).toEqual({
+    const { children } = dom.ref
+    expect(children[0]).toEqual({
       key: 3,
       tag: 'div',
       text: 123,
       ref
     })
-    expect(dom.ref.children[1]).toEqual({
+    expect(children[1]).toEqual({
       key: 4,
       tag: 'div',
       text: 'test2',
       ref
     })
-    expect(dom.ref.children[2]).toEqual({
+    expect(children[2]).toEqual({
       key: 5,
       tag: 'div',
       text: 'test3',

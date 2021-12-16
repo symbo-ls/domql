@@ -57,7 +57,7 @@ export const flattenProto = (proto, stack) => {
 export const deepCloneProto = obj => {
   const o = {}
   for (const prop in obj) {
-    if (['parent', 'node', '__element', '__root', '__key'].indexOf(prop) > -1) continue
+    if (['ref'].indexOf(prop) > -1) continue
     const objProp = obj[prop]
     if (isObject(objProp)) {
       o[prop] = deepCloneProto(objProp)

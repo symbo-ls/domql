@@ -15,11 +15,13 @@ const style = (params, element, node) => {
   classf(element.class, element, node)
 }
 
-const classf = (params, element, node) => {
+const classf = (element, node) => {
+  const params = element.class
   if (isObjectLike(params)) {
     const classObjHelper = {}
     for (const key in params) {
       const prop = exec(params[key], element)
+      console.log(prop)
       const CSSed = css(prop)
       classObjHelper[key] = CSSed
     }

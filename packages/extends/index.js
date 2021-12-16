@@ -23,8 +23,6 @@ export const extendElement = (element, parent, options = {}) => {
 
   if (ENV !== 'development') delete element.extends
 
-  // debugger
-
   let childProtoStack = []
   if (!options.ignoreChildProto) {
     childProtoStack = getProtoStack(parent.childExtends)

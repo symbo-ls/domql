@@ -32,6 +32,6 @@ export const classList = (params, element, node) => {
   if (isObject(params)) params = classify(params, element)
   // TODO: fails on string
   const className = params.replace(/\s+/g, ' ').trim()
-  node.classList = className
+  element.ref.class = className
   return className
 }

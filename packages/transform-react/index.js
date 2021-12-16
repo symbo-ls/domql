@@ -64,10 +64,7 @@ const renderReact = (element, key) => {
   const { props, transform } = ref
   const { react } = transform
   props.ref = useRef(ref)
-
-  console.warn('transform react:')
-  console.log(react)
-  return React.createElement(react.type, react.props, Object.assign(react.props.children, react.children))
+  return React.createElement(react.type, react.props, react.props.children)
 }
 
 // const onEachAvailable = (element, key) => {
@@ -90,9 +87,6 @@ export const DOMQLReact = (component, props, state) => {
     state
   }, null, null, { transform: { react: transformReact } })
   const ReactElement = renderReact(element, element.key)
-  console.warn('create react:')
-  console.log(element)
-  console.log(ReactElement)
   return ReactElement
   // return ({
   //   useEffect(() => {
