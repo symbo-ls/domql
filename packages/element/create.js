@@ -1,9 +1,10 @@
 'use strict'
 
-import { root } from '@domql/tree'
-import { createId } from '@domql/id'
-import { isNumber, isString, isObject, isNode, isFunction, isArray, exec } from '@domql/utils'
 import { DEFAULT_METHODS, TAGS } from '@domql/registry'
+
+import { root } from '@domql/tree'
+import { createKey } from '@domql/key'
+import { isNumber, isString, isObject, isNode, isFunction, isArray, exec } from '@domql/utils'
 import { createState } from '@domql/state'
 import { createProps } from '@domql/props'
 import { extendElement } from '@domql/extends'
@@ -30,7 +31,7 @@ const init = (element, key, options, parent) => {
 
 const assignKey = (element, key) => {
   if (element.key) return element
-  element.key = key || createId.next().value
+  element.key = key || createKey.next().value
   return element
 }
 
@@ -52,7 +53,6 @@ const applyState = (element, key) => {
 
 const applyExtends = (element, key) => {
   extendElement(element, element.ref.parent)
-
   return element
 }
 

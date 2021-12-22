@@ -5,7 +5,7 @@
   "license": "MIT",
   "dependencies": {
     "@domql/registry": "latest",
-    "@domql/id": "latest",
+    "@domql/key": "latest",
     "@domql/event": "latest",
     "@domql/mixins": "latest",
     "@domql/props": "latest",

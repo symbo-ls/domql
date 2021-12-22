@@ -9,7 +9,7 @@
     "@domql/define": "latest",
     "@domql/element": "latest",
     "@domql/event": "latest",
-    "@domql/id": "latest",
+    "@domql/key": "latest",
     "@domql/mixins": "latest",
     "@domql/node": "latest",
     "@domql/parse": "latest",

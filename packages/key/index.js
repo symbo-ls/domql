@@ -9,4 +9,4 @@ const id = function * () {
   }
 }
 
-export const createId = id()
+export const createKey = id()

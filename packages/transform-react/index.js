@@ -8,44 +8,6 @@ import { create } from '@domql/element'
 import { merge } from '@domql/utils'
 // import { clone } from '@domql/utils'
 
-// export function DOMQLRenderer (component, ref, receivedProps, receivedState) {
-//   const { current } = ref
-//   const { DOMQLElement } = current
-//   const { children, ...p } = receivedProps
-
-//   const props = clone(p)
-//   const state = clone(receivedState)
-
-//   if (!DOMQLElement) {
-//     const el = create({
-//       proto: component,
-//       node: current.DOMQLElement,
-//       state: state,
-//       props: props,
-//       content: (el) => {
-//         // const portal = ReactDOM.createPortal(receivedProps.children, el.node)
-//         return {
-//           node: ReactDOM.createPortal(receivedProps.children, el.node)
-//         }
-//       }
-//     }, current)
-//     // }, current, undefined, { insertAfter: true })
-//     current.DOMQLElement = el.node
-//     // ref.current.remove()
-//   } else {
-//     // const { ref } = DOMQLElement
-//     // ref.props = props
-//     // ref.set(el => {
-//     //   ReactDOM.render(children, el.node)
-//     //   return { tag: 'fragment' }
-//     // })
-//     //   .update({
-//     //     props,
-//     //     state
-//     //   })
-//   }
-// }
-
 export const transformReact = (element, key) => {
   const { ref } = element
   const { tag, props, ...rest } = ref
@@ -64,7 +26,9 @@ const renderReact = (element, key) => {
   const { props, transform } = ref
   const { react } = transform
   props.ref = useRef(ref)
-  return React.createElement(react.type, react.props, react.props.children)
+  return <React.StrictMode>
+    { React.createElement(react.type, react.props, react.props.children) }
+  </React.StrictMode>
 }
 
 // const onEachAvailable = (element, key) => {
@@ -88,9 +52,4 @@ export const DOMQLReact = (component, props, state) => {
   }, null, null, { transform: { react: transformReact } })
   const ReactElement = renderReact(element, element.key)
   return ReactElement
-  // return ({
-  //   useEffect(() => {
-  //     createCompoonent(component, props, state)
-  //   })
-  // })
 }

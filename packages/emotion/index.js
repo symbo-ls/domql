@@ -21,7 +21,6 @@ const classf = (element, node) => {
     const classObjHelper = {}
     for (const key in params) {
       const prop = exec(params[key], element)
-      console.log(prop)
       const CSSed = css(prop)
       classObjHelper[key] = CSSed
     }
