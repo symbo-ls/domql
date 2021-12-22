@@ -1,6 +1,6 @@
 {
   "name": "@domql/transform-react",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "main": "index.js",
   "license": "MIT",
   "files": [
@@ -8,8 +8,8 @@
   ],
   "dependencies": {
     "@domql/domql": "^2.0.2",
-    "@domql/element": "^2.0.3",
-    "@domql/utils": "^2.0.3",
+    "@domql/element": "^2.0.4",
+    "@domql/utils": "^2.0.4",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
   },
