@@ -12,6 +12,6 @@
   "scripts": {
     "vpatch": "npm version patch && npm publish --access public"
   },
-  "gitHead": "3e0e9bc168da768f454332e9252b77f90cf87f9c",
+  "gitHead": "feba8b60eccc9ed2caed62555e7083779c67044a",
   "source": "index.js"
 }

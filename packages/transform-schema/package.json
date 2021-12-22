@@ -2,5 +2,6 @@
   "name": "@domql/transform-schema",
   "version": "2.0.3",
   "main": "index.js",
-  "license": "MIT"
+  "license": "MIT",
+  "gitHead": "feba8b60eccc9ed2caed62555e7083779c67044a"
 }

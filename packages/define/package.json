@@ -7,6 +7,6 @@
     "@domql/registry": "^2.0.3",
     "@domql/report": "^2.0.3"
   },
-  "gitHead": "3e0e9bc168da768f454332e9252b77f90cf87f9c",
+  "gitHead": "feba8b60eccc9ed2caed62555e7083779c67044a",
   "source": "src/index.js"
 }
