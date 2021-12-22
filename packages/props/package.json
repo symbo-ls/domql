@@ -6,6 +6,6 @@
   "dependencies": {
     "@domql/utils": "^2.0.5"
   },
-  "gitHead": "14358979a28566f2ab3994caa7112c05db29828e",
+  "gitHead": "50bbcf385b1164bb3f0c2eb7a4d7d1bc28ca7752",
   "source": "index.js"
 }
