@@ -13,7 +13,7 @@ You can start with [starter-kit](https://github.com/rackai/starter-kit) as a boi
 [![Build Status](https://travis-ci.org/rackai/domql.svg?branch=master)](https://travis-ci.org/rackai/domql)
 [![Coverage Status](https://coveralls.io/repos/github/rackai/domql/badge.svg?branch=main)](https://coveralls.io/github/rackai/domql?branch=main)
 
-Key features:
+TODO:
 - [x] error reporting
 - [x] virtual DOM tree
 - [x] create
