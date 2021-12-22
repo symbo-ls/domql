@@ -1,15 +1,15 @@
 {
   "name": "@domql/element",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
-    "@domql/registry": "latest",
-    "@domql/key": "latest",
     "@domql/event": "latest",
+    "@domql/extends": "latest",
+    "@domql/key": "latest",
     "@domql/mixins": "latest",
     "@domql/props": "latest",
-    "@domql/extends": "latest",
+    "@domql/registry": "latest",
     "@domql/state": "latest",
     "@domql/tree": "latest",
     "@domql/utils": "latest"
