@@ -25,7 +25,12 @@ export const DEFAULT_METHODS = {
 
   extends: {},
   childExtends: {},
-  text: {},
+  text: (element, state) => {
+    element.ref.text = {
+      tag: 'text',
+      text: element.text
+    }
+  },
 
   html: {},
 
