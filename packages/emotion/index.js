@@ -4,7 +4,7 @@ import DOM from '../../src'
 import { isObjectLike, exec } from '../../src/utils'
 import { classList } from '../../src/element/mixins'
 
-import { css } from 'emotion'
+import { css } from '@emotion/css'
 
 const style = (params, element, node) => {
   const execPareams = exec(params, element)

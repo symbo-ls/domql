@@ -1,5 +1,5 @@
 {
-  "name": "@rackai/domql",
+  "name": "@symbols/domql",
   "description": "DOM rendering Javascript framework at early stage.",
   "private": false,
   "author": "rackai",
