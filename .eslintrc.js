@@ -1,15 +1,24 @@
 module.exports = {
-  extends: 'standard',
-  plugins: ['jest'],
+  extends: [
+    'standard',
+    'plugin:jest/all'
+  ],
+  parser: '@babel/eslint-parser',
+  parserOptions: {
+    requireConfigFile: false,
+    babelOptions: {
+      configFile: './babel.config.json',
+      presets: ['@babel/preset-env']
+    }
+  },
+  plugins: ['jest', '@babel'],
   env: {
-    es6: true,
     browser: true,
+    es2021: true,
     node: true,
-    jest: true
+    'jest/globals': true
   },
   overrides: [{
-    files: ['test/**/*.test.js'],
-    env: { jest: true },
-    plugins: ['jest']
+    files: ['packages/**/*.test.js']
   }]
 }

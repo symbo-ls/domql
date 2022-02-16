@@ -1,58 +1,47 @@
 {
-  "name": "@rackai/domql",
-  "description": "DOM rendering Javascript framework at early stage.",
-  "private": false,
-  "author": "rackai",
-  "version": "1.2.9",
-  "repository": "https://github.com/rackai/domql",
-  "publishConfig": {
-    "registry": "https://registry.npmjs.org"
-  },
-  "main": "src/index.js",
-  "files": [
-    "src",
-    "packages"
-  ],
+  "private": true,
+  "repository": "https://github.com/domql/domql",
   "scripts": {
-    "start": "parcel examples/index.html --no-cache",
-    "build": "parcel build examples/index.html",
-    "standard": "npx standard \"src/**/*.js\"",
-    "test": "yarn standard && jest --coverage --coverageReporters=text-lcov | coveralls",
-    "test-watch": "jest --watch",
-    "bump": "npx np"
-  },
-  "source": true,
-  "dependencies": {
-    "regenerator-runtime": "^0.13.5"
+    "start": "parcel examples/index.html --no-cache --port 1200",
+    "build": "lerna run build",
+    "build:all": "lerna exec -- npx parcel build index.js",
+    "test:watch": "jest 'packages/**/*.js' --watch --env=jsdom",
+    "test:unit": "jest 'packages/**/*.js' --env=jsdom",
+    "test:lint": "npx standard \"packages/**/*.js\"",
+    "test:build": "echo test how it builds is not yet supported",
+    "test:coverage": "yarn jest --coverage --coverageReporters=text-lcov | coveralls",
+    "test": "yarn jest --coverage --coverageReporters=text-lcov | coveralls",
+    "push": "echo push is not yet supported",
+    "push:version": "git add . && git commit -am 'version update' && git push",
+    "clean": "rm -rf dist node_modules yarn.lock .parcel-cache yarn-error.log",
+    "clean:all": "lerna exec -- rm -rf dist node_modules yarn.lock .parcel-cache yarn-error.log"
   },
   "devDependencies": {
-    "@babel/core": "^7.10.4",
-    "@babel/preset-env": "^7.10.4",
-    "babel-eslint": "^10.0.3",
-    "babel-jest": "^27.0.2",
-    "babel-preset-env": "^1.7.0",
-    "coveralls": "^3.0.5",
-    "eslint": "^7.12.1",
-    "eslint-plugin-jest": "^24.1.0",
-    "jest": "^27.0.6",
+    "@babel/core": "^7.16.0",
+    "@babel/eslint-parser": "^7.16.3",
+    "@babel/preset-env": "^7.16.4",
+    "@parcel/babel-preset-env": "^2.0.1",
+    "babel-jest": "^27.4.4",
+    "eslint": "^8.4.0",
+    "eslint-config-standard": "^16.0.3",
+    "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-jest": "^25.3.0",
+    "eslint-plugin-node": "^11.1.0",
+    "jest": "^27.4.4",
+    "jsdom": "^19.0.0",
+    "lerna": "^4.0.0",
     "nodemon": "^2.0.6",
     "np": "^7.2.0",
-    "parcel-bundler": "^1.12.4",
+    "parcel": "^2.0.1",
     "standard": "^16.0.1"
   },
-  "jest": {
-    "collectCoverageFrom": [
-      "src/**/*.js"
-    ]
-  },
   "standard": {
-    "parser": "babel-eslint",
+    "parser": "@babel/eslint-parser",
     "env": [
       "jest"
     ]
   },
-  "browserslist": [
-    "> 1%",
-    "ie >= 9"
-  ]
+  "babel": {},
+  "browserslist": "> 0.25%, not dead",
+  "dependencies": {}
 }

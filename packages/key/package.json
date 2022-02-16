@@ -1,8 +1,11 @@
 {
-  "name": "@domql/object",
+  "name": "@domql/key",
   "version": "2.0.6",
-  "description": "",
   "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "regenerator-runtime": "^0.13.9"
+  },
   "gitHead": "50bbcf385b1164bb3f0c2eb7a4d7d1bc28ca7752",
   "source": "index.js"
 }

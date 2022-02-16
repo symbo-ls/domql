@@ -1,0 +1,18 @@
+{
+  "name": "@domql/transform-react",
+  "version": "2.0.6",
+  "main": "index.js",
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@domql/domql": "^2.0.2",
+    "@domql/element": "^2.0.6",
+    "@domql/utils": "^2.0.6",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  },
+  "gitHead": "50bbcf385b1164bb3f0c2eb7a4d7d1bc28ca7752",
+  "source": "index.js"
+}

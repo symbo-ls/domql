@@ -1,10 +1,10 @@
 'use strict'
 
-import DOM from '../../src'
-import { isObjectLike, exec } from '../../src/utils'
-import { classList } from '../../src/element/mixins'
+import { define } from '@domql/define'
+import { isObjectLike, exec } from '@domql/utils'
+import { classList } from '@domql/mixins'
 
-import { css } from 'emotion'
+import { css } from '@emotion/css'
 
 const style = (params, element, node) => {
   const execPareams = exec(params, element)
@@ -15,7 +15,8 @@ const style = (params, element, node) => {
   classf(element.class, element, node)
 }
 
-const classf = (params, element, node) => {
+const classf = (element, node) => {
+  const params = element.class
   if (isObjectLike(params)) {
     const classObjHelper = {}
     for (const key in params) {
@@ -27,9 +28,7 @@ const classf = (params, element, node) => {
   }
 }
 
-DOM.define({
+define({
   style,
   class: classf
-}, {
-  overwrite: true
-})
+}, { overwrite: true })

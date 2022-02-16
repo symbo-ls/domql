@@ -1,0 +1,11 @@
+{
+  "name": "@domql/cookie",
+  "version": "2.0.6",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "vpatch": "npm version patch && npm publish --access public"
+  },
+  "gitHead": "50bbcf385b1164bb3f0c2eb7a4d7d1bc28ca7752",
+  "source": "index.js"
+}
