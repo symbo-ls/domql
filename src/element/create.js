@@ -46,11 +46,11 @@ const create = (element, parent, key, options = {}) => {
     }
   }
 
-  // enable STATE
-  element.state = createState(element, parent)
-
   // create PROTOtypal inheritance
   applyPrototype(element, parent, options)
+
+  // enable STATE
+  element.state = createState(element, parent)
 
   // console.groupCollapsed('Create:', assignedKey)
   // console.log(element)

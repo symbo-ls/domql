@@ -9,6 +9,7 @@ import { merge } from '../utils/object'
 import { appendNode } from './assign'
 import { createNode } from '.'
 import { updateProps } from './createProps'
+import createState from './createState'
 
 const UPDATE_DEFAULT_OPTIONS = {
   stackChanges: false,
@@ -20,17 +21,6 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
   const element = this
   const { define, parent, node } = element
 
-  // console.groupCollapsed('Update:', element.path)
-  // console.log('params:')
-  // console.log(params)
-  // console.log('props:')
-  // console.log(element.props)
-  // console.log('element:')
-  // console.log(element)
-  // console.log('PARAMS.PROPS:')
-  // console.log(params.props)
-  // console.groupEnd('Update:')
-  // if params is string
   if (isString(params) || isNumber(params)) {
     params = { text: params }
   }
@@ -39,14 +29,10 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     on.initUpdate(element.on.initUpdate, element, element.state)
   }
 
-  // console.log(element, parent)
   updateProps(params.props, element, parent)
-  // // console.log(element.path)
-  // // console.log(element)
 
-  // console.groupCollapsed('UPDATE:')
-  // console.log(element)
-  // console.groupEnd('UPDATE:')
+  // const state = params.state || element.state
+  // element.state = createState({ state }, parent)
 
   const overwriteChanges = overwrite(element, params, UPDATE_DEFAULT_OPTIONS)
   const execChanges = throughUpdatedExec(element, UPDATE_DEFAULT_OPTIONS)
@@ -69,9 +55,6 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
       element.__ifFalsy = true
     }
   }
-
-  // console.log(node)
-  // console.groupEnd('Update:')
 
   if (!node || options.preventRecursive) return
 

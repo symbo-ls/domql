@@ -1,6 +1,6 @@
 'use strict'
 
-import { isArray, isFunction, isObject } from './object'
+import { exec, isArray, isFunction, isObject } from './object'
 
 export const generateHash = () => Math.random().toString(36).substring(2)
 

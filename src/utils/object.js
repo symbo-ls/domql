@@ -77,7 +77,7 @@ export const deepMerge = (element, proto) => {
     const elementProp = element[e]
     const protoProp = proto[e]
     // const cachedProps = cache.props
-    if (e === 'parent' || e === 'props') continue
+    if (e === 'parent' || e === 'props' || e === 'state') continue
     if (elementProp === undefined) {
       element[e] = protoProp
     } else if (isObjectLike(elementProp) && isObject(protoProp)) {
@@ -122,7 +122,7 @@ export const overwrite = (element, params, options) => {
   const changes = {}
 
   for (const e in params) {
-    if (e === 'props') continue
+    if (e === 'props' || e === 'state') continue
 
     const elementProp = element[e]
     const paramsProp = params[e]
