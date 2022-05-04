@@ -71,6 +71,11 @@ const create = (element, parent, key, options = {}) => {
     return assignNode(element, parent, assignedKey)
   }
 
+  // run `on.init`
+  if (element.on && isFunction(element.on.init)) {
+    on.init(element.on.init, element, element.state)
+  }
+
   // generate a CLASS name
   assignClass(element)
 
@@ -84,11 +89,6 @@ const create = (element, parent, key, options = {}) => {
     element.parse = parse
     element.parseDeep = parseDeep
     element.log = log
-  }
-
-  // run `on.init`
-  if (element.on && isFunction(element.on.init)) {
-    on.init(element.on.init, element, element.state)
   }
 
   // enable TRANSFORM in data
