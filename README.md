@@ -13,16 +13,11 @@ You can start with [starter-kit](https://github.com/rackai/starter-kit) as a boi
 [![Build Status](https://travis-ci.org/rackai/domql.svg?branch=master)](https://travis-ci.org/rackai/domql)
 [![Coverage Status](https://coveralls.io/repos/github/rackai/domql/badge.svg?branch=main)](https://coveralls.io/github/rackai/domql?branch=main)
 
-Initialization: 
-
 ```javascript
 import DOM from '@rackai/domql'
 
 DOM.create({ text: 'Rendered' })
 ```
-
-Attributes:
-
 ```javascript
 var link = {
   tag: 'a',
@@ -67,8 +62,6 @@ var header = {
   menu
 }
 ```
-
-Array Support:
 ```javascript
 var navItems = ['Home', 'About', 'FAQ', 'Contact']
 
@@ -77,8 +70,6 @@ var menu = {
   ...navItems
 }
 ```
-
-Update:
 ```javascript
 var val = {
   text: 0
