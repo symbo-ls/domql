@@ -4,7 +4,10 @@ import { deepClone, deepMerge, exec, isArray } from '../utils'
 
 const initProps = (element, parent) => {
   const propsStack = []
-  if (element.props) propsStack.push(element.props)
+
+  if (element.props === 'inherit') {
+    if (parent && parent.props) propsStack.push(parent.props[element.key])
+  } else if (element.props) propsStack.push(element.props)
 
   if (isArray(element.__proto)) {
     element.__proto.map(proto => {
