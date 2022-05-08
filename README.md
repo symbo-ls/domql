@@ -36,8 +36,6 @@ var img = {
   }
 }
 ```
-
-Reusing: 
 ```javascript
 var Link = {
   tag: 'a'
