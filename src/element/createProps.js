@@ -6,6 +6,8 @@ const initProps = (element, parent) => {
   const propsStack = []
 
   if (element.props === 'inherit') {
+    if (parent && parent.props) propsStack.push(parent.props)
+  } else if (element.props === 'match') {
     if (parent && parent.props) propsStack.push(parent.props[element.key])
   } else if (element.props) propsStack.push(element.props)
 
