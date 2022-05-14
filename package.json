@@ -38,7 +38,7 @@
     "nodemon": "^2.0.6",
     "np": "^7.2.0",
     "parcel-bundler": "^1.12.4",
-    "standard": "^16.0.1"
+    "standard": "^17.0.0"
   },
   "jest": {
     "collectCoverageFrom": [
