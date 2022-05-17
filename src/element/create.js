@@ -71,14 +71,6 @@ const create = (element, parent, key, options = {}) => {
     return assignNode(element, parent, assignedKey)
   }
 
-  // run `on.init`
-  if (element.on && isFunction(element.on.init)) {
-    on.init(element.on.init, element, element.state)
-  }
-
-  // generate a CLASS name
-  assignClass(element)
-
   // assign METHODS
   element.set = set
   element.update = update
@@ -109,6 +101,14 @@ const create = (element, parent, key, options = {}) => {
 
   // apply props settings
   createProps(element, parent)
+
+  // run `on.init`
+  if (element.on && isFunction(element.on.init)) {
+    on.init(element.on.init, element, element.state)
+  }
+
+  // generate a CLASS name
+  assignClass(element)
 
   // console.log('cache.props:')
   // console.log(cache.props)
