@@ -1,15 +1,15 @@
 {
   "name": "@domql/node",
-  "version": "2.0.6",
+  "version": "2.0.7",
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
-    "@domql/define": "^2.0.6",
-    "@domql/element": "^2.0.6",
-    "@domql/event": "^2.0.6",
-    "@domql/mixins": "^2.0.6",
-    "@domql/report": "^2.0.6",
-    "@domql/utils": "^2.0.6"
+    "@domql/define": "^2.0.7",
+    "@domql/element": "^2.0.7",
+    "@domql/event": "^2.0.7",
+    "@domql/mixins": "^2.0.7",
+    "@domql/report": "^2.0.7",
+    "@domql/utils": "^2.0.7"
   },
   "scripts": {
     "vpatch": "npm version patch && npm publish --access public"

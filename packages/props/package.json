@@ -1,10 +1,10 @@
 {
   "name": "@domql/props",
-  "version": "2.0.6",
+  "version": "2.0.7",
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
-    "@domql/utils": "^2.0.6"
+    "@domql/utils": "^2.0.7"
   },
   "gitHead": "50bbcf385b1164bb3f0c2eb7a4d7d1bc28ca7752",
   "source": "index.js"
