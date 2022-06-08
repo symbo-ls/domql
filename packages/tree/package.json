@@ -6,6 +6,6 @@
   "dependencies": {
     "@domql/report": "^2.0.7"
   },
-  "gitHead": "50bbcf385b1164bb3f0c2eb7a4d7d1bc28ca7752",
+  "gitHead": "66641a0ee9c94ecbe631b7b92e2018ad18af387b",
   "source": "index.js"
 }
