@@ -7,51 +7,17 @@ DOM rendering Javascript framework.
 - No transpilations, simple ES6 code
 - One-time import and subtrees
 
-You can start with [starter-kit](https://github.com/rackai/starter-kit) as a boilerplate, or jump into the live editor [playground](https://domql.com/playground/).
+You can start with [starter-kit](https://github.com/rackai/starter-kit) as a boilerplate, or jump into the [playground](https://domql.com/playground/).
 
 [![npm version](https://badge.fury.io/js/%40rackai%2Fdomql.svg)](https://badge.fury.io/js/%40rackai%2Fdomql)
 [![Build Status](https://travis-ci.org/rackai/domql.svg?branch=master)](https://travis-ci.org/rackai/domql)
 [![Coverage Status](https://coveralls.io/repos/github/rackai/domql/badge.svg?branch=main)](https://coveralls.io/github/rackai/domql?branch=main)
-
-TODO:
-- [x] error reporting
-- [x] virtual DOM tree
-- [x] create
-  - [x] create using prototype class
-  - [x] support multiple level prototypes
-  - [x] DOM caching
-- [x] state
-- [x] binding
-  - [x] with other component
-  - [x] with state
-- [x] update
-  - [x] set (recreate)
-  - [x] only iterate with diff
-- [x] events
-  - [x] event handling
-  - [ ] bubbling and propogation
-- [ ] run changes inside animationFrame
-
-### Getting started
-
-To install all dependencies and run dev server, run:
-
-```shell
-yarn && yarn start
-```
-
-### Examples
-
-Initialization: 
 
 ```javascript
 import DOM from '@rackai/domql'
 
 DOM.create({ text: 'Rendered' })
 ```
-
-Attributes:
-
 ```javascript
 var link = {
   tag: 'a',
@@ -70,8 +36,6 @@ var img = {
   }
 }
 ```
-
-Reusing: 
 ```javascript
 var Link = {
   tag: 'a'
@@ -96,8 +60,6 @@ var header = {
   menu
 }
 ```
-
-Array Support:
 ```javascript
 var navItems = ['Home', 'About', 'FAQ', 'Contact']
 
@@ -106,8 +68,6 @@ var menu = {
   ...navItems
 }
 ```
-
-Update:
 ```javascript
 var val = {
   text: 0

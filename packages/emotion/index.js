@@ -3,8 +3,20 @@
 import DOM from '../../src'
 import { isObjectLike, exec } from '../../src/utils'
 import { classList } from '../../src/element/mixins'
+import createEmotion from '@emotion/css/create-instance'
 
-import { css } from '@emotion/css'
+const {
+  flush,
+  hydrate,
+  cx,
+  merge,
+  getRegisteredStyles,
+  injectGlobal,
+  keyframes,
+  css,
+  sheet,
+  cache
+} = createEmotion({ key: 'symbols' })
 
 const style = (params, element, node) => {
   const execPareams = exec(params, element)

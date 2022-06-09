@@ -46,11 +46,11 @@ const create = (element, parent, key, options = {}) => {
     }
   }
 
-  // enable STATE
-  element.state = createState(element, parent)
-
   // create PROTOtypal inheritance
   applyPrototype(element, parent, options)
+
+  // enable STATE
+  element.state = createState(element, parent)
 
   // console.groupCollapsed('Create:', assignedKey)
   // console.log(element)
@@ -71,9 +71,6 @@ const create = (element, parent, key, options = {}) => {
     return assignNode(element, parent, assignedKey)
   }
 
-  // generate a CLASS name
-  assignClass(element)
-
   // assign METHODS
   element.set = set
   element.update = update
@@ -84,11 +81,6 @@ const create = (element, parent, key, options = {}) => {
     element.parse = parse
     element.parseDeep = parseDeep
     element.log = log
-  }
-
-  // run `on.init`
-  if (element.on && isFunction(element.on.init)) {
-    on.init(element.on.init, element, element.state)
   }
 
   // enable TRANSFORM in data
@@ -109,6 +101,14 @@ const create = (element, parent, key, options = {}) => {
 
   // apply props settings
   createProps(element, parent)
+
+  // run `on.init`
+  if (element.on && isFunction(element.on.init)) {
+    on.init(element.on.init, element, element.state)
+  }
+
+  // generate a CLASS name
+  assignClass(element)
 
   // console.log('cache.props:')
   // console.log(cache.props)

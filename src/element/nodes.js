@@ -14,6 +14,8 @@ export default {
   ],
 
   body: [
+    'html',
+    'body',
     'string',
     'fragment',
     'a',
