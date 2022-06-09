@@ -1,7 +1,7 @@
 'use strict'
 
-export * from './iterate'
-export * from './methods'
-export * from './update'
-export * from './create'
-export * from './set'
+export * from '@domql/methods'
+export * from '@domql/iterate'
+export * from '@domql/update'
+export * from '@domql/create'
+export * from '@domql/set'

@@ -4,7 +4,8 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
-    "@domql/element": "latest",
+    "@domql/set": "latest",
+    "@domql/create": "latest",
     "@domql/report": "latest",
     "@domql/utils": "latest",
     "regenerator-runtime": "^0.13.9"

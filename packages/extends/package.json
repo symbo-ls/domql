@@ -4,8 +4,8 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
-    "@domql/tree": "^2.0.8",
-    "@domql/utils": "^2.0.8"
+    "@domql/tree": "latest",
+    "@domql/utils": "latest"
   },
   "gitHead": "66641a0ee9c94ecbe631b7b92e2018ad18af387b",
   "source": "index.js"

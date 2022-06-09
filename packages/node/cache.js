@@ -3,8 +3,7 @@
 import { can } from '@domql/event'
 import { exec, isString, isValidHtmlTag } from '@domql/utils'
 import { report } from '@domql/report'
-
-const cachedElements = {}
+import { cache } from '@domql/cache'
 
 const createNode = (element) => {
   const { tag } = element
@@ -44,8 +43,8 @@ export const cacheNode = (element) => {
     return report('HTMLInvalidTag')
   }
 
-  let cachedTag = cachedElements[tag]
-  if (!cachedTag) cachedTag = cachedElements[tag] = createNode(element)
+  let cachedTag = cache[tag]
+  if (!cachedTag) cachedTag = cache[tag] = createNode(element)
 
   const clonedNode = cachedTag.cloneNode(true)
   if (tag === 'string') clonedNode.nodeValue = element.text

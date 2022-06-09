@@ -1,6 +1,6 @@
 'use strict'
 
-import { create } from '@domql/element'
+import { create } from '@domql/create'
 import { define } from '@domql/define'
 
 export * as _ from './allExports'

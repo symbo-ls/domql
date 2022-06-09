@@ -8,7 +8,7 @@ import Icon from './icon'
 import { transformReact } from '../packages/transform-react'
 
 const icon = {
-  proto: Icon,
+  extends: Icon,
   name: 'toke'
 }
 
