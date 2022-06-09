@@ -24,7 +24,7 @@ export const classify = (obj, element) => {
   return className
 }
 
-export const classList = (params, element) => {
+export const classList = (params, element, node) => {
   if (!params) return
   const { key } = element
   if (params === true) params = element.class = { key }
