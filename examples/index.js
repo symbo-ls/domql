@@ -1,11 +1,11 @@
 'use strict'
 
-import DOM from '../packages/domql'
+import DOM from '../packages/all'
 
 import header from './header'
 import footer from './footer'
 import Icon from './icon'
-import { transformReact } from '../packages/transform-react'
+// import { transformReact } from '../packages/transform-react'
 
 const icon = {
   extends: Icon,
@@ -57,9 +57,8 @@ const root = {
 }
 
 DOM.create(root, null, null, {
-  transform: { react: transformReact }
+  // transform: { react: transformReact }
 })
-
 
 // const later = performance.now()
 // console.log(later - now)
