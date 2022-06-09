@@ -1,8 +1,8 @@
 'use strict'
 
-import { define } from '@domql/define'
 import { isObjectLike, exec } from '@domql/utils'
-import { classList } from '@domql/mixins'
+import { define } from '@domql/define'
+import { classList } from '@domql/mixins/classList'
 
 import { css } from '@emotion/css'
 
