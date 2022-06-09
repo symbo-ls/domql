@@ -1,22 +1,22 @@
 {
   "name": "domql",
-  "version": "2.1.0",
+  "version": "2.0.8",
   "main": "index.js",
   "license": "MIT",
   "source": "index.js",
   "dependencies": {
     "@domql/cache": "latest",
+    "@domql/registry": "latest",
     "@domql/define": "latest",
     "@domql/event": "latest",
-    "@domql/extends": "latest",
     "@domql/key": "latest",
-    "@domql/parse": "latest",
     "@domql/props": "latest",
-    "@domql/registry": "latest",
+    "@domql/extends": "latest",
     "@domql/report": "latest",
     "@domql/state": "latest",
     "@domql/tree": "latest",
-    "@domql/utils": "latest"
+    "@domql/utils": "latest",
+    "@domql/create": "latest"
   },
   "gitHead": "66641a0ee9c94ecbe631b7b92e2018ad18af387b"
 }
