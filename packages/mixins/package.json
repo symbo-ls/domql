@@ -1,12 +1,12 @@
 {
   "name": "@domql/mixins",
-  "version": "2.0.8",
+  "version": "2.1.0",
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
-    "@domql/set": "latest",
     "@domql/create": "latest",
     "@domql/report": "latest",
+    "@domql/set": "latest",
     "@domql/utils": "latest",
     "regenerator-runtime": "^0.13.9"
   },

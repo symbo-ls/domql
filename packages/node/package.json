@@ -1,15 +1,15 @@
 {
   "name": "@domql/node",
-  "version": "2.0.8",
+  "version": "2.1.0",
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
-    "@domql/define": "latest",
-    "@domql/create": "latest",
-    "@domql/methods": "latest",
-    "@domql/iterate": "latest",
     "@domql/cache": "latest",
+    "@domql/create": "latest",
+    "@domql/define": "latest",
     "@domql/event": "latest",
+    "@domql/iterate": "latest",
+    "@domql/methods": "latest",
     "@domql/mixins": "latest",
     "@domql/report": "latest",
     "@domql/utils": "latest"
