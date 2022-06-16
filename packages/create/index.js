@@ -77,8 +77,8 @@ const applyAttr = (element, key) => {
   if (!isObject(element.attr)) return element
   const { ref } = element
   if (!ref.attr) ref.attr = {}
-  for (const attr in element.attr) {
-    ref.attr[attr] = exec(element.attr[attr], element, element.state)
+  for (const attrKey in element.attr) {
+    ref.attr[attrKey] = exec(element.attr[attrKey], element, element.state)
   }
   return element
 }
