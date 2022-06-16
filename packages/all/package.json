@@ -1,7 +1,7 @@
 {
   "name": "domql",
   "version": "2.1.2",
-  "main": "index.js",
+  "main": "dist/index.js",
   "license": "MIT",
   "source": "index.js",
   "dependencies": {

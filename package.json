@@ -4,6 +4,7 @@
   "scripts": {
     "start": "parcel examples/index.html --no-cache --port 1200",
     "build": "lerna run build",
+    "build:domql": "parcel build packages/all/index.js",
     "build:all": "lerna exec -- npx parcel build index.js",
     "test:watch": "jest 'packages/**/*.js' --watch --env=jsdom",
     "test:unit": "jest 'packages/**/*.js' --env=jsdom",

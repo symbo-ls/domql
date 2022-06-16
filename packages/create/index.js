@@ -17,6 +17,7 @@ const init = (element, key, options, parent) => {
     return {
       key,
       ref,
+      tag: 'string',
       text: element
     }
   } else if (isArray(element)) return Object.assign({}, element)
@@ -69,6 +70,16 @@ const applyTag = (element, key) => {
 const applyProps = (element, key) => {
   const { ref } = element
   ref.props = createProps(element, element.ref.parent)
+  return element
+}
+
+const applyAttr = (element, key) => {
+  if (!isObject(element.attr)) return
+  const { ref } = element
+  if (!ref.attr) ref.attr = {}
+  for (const attr in element.attr) {
+    ref.attr[attr] = exec(element.attr[attr], element, element.state)
+  }
   return element
 }
 
@@ -150,6 +161,7 @@ export const create = (element, parent, key, options = OPTIONS) => [
   applyExtends,
   applyTag,
   applyProps,
+  applyAttr,
   onEach,
   applyTransform,
   addChildren,
