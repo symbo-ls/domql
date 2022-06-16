@@ -25,7 +25,7 @@ const init = (element, key, options, parent) => {
     if (!element.ref) element.ref = ref
     if (element.on && element.on.init) element.on.init(element, element.state)
     return element
-  } else if (isFunction(element)) return exec(parent, parent.ref.state)
+  } else if (isFunction(element)) return ({ ref, ...exec(parent, parent.ref.state) })
   else if (!element) return { ref }
   return element
 }
@@ -74,7 +74,7 @@ const applyProps = (element, key) => {
 }
 
 const applyAttr = (element, key) => {
-  if (!isObject(element.attr)) return
+  if (!isObject(element.attr)) return element
   const { ref } = element
   if (!ref.attr) ref.attr = {}
   for (const attr in element.attr) {
