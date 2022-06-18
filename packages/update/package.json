@@ -1,16 +1,16 @@
 {
   "name": "@domql/update",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
+    "@domql/create": "latest",
     "@domql/event": "latest",
+    "@domql/iterate": "latest",
+    "@domql/methods": "latest",
     "@domql/mixins": "latest",
     "@domql/props": "latest",
-    "@domql/methods": "latest",
     "@domql/registry": "latest",
-    "@domql/create": "latest",
-    "@domql/iterate": "latest",
     "@domql/utils": "latest"
   },
   "gitHead": "66641a0ee9c94ecbe631b7b92e2018ad18af387b",
