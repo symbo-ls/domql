@@ -22,10 +22,8 @@ const DEFAULT_OPTIONS = {
 }
 
 const applyUpdateInit = (params, element) => {
-  console.log('start update', element.key)
   on.initUpdate(element)
   if (isString(params) || isNumber(params)) params = { text: params }
-  console.warn('params', params)
   return params
 }
 
@@ -61,20 +59,15 @@ const applyAttrUpdate = (params, element, options) => {
 
 const updateOnEachAvailable = (params, element, key, options) => {
   const { ref } = element
-  const value = element[key]
   const { children, childrenKeys } = ref
-
-  console.log('====')
-  console.log(key, childrenKeys, value)
-  // if (isString(params) || isNumber(params)) params = { text: params }
 
   // move value to ref.children
   if (childrenKeys.indexOf(key) === -1) {
+    const value = params[key]
     childrenKeys.push(key)
-    element[key] = params[key]
-    console.log('-----')
-    console.log(params[key], element, key, options)
-    return children.push(create(params[key], element, key, options))
+    element[key] = value
+    const newElement = create(value, element, key, options)
+    return children.push(newElement)
   }
 
   // apply global options
@@ -103,8 +96,9 @@ const updateChildren = (params, element, options) => {
   const { children } = ref
 
   if (children && children.length) {
-    ref.children = children.map(child => {
-      return update(element[child.key] || {}, child, options)
+    children.map(child => {
+      update(element[child.key] || {}, child, options)
+      return child
     })
   }
 
@@ -112,8 +106,9 @@ const updateChildren = (params, element, options) => {
 }
 
 const triggerOnUpdate = (params, element, options) => {
+  const { ref } = element
   on.update(params, element, element.state)
-  return element
+  return ref.__updates[0]
 }
 
 export const update = (params, element, options = DEFAULT_OPTIONS) => [

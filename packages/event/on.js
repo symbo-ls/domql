@@ -11,7 +11,6 @@ export const render = (param, element, state) => {
 }
 
 export const initUpdate = (element) => {
-  console.log(element)
   const { ref, state, on } = element
   const { props } = ref
   if (on && isFunction(on.initUpdate)) {

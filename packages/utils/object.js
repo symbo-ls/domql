@@ -140,12 +140,13 @@ export const overwrite = (element, params, options) => {
 export const diff = (obj, original, cache) => {
   const changes = cache || {}
   for (const e in obj) {
+    if (e === 'ref') continue
     const originalProp = original[e]
     const objProp = obj[e]
     if (isObjectLike(originalProp) && isObjectLike(objProp)) {
       changes[e] = {}
       diff(originalProp, objProp, changes[e])
-    } else if (originalProp !== undefined) {
+    } else if (objProp !== undefined) {
       changes[e] = objProp
     }
   }
