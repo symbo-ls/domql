@@ -29,7 +29,7 @@ export const defaultMethods = {
   define: {},
   transform: {},
   __hash: {},
-  __cached: {},
+  __cache: {},
   __defined: {},
   __exec: {},
   __changes: {},

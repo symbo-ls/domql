@@ -16,6 +16,7 @@
     "@domql/report": "latest",
     "@domql/state": "latest",
     "@domql/tree": "latest",
+    "@domql/update": "latest",
     "@domql/utils": "latest"
   },
   "gitHead": "66641a0ee9c94ecbe631b7b92e2018ad18af387b"

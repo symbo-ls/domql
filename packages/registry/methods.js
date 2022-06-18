@@ -1,5 +1,7 @@
 'use strict'
 
+import { exec } from '@domql/utils'
+
 export const DEFAULT_METHODS = {
   key: {},
   tag: {},
@@ -28,11 +30,11 @@ export const DEFAULT_METHODS = {
   text: (element, state) => {
     element.ref.text = {
       tag: 'text',
-      text: element.text
+      text: exec(element.text, element, state)
     }
   },
 
-  html: {},
+  innerHTML: {},
 
   set: {},
   update: {},
@@ -47,7 +49,7 @@ export const DEFAULT_METHODS = {
 // data: {},
 // if: {},
 // __hash: {},
-// __cached: {},
+// __cache: {},
 // __defined: {},
 // __exec: {},
 // __changes: {},

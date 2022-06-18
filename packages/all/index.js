@@ -2,6 +2,7 @@
 
 import { create } from '@domql/create'
 import { define } from '@domql/define'
+import { update } from '@domql/update'
 
 export * as _ from './allExports'
 
@@ -11,5 +12,6 @@ export { tree } from '@domql/tree'
 
 export default {
   create,
-  define
+  define,
+  update
 }

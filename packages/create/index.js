@@ -69,7 +69,7 @@ const applyTag = (element, key) => {
 
 const applyProps = (element, key) => {
   const { ref } = element
-  ref.props = createProps(element, element.ref.parent)
+  ref.props = createProps(element, ref.parent)
   return element
 }
 
@@ -90,16 +90,16 @@ const onEachAvailable = (element, key, options) => {
   if (!children) children = ref.children = []
   if (!childrenKeys) childrenKeys = ref.childrenKeys = []
 
-  // add to ref.children
-  const useOption = options[onEachAvailable]
-  if (useOption) useOption(element, key)
-
   // move value to ref.children
   children.push(value)
   childrenKeys.push(key)
+
+  // apply global options
+  const useOption = options[onEachAvailable]
+  if (useOption) useOption(element, key)
 }
 
-const onEach = (element, key, options) => {
+export const onEach = (element, key, options) => {
   for (const key in element) {
     const isMethod = DEFAULT_METHODS[key]
     if (isMethod && isFunction(isMethod)) isMethod(element, element.ref.state)
@@ -110,7 +110,7 @@ const onEach = (element, key, options) => {
   return element
 }
 
-const applyTransform = (element, key, options) => {
+export const applyTransform = (element, key, options) => {
   const { ref, transform } = element
   if (!transform) return element
   if (!ref.transform) ref.transform = {}
@@ -125,11 +125,11 @@ const applyTransform = (element, key, options) => {
 
 const addChildren = (element, key, options) => {
   const { ref } = element
-  const { children } = ref
+  const { children, childrenKeys } = ref
 
   if (children && children.length) {
-    ref.children = children.map(child => {
-      return create(child, element, key, options)
+    ref.children = children.map((child, key) => {
+      return create(child, element, childrenKeys[key], options)
     })
   }
 

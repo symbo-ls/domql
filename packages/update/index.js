@@ -1,85 +1,130 @@
 'use strict'
 
-import { overwrite, isFunction, isObject, isString, isNumber, merge } from '@domql/utils'
-import { defaultMethods } from '@domql/mixins'
-import { updateProps } from '@domql/props'
-// import { createNode } from '@domql/node'
+import { DEFAULT_METHODS } from '@domql/registry'
+
+import {
+  overwriteDeep,
+  diff,
+  isFunction,
+  isObject,
+  isString,
+  isNumber,
+  exec
+} from '@domql/utils'
 import { on } from '@domql/event'
+import { updateProps } from '@domql/props'
+import { create, applyTransform } from '@domql/create'
 
-import { isMethod } from '@domql/methods'
-import { throughUpdatedDefine, throughUpdatedExec } from '@domql/iterate'
-// import { appendNode } from './assign'
-
-const UPDATE_DEFAULT_OPTIONS = {
+const DEFAULT_OPTIONS = {
   stackChanges: false,
   cleanExec: true,
   preventRecursive: false
 }
 
-export const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
-  const element = this
-  const { define, parent, node } = element
+const applyUpdateInit = (params, element) => {
+  console.log('start update', element.key)
+  on.initUpdate(element)
+  if (isString(params) || isNumber(params)) params = { text: params }
+  console.warn('params', params)
+  return params
+}
 
-  // console.groupCollapsed('Update:', element.path)
-  // console.groupEnd('Update:')
-  // if params is string
-  if (isString(params) || isNumber(params)) {
-    params = { text: params }
+const applyChanges = (params, element) => {
+  const { ref } = element
+  const changes = diff(params, element)
+
+  const hasChanges = Object.keys(changes).length
+  if (changes && hasChanges) {
+    ref.__updates = [].concat(changes, ref.__updates)
+    overwriteDeep(changes, element)
   }
 
-  if (element.on && isFunction(element.on.initUpdate)) {
-    on.initUpdate(element.on.initUpdate, element, element.state)
+  return params
+}
+
+const applyPropsUpdate = (params, element, options) => {
+  if (params && !isObject(params.props)) return params // it will prevent to update `inherit` or `match` prop values
+  const { ref } = element
+  ref.props = updateProps(params.props, element, ref.parent)
+  on.propsUpdated(element)
+  return params
+}
+
+const applyAttrUpdate = (params, element, options) => {
+  const { ref } = element
+  if (!ref.attr) ref.attr = {}
+  for (const attrKey in params.attr) {
+    ref.attr[attrKey] = exec(params.attr[attrKey], element, element.state)
+  }
+  return params
+}
+
+const updateOnEachAvailable = (params, element, key, options) => {
+  const { ref } = element
+  const value = element[key]
+  const { children, childrenKeys } = ref
+
+  console.log('====')
+  console.log(key, childrenKeys, value)
+  // if (isString(params) || isNumber(params)) params = { text: params }
+
+  // move value to ref.children
+  if (childrenKeys.indexOf(key) === -1) {
+    childrenKeys.push(key)
+    element[key] = params[key]
+    console.log('-----')
+    console.log(params[key], element, key, options)
+    return children.push(create(params[key], element, key, options))
   }
 
-  updateProps(params.props, element, parent)
+  // apply global options
+  const useOption = options[updateOnEachAvailable]
+  if (useOption) useOption(element, key)
+}
 
-  // console.groupCollapsed('UPDATE:')
-  // console.groupEnd('UPDATE:')
+const updateOnEach = (params, element, options) => {
+  for (const key in params) {
+    const isMethod = DEFAULT_METHODS[key]
+    if (isMethod && isFunction(isMethod)) isMethod(element, element.ref.state)
+    const hasDefine = element.define && params.define[key]
+    if (hasDefine && isFunction(hasDefine)) element.ref[key] = hasDefine(element, element.ref.state)
+    if (!isMethod && !hasDefine) updateOnEachAvailable(params, element, key, options)
+  }
+  return params
+}
 
-  const overwriteChanges = overwrite(element, params, UPDATE_DEFAULT_OPTIONS)
-  const execChanges = throughUpdatedExec(element, UPDATE_DEFAULT_OPTIONS)
-  const definedChanges = throughUpdatedDefine(element)
+const updateTransform = (params, element, options) => {
+  applyTransform(element, element.key, options)
+  return params
+}
 
-  if (UPDATE_DEFAULT_OPTIONS.stackChanges && element.__stackChanges) {
-    const stackChanges = merge(definedChanges, merge(execChanges, overwriteChanges))
-    element.__stackChanges.push(stackChanges)
+const updateChildren = (params, element, options) => {
+  const { ref } = element
+  const { children } = ref
+
+  if (children && children.length) {
+    ref.children = children.map(child => {
+      return update(element[child.key] || {}, child, options)
+    })
   }
 
-  if (isFunction(element.if)) {
-    // TODO: move as fragment
-    const ifPassed = element.if(element, element.state)
-    if (element.__ifFalsy && ifPassed) {
-      // createNode(element)
-      // appendNode(element.node, element.__ifFragment)
-      delete element.__ifFalsy
-    } else if (element.node && !ifPassed) {
-      element.node.remove()
-      element.__ifFalsy = true
-    }
-  }
+  return params
+}
 
-  // console.groupEnd('Update:')
-
-  if (!node || options.preventRecursive) return
-
-  for (const param in element) {
-    const prop = element[param]
-
-    if (isMethod(param) || isObject(defaultMethods[param]) || prop === undefined) continue
-
-    const hasDefined = define && define[param]
-    const ourParam = defaultMethods[param]
-
-    if (ourParam) {
-      if (isFunction(ourParam)) ourParam(prop, element, node)
-    } else if (prop && isObject(prop) && !hasDefined) {
-      update.call(prop, params[prop], UPDATE_DEFAULT_OPTIONS)
-    }
-  }
-
-  if (element.on && isFunction(element.on.update)) {
-    on.update(element.on.update, element, element.state)
-  }
-
+const triggerOnUpdate = (params, element, options) => {
+  on.update(params, element, element.state)
   return element
 }
+
+export const update = (params, element, options = DEFAULT_OPTIONS) => [
+  applyUpdateInit,
+  applyChanges,
+  applyPropsUpdate,
+  applyAttrUpdate,
+  updateOnEach,
+  updateTransform,
+  updateChildren,
+  triggerOnUpdate
+].reduce((prev, current) => current(prev, element, options), params)
+
+DEFAULT_METHODS.update = update

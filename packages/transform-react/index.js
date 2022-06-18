@@ -19,6 +19,14 @@ const createReactText = (text) => {
 
 export const transformReact = (element, key) => {
   const { ref } = element
+  const { transform } = ref
+
+  // TODO: update element
+  // if (transform[key]) {
+  //   transform[key].props = ref.attr // updatedProps
+  //   return updateReactWithNewProps
+  // }
+
   const { tag, props, ...rest } = ref
   let children = ref.children
   if (rest.class) props.className = rest.class

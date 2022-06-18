@@ -1,7 +1,7 @@
 'use strict'
 
 import { on } from '@domql/event'
-import { deepClone, exec, isFunction, overwriteDeep } from '@domql/utils'
+import { deepClone, diff, exec, isFunction, overwriteDeep } from '@domql/utils'
 
 export const parseState = function () {
   const state = this
@@ -18,18 +18,14 @@ export const updateState = function (obj, options = {}) {
   const state = this
   const element = state.__element
 
-  // run `on.stateUpdated`
-  if (element.on && isFunction(element.on.initStateUpdated)) {
-    on.initStateUpdated(element.on.initStateUpdated, element, state)
-  }
+  const changes = diff(obj, state)
 
-  overwriteDeep(state, obj, ['update', 'parse', '__element'])
+  on.updateStateInit(changes, element)
+
+  overwriteDeep(changes, state)
   if (!options.preventUpdate) element.update()
 
-  // run `on.stateUpdated`
-  if (element.on && isFunction(element.on.stateUpdated)) {
-    on.stateUpdated(element.on.stateUpdated, element, state)
-  }
+  on.updateState(changes, state, element)
 }
 
 export function createState (element, parent) {
@@ -42,10 +38,7 @@ export function createState (element, parent) {
   state.parse = parseState
   state.update = updateState
 
-  // run `on.stateCreated`
-  if (element.on && isFunction(element.on.stateCreated)) {
-    on.stateCreated(element.on.stateCreated, element, element.state)
-  }
+  on.createState(state, element)
 
   return state
 }

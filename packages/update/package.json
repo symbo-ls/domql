@@ -7,6 +7,10 @@
     "@domql/event": "latest",
     "@domql/mixins": "latest",
     "@domql/props": "latest",
+    "@domql/methods": "latest",
+    "@domql/registry": "latest",
+    "@domql/create": "latest",
+    "@domql/iterate": "latest",
     "@domql/utils": "latest"
   },
   "gitHead": "66641a0ee9c94ecbe631b7b92e2018ad18af387b",

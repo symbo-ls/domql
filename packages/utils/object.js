@@ -1,8 +1,8 @@
 'use strict'
 
-import { TAGS } from '@domql/registry'
+import { HTML_TAGS } from '@domql/tags'
 
-export const isValidHtmlTag = arg => TAGS.body.indexOf(arg)
+export const isValidHtmlTag = arg => HTML_TAGS.body.indexOf(arg)
 
 export const isObject = arg => {
   if (arg === null) return false
@@ -119,6 +119,7 @@ export const deepClone = (obj, excluding = ['parent', 'node', '__element', '__ro
  * Overwrites object properties with another
  */
 export const overwrite = (element, params, options) => {
+  const { ref } = element
   const changes = {}
 
   for (const e in params) {
@@ -128,22 +129,34 @@ export const overwrite = (element, params, options) => {
     const paramsProp = params[e]
 
     if (paramsProp) {
-      element.__cached[e] = changes[e] = elementProp
-      element[e] = paramsProp
+      ref.__cache[e] = changes[e] = elementProp
+      ref[e] = paramsProp
     }
-
-    if (options.cleanExec) delete element.__exec[e]
   }
 
+  return changes
+}
+
+export const diff = (obj, original, cache) => {
+  const changes = cache || {}
+  for (const e in obj) {
+    const originalProp = original[e]
+    const objProp = obj[e]
+    if (isObjectLike(originalProp) && isObjectLike(objProp)) {
+      changes[e] = {}
+      diff(originalProp, objProp, changes[e])
+    } else if (originalProp !== undefined) {
+      changes[e] = objProp
+    }
+  }
   return changes
 }
 
 /**
  * Overwrites DEEPly object properties with another
  */
-export const overwriteDeep = (obj, params, excluding = ['node', '__root']) => {
+export const overwriteDeep = (params, obj) => {
   for (const e in params) {
-    if (excluding.indexOf(e) > -1) continue
     const objProp = obj[e]
     const paramsProp = params[e]
     if (isObjectLike(objProp) && isObjectLike(paramsProp)) {

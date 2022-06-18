@@ -1,7 +1,7 @@
 const fs = require('fs')
 
-const oldPath = '../react-starter-kit/package.json'
-const tempPath = '../react-starter-kit/package1.json'
+const oldPath = '../starter-kit/package.json'
+const tempPath = '../starter-kit/package1.json'
 
 fs.rename(oldPath, tempPath, function (err) {
   if (err) throw err
