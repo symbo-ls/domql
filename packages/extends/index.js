@@ -40,7 +40,10 @@ export const extendElement = (element, parent, options = {}) => {
     stack = childProtoStack
   } else return element
 
-  if (options.extends) stack = [].concat(options.extends, stack.slice(1))
+  if (options.extends) {
+    const defaultOptionsProto = getProtoStack(options.extends)
+    stack = [].concat(defaultOptionsProto, stack)
+  }
 
   element.ref.extends = stack
   const mergedProto = cloneAndMergeArrayProto(stack)
