@@ -1,11 +1,13 @@
 'use strict'
 
-import { deepClone, deepMerge, exec, isArray } from '../utils'
+import { deepClone, deepMerge, exec, isArray, isObject } from '../utils'
 
 const initProps = (element, parent) => {
   const propsStack = []
 
-  if (element.props === 'inherit') {
+  if (isObject(element.props)) {
+    propsStack.push(element.props)
+  } else if (element.props === 'inherit') {
     if (parent && parent.props) propsStack.push(parent.props)
   } else if (element.props === 'match') {
     if (parent && parent.props) propsStack.push(parent.props[element.key])

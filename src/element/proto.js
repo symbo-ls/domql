@@ -54,7 +54,12 @@ export const applyPrototype = (element, parent, options = {}) => {
     stack = protoStack
   } else if (childProtoLength) {
     stack = childProtoStack
-  } else return element
+  } else if (!options.proto) return element
+
+  if (options.proto) {
+    const defaultOptionsProto = getProtoStack(options.proto)
+    stack = [].concat(stack, defaultOptionsProto)
+  }
 
   element.__proto = stack
   const mergedProto = cloneAndMergeArrayProto(stack)

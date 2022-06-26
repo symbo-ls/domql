@@ -1,6 +1,7 @@
 'use strict'
 
 import create from './create'
+import { registry } from './mixins'
 
 const removeContentElement = (params, element) => {
   if (params && element.content) {
@@ -18,7 +19,7 @@ const removeContentElement = (params, element) => {
   }
 }
 
-const set = function (params, enter, leave) {
+const set = function (params, options) {
   const element = this
 
   removeContentElement(params, element)
@@ -27,7 +28,8 @@ const set = function (params, enter, leave) {
     const { childProto } = params
     if (!childProto && element.childProto) params.childProto = element.childProto
     create(params, element, 'content', {
-      ignoreChildProto: true
+      ignoreChildProto: true,
+      ...registry.defaultOptions
     })
   }
 

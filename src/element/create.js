@@ -14,6 +14,7 @@ import { assignClass } from './mixins/classList'
 import { isFunction, isNumber, isString, createID, isNode } from '../utils'
 import { remove, lookup, log, keys, parse, parseDeep } from './methods'
 import cacheNode from './cache'
+import { registry } from './mixins'
 // import { overwrite, clone, fillTheRest } from '../utils'
 
 const ENV = process.env.NODE_ENV
@@ -25,6 +26,11 @@ const create = (element, parent, key, options = {}) => {
   // if ELEMENT is not given
   if (element === undefined) element = {}
   if (element === null) return
+
+  if (Object.keys(options).length) {
+    registry.defaultOptions = options
+    if (options.ignoreChildProto) delete options.ignoreChildProto
+  }
 
   // define KEY
   const assignedKey = element.key || key || createID.next().value
@@ -128,7 +134,7 @@ const create = (element, parent, key, options = {}) => {
   }
 
   // CREATE a real NODE
-  createNode(element)
+  createNode(element, options)
 
   // assign NODE
   assignNode(element, parent, key)

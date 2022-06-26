@@ -28,7 +28,7 @@ const ENV = process.env.NODE_ENV
 //   }
 // })
 
-const createNode = (element) => {
+const createNode = (element, options) => {
   // create and assign a node
   let { node, tag } = element
 
@@ -78,9 +78,9 @@ const createNode = (element) => {
       const ourParam = registry[param]
 
       if (ourParam) { // Check if param is in our method registry
-        if (isFunction(ourParam)) ourParam(prop, element, node)
+        if (isFunction(ourParam)) ourParam(prop, element, node, options)
       } else if (element[param] && !hasDefined) {
-        create(prop, element, param) // Create element
+        create(prop, element, param, options) // Create element
       }
     }
   }
