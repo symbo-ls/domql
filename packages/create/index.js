@@ -13,6 +13,9 @@ const OPTIONS = {}
 
 const init = (element, key, options, parent) => {
   const ref = {}
+  if (!element) return { ref }
+  // if null remove
+
   if (isString(element) || isNumber(element)) {
     return {
       key,
@@ -22,11 +25,19 @@ const init = (element, key, options, parent) => {
     }
   } else if (isArray(element)) return Object.assign({}, element)
   else if (isObject(element)) {
+    const { extendLibrary } = options
+    const extendFromLibrary = isString(element.extends) && extendLibrary[element.extends]
+    if (extendFromLibrary && extendLibrary) {
+      element = {
+        props: element,
+        ref,
+        extends: extendFromLibrary
+      }
+    }
     if (!element.ref) element.ref = ref
     if (element.on && element.on.init) element.on.init(element, element.state)
     return element
   } else if (isFunction(element)) return ({ ref, ...exec(parent, parent.ref.state) })
-  else if (!element) return { ref }
   return element
 }
 
@@ -52,8 +63,8 @@ const applyState = (element, key) => {
   return element
 }
 
-const applyExtends = (element, key) => {
-  extendElement(element, element.ref.parent)
+const applyExtends = (element, key, options) => {
+  extendElement(element, element.ref.parent, options)
   return element
 }
 
