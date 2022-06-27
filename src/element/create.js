@@ -37,19 +37,21 @@ const create = (element, parent, key, options = {}) => {
     element = { proto: element }
   }
 
-  // if KEY is PROTO
   if (options.components) {
     const { components } = options
+    const { proto } = element
+    if (isString(proto))
+      if (components[proto]) element.proto = components[proto]
+      else console.warn(proto, 'is not in library', components, element)
 
-    const k = element.key || key
-    const keyIsProto = isString(k) && k.charAt(0) === k.charAt(0).toUpperCase()
-    let component
-    if (keyIsProto) component = key
-
+    // // if KEY is PROTO
+    // const k = element.key || key
+    // const keyIsProto = isString(k) && k.charAt(0) === k.charAt(0).toUpperCase()
+    // if (keyIsProto) component = key
+    // let { match, ...rest } = element
     // if proto comes from library as string
-    const fromLibrary = component || isString(element.proto) ? element.proto : element.component
-    const isInLibrary = components[fromLibrary]
-    if (isInLibrary) element = { proto: isInLibrary, props: element }
+    // const fromLibrary = isString(match) ? components[match] : match
+    // if (fromLibrary) element = { proto: fromLibrary, ...rest }
   }
 
   // define KEY

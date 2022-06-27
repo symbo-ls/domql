@@ -51,6 +51,5 @@ export default {
   log: {},
   parse: {},
   parseDeep: {},
-  on: {},
-  component: {}
+  on: {}
 }
