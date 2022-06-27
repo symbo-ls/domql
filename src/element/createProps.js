@@ -1,17 +1,25 @@
 'use strict'
 
-import { deepClone, deepMerge, exec, isArray, isObject } from '../utils'
+import { deepClone, deepMerge, exec, isArray, isObject, isString } from '../utils'
 
 const initProps = (element, parent) => {
+  const { props } = element
   const propsStack = []
 
-  if (isObject(element.props)) {
-    propsStack.push(element.props)
-  } else if (element.props === 'inherit') {
-    if (parent && parent.props) propsStack.push(parent.props)
-  } else if (element.props === 'match') {
-    if (parent && parent.props) propsStack.push(parent.props[element.key])
-  } else if (element.props) propsStack.push(element.props)
+  const hasMatch = isString(props) && props.indexOf('match') > -1
+  const matchParent = parent.props && parent.props[element.key]
+
+  if (isObject(props)) {
+    propsStack.push(props)
+  } else if (props === 'inherit') {
+    if (parent.props) propsStack.push(parent.props)
+  } else if (hasMatch) {
+    const hasArg = props.split(' ')
+    if (hasArg[1] && parent.props[hasArg[1]]) propsStack.push(parent.props[hasArg[1]])
+    else if (matchParent) propsStack.push(matchParent)
+  } else if (props) propsStack.push(props)
+
+  if (matchParent && props !== 'match') propsStack.push(matchParent)
 
   if (isArray(element.__proto)) {
     element.__proto.map(proto => {

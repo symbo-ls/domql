@@ -32,6 +32,26 @@ const create = (element, parent, key, options = {}) => {
     if (options.ignoreChildProto) delete options.ignoreChildProto
   }
 
+  // if element is proto
+  if (element.__hash) {
+    element = { proto: element }
+  }
+
+  // if KEY is PROTO
+  if (options.components) {
+    const { components } = options
+
+    const k = element.key || key
+    const keyIsProto = isString(k) && k.charAt(0) === k.charAt(0).toUpperCase()
+    let component
+    if (keyIsProto) component = key
+
+    // if proto comes from library as string
+    const fromLibrary = component || isString(element.proto) ? element.proto : element.component
+    const isInLibrary = components[fromLibrary]
+    if (isInLibrary) element = { proto: isInLibrary, props: element }
+  }
+
   // define KEY
   const assignedKey = element.key || key || createID.next().value
 
