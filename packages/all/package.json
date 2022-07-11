@@ -1,6 +1,6 @@
 {
   "name": "domql",
-  "version": "2.2.2",
+  "version": "2.2.3",
   "main": "dist/main.js",
   "license": "MIT",
   "source": "dist/main.js",
