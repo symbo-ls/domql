@@ -62,7 +62,13 @@ export const applyPrototype = (element, parent, options = {}) => {
   }
 
   element.__proto = stack
-  const mergedProto = cloneAndMergeArrayProto(stack)
+  let mergedProto = cloneAndMergeArrayProto(stack)
+
+  const component = exec(element.component || mergedProto.component, element)
+  if (component && options.components && options.components[component]) {
+    const componentProto = cloneAndMergeArrayProto(getProtoStack(options.components[component]))
+    mergedProto = deepMergeProto(mergedProto, componentProto)
+  }
 
   // console.log(mergedProto)
   return deepMergeProto(element, mergedProto)

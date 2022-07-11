@@ -27,11 +27,6 @@ const create = (element, parent, key, options = {}) => {
   if (element === undefined) element = {}
   if (element === null) return
 
-  if (Object.keys(options).length) {
-    registry.defaultOptions = options
-    if (options.ignoreChildProto) delete options.ignoreChildProto
-  }
-
   // if element is proto
   if (element.__hash) {
     element = { proto: element }
@@ -39,19 +34,10 @@ const create = (element, parent, key, options = {}) => {
 
   if (options.components) {
     const { components } = options
-    const { proto } = element
+    const { proto, component } = element
     if (isString(proto))
       if (components[proto]) element.proto = components[proto]
       else console.warn(proto, 'is not in library', components, element)
-
-    // // if KEY is PROTO
-    // const k = element.key || key
-    // const keyIsProto = isString(k) && k.charAt(0) === k.charAt(0).toUpperCase()
-    // if (keyIsProto) component = key
-    // let { match, ...rest } = element
-    // if proto comes from library as string
-    // const fromLibrary = isString(match) ? components[match] : match
-    // if (fromLibrary) element = { proto: fromLibrary, ...rest }
   }
 
   // define KEY
@@ -76,6 +62,11 @@ const create = (element, parent, key, options = {}) => {
 
   // create PROTOtypal inheritance
   applyPrototype(element, parent, options)
+
+  if (Object.keys(options).length) {
+    registry.defaultOptions = options
+    if (options.ignoreChildProto) delete options.ignoreChildProto
+  }
 
   // enable STATE
   element.state = createState(element, parent)
