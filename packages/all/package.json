@@ -1,9 +1,10 @@
 {
   "name": "domql",
   "version": "2.2.2",
-  "main": "index.js",
+  "main": "dist/main.js",
   "license": "MIT",
-  "source": "index.js",
+  "source": "dist/main.js",
+  "module": "dist/module.js",
   "dependencies": {
     "@domql/cache": "latest",
     "@domql/create": "latest",

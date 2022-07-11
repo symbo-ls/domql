@@ -73,6 +73,7 @@ const applyTag = (element, key) => {
     element.ref.tag = element.tag
     return element
   }
+
   const keyIsTag = TAGS.body.indexOf(key) > -1
   element.tag = element.ref.tag = keyIsTag ? key : 'div'
   return element

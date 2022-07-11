@@ -4,7 +4,7 @@
   "scripts": {
     "start": "parcel examples/index.html --no-cache --port 1200",
     "build": "lerna run build",
-    "build:domql": "parcel build packages/all/index.js",
+    "build:domql": "parcel build packages/all/index.js && esbuild packages/all/index.js --bundle",
     "build:all": "lerna exec -- npx parcel build index.js",
     "test:watch": "jest 'packages/**/*.js' --watch --env=jsdom",
     "test:unit": "jest 'packages/**/*.js' --env=jsdom",
@@ -23,6 +23,7 @@
     "@babel/preset-env": "^7.16.4",
     "@parcel/babel-preset-env": "^2.0.1",
     "babel-jest": "^27.4.4",
+    "esbuild": "^0.14.47",
     "eslint": "^8.4.0",
     "eslint-config-standard": "^16.0.3",
     "eslint-plugin-import": "^2.25.3",
