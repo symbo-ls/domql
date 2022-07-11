@@ -7,6 +7,7 @@ export const router = (rootElement, path, state = {}, level = 0, pushState = tru
 
   if (path.slice(0, 1) === '#') {
     window.location.hash = path
+    return
   }
 
   const routes = splitRoute(route)
@@ -22,12 +23,17 @@ export const router = (rootElement, path, state = {}, level = 0, pushState = tru
     if (hasHash[1]) currentRoute += `#${hasHash[1]}`
     if (pushState) window.history.pushState(state, null, currentRoute)
 
-    const newContent = rootElement.set({ proto: content }).content.node
-    newContent.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    const rootNode = rootElement.node
+    rootNode.scrollTo({ behavior: 'smooth', top: 0, left: 0 })
     if (hasHash[1]) {
-      // window.location.hash = hasHash[1]
-      document.getElementById(hasHash[1]).scrollIntoView({ behavior: 'smooth', block: 'start' })
+      const activeNode = document.getElementById(hasHash[1])
+      if (activeNode) {
+        const top = activeNode.getBoundingClientRect().top + rootNode.scrollTop - 140
+        rootNode.scrollTo({ behavior: 'smooth', top, left: 0 })
+      }
     }
+
+    rootElement.set({ proto: content })
   }
 
   if (level === 0) rootElement.state.update({ currentRoute })
