@@ -24,7 +24,6 @@ export const router = (rootElement, path, state = {}, level = 0, pushState = tru
 
     const newContent = rootElement.set({ proto: content }).content.node
     newContent.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    console.log(newContent)
     if (hasHash[1]) {
       // window.location.hash = hasHash[1]
       document.getElementById(hasHash[1]).scrollIntoView({ behavior: 'smooth', block: 'start' })
