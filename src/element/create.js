@@ -95,10 +95,10 @@ const create = (element, parent, key, options = {}) => {
   element.update = update
   element.remove = remove
   element.lookup = lookup
+  element.parse = parse
+  element.parseDeep = parseDeep
+  element.keys = keys
   if (ENV === 'test' || ENV === 'development') {
-    element.keys = keys
-    element.parse = parse
-    element.parseDeep = parseDeep
     element.log = log
   }
 
