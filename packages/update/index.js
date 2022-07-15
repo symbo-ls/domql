@@ -34,7 +34,11 @@ const applyChanges = (params, element) => {
   const hasChanges = Object.keys(changes).length
   if (changes && hasChanges) {
     ref.__updates = [].concat(changes, ref.__updates)
+
+    // console.group('applyChanges')
+    console.log(changes)
     overwriteDeep(changes, element)
+    // console.groupEnd('applyChanges')
   }
 
   return params

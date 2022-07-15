@@ -4,7 +4,7 @@
   "main": "dist/main.js",
   "license": "MIT",
   "source": "dist/main.js",
-  "module": "dist/module.js",
+  "module": "dist/module.bundle.cjs.js",
   "dependencies": {
     "@domql/cache": "latest",
     "@domql/create": "latest",
