@@ -16,7 +16,7 @@ const {
   css,
   sheet,
   cache
-} = createEmotion({ key: 'symbols' })
+} = createEmotion({ key: 'smbls' })
 
 const style = (params, element, node) => {
   const execPareams = exec(params, element)
@@ -33,6 +33,7 @@ const classf = (params, element, node) => {
     for (const key in params) {
       const prop = exec(params[key], element)
       if (!prop) continue
+      prop.label = key
       const CSSed = css(prop)
       classObjHelper[key] = CSSed
     }
