@@ -83,6 +83,15 @@ const create = (element, parent, key, options = {}) => {
     element.path = parent.path.concat(assignedKey)
   }
 
+  // don't render IF in condition
+  if (isFunction(element.if) && !element.if(element, element.state)) {
+    // TODO: move as fragment
+    const ifFragment = cacheNode({ tag: 'fragment' })
+    element.__ifFragment = appendNode(ifFragment, parent.node)
+    element.__ifFalsy = true
+    return
+  }
+
   // if it already HAS A NODE
   if (element.node) {
     // console.log('hasNode!')
@@ -136,15 +145,6 @@ const create = (element, parent, key, options = {}) => {
   // console.log('element:')
   // console.log(element)
   // console.groupEnd('Create:')
-
-  // don't render IF in condition
-  if (isFunction(element.if) && !element.if(element, element.state)) {
-    // TODO: move as fragment
-    const ifFragment = cacheNode({ tag: 'fragment' })
-    element.__ifFragment = appendNode(ifFragment, parent.node)
-    element.__ifFalsy = true
-    return
-  }
 
   // CREATE a real NODE
   createNode(element, options)

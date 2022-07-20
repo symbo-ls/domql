@@ -25,10 +25,14 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     params = { text: params }
   }
 
-  if (element.on && isFunction(element.on.initUpdate)) {
-    on.initUpdate(element.on.initUpdate, element, element.state)
+  if (element.on && isFunction(element.on.initUpdate) && !options.ignoreInitUpdate) {
+    preventUpdate = on.initUpdate(element.on.initUpdate, element, element.state)
   }
 
+  // if (params.props) {
+  //   console.log('INSIDE:')
+  //   console.log(params.props)
+  // }
   updateProps(params.props, element, parent)
 
   // const state = params.state || element.state
@@ -42,6 +46,9 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     const stackChanges = merge(definedChanges, merge(execChanges, overwriteChanges))
     element.__stackChanges.push(stackChanges)
   }
+  // const stackChanges = merge(definedChanges, merge(execChanges, overwriteChanges))
+  // if (Object.keys(stackChanges).length === 0) return
+  // else console.log(element.path, '\n\n', stackChanges)
 
   if (isFunction(element.if)) {
     // TODO: move as fragment
@@ -61,6 +68,7 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
   for (const param in element) {
     const prop = element[param]
 
+    if (options.preventContentUpdate && param === 'content') continue
     if (isMethod(param) || isObject(registry[param]) || prop === undefined) continue
 
     const hasDefined = define && define[param]
@@ -71,7 +79,7 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     if (ourParam) {
       if (isFunction(ourParam)) ourParam(prop, element, node)
     } else if (prop && isObject(prop) && !hasDefined) {
-      update.call(prop, params[prop], UPDATE_DEFAULT_OPTIONS)
+      if (!options.preventChildrenUpdate) update.call(prop, params[prop], UPDATE_DEFAULT_OPTIONS)
     }
   }
 

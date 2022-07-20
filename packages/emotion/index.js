@@ -33,7 +33,7 @@ const classf = (params, element, node) => {
     for (const key in params) {
       const prop = exec(params[key], element)
       if (!prop) continue
-      prop.label = key
+      prop.label = key || element.key
       const CSSed = css(prop)
       classObjHelper[key] = CSSed
     }
