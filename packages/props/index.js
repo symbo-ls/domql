@@ -1,6 +1,5 @@
 'use strict'
 
-import { on } from '@domql/event'
 import { deepMerge, exec, isArray } from '@domql/utils'
 
 const initPropsStack = (element, parent) => {
