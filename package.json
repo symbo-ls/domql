@@ -47,5 +47,6 @@
   },
   "babel": {},
   "browserslist": "> 0.25%, not dead",
-  "dependencies": {}
+  "dependencies": {},
+  "version": "0.0.1"
 }
