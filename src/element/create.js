@@ -44,12 +44,8 @@ const create = (element, parent, key, options = {}) => {
   const assignedKey = element.key || key || createID.next().value
 
   // if PARENT is not given
-  // if (parent === null) parent = root
-  // if (parent === undefined) parent = root
   if (!parent) parent = root
   if (isNode(parent)) parent = root[`${key}_parent`] = { node: parent }
-
-  // if (assignedKey === 'all') debugger
 
   // if element is STRING
   if (isString(element) || isNumber(element)) {
@@ -61,6 +57,7 @@ const create = (element, parent, key, options = {}) => {
   }
 
   // create PROTOtypal inheritance
+
   applyPrototype(element, parent, options)
 
   if (Object.keys(options).length) {
@@ -70,9 +67,6 @@ const create = (element, parent, key, options = {}) => {
 
   // enable STATE
   element.state = createState(element, parent)
-
-  // console.groupCollapsed('Create:', assignedKey)
-  // console.log(element)
 
   // create and assign a KEY
   element.key = assignedKey
@@ -87,16 +81,14 @@ const create = (element, parent, key, options = {}) => {
     }
   }
 
-  // set the PATH
+  // set the PATH array
   if (ENV === 'test' || ENV === 'development') {
     if (!parent.path) parent.path = []
     element.path = parent.path.concat(assignedKey)
   }
 
-  // if it already HAS A NODE
-  if (element.node) { // TODO: check on if
-    // console.log('hasNode!')
-    // console.groupEnd('Create:')
+  // if it already HAS a NODE
+  if (element.node && !element.__ifFalsy) { // TODO: check on if
     return assignNode(element, parent, assignedKey)
   }
 
@@ -138,15 +130,6 @@ const create = (element, parent, key, options = {}) => {
 
   // generate a CLASS name
   assignClass(element)
-
-  // console.log('cache.props:')
-  // console.log(cache.props)
-  // console.log('applied props:')
-  // console.log(element.props)
-  // console.log('element:')
-  // console.log(element)
-  // console.groupEnd('Create:')
-
 
   // console.group('create')
   // console.log(element.path)
