@@ -4,6 +4,7 @@ import DOM from '../../src'
 import { isObjectLike, exec } from '../../src/utils'
 import { classList } from '../../src/element/mixins'
 import createEmotion from '@emotion/css/create-instance'
+const ENV = process.env.NODE_ENV
 
 const {
   flush,
@@ -33,7 +34,7 @@ const classf = (params, element, node) => {
     for (const key in params) {
       const prop = exec(params[key], element)
       if (!prop) continue
-      prop.label = key || element.key
+      if (ENV === 'test' || ENV === 'development') prop.label = key || element.key
       const CSSed = css(prop)
       classObjHelper[key] = CSSed
     }

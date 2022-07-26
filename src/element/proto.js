@@ -47,6 +47,12 @@ export const applyPrototype = (element, parent, options = {}) => {
   const protoLength = protoStack.length
   const childProtoLength = childProtoStack.length
 
+  // console.group('proto')
+  // console.log(protoLength)
+  // console.log(childProtoLength)
+  // console.log(element)
+  // console.groupEnd('proto')
+
   let stack = []
   if (protoLength && childProtoLength) {
     stack = jointStacks(protoStack, childProtoStack)

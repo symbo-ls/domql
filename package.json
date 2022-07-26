@@ -26,19 +26,23 @@
     "regenerator-runtime": "^0.13.5"
   },
   "devDependencies": {
-    "@babel/core": "^7.10.4",
-    "@babel/preset-env": "^7.10.4",
-    "babel-eslint": "^10.0.3",
-    "babel-jest": "^28.1.0",
-    "babel-preset-env": "^1.7.0",
-    "coveralls": "^3.0.5",
-    "eslint": "^8.10.0",
-    "eslint-plugin-jest": "^26.1.0",
-    "jest": "^28.1.0",
+    "@babel/core": "^7.16.0",
+    "@babel/eslint-parser": "^7.16.3",
+    "@babel/preset-env": "^7.16.4",
+    "@parcel/babel-preset-env": "^2.0.1",
+    "babel-jest": "^27.4.4",
+    "esbuild": "^0.14.47",
+    "eslint": "^8.4.0",
+    "eslint-config-standard": "^16.0.3",
+    "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-jest": "^25.3.0",
+    "eslint-plugin-node": "^11.1.0",
+    "jest": "^27.4.4",
+    "jsdom": "^19.0.0",
     "nodemon": "^2.0.6",
     "np": "^7.2.0",
-    "parcel-bundler": "^1.12.4",
-    "standard": "^17.0.0"
+    "parcel": "^2.0.1",
+    "standard": "^16.0.1"
   },
   "jest": {
     "collectCoverageFrom": [

@@ -38,8 +38,12 @@ const createNode = (element, options) => {
   // console.log(element)
   // console.groupEnd('CREATE:')
 
+  // if (element.__ifFalsy) return element
+
   if (!node) {
     isNewNode = true
+
+    if (element.__ifFalsy) return element
 
     if (tag === 'shadow') {
       node = element.node = element.parent.node.attachShadow({ mode: 'open' })
@@ -58,6 +62,8 @@ const createNode = (element, options) => {
     if (isFunction(node.setAttribute)) node.setAttribute('key', element.key)
   }
 
+  if (element.__ifFalsy) return element
+
   // iterate through all given params
   if (element.tag !== 'string' || element.tag !== 'fragment') {
     // iterate through define
@@ -71,6 +77,11 @@ const createNode = (element, options) => {
 
     for (const param in element) {
       const prop = element[param]
+
+      // console.group('createNode')
+      // console.log(param)
+      // console.log(prop)
+      // console.groupEnd('createNode')
 
       if (isMethod(param) || isObject(registry[param]) || prop === undefined) continue
 
