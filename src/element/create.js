@@ -117,7 +117,7 @@ const create = (element, parent, key, options = {}) => {
   // enable CHANGES storing
   if (!element.__changes) element.__changes = []
 
-  // enable CHANGES storing
+  // Add _root element property
   const hasRoot = parent.parent && parent.parent.key === ':root'
   if (!element.__root) element.__root = hasRoot ? parent : parent.__root
 
