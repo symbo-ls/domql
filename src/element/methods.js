@@ -33,6 +33,13 @@ export const set = function () {
 export const update = function () {
 }
 
+export const setProps = function (param) {
+  const element = this
+  if (!param || !element.props) return
+  element.update({ props: param })
+  return element.props
+}
+
 export const defineSetter = (element, key, get, set) =>
   Object.defineProperty(element, key, { get, set })
 
@@ -90,6 +97,7 @@ export const isMethod = function (param) {
     param === 'lookup' ||
     param === 'keys' ||
     param === 'parse' ||
+    param === 'setProps' ||
     param === 'parseDeep' ||
     param === 'if' ||
     param === 'log'

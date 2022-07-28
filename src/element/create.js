@@ -12,7 +12,7 @@ import update from './update'
 import * as on from '../event/on'
 import { assignClass } from './mixins/classList'
 import { isFunction, isNumber, isString, createID, isNode } from '../utils'
-import { remove, lookup, log, keys, parse, parseDeep } from './methods'
+import { remove, lookup, setProps, log, keys, parse, parseDeep } from './methods'
 import cacheNode from './cache'
 import { registry } from './mixins'
 // import { overwrite, clone, fillTheRest } from '../utils'
@@ -96,6 +96,7 @@ const create = (element, parent, key, options = {}) => {
   element.set = set
   element.update = update
   element.remove = remove
+  element.setProps = setProps
   element.lookup = lookup
   element.parse = parse
   element.parseDeep = parseDeep

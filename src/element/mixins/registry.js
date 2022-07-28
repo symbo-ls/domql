@@ -45,6 +45,7 @@ export default {
   node: {},
   set: {},
   update: {},
+  setProps: {},
   remove: {},
   lookup: {},
   keys: {},
