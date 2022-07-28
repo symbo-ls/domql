@@ -1,40 +1,38 @@
 'use strict'
 
-export const splitRoute = (route = window.location.pathname) => route.split('/')
+export const getActiveRoute = (
+  route = window.location.pathname, level
+) => `/${route.split('/')[level + 1]}`
 
-export const router = (rootElement, path, state = {}, level = 0, pushState = true) => {
-  const route = path || window.location.pathname
+export let lastLevel = 0
 
-  if (path.slice(0, 1) === '#') {
-    window.location.hash = path
-    return
-  }
+export const router = (
+  element,
+  path,
+  state = {},
+  level = 0,
+  pushState = true
+) => {
+  const lastLevel = level
+  const [ pathname, hash ] = (path).split('#')
 
-  const routes = splitRoute(route)
-  let currentRoute = routes[level + 1]
-
-  const hasHash = currentRoute.split('#')
-  if (hasHash[1]) currentRoute = hasHash[0]
-
-  const content = rootElement.routes[`/${currentRoute}`]
+  let route = getActiveRoute(pathname, level)
+  const content = element.routes[route]
 
   if (content) {
-    currentRoute = `/${currentRoute}`
-    if (hasHash[1]) currentRoute += `#${hasHash[1]}`
-    if (pushState) window.history.pushState(state, null, currentRoute)
+    if (pushState) window.history.pushState(state, null, pathname + (hash ? `#${hash}` : ''))
 
-    const rootNode = rootElement.node
+    element.set({ proto: content })
+    element.state.update({ route, hash }, { preventUpdate: true })
+
+    const rootNode = element.node
     rootNode.scrollTo({ behavior: 'smooth', top: 0, left: 0 })
-    if (hasHash[1]) {
-      const activeNode = document.getElementById(hasHash[1])
+    if (hash) {
+      const activeNode = document.getElementById(hash)
       if (activeNode) {
         const top = activeNode.getBoundingClientRect().top + rootNode.scrollTop - 140
         rootNode.scrollTo({ behavior: 'smooth', top, left: 0 })
       }
     }
-
-    rootElement.set({ proto: content })
   }
-
-  if (level === 0) rootElement.state.update({ currentRoute })
 }
