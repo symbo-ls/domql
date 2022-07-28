@@ -23,7 +23,7 @@ export const router = (
     if (pushState) window.history.pushState(state, null, pathname + (hash ? `#${hash}` : ''))
 
     element.set({ proto: content })
-    element.state.update({ route, hash }, { preventUpdate: true })
+    element.state.update({ route, hash })
 
     const rootNode = element.node
     rootNode.scrollTo({ behavior: 'smooth', top: 0, left: 0 })
