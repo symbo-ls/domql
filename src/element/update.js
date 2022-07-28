@@ -77,7 +77,7 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
   // else console.log(element.path, '\n\n', stackChanges)
 
   // console.log(element.key, element.__ifFalsy)
-  if (element.__ifFalsy || options.preventRecursive) return element
+  if (element.__ifFalsy) return element
   if (!node) {
     return
     // return createNode(element, options)
@@ -101,12 +101,12 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     const hasDefined = define && define[param]
     const ourParam = registry[param]
 
-    // // console.log(prop)
+    if (options.preventContentUpdate && param === 'content') console.log(param)
 
     if (ourParam) {
       if (isFunction(ourParam)) ourParam(prop, element, node)
     } else if (prop && isObject(prop) && !hasDefined) {
-      if (!options.preventChildrenUpdate) update.call(prop, params[prop], UPDATE_DEFAULT_OPTIONS)
+      if (!options.preventRecursive) update.call(prop, params[prop], UPDATE_DEFAULT_OPTIONS)
     }
   }
 

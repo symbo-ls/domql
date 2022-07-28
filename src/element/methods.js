@@ -33,10 +33,10 @@ export const set = function () {
 export const update = function () {
 }
 
-export const setProps = function (param) {
+export const setProps = function (param, options) {
   const element = this
   if (!param || !element.props) return
-  element.update({ props: param })
+  element.update({ props: param }, options)
   return element.props
 }
 
