@@ -12,7 +12,7 @@ import update from './update'
 import parse from './parse'
 import set from './set'
 
-import { lookup, remove, get, log, keys } from './methods'
+import { lookup, remove, get, setProps, log, keys } from './methods'
 
 export {
   nodes,
@@ -27,6 +27,7 @@ export {
   update,
   parse,
   lookup,
+  setProps,
   set,
   get,
   log,

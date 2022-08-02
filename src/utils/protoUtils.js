@@ -19,16 +19,13 @@ export const setHashedProto = (proto, stack) => {
   const hash = generateHash()
   proto.__hash = hash
   protoStackRegistry[hash] = stack
-  return protoStackRegistry[hash]
+  return stack
 }
 
 export const getProtoStackRegistry = (proto, stack) => {
-  if (proto.__hash) {
+  if (proto.__hash)
     return stack.concat(getHashedProto(proto))
-  } else {
-    setHashedProto(proto, stack)
-  }
-  return stack // .concat(hashedProto)
+  return setHashedProto(proto, stack) // stack .concat(hashedProto)
 }
 
 // stacking

@@ -45,11 +45,13 @@ export default {
   node: {},
   set: {},
   update: {},
+  setProps: {},
   remove: {},
   lookup: {},
   keys: {},
   log: {},
   parse: {},
   parseDeep: {},
-  on: {}
+  on: {},
+  component: {}
 }

@@ -1,15 +1,42 @@
 'use strict'
 
-import { deepClone, deepMerge, exec, isArray } from '../utils'
+import { deepClone, deepMerge, exec, isArray, isObject, isString } from '../utils'
 
 const initProps = (element, parent) => {
+  const { props } = element
   const propsStack = []
 
-  if (element.props === 'inherit') {
-    if (parent && parent.props) propsStack.push(parent.props)
-  } else if (element.props === 'match') {
-    if (parent && parent.props) propsStack.push(parent.props[element.key])
-  } else if (element.props) propsStack.push(element.props)
+  const isMatch = isString(props) && props.indexOf('match') > -1
+  const matchParent = parent.props && parent.props[element.key]
+
+  const objectizeStringProperty = propValue => {
+    if (isString(propValue)) return { inheritedString: propValue }
+    return propValue
+  }
+
+  if (isObject(props)) {
+    propsStack.push(props)
+  } else if (props === 'inherit') {
+    if (parent.props) propsStack.push(parent.props)
+  } else if (isMatch) {
+    const hasArg = props.split(' ')
+    let matchParentValue
+    //console.log('hasArg', hasArg)
+    if (hasArg[1] && parent.props[hasArg[1]]) {
+      console.log('hasArg[1]', hasArg[1])
+      const secondArgasParentMatchProp = parent.props[hasArg[1]]
+      propsStack.push(
+        objectizeStringProperty(secondArgasParentMatchProp)
+      )
+    } else if (matchParent) {
+      propsStack.push(
+        objectizeStringProperty(matchParent)
+      )
+    }
+    propsStack.push(matchParentValue)
+  } else if (props) propsStack.push(props)
+
+  if (matchParent && props !== 'match') propsStack.push(matchParent)
 
   if (isArray(element.__proto)) {
     element.__proto.map(proto => {

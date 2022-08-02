@@ -28,7 +28,7 @@ const ENV = process.env.NODE_ENV
 //   }
 // })
 
-const createNode = (element) => {
+const createNode = (element, options) => {
   // create and assign a node
   let { node, tag } = element
 
@@ -38,8 +38,12 @@ const createNode = (element) => {
   // console.log(element)
   // console.groupEnd('CREATE:')
 
+  // if (element.__ifFalsy) return element
+
   if (!node) {
     isNewNode = true
+
+    if (element.__ifFalsy) return element
 
     if (tag === 'shadow') {
       node = element.node = element.parent.node.attachShadow({ mode: 'open' })
@@ -58,6 +62,8 @@ const createNode = (element) => {
     if (isFunction(node.setAttribute)) node.setAttribute('key', element.key)
   }
 
+  if (element.__ifFalsy) return element
+
   // iterate through all given params
   if (element.tag !== 'string' || element.tag !== 'fragment') {
     // iterate through define
@@ -72,15 +78,20 @@ const createNode = (element) => {
     for (const param in element) {
       const prop = element[param]
 
+      // console.group('createNode')
+      // console.log(param)
+      // console.log(prop)
+      // console.groupEnd('createNode')
+
       if (isMethod(param) || isObject(registry[param]) || prop === undefined) continue
 
       const hasDefined = element.define && element.define[param]
       const ourParam = registry[param]
 
       if (ourParam) { // Check if param is in our method registry
-        if (isFunction(ourParam)) ourParam(prop, element, node)
+        if (isFunction(ourParam)) ourParam(prop, element, node, options)
       } else if (element[param] && !hasDefined) {
-        create(prop, element, param) // Create element
+        create(prop, element, param, options) // Create element
       }
     }
   }

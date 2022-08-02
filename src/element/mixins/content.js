@@ -6,12 +6,12 @@ import set from '../set'
  * Appends anything as content
  * an original one as a child
  */
-export default (param, element, node) => {
+export default (param, element, node, options) => {
   if (param && element) {
     if (param.__hash === element.content.__hash && element.content.update) {
       element.content.update(param)
     } else {
-      set.call(element, param)
+      set.call(element, param, options)
     }
   }
 }

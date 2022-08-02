@@ -12,8 +12,9 @@ import update from './update'
 import * as on from '../event/on'
 import { assignClass } from './mixins/classList'
 import { isFunction, isNumber, isString, createID, isNode } from '../utils'
-import { remove, lookup, log, keys, parse, parseDeep } from './methods'
+import { remove, lookup, setProps, log, keys, parse, parseDeep } from './methods'
 import cacheNode from './cache'
+import { registry } from './mixins'
 // import { overwrite, clone, fillTheRest } from '../utils'
 
 const ENV = process.env.NODE_ENV
@@ -26,16 +27,25 @@ const create = (element, parent, key, options = {}) => {
   if (element === undefined) element = {}
   if (element === null) return
 
+  // if element is proto
+  if (element.__hash) {
+    element = { proto: element }
+  }
+
+  if (options.components) {
+    const { components } = options
+    const { proto, component } = element
+    if (isString(proto))
+      if (components[proto]) element.proto = components[proto]
+      else console.warn(proto, 'is not in library', components, element)
+  }
+
   // define KEY
   const assignedKey = element.key || key || createID.next().value
 
   // if PARENT is not given
-  // if (parent === null) parent = root
-  // if (parent === undefined) parent = root
   if (!parent) parent = root
   if (isNode(parent)) parent = root[`${key}_parent`] = { node: parent }
-
-  // if (assignedKey === 'all') debugger
 
   // if element is STRING
   if (isString(element) || isNumber(element)) {
@@ -47,27 +57,38 @@ const create = (element, parent, key, options = {}) => {
   }
 
   // create PROTOtypal inheritance
+
   applyPrototype(element, parent, options)
+
+  if (Object.keys(options).length) {
+    registry.defaultOptions = options
+    if (options.ignoreChildProto) delete options.ignoreChildProto
+  }
 
   // enable STATE
   element.state = createState(element, parent)
 
-  // console.groupCollapsed('Create:', assignedKey)
-  // console.log(element)
-
   // create and assign a KEY
   element.key = assignedKey
 
-  // set the PATH
+  // don't render IF in condition
+  if (isFunction(element.if)) {
+    // TODO: move as fragment
+    if (!element.if(element, element.state)) {
+      const ifFragment = cacheNode({ tag: 'fragment' })
+      element.__ifFragment = appendNode(ifFragment, parent.node)
+      element.__ifFalsy = true
+    }
+  }
+
+  // set the PATH array
   if (ENV === 'test' || ENV === 'development') {
     if (!parent.path) parent.path = []
     element.path = parent.path.concat(assignedKey)
   }
 
-  // if it already HAS A NODE
-  if (element.node) {
-    // console.log('hasNode!')
-    // console.groupEnd('Create:')
+  // if it already HAS a NODE
+  if (element.node && !element.__ifFalsy) { // TODO: check on if
     return assignNode(element, parent, assignedKey)
   }
 
@@ -75,11 +96,12 @@ const create = (element, parent, key, options = {}) => {
   element.set = set
   element.update = update
   element.remove = remove
+  element.setProps = setProps
   element.lookup = lookup
+  element.parse = parse
+  element.parseDeep = parseDeep
+  element.keys = keys
   if (ENV === 'test' || ENV === 'development') {
-    element.keys = keys
-    element.parse = parse
-    element.parseDeep = parseDeep
     element.log = log
   }
 
@@ -95,12 +117,12 @@ const create = (element, parent, key, options = {}) => {
   // enable CHANGES storing
   if (!element.__changes) element.__changes = []
 
-  // enable CHANGES storing
+  // Add _root element property
   const hasRoot = parent.parent && parent.parent.key === ':root'
   if (!element.__root) element.__root = hasRoot ? parent : parent.__root
 
   // apply props settings
-  createProps(element, parent)
+  if (!element.__ifFalsy) createProps(element, parent)
 
   // run `on.init`
   if (element.on && isFunction(element.on.init)) {
@@ -110,25 +132,16 @@ const create = (element, parent, key, options = {}) => {
   // generate a CLASS name
   assignClass(element)
 
-  // console.log('cache.props:')
-  // console.log(cache.props)
-  // console.log('applied props:')
-  // console.log(element.props)
-  // console.log('element:')
+  // console.group('create')
+  // console.log(element.path)
   // console.log(element)
-  // console.groupEnd('Create:')
-
-  // don't render IF in condition
-  if (isFunction(element.if) && !element.if(element, element.state)) {
-    // TODO: move as fragment
-    const ifFragment = cacheNode({ tag: 'fragment' })
-    element.__ifFragment = appendNode(ifFragment, parent.node)
-    element.__ifFalsy = true
-    return
-  }
+  // console.groupEnd('create')
+  // if (parent.key === 'footer' && key === '0') debugger
 
   // CREATE a real NODE
-  createNode(element)
+  createNode(element, options)
+
+  if (element.__ifFalsy) return element
 
   // assign NODE
   assignNode(element, parent, key)
