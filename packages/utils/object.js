@@ -154,6 +154,24 @@ export const diff = (obj, original, cache) => {
 }
 
 /**
+ * Overwrites object properties with another
+ */
+export const overwriteObj = (params, obj) => {
+  const changes = {}
+
+  for (const e in params) {
+    const objProp = obj[e]
+    const paramsProp = params[e]
+
+    if (paramsProp) {
+      obj[e] = changes[e] = objProp
+    }
+  }
+
+  return changes
+}
+
+/**
  * Overwrites DEEPly object properties with another
  */
 export const overwriteDeep = (params, obj) => {
