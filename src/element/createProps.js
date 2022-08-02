@@ -87,10 +87,10 @@ export const updateProps = (newProps, element, parent) => {
   return element
 }
 
-function update (props) {
+function update (props, options) {
   const element = this.__element
   // element.update({ props })
-  element.update()
+  element.update({ props }, options)
 }
 
 export default createProps

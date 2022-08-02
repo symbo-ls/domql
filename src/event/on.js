@@ -1,5 +1,9 @@
 'use strict'
 
+export const beforeClassAssign = (param, element, state) => {
+  param(element, state)
+}
+
 export const init = (param, element, state) => {
   param(element, state)
 }

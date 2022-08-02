@@ -129,6 +129,11 @@ const create = (element, parent, key, options = {}) => {
     on.init(element.on.init, element, element.state)
   }
 
+  // run `on.init`
+  if (element.on && isFunction(element.on.beforeClassAssign)) {
+    on.beforeClassAssign(element.on.beforeClassAssign, element, element.state)
+  }
+
   // generate a CLASS name
   assignClass(element)
 
