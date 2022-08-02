@@ -10,8 +10,6 @@ DOM rendering Javascript framework.
 You can start with [starter-kit](https://github.com/domql/starter-kit) as a boilerplate, or jump into the [playground](https://domql.com/playground/).
 
 [![npm version](https://badge.fury.io/js/domql.svg)](https://badge.fury.io/js/domql)
-[![Build Status](https://travis-ci.org/domql/domql.svg?branch=master)](https://travis-ci.org/domql/domql)
-[![Coverage Status](https://coveralls.io/repos/github/domql/domql/badge.svg?branch=main)](https://coveralls.io/github/domql/domql?branch=main)
 
 ```javascript
 import DOM from 'domql'
