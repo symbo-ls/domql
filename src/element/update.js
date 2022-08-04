@@ -8,8 +8,8 @@ import { throughUpdatedDefine, throughUpdatedExec } from './iterate'
 import { merge } from '../utils/object'
 import { appendNode } from './assign'
 import { createNode } from '.'
-import { updateProps } from './createProps'
-import createState from './createState'
+import { updateProps } from './props'
+import createState from './state'
 
 const UPDATE_DEFAULT_OPTIONS = {
   stackChanges: false,
@@ -39,17 +39,13 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     }
   }
 
-  if (element.on && isFunction(element.on.initUpdate) && !options.ignoreInitUpdate) {
-    preventUpdate = on.initUpdate(element.on.initUpdate, element, element.state)
-  }
-
-  if (!element.__ifFalsy) updateProps(params.props, element, parent)
+  if (!element.__ifFalsy && !options.preventPropsUpdate) updateProps(params.props, element, parent)
 
   const overwriteChanges = overwrite(element, params, UPDATE_DEFAULT_OPTIONS)
   const execChanges = throughUpdatedExec(element, UPDATE_DEFAULT_OPTIONS)
   const definedChanges = throughUpdatedDefine(element)
 
-  if (UPDATE_DEFAULT_OPTIONS.stackChanges && element.__stackChanges) {
+  if (options.stackChanges && element.__stackChanges) {
     const stackChanges = merge(definedChanges, merge(execChanges, overwriteChanges))
     element.__stackChanges.push(stackChanges)
   }
@@ -58,6 +54,10 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
   if (!node) {
     // return createNode(element, options)
     return
+  }
+
+  if (element.on && isFunction(element.on.initUpdate) && !options.ignoreInitUpdate) {
+    preventUpdate = on.initUpdate(element.on.initUpdate, element, element.state)
   }
 
   for (const param in element) {
