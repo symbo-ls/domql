@@ -14,6 +14,8 @@ const initProps = (element, parent) => {
     return propValue
   }
 
+  if (matchParent && props !== 'match') propsStack.push(matchParent)
+
   if (isObject(props)) {
     propsStack.push(props)
   } else if (props === 'inherit') {
@@ -23,7 +25,6 @@ const initProps = (element, parent) => {
     let matchParentValue
     //console.log('hasArg', hasArg)
     if (hasArg[1] && parent.props[hasArg[1]]) {
-      console.log('hasArg[1]', hasArg[1])
       const secondArgasParentMatchProp = parent.props[hasArg[1]]
       propsStack.push(
         objectizeStringProperty(secondArgasParentMatchProp)
@@ -35,8 +36,6 @@ const initProps = (element, parent) => {
     }
     propsStack.push(matchParentValue)
   } else if (props) propsStack.push(props)
-
-  if (matchParent && props !== 'match') propsStack.push(matchParent)
 
   if (isArray(element.__proto)) {
     element.__proto.map(proto => {
