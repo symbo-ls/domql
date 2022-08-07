@@ -1,7 +1,7 @@
 'use strict'
 
 import { exec, isObject } from '../../utils'
-import Report from '../../utils/report'
+import { report } from '../../utils/report'
 
 /**
  * Apply data parameters on the DOM nodes
@@ -9,7 +9,7 @@ import Report from '../../utils/report'
  */
 export default (params, element, node) => {
   if (params && params.showOnNode) {
-    if (!isObject(params)) Report('HTMLInvalidData', params)
+    if (!isObject(params)) report('HTMLInvalidData', params)
 
     // Apply data params on node
     for (const dataset in params) {

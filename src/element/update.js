@@ -57,7 +57,7 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
   }
 
   if (element.on && isFunction(element.on.initUpdate) && !options.ignoreInitUpdate) {
-    preventUpdate = on.initUpdate(element.on.initUpdate, element, element.state)
+    on.initUpdate(element.on.initUpdate, element, element.state)
   }
 
   for (const param in element) {
