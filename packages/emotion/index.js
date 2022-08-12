@@ -23,8 +23,8 @@ export const initEmotion = (container, options) => {
   const style = (params, element, node) => {
     const execPareams = exec(params, element)
     if (params) {
-      if (isObjectLike(element.class)) element.class.style = execPareams
-      else element.class = { style: execPareams }
+      if (isObjectLike(element.class)) element.class.elementStyle = execPareams
+      else element.class = { elementStyle: execPareams }
     }
     classf(element.class, element, node)
   }
