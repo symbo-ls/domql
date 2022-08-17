@@ -34,12 +34,6 @@ const createNode = (element, options) => {
 
   let isNewNode
 
-  // console.groupCollapsed('CREATE:')
-  // console.log(element)
-  // console.groupEnd('CREATE:')
-
-  // if (element.__ifFalsy) return element
-
   if (!node) {
     isNewNode = true
 
@@ -77,11 +71,6 @@ const createNode = (element, options) => {
 
     for (const param in element) {
       const prop = element[param]
-
-      // console.group('createNode')
-      // console.log(param)
-      // console.log(prop)
-      // console.groupEnd('createNode')
 
       if (isMethod(param) || isObject(registry[param]) || prop === undefined) continue
 

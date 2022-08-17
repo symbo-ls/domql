@@ -24,7 +24,7 @@ export const updateState = function (obj, options = {}) {
   }
 
   overwriteDeep(state, obj, ['update', 'parse', '__element'])
-  if (!options.preventUpdate) element.update()
+  if (!options.preventUpdate) element.update({}, options)
 
   // run `on.stateUpdated`
   if (element.on && isFunction(element.on.stateUpdated)) {
