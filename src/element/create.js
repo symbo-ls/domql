@@ -45,7 +45,7 @@ const create = (element, parent, key, options = {}) => {
 
   // if PARENT is not given
   if (!parent) parent = root
-  if (isNode(parent)) parent = root[`${key}_parent`] = { node: parent }
+  if (isNode(parent)) parent = root[`${key}_parent`] = { key: ':root', node: parent }
 
   // if element is STRING
   if (isString(element) || isNumber(element)) {

@@ -39,6 +39,7 @@ export default {
   __proto: {},
   __ifFragment: {},
   __ifFalsy: {},
+  __text: {},
   key: {},
   tag: {},
   parent: {},
