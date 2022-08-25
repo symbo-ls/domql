@@ -1,6 +1,6 @@
 'use strict'
 
-export const cleanWithNode = proto => delete proto.node && proto
+export const cleanWithNode = extend => delete extend.node && extend
 
 export const createID = (function * () {
   let index = 1

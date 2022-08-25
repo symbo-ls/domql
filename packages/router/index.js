@@ -22,7 +22,7 @@ export const router = (
   if (content) {
     if (pushState) window.history.pushState(state, null, pathname + (hash ? `#${hash}` : ''))
 
-    element.set({ proto: content })
+    element.set({ extend: content })
     element.state.update({ route, hash })
 
     const rootNode = element.node

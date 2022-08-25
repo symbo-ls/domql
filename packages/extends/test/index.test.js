@@ -4,19 +4,19 @@ import { tree } from '@domql/tree'
 import { extendElement } from '..'
 
 describe('Should extend other element', () => {
-  const protoed = extendElement({
+  const extended = extendElement({
     ref: {},
-    extends: {
+    extend: {
       test2: 'test2'
     },
     test: 123
   }, tree)
 
   test('should extent an object element', () => {
-    expect(protoed).toEqual({
+    expect(extended).toEqual({
       ref: {
-        extends: [{
-          __hash: protoed.ref.extends[0].__hash,
+        extend: [{
+          __hash: extended.ref.extends[0].__hash,
           test2: 'test2'
         }]
       },
@@ -26,20 +26,20 @@ describe('Should extend other element', () => {
   })
 
   test('should extent a nested object', () => {
-    const protoed2 = extendElement({
+    const extended2 = extendElement({
       ref: {},
-      extends: protoed,
+      extend: extended,
       test3: { text: 'test3' }
     }, tree)
-    expect(protoed2).toEqual({
+    expect(extended2).toEqual({
       ref: {
-        extends: [{
-          __hash: protoed2.ref.extends[0].__hash,
+        extend: [{
+          __hash: extended2.ref.extends[0].__hash,
           test: 123,
           test2: 'test2',
           ref: {
-            extends: [{
-              __hash: protoed.ref.extends[0].__hash,
+            extend: [{
+              __hash: extended.ref.extends[0].__hash,
               test2: 'test2'
             }]
           }

@@ -8,7 +8,7 @@ Takes object and creates DOMQL element.
 import DOM from 'domql'
 
 const Poster = {
-  extends: [Link, Img],
+  extend: [Link, Img],
   props: {
     boxSize: [100, 200],
     borderRadius: 12,

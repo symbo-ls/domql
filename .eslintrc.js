@@ -1,5 +1,5 @@
 module.exports = {
-  extends: [
+  extend: [
     'standard',
     'plugin:jest/all'
   ],

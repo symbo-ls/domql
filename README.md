@@ -16,8 +16,8 @@ Key features:
 - [x] error reporting
 - [x] virtual DOM tree
 - [x] create
-  - [x] create using prototype class
-  - [x] support multiple level prototypes
+  - [x] create using extendtype class
+  - [x] support multiple level extendtypes
   - [x] DOM caching
 - [x] state
 - [x] binding
@@ -77,7 +77,7 @@ var Link = {
 }
 
 var ListItem = {
-  proto: Link,
+  extend: Link,
   class: 'ui link',
   attr: {
     href: '#'
@@ -85,7 +85,7 @@ var ListItem = {
 }
 
 var menu = {
-  childProto: ListItem,
+  childExtend: ListItem,
   home: 'Home',
   text: 'About'
 }
@@ -101,7 +101,7 @@ Array Support:
 var navItems = ['Home', 'About', 'FAQ', 'Contact']
 
 var menu = {
-  proto: ListItem,
+  extend: ListItem,
   ...navItems
 }
 ```
@@ -130,8 +130,8 @@ var Increment = {
 | Property | Type | Description | Default |
 | --- | --- | --- | --- |
 | `key` | `Number` `String` | Defines the key of the Element | The key of the object, or randomly generated name |
-| `proto` | `Object` `Array` | Clones the other element | `undefined` |
-| `childProto` | `Object` `Array` | Specifies the `proto` for all child elements | `undefined` |
+| `extend` | `Object` `Array` | Clones the other element | `undefined` |
+| `childExtend` | `Object` `Array` | Specifies the `extend` for all child elements | `undefined` |
 | `tag` | `String` | Specifis the HTML tag  | `div` or related HTML tag if the key matches |
 | `class` | `Any` | Specifies the HTML class | `undefined` |
 | `attr` | `Object` | Specifies the set of HTML attributes | `{}` |
@@ -149,7 +149,7 @@ var User = {
 }
 
 var Contact = {
-  proto: User,
+  extend: User,
   username: 'nikoloza'
 }
 ```
@@ -172,7 +172,7 @@ All native DOM events are supported and can be specified inside `on` parameter. 
 key
 tag
 node
-proto
+extend
 on
 class
 text
@@ -191,7 +191,7 @@ var layout = { // this will be <div>
   header: {}, // will create <header>
   aside: {}, // will create <aside>
   main: { // will create <main>
-    childProto: {
+    childExtend: {
       article: { // will create <article>
         title: {}, // will create <div>
         description: {}, // will create <div>

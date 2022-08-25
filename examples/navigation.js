@@ -23,7 +23,7 @@ var listItem = {
 // }]
 
 var navigation = {
-  childProto: listItem,
+  childExtend: listItem,
   // ...navImtes
   home: 'Home',
   about: 'About',

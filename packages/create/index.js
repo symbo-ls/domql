@@ -31,7 +31,7 @@ const init = (element, key, options, parent) => {
       element = {
         props: element,
         ref,
-        extends: extendFromLibrary
+        extend: extendFromLibrary
       }
     }
     if (!element.ref) element.ref = ref

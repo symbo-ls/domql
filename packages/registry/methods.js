@@ -25,7 +25,7 @@ export const DEFAULT_METHODS = {
 
   ref: {},
 
-  extends: {},
+  extend: {},
   childExtends: {},
   text: (element, state) => {
     element.ref.text = {
@@ -56,7 +56,7 @@ export const DEFAULT_METHODS = {
 // __trash: {},
 // __root: {},
 // __props: {},
-// __proto: {},
+// __extend: {},
 // __ifFragment: {},
 // __ifFalsy: {},
 // parent: {},

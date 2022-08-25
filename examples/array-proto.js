@@ -11,7 +11,7 @@ const two = {
 }
 
 const root = {
-  proto: [one, two]
+  extend: [one, two]
 }
 
 console.log(root)

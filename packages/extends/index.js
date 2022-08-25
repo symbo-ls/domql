@@ -1,56 +1,56 @@
 'use strict'
 
 import { isFunction, exec } from '@domql/utils'
-import { getProtoStack, jointStacks, cloneAndMergeArrayProto, deepMergeProto } from './protoUtils'
+import { getExtendStack, jointStacks, cloneAndMergeArrayExtend, deepMergeExtend } from './extendUtils'
 
 const ENV = process.env.NODE_ENV
 
 /**
- * Checks whether element has `proto` or is a part
- * of parent's `childProto` prototype
+ * Checks whether element has `extend` or is a part
+ * of parent's `childExtend` extendtype
  */
 export const extendElement = (element, parent, options = {}) => {
   if (isFunction(element)) element = exec(element, parent)
 
-  const { extends: ext } = element
+  const { extend: ext } = element
 
-  // merge if proto is array
-  // const proto = mergeAndCloneIfArray(element.proto, v => {
+  // merge if extend is array
+  // const extend = mergeAndCloneIfArray(element.extend, v => {
   //   if (v.props) cache.props.push(v.props)
   // })
 
-  const protoStack = getProtoStack(ext)
+  const extendStack = getExtendStack(ext)
 
   if (ENV !== 'development') delete element.extends
 
-  let childProtoStack = []
-  if (!options.ignoreChildProto) {
-    childProtoStack = getProtoStack(parent.childExtends)
+  let childExtendStack = []
+  if (!options.ignoreChildExtend) {
+    childExtendStack = getExtendStack(parent.childExtends)
   }
 
-  const protoLength = protoStack.length
-  const childProtoLength = childProtoStack.length
+  const extendLength = extendStack.length
+  const childExtendLength = childExtendStack.length
 
   let stack = []
-  if (protoLength && childProtoLength) {
-    stack = jointStacks(protoStack, childProtoStack)
-  } else if (protoLength) {
-    stack = protoStack
-  } else if (childProtoLength) {
-    stack = childProtoStack
+  if (extendLength && childExtendLength) {
+    stack = jointStacks(extendStack, childExtendStack)
+  } else if (extendLength) {
+    stack = extendStack
+  } else if (childExtendLength) {
+    stack = childExtendStack
   } else return element
 
   if (options.extends) {
-    const defaultOptionsProto = getProtoStack(options.extends)
-    stack = [].concat(defaultOptionsProto, stack)
+    const defaultOptionsExtend = getExtendStack(options.extends)
+    stack = [].concat(defaultOptionsExtend, stack)
   }
 
   element.ref.extends = stack
-  const mergedProto = cloneAndMergeArrayProto(stack)
+  const mergedExtend = cloneAndMergeArrayExtend(stack)
 
-  delete mergedProto.__hash
+  delete mergedExtend.__hash
 
-  return deepMergeProto(element, mergedProto)
+  return deepMergeExtend(element, mergedExtend)
 
-  // final merging with prototype
+  // final merging with extendtype
 }

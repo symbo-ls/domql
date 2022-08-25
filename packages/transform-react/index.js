@@ -65,7 +65,7 @@ const renderReact = (element, key) => {
 
 export const DOMQLReact = (component, props, state) => {
   const element = create({
-    extends: component,
+    extend: component,
     props,
     state
   }, null, null, {
@@ -80,7 +80,7 @@ export const DOMQLReact = (component, props, state) => {
 // }
 
 // const createCompoonent = (extnds, props, state) => {
-//   return create({extends: extnds, props, state}, {
+//   return create({extend: extnds, props, state}, {
 //     transform: {
 //       react: transformReact
 //     },
