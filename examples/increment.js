@@ -9,7 +9,7 @@ var Button = {
 }
 
 var increment = {
-  proto: Button,
+  extend: Button,
   text: 'Increment',
   on: {
     click: (e) => {
@@ -19,7 +19,7 @@ var increment = {
 }
 
 var decrement = {
-  proto: Button,
+  extend: Button,
   text: 'Decrement',
   on: {
     click: (e) => {

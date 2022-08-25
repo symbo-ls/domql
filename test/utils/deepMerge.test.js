@@ -1,7 +1,7 @@
 import { deepMerge } from '../../src/utils'
 
-test('should set prototype from a original to a new element', () => {
-  var proto = {
+test('should set extend from a original to a new element', () => {
+  var extend = {
     tag: 'button',
     style: {
       backgroundColor: 'white',
@@ -24,7 +24,7 @@ test('should set prototype from a original to a new element', () => {
     text: 'Submit'
   }
 
-  deepMerge(element, proto)
+  deepMerge(element, extend)
 
   expect(element).toStrictEqual({
     tag: 'button',

@@ -7,7 +7,7 @@ import footer from './footer'
 import Icon from './icon'
 
 var icon = {
-  proto: Icon,
+  extend: Icon,
   name: 'toke'
 }
 

@@ -1,28 +1,28 @@
-import { getProtoMerged, getProtoStack } from '../../src/utils'
+import { getExtendMerged, getExtendStack } from '../../src/utils'
 
-const proto1 = {
+const extend1 = {
   div1: 'div1'
 }
 
-const proto2 = {
-  proto: proto1,
+const extend2 = {
+  extend: extend1,
   div2: 'div2'
 }
 
-const proto3 = {
-  proto: proto2,
+const extend3 = {
+  extend: extend2,
   div3: {
     text: 'div3'
   }
 }
 
-const proto4 = {
-  proto: proto3,
+const extend4 = {
+  extend: extend3,
   div4: 'div4'
 }
 
-// test('should FLATTEN deep prototypal inheritances', () => {
-//   const arr = getProtoStack(proto4)
+// test('should FLATTEN deep extendtypal inheritances', () => {
+//   const arr = getExtendStack(extend4)
 //   expect(arr).toStrictEqual([
 //     {
 //       div4: 'div4'
@@ -42,7 +42,7 @@ const proto4 = {
 // })
 
 test('should MEGRE', () => {
-  const arr = getProtoMerged(proto4)
+  const arr = getExtendMerged(extend4)
   expect(arr).toStrictEqual({
     div4: 'div4',
     div3: {

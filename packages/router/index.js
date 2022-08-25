@@ -10,7 +10,7 @@ export default (rootElement, path, state = {}, level = 0, pushState = true) => {
 
   if (content) {
     if (pushState) window.history.pushState(state, null, route)
-    rootElement.set({ proto: content })
+    rootElement.set({ extend: content })
       .node.scrollIntoView({ behavior: 'smooth' })
   }
 

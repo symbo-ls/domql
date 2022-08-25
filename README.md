@@ -40,7 +40,7 @@ var Link = {
 }
 
 var ListItem = {
-  proto: Link,
+  extend: Link,
   class: 'ui link',
   attr: {
     href: '#'
@@ -48,7 +48,7 @@ var ListItem = {
 }
 
 var menu = {
-  childProto: ListItem,
+  childExtend: ListItem,
   home: 'Home',
   text: 'About'
 }
@@ -62,7 +62,7 @@ var header = {
 var navItems = ['Home', 'About', 'FAQ', 'Contact']
 
 var menu = {
-  proto: ListItem,
+  extend: ListItem,
   ...navItems
 }
 ```
@@ -89,8 +89,8 @@ var Increment = {
 | Property | Type | Description | Default |
 | --- | --- | --- | --- |
 | `key` | `Number` `String` | Defines the key of the Element | The key of the object, or randomly generated name |
-| `proto` | `Object` `Array` | Clones the other element | `undefined` |
-| `childProto` | `Object` `Array` | Specifies the `proto` for all child elements | `undefined` |
+| `extend` | `Object` `Array` | Clones the other element | `undefined` |
+| `childExtend` | `Object` `Array` | Specifies the `extend` for all child elements | `undefined` |
 | `tag` | `String` | Specifis the HTML tag  | `div` or related HTML tag if the key matches |
 | `class` | `Any` | Specifies the HTML class | `undefined` |
 | `attr` | `Object` | Specifies the set of HTML attributes | `{}` |
@@ -108,7 +108,7 @@ var User = {
 }
 
 var Contact = {
-  proto: User,
+  extend: User,
   username: 'nikoloza'
 }
 ```
@@ -131,7 +131,7 @@ All native DOM events are supported and can be specified inside `on` parameter. 
 key
 tag
 node
-proto
+extend
 on
 class
 text
@@ -143,14 +143,14 @@ set
 define
 ```
 
-Anything except these keywords will create a new nested child element. The easier method to specify HTML tag is to use related nodeName as a key, for example: 
+Anything except these keywords will create a new nested child element. The easier method to specify HTML tag is to use related nodeName as a key, for example:
 
 ```javascript
 var layout = { // this will be <div>
   header: {}, // will create <header>
   aside: {}, // will create <aside>
   main: { // will create <main>
-    childProto: {
+    childExtend: {
       article: { // will create <article>
         title: {}, // will create <div>
         description: {}, // will create <div>

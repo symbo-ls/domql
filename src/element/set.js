@@ -25,10 +25,10 @@ const set = function (params, options) {
   removeContentElement(params, element)
 
   if (params) {
-    const { childProto } = params
-    if (!childProto && element.childProto) params.childProto = element.childProto
+    const { childExtend } = params
+    if (!childExtend && element.childExtend) params.childExtend = element.childExtend
     create(params, element, 'content', {
-      ignoreChildProto: true,
+      ignoreChildExtend: true,
       ...registry.defaultOptions
     })
   }

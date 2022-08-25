@@ -6,7 +6,7 @@ const movieTable = {
 
   if: element => !element.data,
 
-  childProto: {
+  childExtend: {
     icon: { name: 'movie' },
     title: {
       tag: 'h1',

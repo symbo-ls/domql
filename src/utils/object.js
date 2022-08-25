@@ -71,17 +71,17 @@ export const merge = (element, obj) => {
   return element
 }
 
-export const deepMerge = (element, proto) => {
+export const deepMerge = (element, extend) => {
   // console.groupCollapsed('deepMerge:')
-  for (const e in proto) {
+  for (const e in extend) {
     const elementProp = element[e]
-    const protoProp = proto[e]
+    const extendProp = extend[e]
     // const cachedProps = cache.props
     if (e === 'parent' || e === 'props' || e === 'state') continue
     if (elementProp === undefined) {
-      element[e] = protoProp
-    } else if (isObjectLike(elementProp) && isObject(protoProp)) {
-      deepMerge(elementProp, protoProp)
+      element[e] = extendProp
+    } else if (isObjectLike(elementProp) && isObject(extendProp)) {
+      deepMerge(elementProp, extendProp)
     }
   }
   // console.groupEnd('deepMerge:')
@@ -105,7 +105,7 @@ export const deepClone = (obj, excluding = ['parent', 'node', '__element', '__ro
   for (const prop in obj) {
     if (excluding.indexOf(prop) > -1) continue
     let objProp = obj[prop]
-    if (prop === 'proto' && isArray(objProp)) {
+    if (prop === 'extend' && isArray(objProp)) {
       objProp = mergeArray(objProp)
     }
     if (isObjectLike(objProp)) {
@@ -164,14 +164,14 @@ export const mergeIfExisted = (a, b) => {
 }
 
 /**
- * Merges array prototypes
+ * Merges array extends
  */
 export const mergeArray = (arr) => {
   return arr.reduce((a, c) => deepMerge(a, deepClone(c)), {})
 }
 
 /**
- * Merges array prototypes
+ * Merges array extends
  */
 export const mergeAndCloneIfArray = obj => {
   return isArray(obj) ? mergeArray(obj) : deepClone(obj)
@@ -184,8 +184,8 @@ export const flattenRecursive = (param, prop, stack = []) => {
   const objectized = mergeAndCloneIfArray(param)
   stack.push(objectized)
 
-  const protoOfProto = objectized[prop]
-  if (protoOfProto) flattenRecursive(protoOfProto, prop, stack)
+  const extendOfExtend = objectized[prop]
+  if (extendOfExtend) flattenRecursive(extendOfExtend, prop, stack)
 
   delete objectized[prop]
 

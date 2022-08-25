@@ -37,10 +37,10 @@ const initProps = (element, parent) => {
     propsStack.push(matchParentValue)
   } else if (props) propsStack.push(props)
 
-  if (isArray(element.__proto)) {
-    element.__proto.map(proto => {
-      if (proto.props) propsStack.push(proto.props)
-      return proto.props
+  if (isArray(element.__extend)) {
+    element.__extend.map(extend => {
+      if (extend.props) propsStack.push(extend.props)
+      return extend.props
     })
   }
 

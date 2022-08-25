@@ -1,29 +1,29 @@
-import { applyPrototype } from '../../src/element/proto'
+import { applyExtendtype } from '../../src/element/extend'
 import { mergeArray, flattenRecursive } from '../../src/utils'
 
-const proto1 = {
+const extend1 = {
   div1: 'div1'
 }
 
-const proto2 = {
-  proto: proto1,
+const extend2 = {
+  extend: extend1,
   div2: 'div2'
 }
 
-const proto3 = {
-  proto: proto2,
+const extend3 = {
+  extend: extend2,
   div3: {
     text: 'div3'
   }
 }
 
-const proto4 = {
-  proto: proto3,
+const extend4 = {
+  extend: extend3,
   div4: 'div4'
 }
 
-test('should FLATTEN deep prototypal inheritances', () => {
-  const arr = flattenRecursive(proto4, 'proto')
+test('should FLATTEN deep extendtypal inheritances', () => {
+  const arr = flattenRecursive(extend4, 'extend')
   expect(arr).toStrictEqual([
     {
       div4: 'div4'
@@ -43,7 +43,7 @@ test('should FLATTEN deep prototypal inheritances', () => {
 })
 
 test('should FLATTEN Array of objects as SINGLE object', () => {
-  const proto = mergeArray([
+  const extend = mergeArray([
     { a: 1 },
     { b: 2 },
     { c: 3 },
@@ -54,7 +54,7 @@ test('should FLATTEN Array of objects as SINGLE object', () => {
     },
     { a: 4 }
   ])
-  expect(proto).toStrictEqual({
+  expect(extend).toStrictEqual({
     a: 1,
     b: 2,
     c: 3,
@@ -64,19 +64,19 @@ test('should FLATTEN Array of objects as SINGLE object', () => {
   })
 })
 
-test('Should FLATTEN deep level prototypes into an FLAT object', () => {
-  const proto = {
+test('Should FLATTEN deep level extends into an FLAT object', () => {
+  const extend = {
     a: 1,
-    proto: {
+    extend: {
       b: 2,
-      proto: {
+      extend: {
         c: 3
       }
     }
   }
 
   const flatten = mergeArray(
-    flattenRecursive(proto, 'proto')
+    flattenRecursive(extend, 'extend')
   )
 
   expect(flatten).toStrictEqual({
@@ -86,24 +86,24 @@ test('Should FLATTEN deep level prototypes into an FLAT object', () => {
   })
 })
 
-test('should not MUTATE original prototype object', () => {
-  applyPrototype(proto4)
+test('should not MUTATE original extend object', () => {
+  applyExtendtype(extend4)
 
-  expect(proto2).toStrictEqual({
-    proto: proto1,
+  expect(extend2).toStrictEqual({
+    extend: extend1,
     div2: 'div2'
   })
 
-  expect(proto3).toStrictEqual({
-    proto: proto2,
+  expect(extend3).toStrictEqual({
+    extend: extend2,
     div3: {
       text: 'div3'
     }
   })
 })
 
-test('should apply MULTIPLE level prototypes', () => {
-  expect(proto4).toStrictEqual({
+test('should apply MULTIPLE level extends', () => {
+  expect(extend4).toStrictEqual({
     div1: 'div1',
     div2: 'div2',
     div3: {
@@ -113,20 +113,20 @@ test('should apply MULTIPLE level prototypes', () => {
   })
 })
 
-test('should MERGE prototypes with parent\'s childProtos', () => {
-  const proto5 = {
+test('should MERGE extends with parent\'s childExtends', () => {
+  const extend5 = {
     div5: 'div5'
   }
 
   const parent = {
-    childProto: proto4,
+    childExtend: extend4,
     one: {
-      proto: proto5
+      extend: extend5
     }
   }
   parent.one.parent = parent
 
-  applyPrototype(parent.one, parent)
+  applyExtendtype(parent.one, parent)
 
   delete parent.one.parent
 
@@ -141,16 +141,16 @@ test('should MERGE prototypes with parent\'s childProtos', () => {
   })
 })
 
-test('should accept proto INSIDE childProto', () => {
+test('should accept extend INSIDE childExtend', () => {
   const text = element => element.key
-  const proto = { text }
-  const childProto = { proto, tag: 'li' }
+  const extend = { text }
+  const childExtend = { extend, tag: 'li' }
   const list = {
-    childProto,
+    childExtend,
     test: {}
   }
   list.test.parent = list
-  applyPrototype(list.test, list)
+  applyExtendtype(list.test, list)
   delete list.test.parent
 
   expect(list.test).toStrictEqual({
@@ -159,16 +159,16 @@ test('should accept proto INSIDE childProto', () => {
   })
 })
 
-test('should accept proto AND childProto together', () => {
+test('should accept extend AND childExtend together', () => {
   const text = element => element.key
-  const proto = { text }
-  const childProto = { tag: 'li' }
+  const extend = { text }
+  const childExtend = { tag: 'li' }
   const list = {
-    childProto,
-    test: { proto }
+    childExtend,
+    test: { extend }
   }
   list.test.parent = list
-  applyPrototype(list.test, list)
+  applyExtendtype(list.test, list)
   delete list.test.parent
 
   expect(list.test).toStrictEqual({
@@ -177,28 +177,28 @@ test('should accept proto AND childProto together', () => {
   })
 })
 
-test('should MERGE HEAVY prototypal inheritances', () => {
+test('should MERGE HEAVY extendtypal inheritances', () => {
   const ListItem = {
     tag: 'li'
   }
 
   const Dropdown = {
     tag: 'ul',
-    childProto: ListItem
+    childExtend: ListItem
   }
 
   const Section = {
     dropdown: {
-      proto: Dropdown
+      extend: Dropdown
     }
   }
 
   const Page = {
-    childProto: Section
+    childExtend: Section
   }
 
   const final = {
-    proto: Page,
+    extend: Page,
     section: {
       dropdown: {
         0: {}
@@ -210,20 +210,20 @@ test('should MERGE HEAVY prototypal inheritances', () => {
   final.section.dropdown.parent = final.section
   final.section.dropdown[0].parent = final.section.dropdown
 
-  applyPrototype(final)
-  applyPrototype(final.section, final)
-  applyPrototype(final.section.dropdown, final.section)
-  applyPrototype(final.section.dropdown[0], final.section.dropdown)
+  applyExtendtype(final)
+  applyExtendtype(final.section, final)
+  applyExtendtype(final.section.dropdown, final.section)
+  applyExtendtype(final.section.dropdown[0], final.section.dropdown)
 
   delete final.section.parent
   delete final.section.dropdown.parent
   delete final.section.dropdown[0].parent
 
   expect(final).toStrictEqual({
-    childProto: Section,
+    childExtend: Section,
     section: {
       dropdown: {
-        childProto: ListItem,
+        childExtend: ListItem,
         tag: 'ul',
         0: {
           tag: 'li'
@@ -233,47 +233,47 @@ test('should MERGE HEAVY prototypal inheritances', () => {
   })
 })
 
-test('should apply childProto from proto', () => {
-  const proto = {
-    childProto: { tag: 'li' }
+test('should apply childExtend from extend', () => {
+  const extend = {
+    childExtend: { tag: 'li' }
   }
 
   const list = {
     tag: 'ul',
-    proto
+    extend
   }
 
-  applyPrototype(list)
+  applyExtendtype(list)
 
   expect(list).toStrictEqual({
     tag: 'ul',
-    childProto: { tag: 'li' }
+    childExtend: { tag: 'li' }
   })
 })
 
-test('should apply recursive childProto', () => {
+test('should apply recursive childExtend', () => {
   const row = {
     tag: 'tr',
-    childProto: { tag: 'td' },
+    childExtend: { tag: 'td' },
     a: {},
     b: {}
   }
 
   const table = {
     tag: 'table',
-    childProto: row,
+    childExtend: row,
     0: {}
   }
 
   const app = {
-    childProto: table,
+    childExtend: table,
     table: {}
   }
 
-  applyPrototype(app.table, app)
-  applyPrototype(app.table[0], app.table)
-  applyPrototype(app.table[0].a, app.table[0])
-  applyPrototype(app.table[0].b, app.table[0])
+  applyExtendtype(app.table, app)
+  applyExtendtype(app.table[0], app.table)
+  applyExtendtype(app.table[0].a, app.table[0])
+  applyExtendtype(app.table[0].b, app.table[0])
 
   expect(app.table.parent).toBe(app)
   expect(app.table[0].parent).toBe(app.table)
@@ -282,10 +282,10 @@ test('should apply recursive childProto', () => {
 
   const expected = {
     parent: app,
-    childProto: row,
+    childExtend: row,
     tag: 'table',
     0: {
-      childProto: { tag: 'td' },
+      childExtend: { tag: 'td' },
       tag: 'tr',
       a: {
         tag: 'td'
@@ -303,33 +303,33 @@ test('should apply recursive childProto', () => {
   expect(app.table).toStrictEqual(expected)
 })
 
-test('should MERGE DEEP prototypal inheritances woth ARRAYS', () => {
+test('should MERGE DEEP extendtypal inheritances woth ARRAYS', () => {
   const ListItem = { tag: 'li' }
   const Dropdown = {
-    childProto: ListItem,
+    childExtend: ListItem,
     1: {}
   }
 
   const Row = {
-    dropdown: { proto: Dropdown }
+    dropdown: { extend: Dropdown }
   }
 
   const List = {
-    list: { childProto: Row }
+    list: { childExtend: Row }
   }
 
   const sidebar = {
-    proto: List,
+    extend: List,
     list: {
       0: {}
     }
   }
 
-  applyPrototype(sidebar, {})
-  applyPrototype(sidebar.list, sidebar)
-  applyPrototype(sidebar.list[0], sidebar.list)
-  applyPrototype(sidebar.list[0].dropdown, sidebar.list[0])
-  applyPrototype(sidebar.list[0].dropdown[1], sidebar.list[0].dropdown)
+  applyExtendtype(sidebar, {})
+  applyExtendtype(sidebar.list, sidebar)
+  applyExtendtype(sidebar.list[0], sidebar.list)
+  applyExtendtype(sidebar.list[0].dropdown, sidebar.list[0])
+  applyExtendtype(sidebar.list[0].dropdown[1], sidebar.list[0].dropdown)
 
   delete sidebar.parent
   delete sidebar.list.parent
@@ -339,17 +339,17 @@ test('should MERGE DEEP prototypal inheritances woth ARRAYS', () => {
 
   const equal = {
     list: {
-      childProto: Row,
+      childExtend: Row,
       0: {
         dropdown: {
-          childProto: ListItem,
+          childExtend: ListItem,
           1: ListItem
         }
       }
     }
   }
 
-  delete equal.list[0].dropdown.proto
+  delete equal.list[0].dropdown.extend
 
   expect(sidebar).toStrictEqual(equal)
 })

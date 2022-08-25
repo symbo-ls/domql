@@ -3,7 +3,7 @@
 import root from './root'
 import createNode from './node'
 import { appendNode, assignNode } from './assign'
-import { applyPrototype } from './proto'
+import { applyExtendtype } from './extend'
 import nodes from './nodes'
 import set from './set'
 import createState from './state'
@@ -27,17 +27,17 @@ const create = (element, parent, key, options = {}) => {
   if (element === undefined) element = {}
   if (element === null) return
 
-  // if element is proto
+  // if element is extend
   if (element.__hash) {
-    element = { proto: element }
+    element = { extend: element }
   }
 
   if (options.components) {
     const { components } = options
-    const { proto, component } = element
-    if (isString(proto))
-      if (components[proto]) element.proto = components[proto]
-      else console.warn(proto, 'is not in library', components, element)
+    const { extend, component } = element
+    if (isString(extend))
+      if (components[extend]) element.extend = components[extend]
+      else console.warn(extend, 'is not in library', components, element)
   }
 
   // define KEY
@@ -51,18 +51,18 @@ const create = (element, parent, key, options = {}) => {
   if (isString(element) || isNumber(element)) {
     element = {
       text: element,
-      tag: (!element.proto && parent.childProto && parent.childProto.tag) ||
+      tag: (!element.extend && parent.childExtend && parent.childExtend.tag) ||
       ((nodes.body.indexOf(key) > -1) && key) || 'string'
     }
   }
 
   // create PROTOtypal inheritance
 
-  applyPrototype(element, parent, options)
+  applyExtendtype(element, parent, options)
 
   if (Object.keys(options).length) {
     registry.defaultOptions = options
-    if (options.ignoreChildProto) delete options.ignoreChildProto
+    if (options.ignoreChildExtend) delete options.ignoreChildExtend
   }
 
   // enable STATE
