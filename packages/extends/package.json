@@ -1,6 +1,6 @@
 {
   "name": "@domql/extends",
-  "version": "2.2.3",
+  "version": "2.3.0",
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
