@@ -13,10 +13,10 @@ export const router = (
   level = 0,
   pushState = true
 ) => {
-  const lastLevel = level
-  const [ pathname, hash ] = (path).split('#')
+  lastLevel = level
+  const [pathname, hash] = (path).split('#')
 
-  let route = getActiveRoute(pathname, level)
+  const route = getActiveRoute(pathname, level)
   const content = element.routes[route]
 
   if (content) {
