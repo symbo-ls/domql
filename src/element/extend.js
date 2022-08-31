@@ -8,7 +8,7 @@ const ENV = process.env.NODE_ENV
  * Checks whether element has `extend` or is a part
  * of parent's `childExtend` extend
  */
-export const applyExtendtype = (element, parent, options = {}) => {
+export const applyExtend = (element, parent, options = {}) => {
   if (isFunction(element)) element = exec(element, parent)
 
   const { extend } = element

@@ -3,7 +3,7 @@
 import root from './root'
 import createNode from './node'
 import { appendNode, assignNode } from './assign'
-import { applyExtendtype } from './extend'
+import { applyExtend } from './extend'
 import nodes from './nodes'
 import set from './set'
 import createState from './state'
@@ -56,9 +56,9 @@ const create = (element, parent, key, options = {}) => {
     }
   }
 
-  // create PROTOtypal inheritance
+  // create EXTENDal inheritance
 
-  applyExtendtype(element, parent, options)
+  applyExtend(element, parent, options)
 
   if (Object.keys(options).length) {
     registry.defaultOptions = options
@@ -137,12 +137,6 @@ const create = (element, parent, key, options = {}) => {
   // generate a CLASS name
   assignClass(element)
 
-  // console.group('create')
-  // console.log(element.path)
-  // console.log(element)
-  // console.groupEnd('create')
-  // if (parent.key === 'footer' && key === '0') debugger
-
   // CREATE a real NODE
   createNode(element, options)
 
@@ -150,6 +144,9 @@ const create = (element, parent, key, options = {}) => {
 
   // assign NODE
   assignNode(element, parent, key)
+
+  console.log(key, element)
+  console.log(element.path)
 
   // run `on.render`
   if (element.on && isFunction(element.on.render)) {

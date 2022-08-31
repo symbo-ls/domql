@@ -1,6 +1,7 @@
 'use strict'
 
 import create from './create'
+import { isEqualDeep } from '../utils'
 import { registry } from './mixins'
 
 const removeContentElement = (params, element) => {
@@ -22,6 +23,9 @@ const removeContentElement = (params, element) => {
 const set = function (params, options) {
   const element = this
 
+  const isEqual = isEqualDeep(params, element.content)
+  if (isEqual && element.content.__cached) return element
+
   removeContentElement(params, element)
 
   if (params) {
@@ -38,11 +42,3 @@ const set = function (params, options) {
 
 export default set
 
-// if (element.content && (isFunction(element.content) || element.content.node)) {
-//   // leave(element, () => {
-//   // console.log('remove', element.content)
-//   // element.content.remove()
-//   // element.content.update(params)
-//   // element.node.removeChild(element.content.node)
-//   // delete element.content
-// }

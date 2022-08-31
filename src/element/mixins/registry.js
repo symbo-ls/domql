@@ -22,9 +22,9 @@ export default {
   state,
 
   extend: {},
+  childExtend: {},
   props: {},
   path: {},
-  childExtend: {},
   if: {},
   define: {},
   transform: {},

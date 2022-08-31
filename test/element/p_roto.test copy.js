@@ -1,4 +1,4 @@
-import { applyExtendtype } from '../../src/element/extend'
+import { applyExtend } from '../../src/element/extend'
 import { mergeArray, flattenRecursive } from '../../src/utils'
 
 const extend1 = {
@@ -87,7 +87,7 @@ test('Should FLATTEN deep level extends into an FLAT object', () => {
 })
 
 test('should not MUTATE original extend object', () => {
-  applyExtendtype(extend4)
+  applyExtend(extend4)
 
   expect(extend2).toStrictEqual({
     extend: extend1,
@@ -126,7 +126,7 @@ test('should MERGE extends with parent\'s childExtends', () => {
   }
   parent.one.parent = parent
 
-  applyExtendtype(parent.one, parent)
+  applyExtend(parent.one, parent)
 
   delete parent.one.parent
 
@@ -150,7 +150,7 @@ test('should accept extend INSIDE childExtend', () => {
     test: {}
   }
   list.test.parent = list
-  applyExtendtype(list.test, list)
+  applyExtend(list.test, list)
   delete list.test.parent
 
   expect(list.test).toStrictEqual({
@@ -168,7 +168,7 @@ test('should accept extend AND childExtend together', () => {
     test: { extend }
   }
   list.test.parent = list
-  applyExtendtype(list.test, list)
+  applyExtend(list.test, list)
   delete list.test.parent
 
   expect(list.test).toStrictEqual({
@@ -210,10 +210,10 @@ test('should MERGE HEAVY extendtypal inheritances', () => {
   final.section.dropdown.parent = final.section
   final.section.dropdown[0].parent = final.section.dropdown
 
-  applyExtendtype(final)
-  applyExtendtype(final.section, final)
-  applyExtendtype(final.section.dropdown, final.section)
-  applyExtendtype(final.section.dropdown[0], final.section.dropdown)
+  applyExtend(final)
+  applyExtend(final.section, final)
+  applyExtend(final.section.dropdown, final.section)
+  applyExtend(final.section.dropdown[0], final.section.dropdown)
 
   delete final.section.parent
   delete final.section.dropdown.parent
@@ -243,7 +243,7 @@ test('should apply childExtend from extend', () => {
     extend
   }
 
-  applyExtendtype(list)
+  applyExtend(list)
 
   expect(list).toStrictEqual({
     tag: 'ul',
@@ -270,10 +270,10 @@ test('should apply recursive childExtend', () => {
     table: {}
   }
 
-  applyExtendtype(app.table, app)
-  applyExtendtype(app.table[0], app.table)
-  applyExtendtype(app.table[0].a, app.table[0])
-  applyExtendtype(app.table[0].b, app.table[0])
+  applyExtend(app.table, app)
+  applyExtend(app.table[0], app.table)
+  applyExtend(app.table[0].a, app.table[0])
+  applyExtend(app.table[0].b, app.table[0])
 
   expect(app.table.parent).toBe(app)
   expect(app.table[0].parent).toBe(app.table)
@@ -325,11 +325,11 @@ test('should MERGE DEEP extendtypal inheritances woth ARRAYS', () => {
     }
   }
 
-  applyExtendtype(sidebar, {})
-  applyExtendtype(sidebar.list, sidebar)
-  applyExtendtype(sidebar.list[0], sidebar.list)
-  applyExtendtype(sidebar.list[0].dropdown, sidebar.list[0])
-  applyExtendtype(sidebar.list[0].dropdown[1], sidebar.list[0].dropdown)
+  applyExtend(sidebar, {})
+  applyExtend(sidebar.list, sidebar)
+  applyExtend(sidebar.list[0], sidebar.list)
+  applyExtend(sidebar.list[0].dropdown, sidebar.list[0])
+  applyExtend(sidebar.list[0].dropdown[1], sidebar.list[0].dropdown)
 
   delete sidebar.parent
   delete sidebar.list.parent
