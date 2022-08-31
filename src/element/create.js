@@ -145,9 +145,6 @@ const create = (element, parent, key, options = {}) => {
   // assign NODE
   assignNode(element, parent, key)
 
-  console.log(key, element)
-  console.log(element.path)
-
   // run `on.render`
   if (element.on && isFunction(element.on.render)) {
     on.render(element.on.render, element, element.state)
