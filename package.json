@@ -25,7 +25,7 @@
     "@babel/preset-env": "^7.16.4",
     "@parcel/babel-preset-env": "^2.0.1",
     "babel-jest": "^27.4.4",
-    "esbuild": "^0.14.47",
+    "esbuild": "^0.15.7",
     "eslint": "^8.4.0",
     "eslint-config-standard": "^16.0.3",
     "eslint-plugin-import": "^2.25.3",
