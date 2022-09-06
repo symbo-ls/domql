@@ -27,7 +27,7 @@
     "babel-jest": "^27.4.4",
     "esbuild": "^0.15.7",
     "eslint": "^8.4.0",
-    "eslint-config-standard": "^16.0.3",
+    "eslint-config-standard": "^17.0.0",
     "eslint-plugin-import": "^2.25.3",
     "eslint-plugin-jest": "^25.3.0",
     "eslint-plugin-node": "^11.1.0",
