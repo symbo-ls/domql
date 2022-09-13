@@ -56,8 +56,7 @@ const create = (element, parent, key, options = {}) => {
     }
   }
 
-  // create EXTENDal inheritance
-
+  // create EXTEND inheritance
   applyExtend(element, parent, options)
 
   if (Object.keys(options).length) {

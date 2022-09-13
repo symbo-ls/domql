@@ -45,6 +45,7 @@ export default function (element, parent) {
   state.__element = element
   state.parse = parseState
   state.update = updateState
+  state.parent = element.parent.state
 
   // run `on.stateCreated`
   if (element.on && isFunction(element.on.stateCreated)) {

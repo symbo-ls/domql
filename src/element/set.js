@@ -12,8 +12,9 @@ const removeContentElement = (params, element) => {
     }
 
     if (element.__cached && element.__cached.content) {
+      console.log(element.__cached.content)
       if (element.__cached.content.tag === 'fragment') element.__cached.content.parent.node.innerHTML = ''
-      else element.__cached.content.remove()
+      else if (element.__cached.content) element.__cached.content?.remove()
     }
 
     delete element.content
