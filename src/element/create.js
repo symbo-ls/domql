@@ -133,6 +133,10 @@ const create = (element, parent, key, options = {}) => {
     on.beforeClassAssign(element.on.beforeClassAssign, element, element.state)
   }
 
+  // assign context
+  if (options.context && !root.context) root.context = options.context
+  element.context = root.context
+
   // generate a CLASS name
   assignClass(element)
 

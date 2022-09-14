@@ -54,5 +54,6 @@ export default {
   parse: {},
   parseDeep: {},
   on: {},
-  component: {}
+  component: {},
+  context: {}
 }
