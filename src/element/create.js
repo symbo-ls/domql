@@ -116,6 +116,10 @@ const create = (element, parent, key, options = {}) => {
   // enable CHANGES storing
   if (!element.__changes) element.__changes = []
 
+  // assign context
+  if (options.context && !root.context) root.context = options.context
+  element.context = root.context
+
   // Add _root element property
   const hasRoot = parent.parent && parent.parent.key === ':root'
   if (!element.__root) element.__root = hasRoot ? parent : parent.__root
@@ -132,10 +136,6 @@ const create = (element, parent, key, options = {}) => {
   if (element.on && isFunction(element.on.beforeClassAssign)) {
     on.beforeClassAssign(element.on.beforeClassAssign, element, element.state)
   }
-
-  // assign context
-  if (options.context && !root.context) root.context = options.context
-  element.context = root.context
 
   // generate a CLASS name
   assignClass(element)
