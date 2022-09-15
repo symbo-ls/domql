@@ -1,7 +1,8 @@
 'use strict'
 
-import { isObject, isObjectLike } from '../utils'
+import { isFunction, isObject, isObjectLike } from '../utils'
 import { registry } from './mixins'
+import { removeContentElement } from './set'
 
 // TODO: update these files
 export const lookup = function (key) {
@@ -18,7 +19,9 @@ export const lookup = function (key) {
 
 export const remove = function (params) {
   const element = this
-  element.node.remove()
+  // element.node.remove()
+  if (isFunction(element.node.remove)) element.node.remove()
+  // else removeContentElement(element)
   delete element.parent[element.key]
 }
 
@@ -94,6 +97,7 @@ export const isMethod = function (param) {
   return param === 'set' ||
     param === 'update' ||
     param === 'remove' ||
+    param === 'removeContent' ||
     param === 'lookup' ||
     param === 'keys' ||
     param === 'parse' ||

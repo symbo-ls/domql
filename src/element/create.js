@@ -5,7 +5,7 @@ import createNode from './node'
 import { appendNode, assignNode } from './assign'
 import { applyExtend } from './extend'
 import nodes from './nodes'
-import set from './set'
+import set, { removeContentElement } from './set'
 import createState from './state'
 import createProps from './props'
 import update from './update'
@@ -95,6 +95,7 @@ const create = (element, parent, key, options = {}) => {
   element.set = set
   element.update = update
   element.remove = remove
+  element.removeContent = removeContentElement
   element.setProps = setProps
   element.lookup = lookup
   element.parse = parse

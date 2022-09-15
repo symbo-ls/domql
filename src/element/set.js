@@ -4,8 +4,9 @@ import create from './create'
 import { isEqualDeep } from '../utils'
 import { registry } from './mixins'
 
-const removeContentElement = (params, element) => {
-  if (params && element.content) {
+export const removeContentElement = function (el) {
+  const element = el || this
+  if (element.content) {
     if (element.content.node) {
       if (element.content.tag === 'fragment') element.node.innerHTML = ''
       else element.node.removeChild(element.content.node)
@@ -20,13 +21,13 @@ const removeContentElement = (params, element) => {
   }
 }
 
-const set = function (params, options) {
-  const element = this
+const set = function (params, options, el) {
+  const element = el || this
 
   const isEqual = isEqualDeep(params, element.content)
   if (isEqual && element.content.__cached) return element
 
-  removeContentElement(params, element)
+  removeContentElement(element)
 
   if (params) {
     const { childExtend } = params

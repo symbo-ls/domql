@@ -48,6 +48,7 @@ export default {
   update: {},
   setProps: {},
   remove: {},
+  removeContent: {},
   lookup: {},
   keys: {},
   log: {},
