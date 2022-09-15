@@ -4,6 +4,8 @@ import { isFunction, isObject, isObjectLike } from '../utils'
 import { registry } from './mixins'
 import { removeContentElement } from './set'
 
+const ENV = process.env.NODE_ENV
+
 // TODO: update these files
 export const lookup = function (key) {
   const element = this
@@ -19,9 +21,11 @@ export const lookup = function (key) {
 
 export const remove = function (params) {
   const element = this
-  // element.node.remove()
   if (isFunction(element.node.remove)) element.node.remove()
-  // else removeContentElement(element)
+  else if (ENV === 'test' || ENV === 'development') {
+    console.warn('This item cant be removed')
+    element.log()
+  }
   delete element.parent[element.key]
 }
 
