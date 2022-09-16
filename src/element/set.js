@@ -12,7 +12,7 @@ export const removeContentElement = function (el) {
       else element.node.removeChild(element.content.node)
     }
 
-    const { __cached } = __cached
+    const { __cached } = element
     if (__cached && __cached.content) {
       if (__cached.content.tag === 'fragment') __cached.content.parent.node.innerHTML = ''
       else if (__cached.content && isFunction(__cached.content.remove)) __cached.content.remove()
