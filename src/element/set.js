@@ -1,7 +1,7 @@
 'use strict'
 
 import create from './create'
-import { isEqualDeep } from '../utils'
+import { isEqualDeep, isFunction } from '../utils'
 import { registry } from './mixins'
 
 export const removeContentElement = function (el) {
@@ -12,9 +12,10 @@ export const removeContentElement = function (el) {
       else element.node.removeChild(element.content.node)
     }
 
-    if (element.__cached && element.__cached.content) {
-      if (element.__cached.content.tag === 'fragment') element.__cached.content.parent.node.innerHTML = ''
-      else if (element.__cached.content) element.__cached.content?.remove()
+    const { __cached } = __cached
+    if (__cached && __cached.content) {
+      if (__cached.content.tag === 'fragment') __cached.content.parent.node.innerHTML = ''
+      else if (__cached.content && isFunction(__cached.content.remove)) __cached.content.remove()
     }
 
     delete element.content
