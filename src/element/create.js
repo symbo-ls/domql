@@ -48,7 +48,13 @@ const create = (element, parent, key, options = {}) => {
     const { extend, component } = element
     if (isString(extend))
       if (components[extend]) element.extend = components[extend]
-      else console.warn(extend, 'is not in library', components, element)
+      else {
+        if (ENV === 'test' || ENV === 'development') {
+          console.warn(extend, 'is not in library', components, element)
+          console.warn('replacing with ', {})
+        }
+        element.extend = {}
+      }
   }
 
   // if PARENT is not given
