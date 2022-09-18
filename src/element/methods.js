@@ -11,7 +11,8 @@ export const lookup = function (key) {
   const element = this
   let { parent } = element
 
-  while (parent.key !== key) {
+  while (parent.key !== key){
+    if (parent[key]) return parent[key]
     parent = parent.parent
     if (!parent) return
   }

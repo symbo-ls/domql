@@ -38,7 +38,7 @@ const create = (element, parent, key, options = {}) => {
   const firstKeyChar = assignedKey.slice(0, 1)
   if (!element.extend && !element.props && /^[A-Z]*$/.test(firstKeyChar)) {
     element = {
-      component: assignedKey,
+      extend: assignedKey,
       props: element
     }
   }
@@ -129,6 +129,9 @@ const create = (element, parent, key, options = {}) => {
   // enable CHANGES storing
   if (!element.__changes) element.__changes = []
 
+  // enable CHANGES storing
+  if (!element.__children) element.__children = []
+
   // Add _root element property
   const hasRoot = parent.parent && parent.parent.key === ':root'
   if (!element.__root) element.__root = hasRoot ? parent : parent.__root
@@ -161,6 +164,8 @@ const create = (element, parent, key, options = {}) => {
   if (element.on && isFunction(element.on.render)) {
     on.render(element.on.render, element, element.state)
   }
+
+  if (parent.__children) parent.__children.push(element.key)
 
   return element
 }

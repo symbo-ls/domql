@@ -38,6 +38,7 @@ export default {
   __props: {},
   __extend: {},
   __ifFragment: {},
+  __children: {},
   __ifFalsy: {},
   __text: {},
   key: {},
