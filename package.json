@@ -3,7 +3,7 @@
   "description": "DOM rendering Javascript framework at early stage.",
   "private": false,
   "author": "rackai",
-  "version": "1.5.10",
+  "version": "1.5.11",
   "repository": "https://github.com/rackai/domql",
   "publishConfig": {
     "registry": "https://registry.npmjs.org"
