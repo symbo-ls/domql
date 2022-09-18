@@ -10,10 +10,14 @@ export const router = (
   element,
   path,
   state = {},
-  level = 0,
-  pushState = true
+  options = {
+    level: lastLevel,
+    pushState: true
+  }
 ) => {
-  lastLevel = level
+  const level = lastLevel = options.level
+  const pushState = options.pushState || options.pushState === undefined
+
   const [pathname, hash] = (path).split('#')
 
   const route = getActiveRoute(pathname, level)
