@@ -8,6 +8,7 @@ const initProps = (element, parent) => {
 
   const isMatch = isString(props) && props.indexOf('match') > -1
   const matchParent = parent.props && parent.props[element.key]
+  const matchParentChild = parent.props && parent.props.childProps
 
   const objectizeStringProperty = propValue => {
     if (isString(propValue)) return { inheritedString: propValue }
@@ -15,6 +16,7 @@ const initProps = (element, parent) => {
   }
 
   if (matchParent && props !== 'match') propsStack.push(matchParent)
+  if (matchParentChild) propsStack.push(matchParentChild)
 
   if (isObject(props)) {
     propsStack.push(props)

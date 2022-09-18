@@ -32,6 +32,17 @@ const create = (element, parent, key, options = {}) => {
     element = { extend: element }
   }
 
+  // define KEY
+  const assignedKey = element.key || key || createID.next().value
+
+  const firstKeyChar = assignedKey.slice(0, 1)
+  if (!element.extend && !element.props && /^[A-Z]*$/.test(firstKeyChar)) {
+    element = {
+      component: assignedKey,
+      props: element
+    }
+  }
+
   if (options.components) {
     const { components } = options
     const { extend, component } = element
@@ -39,9 +50,6 @@ const create = (element, parent, key, options = {}) => {
       if (components[extend]) element.extend = components[extend]
       else console.warn(extend, 'is not in library', components, element)
   }
-
-  // define KEY
-  const assignedKey = element.key || key || createID.next().value
 
   // if PARENT is not given
   if (!parent) parent = root
@@ -55,6 +63,10 @@ const create = (element, parent, key, options = {}) => {
       ((nodes.body.indexOf(key) > -1) && key) || 'string'
     }
   }
+
+  // assign context
+  if (options.context && !root.context) root.context = options.context
+  element.context = root.context
 
   // create EXTEND inheritance
   applyExtend(element, parent, options)
@@ -116,10 +128,6 @@ const create = (element, parent, key, options = {}) => {
 
   // enable CHANGES storing
   if (!element.__changes) element.__changes = []
-
-  // assign context
-  if (options.context && !root.context) root.context = options.context
-  element.context = root.context
 
   // Add _root element property
   const hasRoot = parent.parent && parent.parent.key === ':root'
