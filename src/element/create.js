@@ -11,7 +11,7 @@ import createProps from './props'
 import update from './update'
 import * as on from '../event/on'
 import { assignClass } from './mixins/classList'
-import { isFunction, isNumber, isString, createID, isNode } from '../utils'
+import { isFunction, isNumber, isString, createID, isNode, exec } from '../utils'
 import { remove, lookup, setProps, log, keys, parse, parseDeep } from './methods'
 import cacheNode from './cache'
 import { registry } from './mixins'
@@ -46,11 +46,12 @@ const create = (element, parent, key, options = {}) => {
   if (options.components) {
     const { components } = options
     const { extend, component } = element
-    if (isString(extend))
-      if (components[extend]) element.extend = components[extend]
+    const execExtend = exec(extend, element)
+    if (isString(execExtend))
+      if (components[execExtend]) element.extend = components[execExtend]
       else {
         if (ENV === 'test' || ENV === 'development') {
-          console.warn(extend, 'is not in library', components, element)
+          console.warn(execExtend, 'is not in library', components, element)
           console.warn('replacing with ', {})
         }
         element.extend = {}
