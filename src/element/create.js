@@ -35,7 +35,7 @@ const create = (element, parent, key, options = {}) => {
   // define KEY
   const assignedKey = element.key || key || createID.next().value
 
-  const firstKeyChar = assignedKey.slice(0, 1)
+  const firstKeyChar = isString(assignedKey) && assignedKey.slice(0, 1)
   if (!element.extend && !element.props && /^[A-Z]*$/.test(firstKeyChar)) {
     element = {
       extend: assignedKey,
