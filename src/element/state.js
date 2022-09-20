@@ -41,7 +41,7 @@ export default function (element, parent) {
   }
   if (isFunction(state)) state = exec(state, element)
 
-  state = deepClone(state, ['update', 'parse', '__element'])
+  element.state = state = deepClone(state, ['update', 'parse', '__element'])
   state.__element = element
   state.parse = parseState
   state.update = updateState
@@ -49,7 +49,7 @@ export default function (element, parent) {
 
   // run `on.stateCreated`
   if (element.on && isFunction(element.on.stateCreated)) {
-    on.stateCreated(element.on.stateCreated, element, element.state)
+    on.stateCreated(element.on.stateCreated, element, state)
   }
 
   return state
