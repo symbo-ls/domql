@@ -11,7 +11,8 @@ export let lastLevel = 0
 const defaultOptions = {
   level: lastLevel,
   pushState: true,
-  scrollTo: true
+  scrollToTop: true,
+  scrollToNode: false
 }
 
 export const router = (
@@ -35,12 +36,13 @@ export const router = (
     element.state.update({ route, hash })
 
     const rootNode = element.node
-    if (options.scrollTo) rootNode.scrollTo({ behavior: 'smooth', top: 0, left: 0 })
+    if (options.scrollToTop) rootNode.scrollTo({ behavior: 'smooth', top: 0, left: 0 })
+    if (options.scrollToNode) content.content.node.scrollTo({ behavior: 'smooth', top: 0, left: 0 })
 
     if (hash) {
       const activeNode = document.getElementById(hash)
       if (activeNode) {
-        const top = activeNode.getBoundingClientRect().top + rootNode.scrollTop - 140
+        const top = activeNode.getBoundingClientRect().top + rootNode.scrollToTopp - 140
         rootNode.scrollTo({ behavior: 'smooth', top, left: 0 })
       }
     }
