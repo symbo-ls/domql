@@ -41,6 +41,7 @@ export default {
   __children: {},
   __ifFalsy: {},
   __text: {},
+  __element: {},
   key: {},
   tag: {},
   parent: {},
