@@ -10,7 +10,6 @@ import { appendNode } from './assign'
 import { createNode } from '.'
 import { updateProps } from './props'
 import createState from './state'
-import { measure } from '@domql/performance'
 
 const UPDATE_DEFAULT_OPTIONS = {
   stackChanges: false,
@@ -42,13 +41,11 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
 
   if (!element.__ifFalsy && !options.preventPropsUpdate) updateProps(params.props, element, parent)
 
-  measure('UPDATE: throughstuff', () => {
-    const overwriteChanges = overwrite(element, params, UPDATE_DEFAULT_OPTIONS)
-    const execChanges = throughUpdatedExec(element, UPDATE_DEFAULT_OPTIONS)
-    const definedChanges = throughUpdatedDefine(element)
-    // console.log(execChanges)
-    // console.log(definedChanges)
-  }, { logLevel: 4 })
+  const overwriteChanges = overwrite(element, params, UPDATE_DEFAULT_OPTIONS)
+  const execChanges = throughUpdatedExec(element, UPDATE_DEFAULT_OPTIONS)
+  const definedChanges = throughUpdatedDefine(element)
+  // console.log(execChanges)
+  // console.log(definedChanges)
 
   if (options.stackChanges && element.__stackChanges) {
     const stackChanges = merge(definedChanges, merge(execChanges, overwriteChanges))
@@ -79,14 +76,12 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     if (options.preventContentUpdate && param === 'content') console.log(param)
 
     if (ourParam) {
-      measure([element.key, param], () => {
+      // measure([element.key, param], () => {
         if (isFunction(ourParam)) ourParam(prop, element, node)
-      }, { logLevel: 5 })
+      // }, { logLevel: 5 })
     } else if (prop && isObject(prop) && !hasDefined) {
       if (!options.preventRecursive) {
-        // measure('UPDATE: CHILDREN: ' + param, () => {
-          update.call(prop, params[prop], UPDATE_DEFAULT_OPTIONS)
-        // })
+        update.call(prop, params[prop], UPDATE_DEFAULT_OPTIONS)
       }
     }
   }

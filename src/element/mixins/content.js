@@ -1,7 +1,6 @@
 'use strict'
 
 import set from '../set'
-import { measure } from '@domql/performance'
 
 /**
  * Appends anything as content
@@ -14,9 +13,7 @@ export default (param, element, node, options) => {
       // if (define && !define.$setStateCollection)
       element.content.update(param)
     } else {
-      measure('CONTENT: set: ' + element.key, () => {
-        set.call(element, param, options)
-      })
+      set.call(element, param, options)
     }
   }
 }

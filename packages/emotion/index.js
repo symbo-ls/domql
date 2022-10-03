@@ -5,7 +5,6 @@ import { isObjectLike, exec, isObject, isEqualDeep } from '../../src/utils'
 import { classList } from '../../src/element/mixins'
 import createEmotion from '@emotion/css/create-instance'
 const ENV = process.env.NODE_ENV
-import { measure } from '@domql/performance'
 
 export const initEmotion = (container, options) => {
   const {
