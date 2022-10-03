@@ -2,6 +2,7 @@
 
 import { on } from '../event'
 import { deepClone, exec, isFunction, overwriteDeep } from '../utils'
+import { measure } from '@domql/performance'
 
 export const parseState = function () {
   const state = this
@@ -23,8 +24,13 @@ export const updateState = function (obj, options = {}) {
     on.initStateUpdated(element.on.initStateUpdated, element, state)
   }
 
-  overwriteDeep(state, obj, ['update', 'parse', '__element'])
-  if (!options.preventUpdate) element.update({}, options)
+  measure('State: Overwrite ' + element.key, () => {
+    overwriteDeep(state, obj, ['update', 'parse', '__element'])
+  })
+
+  measure('State: Element Update', () => {
+    if (!options.preventUpdate) element.update({}, options)
+  })
 
   // run `on.stateUpdated`
   if (element.on && isFunction(element.on.stateUpdated)) {

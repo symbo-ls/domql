@@ -124,6 +124,8 @@ const create = (element, parent, key, options = {}) => {
     element.log = log
   }
 
+  // console.group(element.key)
+
   // enable TRANSFORM in data
   if (!element.transform) element.transform = {}
 
@@ -132,6 +134,9 @@ const create = (element, parent, key, options = {}) => {
 
   // enable EXEC
   if (!element.__exec) element.__exec = {}
+
+  // enable CLASS CACHING
+  if (!element.__class) element.__class = {}
 
   // enable CHANGES storing
   if (!element.__changes) element.__changes = []
@@ -173,6 +178,7 @@ const create = (element, parent, key, options = {}) => {
   }
 
   if (parent.__children) parent.__children.push(element.key)
+  // console.groupEnd(element.key)
 
   return element
 }

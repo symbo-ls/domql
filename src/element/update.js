@@ -1,6 +1,6 @@
 'use strict'
 
-import { overwrite, isFunction, isObject, isString, isNumber } from '../utils'
+import { overwrite, isFunction, isObject, isString, isNumber, isEqualDeep } from '../utils'
 import { registry } from './mixins'
 import * as on from '../event/on'
 import { isMethod } from './methods'
@@ -10,6 +10,7 @@ import { appendNode } from './assign'
 import { createNode } from '.'
 import { updateProps } from './props'
 import createState from './state'
+import { measure } from '@domql/performance'
 
 const UPDATE_DEFAULT_OPTIONS = {
   stackChanges: false,
@@ -41,9 +42,13 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
 
   if (!element.__ifFalsy && !options.preventPropsUpdate) updateProps(params.props, element, parent)
 
-  const overwriteChanges = overwrite(element, params, UPDATE_DEFAULT_OPTIONS)
-  const execChanges = throughUpdatedExec(element, UPDATE_DEFAULT_OPTIONS)
-  const definedChanges = throughUpdatedDefine(element)
+  measure('UPDATE: throughstuff', () => {
+    const overwriteChanges = overwrite(element, params, UPDATE_DEFAULT_OPTIONS)
+    const execChanges = throughUpdatedExec(element, UPDATE_DEFAULT_OPTIONS)
+    const definedChanges = throughUpdatedDefine(element)
+    // console.log(execChanges)
+    // console.log(definedChanges)
+  }, { logLevel: 4 })
 
   if (options.stackChanges && element.__stackChanges) {
     const stackChanges = merge(definedChanges, merge(execChanges, overwriteChanges))
@@ -60,6 +65,7 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     on.initUpdate(element.on.initUpdate, element, element.state)
   }
 
+
   for (const param in element) {
     const prop = element[param]
 
@@ -70,13 +76,18 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     const hasDefined = define && define[param]
     const ourParam = registry[param]
 
-
     if (options.preventContentUpdate && param === 'content') console.log(param)
 
     if (ourParam) {
-      if (isFunction(ourParam)) ourParam(prop, element, node)
+      measure([element.key, param], () => {
+        if (isFunction(ourParam)) ourParam(prop, element, node)
+      }, { logLevel: 5 })
     } else if (prop && isObject(prop) && !hasDefined) {
-      if (!options.preventRecursive) update.call(prop, params[prop], UPDATE_DEFAULT_OPTIONS)
+      if (!options.preventRecursive) {
+        // measure('UPDATE: CHILDREN: ' + param, () => {
+          update.call(prop, params[prop], UPDATE_DEFAULT_OPTIONS)
+        // })
+      }
     }
   }
 

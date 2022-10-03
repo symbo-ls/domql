@@ -28,6 +28,8 @@ const set = function (params, options, el) {
   const isEqual = isEqualDeep(params, element.content)
   if (isEqual && element.content.__cached) return element
 
+  // console.group(element.key)
+  // console.log(isEqual, params, element.content)
   removeContentElement(element)
 
   if (params) {
@@ -38,6 +40,7 @@ const set = function (params, options, el) {
       ...registry.defaultOptions
     })
   }
+  // console.groupEnd(element.key)
 
   return element
 }
