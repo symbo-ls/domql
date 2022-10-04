@@ -12,7 +12,8 @@ const defaultOptions = {
   level: lastLevel,
   pushState: true,
   scrollToTop: true,
-  scrollToNode: false
+  scrollToNode: false,
+  useFragment: false
 }
 
 export const router = (
@@ -32,7 +33,7 @@ export const router = (
   if (content) {
     if (options.pushState) window.history.pushState(state, null, pathname + (hash ? `#${hash}` : ''))
 
-    element.set({ extend: content })
+    element.set({ tag: options.useFragment && 'fragment', extend: content })
     element.state.update({ route, hash })
 
     const rootNode = element.node
