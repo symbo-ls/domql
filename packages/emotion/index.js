@@ -39,7 +39,7 @@ export const initEmotion = (container, options) => {
 
       if (!prop) {
         delete __class[key]
-        delete __classNames[key] = CSSed
+        delete __classNames[key]
         continue
       }
 
