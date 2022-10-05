@@ -33,8 +33,8 @@ export const router = (
   if (content) {
     if (options.pushState) window.history.pushState(state, null, pathname + (hash ? `#${hash}` : ''))
 
+    element.state.update({ route, hash }, { preventContentUpdate: true })
     element.set({ tag: options.useFragment && 'fragment', extend: content })
-    element.state.update({ route, hash })
 
     const rootNode = element.node
     if (options.scrollToTop) rootNode.scrollTo({ behavior: 'smooth', top: 0, left: 0 })
