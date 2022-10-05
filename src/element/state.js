@@ -1,17 +1,29 @@
 'use strict'
 
 import { on } from '../event'
-import { deepClone, exec, isFunction, overwriteDeep } from '../utils'
+import { deepClone, exec, isFunction, isObject, overwriteDeep } from '../utils'
+
+export const IGNORE_STATE_PARAMS = ['update', 'parse', 'clean', 'parent', '__element', '__depends', '__ref']
 
 export const parseState = function () {
   const state = this
   const parseState = {}
   for (const param in state) {
-    if (param !== '__element' && param !== 'update' && param !== 'parse') {
+    if (!IGNORE_STATE_PARAMS.includes(param)) {
       parseState[param] = state[param]
     }
   }
   return parseState
+}
+
+export const cleanState = function () {
+  const state = this
+  for (const param in state) {
+    if (!IGNORE_STATE_PARAMS.includes(param)) {
+      delete state[param]
+    }
+  }
+  return state
 }
 
 export const updateState = function (obj, options = {}) {
@@ -23,9 +35,17 @@ export const updateState = function (obj, options = {}) {
     on.initStateUpdated(element.on.initStateUpdated, element, state)
   }
 
-  overwriteDeep(state, obj, ['update', 'parse', '__element'])
+  overwriteDeep(state, obj, IGNORE_STATE_PARAMS)
 
   if (!options.preventUpdate) element.update({}, options)
+
+  if (state.__depends) {
+    for (const el in state.__depends) {
+      // const findElement = element.spotByPath(state.__depends[el])
+      const findElement = state.__depends[el]
+      findElement.clean().update(state.parse(), options)
+    }
+  }
 
   // run `on.stateUpdated`
   if (element.on && isFunction(element.on.stateUpdated)) {
@@ -35,15 +55,27 @@ export const updateState = function (obj, options = {}) {
 
 export default function (element, parent) {
   let { state } = element
-  // if (!state) return (parent && parent.state) || {}
+
   if (!state) {
     if (parent && parent.state) return parent.state
     return {}
   }
+
   if (isFunction(state)) state = exec(state, element)
 
-  element.state = state = deepClone(state, ['update', 'parse', '__element'])
+  const { __ref } = state
+  if (__ref) {
+    state = deepClone(__ref, IGNORE_STATE_PARAMS)
+    if (isObject(__ref.__depends)) {
+      __ref.__depends[element.key] = state
+    } else __ref.__depends = { [element.key] : state }
+  } else {
+    state = deepClone(state, IGNORE_STATE_PARAMS)
+  }
+
+  element.state = state
   state.__element = element
+  state.clean = cleanState
   state.parse = parseState
   state.update = updateState
   state.parent = element.parent.state

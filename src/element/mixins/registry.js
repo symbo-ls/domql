@@ -55,6 +55,7 @@ export default {
   remove: {},
   removeContent: {},
   lookup: {},
+  spot: {},
   keys: {},
   log: {},
   parse: {},

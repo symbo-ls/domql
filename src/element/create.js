@@ -12,7 +12,7 @@ import update from './update'
 import * as on from '../event/on'
 import { assignClass } from './mixins/classList'
 import { isFunction, isNumber, isString, createID, isNode, exec } from '../utils'
-import { remove, lookup, setProps, log, keys, parse, parseDeep } from './methods'
+import { remove, lookup, setProps, log, keys, parse, parseDeep, spotByPath } from './methods'
 import cacheNode from './cache'
 import { registry } from './mixins'
 // import { overwrite, clone, fillTheRest } from '../utils'
@@ -83,48 +83,8 @@ const create = (element, parent, key, options = {}) => {
     if (options.ignoreChildExtend) delete options.ignoreChildExtend
   }
 
-  // enable STATE
-  element.state = createState(element, parent)
-
   // create and assign a KEY
   element.key = assignedKey
-
-  // don't render IF in condition
-  if (isFunction(element.if)) {
-    // TODO: move as fragment
-    if (!element.if(element, element.state)) {
-      const ifFragment = cacheNode({ tag: 'fragment' })
-      element.__ifFragment = appendNode(ifFragment, parent.node)
-      element.__ifFalsy = true
-    }
-  }
-
-  // set the PATH array
-  if (ENV === 'test' || ENV === 'development') {
-    if (!parent.path) parent.path = []
-    element.path = parent.path.concat(assignedKey)
-  }
-
-  // if it already HAS a NODE
-  if (element.node && !element.__ifFalsy) { // TODO: check on if
-    return assignNode(element, parent, assignedKey)
-  }
-
-  // assign METHODS
-  element.set = set
-  element.update = update
-  element.remove = remove
-  element.removeContent = removeContentElement
-  element.setProps = setProps
-  element.lookup = lookup
-  element.parse = parse
-  element.parseDeep = parseDeep
-  element.keys = keys
-  if (ENV === 'test' || ENV === 'development') {
-    element.log = log
-  }
-
-  // console.group(element.key)
 
   // enable TRANSFORM in data
   if (!element.transform) element.transform = {}
@@ -147,6 +107,45 @@ const create = (element, parent, key, options = {}) => {
   // Add _root element property
   const hasRoot = parent.parent && parent.parent.key === ':root'
   if (!element.__root) element.__root = hasRoot ? parent : parent.__root
+
+  // set the PATH array
+  if (ENV === 'test' || ENV === 'development') {
+    if (!parent.path) parent.path = []
+    element.path = parent.path.concat(assignedKey)
+  }
+
+  // assign METHODS
+  element.set = set
+  element.update = update
+  element.remove = remove
+  element.removeContent = removeContentElement
+  element.setProps = setProps
+  element.lookup = lookup
+  element.spotByPath = spotByPath
+  element.parse = parse
+  element.parseDeep = parseDeep
+  element.keys = keys
+  if (ENV === 'test' || ENV === 'development') {
+    element.log = log
+  }
+
+  // enable STATE
+  element.state = createState(element, parent)
+
+  // don't render IF in condition
+  if (isFunction(element.if)) {
+    // TODO: move as fragment
+    if (!element.if(element, element.state)) {
+      const ifFragment = cacheNode({ tag: 'fragment' })
+      element.__ifFragment = appendNode(ifFragment, parent.node)
+      element.__ifFalsy = true
+    }
+  }
+
+  // if it already HAS a NODE
+  if (element.node && !element.__ifFalsy) { // TODO: check on if
+    return assignNode(element, parent, assignedKey)
+  }
 
   // apply props settings
   if (!element.__ifFalsy) createProps(element, parent)

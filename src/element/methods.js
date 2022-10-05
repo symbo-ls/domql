@@ -2,6 +2,7 @@
 
 import { isFunction, isObject, isObjectLike } from '../utils'
 import { registry } from './mixins'
+import root from './root'
 import { removeContentElement } from './set'
 
 const ENV = process.env.NODE_ENV
@@ -18,6 +19,24 @@ export const lookup = function (key) {
   }
 
   return parent
+}
+
+// TODO: update these files
+export const spotByPath = function (path) {
+  const element = this
+  const arr = [].concat(path)
+  let active = root[arr[0]]
+
+  if (!arr || !arr.length) return console.log(arr, 'on', element.key, 'is undefined')
+
+  while (active.key === arr[0]) {
+    arr.shift()
+    if (!arr.length) break
+    active = active[arr[0]]
+    if (!active) return
+  }
+
+  return active
 }
 
 export const remove = function (params) {
@@ -104,6 +123,7 @@ export const isMethod = function (param) {
     param === 'remove' ||
     param === 'removeContent' ||
     param === 'lookup' ||
+    param === 'spotByPath' ||
     param === 'keys' ||
     param === 'parse' ||
     param === 'setProps' ||
