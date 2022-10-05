@@ -42,9 +42,11 @@ export default {
   __ifFalsy: {},
   __text: {},
   __element: {},
-  __class: {},
   __html: {},
+  __class: {},
   __className: {},
+  __classNames: {},
+  __attr: {},
   key: {},
   tag: {},
   parent: {},
@@ -62,5 +64,5 @@ export default {
   parseDeep: {},
   on: {},
   component: {},
-  context: {}
+  context: {},
 }

@@ -8,7 +8,6 @@ export default (params, element, node) => {
 
   if (isObject(state)) {
     for (const param in state) {
-      IGNORE_STATE_PARAMS
       if (IGNORE_STATE_PARAMS.includes(param)) continue
       element.state[param] = exec(state[param], element)
     }

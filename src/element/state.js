@@ -1,7 +1,8 @@
 'use strict'
 
+import { update } from '.'
 import { on } from '../event'
-import { deepClone, exec, isFunction, isObject, overwriteDeep } from '../utils'
+import { debounce, deepClone, exec, isFunction, isObject, overwriteDeep } from '../utils'
 
 export const IGNORE_STATE_PARAMS = ['update', 'parse', 'clean', 'parent', '__element', '__depends', '__ref']
 
@@ -37,7 +38,10 @@ export const updateState = function (obj, options = {}) {
 
   overwriteDeep(state, obj, IGNORE_STATE_PARAMS)
 
-  if (!options.preventUpdate) element.update({}, options)
+  if (!options.preventUpdate) debounce(element, update, 150)({}, {
+    preventStateUpdate: 'once',
+    ...options
+  })
 
   if (state.__depends) {
     for (const el in state.__depends) {

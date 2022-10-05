@@ -24,7 +24,11 @@ const ENV = process.env.NODE_ENV
  */
 const create = (element, parent, key, options = {}) => {
   // if ELEMENT is not given
-  if (element === undefined) element = {}
+  if (element === undefined) {
+    if (ENV === 'test' || ENV === 'development')
+      console.warn(key, 'element is undefined in', parent && parent.path)
+    element = {}
+  }
   if (element === null) return
 
   // if element is extend
@@ -97,6 +101,10 @@ const create = (element, parent, key, options = {}) => {
 
   // enable CLASS CACHING
   if (!element.__class) element.__class = {}
+  if (!element.__classNames) element.__classNames = {}
+
+  // enable CLASS CACHING
+  if (!element.__attr) element.__attr = {}
 
   // enable CHANGES storing
   if (!element.__changes) element.__changes = []
@@ -128,6 +136,7 @@ const create = (element, parent, key, options = {}) => {
   if (ENV === 'test' || ENV === 'development') {
     element.log = log
   }
+
 
   // enable STATE
   element.state = createState(element, parent)

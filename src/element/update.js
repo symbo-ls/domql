@@ -11,6 +11,8 @@ import { createNode } from '.'
 import { updateProps } from './props'
 import createState from './state'
 
+import { measure } from '@domql/performance'
+
 const UPDATE_DEFAULT_OPTIONS = {
   stackChanges: false,
   cleanExec: true,
@@ -62,26 +64,31 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     on.initUpdate(element.on.initUpdate, element, element.state)
   }
 
-
   for (const param in element) {
     const prop = element[param]
 
-    if (options.preventDefineUpdate === true || options.preventDefineUpdate === param) continue
-    if (options.preventContentUpdate && param === 'content') continue
-    if (isMethod(param) || isObject(registry[param]) || prop === undefined) continue
+    if (
+      options.preventDefineUpdate === true || options.preventDefineUpdate === param ||
+      options.preventContentUpdate && param === 'content' ||
+      options.preventStateUpdate && param === 'state' ||
+      isMethod(param) || isObject(registry[param]) || prop === undefined
+    ) continue
+    if (options.preventStateUpdate === 'once') options.preventStateUpdate = false
 
     const hasDefined = define && define[param]
     const ourParam = registry[param]
 
-    if (options.preventContentUpdate && param === 'content') console.log(param)
-
     if (ourParam) {
-      // measure([element.key, param], () => {
-        if (isFunction(ourParam)) ourParam(prop, element, node)
-      // }, { logLevel: 5 })
+      if (isFunction(ourParam)) {
+        // console.log(param)
+        ourParam(prop, element, node)
+      }
     } else if (prop && isObject(prop) && !hasDefined) {
       if (!options.preventRecursive) {
-        update.call(prop, params[prop], UPDATE_DEFAULT_OPTIONS)
+        const callChildUpdate = () => update.call(prop, params[prop], options)
+        if (element.props.lazyLoad || options.lazyLoad) {
+          window.requestAnimationFrame(() => callChildUpdate())
+        } else callChildUpdate()
       }
     }
   }

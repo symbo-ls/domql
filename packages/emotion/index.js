@@ -1,7 +1,7 @@
 'use strict'
 
 import DOM from '../../src'
-import { isObjectLike, exec, isObject, isEqualDeep } from '../../src/utils'
+import { isObjectLike, exec, isObject, isEqualDeep, memoize } from '../../src/utils'
 import { classList } from '../../src/element/mixins'
 import createEmotion from '@emotion/css/create-instance'
 const ENV = process.env.NODE_ENV
@@ -26,23 +26,32 @@ export const initEmotion = (container, options) => {
       if (isObjectLike(element.class)) element.class.elementStyle = execPareams
       else element.class = { elementStyle: execPareams }
     }
-    classf(element.class, element, node)
+    classf(element.class, element, node, true)
   }
 
-  const classf = (params, element, node) => {
-    const { __class } = element
-    if (isObjectLike(params)) {
-      const classObjHelper = {}
-      for (const key in params) {
-        const prop = exec(params[key], element)
-        if (!prop && prop === __class[key]) continue
-        __class[key] = prop
+  const classf = (params, element, node, flag) => {
+    if (element.style && !flag) return
+    const { __class, __classNames } = element
+    if (!isObjectLike(params)) return
+
+    for (const key in params) {
+      const prop = exec(params[key], element)
+
+      if (!prop) {
+        delete __class[key]
+        delete __classNames[key] = CSSed
+        continue
+      }
+
+      const isEqual = isEqualDeep(__class[key], prop)
+      if (!isEqual) {
         if ((ENV === 'test' || ENV === 'development') && isObject(prop)) prop.label = key || element.key
         const CSSed = css(prop)
-        classObjHelper[key] = CSSed
+        __class[key] = prop
+        __classNames[key] = CSSed
       }
-      classList(classObjHelper, element, node)
     }
+    classList(__classNames, element, node)
   }
 
   DOM.define({
