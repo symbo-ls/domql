@@ -176,3 +176,20 @@ export const flattenRecursive = (param, prop, stack = []) => {
 
   return stack
 }
+
+export const isEqualDeep = (param, element) => {
+  if (param === element) return true
+  if (!param || !element) return false
+  for (const prop in param) {
+    const paramProp = param[prop]
+    const elementProp = element[prop]
+    if (isObjectLike(paramProp)) {
+      const isEqual = isEqualDeep(paramProp, elementProp)
+      if (!isEqual) return false
+    } else {
+      const isEqual = paramProp === elementProp
+      if (!isEqual) return false
+    }
+  }
+  return true
+}
