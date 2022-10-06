@@ -28,8 +28,8 @@ export const initStateUpdated = (param, element, state) => {
   param(element, state)
 }
 
-export const stateUpdated = (param, element, state) => {
-  param(element, state)
+export const stateUpdated = (param, element, state, changes) => {
+  param(element, state, changes)
 }
 
 export const update = (param, element, state) => {

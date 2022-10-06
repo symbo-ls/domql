@@ -32,7 +32,8 @@ export default (params, element, node) => {
   if (isObject(params)) params = classify(params, element)
   // TODO: fails on string
   const className = params.replace(/\s+/g, ' ').trim()
-  if (className && className !== __className) node.classList = className
-  element.__className = className
+  node.classList = className
+  // if (className && className !== __className) node.classList = className
+  // element.__className = className
   return className
 }

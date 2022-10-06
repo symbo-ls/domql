@@ -1,10 +1,9 @@
 'use strict'
 
-import { update } from '.'
 import { on } from '../event'
 import { debounce, deepClone, exec, isFunction, isObject, overwriteDeep } from '../utils'
 
-export const IGNORE_STATE_PARAMS = ['update', 'parse', 'clean', 'parent', '__element', '__depends', '__ref']
+export const IGNORE_STATE_PARAMS = ['update', 'parse', 'clean', 'parent', 'systemUpdate', '__system', '__element', '__depends', '__ref']
 
 export const parseState = function () {
   const state = this
@@ -27,6 +26,13 @@ export const cleanState = function () {
   return state
 }
 
+export const systemUpdate = function (obj, options = {}) {
+  const state = this
+  const rootState = state.__element.__root.state
+  rootState.update({ SYSTEM: obj }, options)
+  return state
+}
+
 export const updateState = function (obj, options = {}) {
   const state = this
   const element = state.__element
@@ -38,10 +44,12 @@ export const updateState = function (obj, options = {}) {
 
   overwriteDeep(state, obj, IGNORE_STATE_PARAMS)
 
-  if (!options.preventUpdate) debounce(element, update, 150)({}, {
-    preventStateUpdate: 'once',
-    ...options
-  })
+  if (!options.preventUpdate) element.update({}, options)
+
+  // debounce(element, , 150)({}, {
+  //   // preventStateUpdate: 'once',
+  //   ...options
+  // })
 
   if (state.__depends) {
     for (const el in state.__depends) {
@@ -53,12 +61,12 @@ export const updateState = function (obj, options = {}) {
 
   // run `on.stateUpdated`
   if (element.on && isFunction(element.on.stateUpdated)) {
-    on.stateUpdated(element.on.stateUpdated, element, state)
+    on.stateUpdated(element.on.stateUpdated, element, state, obj)
   }
 }
 
 export default function (element, parent) {
-  let { state } = element
+  let { state, __root } = element
 
   if (!state) {
     if (parent && parent.state) return parent.state
@@ -82,7 +90,9 @@ export default function (element, parent) {
   state.clean = cleanState
   state.parse = parseState
   state.update = updateState
+  state.systemUpdate = systemUpdate
   state.parent = element.parent.state
+  state.__system = __root && __root.state && __root.state.SYSTEM || state.SYSTEM
 
   // run `on.stateCreated`
   if (element.on && isFunction(element.on.stateCreated)) {
