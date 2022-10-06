@@ -15,12 +15,12 @@ const initProps = (element, parent) => {
     return propValue
   }
 
+  if (matchParent && props !== 'match') propsStack.push(matchParent)
+  if (matchParentChild) propsStack.push(matchParentChild)
+
   if (isObject(props)) {
     propsStack.push(props)
   }
-
-  if (matchParent && props !== 'match') propsStack.push(matchParent)
-  if (matchParentChild) propsStack.push(matchParentChild)
 
   if (props === 'inherit') {
     if (parent.props) propsStack.push(parent.props)

@@ -19,6 +19,14 @@ import { registry } from './mixins'
 
 const ENV = process.env.NODE_ENV
 
+const isComponent = (key) => {
+  const isFirstKeyString = isString(key)
+  if(!isFirstKeyString) return
+
+  const firstCharKey = key.slice(0, 1)
+  return /^[A-Z]*$/.test(firstCharKey)
+}
+
 /**
  * Creating a domQL element using passed parameters
  */
@@ -39,11 +47,19 @@ const create = (element, parent, key, options = {}) => {
   // define KEY
   const assignedKey = element.key || key || createID.next().value
 
-  const firstKeyChar = isString(assignedKey) && assignedKey.slice(0, 1)
-  if (!element.extend && !element.props && /^[A-Z]*$/.test(firstKeyChar)) {
-    element = {
-      extend: assignedKey,
-      props: element
+  const { extend, props, state } = element
+
+  if (isComponent(assignedKey)) {
+    if (!extend && !props && !state) {
+      element = {
+        extend: assignedKey,
+        props: element
+      }
+    } else if (!extend) {
+      element = {
+        extend: assignedKey,
+        ...element
+      }
     }
   }
 
