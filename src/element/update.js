@@ -11,8 +11,6 @@ import { createNode } from '.'
 import { updateProps } from './props'
 import createState from './state'
 
-import { measure } from '@domql/performance'
-
 const UPDATE_DEFAULT_OPTIONS = {
   stackChanges: false,
   cleanExec: true,
