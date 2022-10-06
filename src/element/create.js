@@ -24,6 +24,7 @@ const isComponent = (key) => {
   if(!isFirstKeyString) return
 
   const firstCharKey = key.slice(0, 1)
+
   return /^[A-Z]*$/.test(firstCharKey)
 }
 
@@ -44,21 +45,34 @@ const create = (element, parent, key, options = {}) => {
     element = { extend: element }
   }
 
+  // if PARENT is not given
+  if (!parent) parent = root
+  if (isNode(parent)) parent = root[`${key}_parent`] = { key: ':root', node: parent }
+
+  // if element is STRING
+  if (isString(element) || isNumber(element)) {
+    element = {
+      text: element,
+      tag: (!element.extend && parent.childExtend && parent.childExtend.tag) ||
+      ((nodes.body.indexOf(key) > -1) && key) || 'string'
+    }
+  }
+
   // define KEY
   const assignedKey = element.key || key || createID.next().value
 
-  const { extend, props, state } = element
+  const { extend, props, state, childExtend, childProps } = element
 
   if (isComponent(assignedKey)) {
-    if (!extend && !props && !state) {
+    if (!extend && !childExtend && !props && !state || childProps) {
       element = {
         extend: assignedKey,
         props: element
       }
-    } else if (!extend) {
+    } else if (!extend || extend === true) {
       element = {
-        extend: assignedKey,
-        ...element
+        ...element,
+        extend: assignedKey
       }
     }
   }
@@ -76,19 +90,6 @@ const create = (element, parent, key, options = {}) => {
         }
         element.extend = {}
       }
-  }
-
-  // if PARENT is not given
-  if (!parent) parent = root
-  if (isNode(parent)) parent = root[`${key}_parent`] = { key: ':root', node: parent }
-
-  // if element is STRING
-  if (isString(element) || isNumber(element)) {
-    element = {
-      text: element,
-      tag: (!element.extend && parent.childExtend && parent.childExtend.tag) ||
-      ((nodes.body.indexOf(key) > -1) && key) || 'string'
-    }
   }
 
   // assign context
