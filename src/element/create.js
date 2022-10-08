@@ -66,7 +66,7 @@ const create = (element, parent, key, options = {}) => {
   if (isComponent(assignedKey)) {
     if (!extend && !childExtend && !props && !state || childProps) {
       element = {
-        extend: assignedKey,
+        extend: assignedKey.split('_')[0],
         props: element
       }
     } else if (!extend || extend === true) {
