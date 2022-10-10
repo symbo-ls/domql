@@ -60,7 +60,7 @@ export const updateState = function (obj, options = {}) {
   }
 
   // run `on.stateUpdated`
-  if (element.on && isFunction(element.on.stateUpdated)) {
+  if (!options.preventUpdateListener && element.on && isFunction(element.on.stateUpdated)) {
     on.stateUpdated(element.on.stateUpdated, element, state, obj)
   }
 }
