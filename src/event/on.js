@@ -20,6 +20,10 @@ export const attachNode = (param, element, state) => {
   param(element, state)
 }
 
+export const stateInit = (param, element, state) => {
+  param(element, state)
+}
+
 export const stateCreated = (param, element, state) => {
   param(element, state)
 }

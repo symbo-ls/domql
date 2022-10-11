@@ -154,7 +154,6 @@ const create = (element, parent, key, options = {}) => {
     element.log = log
   }
 
-
   // enable STATE
   element.state = createState(element, parent)
 

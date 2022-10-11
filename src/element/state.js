@@ -73,6 +73,11 @@ export default function (element, parent) {
     return {}
   }
 
+  // run `on.init`
+  if (element.on && isFunction(element.on.stateInit)) {
+    on.stateInit(element.on.stateInit, element, element.state)
+  }
+
   if (isFunction(state)) state = exec(state, element)
 
   const { __ref } = state
