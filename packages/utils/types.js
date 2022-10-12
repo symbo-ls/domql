@@ -48,3 +48,27 @@ export const isDefined = arg => {
     isArray(arg) ||
     isObjectLike(arg)
 }
+
+export const TYPES = {
+  array: isArray,
+  object: isObject,
+  string: isString,
+  number: isNumber,
+  function: isFunction,
+  objectLike: isObjectLike,
+  node: isNode,
+  htmlElement: isHtmlElement,
+  defined: isDefined
+}
+
+export const is = (arg) => {
+  return (...args) => {
+    return args.map(val => TYPES[val](arg)).filter(v => v).length > 0
+  }
+}
+
+export const isNot = (arg) => {
+  return (...args) => {
+    return args.map(val => TYPES[val](arg)).filter(v => v).length === 0
+  }
+}
