@@ -23,6 +23,7 @@ export default {
 
   extend: {},
   childExtend: {},
+  childExtendRecursive: {},
   props: {},
   path: {},
   if: {},

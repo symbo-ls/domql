@@ -1,6 +1,6 @@
 'use strict'
 
-import { isFunction, exec, getExtendStack, jointStacks, cloneAndMergeArrayExtend, deepMergeExtend } from '../utils'
+import { isFunction, exec, getExtendStack, jointStacks, cloneAndMergeArrayExtend, deepMergeExtend, isString } from '../utils'
 
 const ENV = process.env.NODE_ENV
 
@@ -12,6 +12,7 @@ export const applyExtend = (element, parent, options = {}) => {
   if (isFunction(element)) element = exec(element, parent)
 
   const { extend } = element
+  if (isString(extend)) extend = options.components[extend]
   const extendStack = getExtendStack(extend)
 
   if (ENV !== 'test' || ENV !== 'development') delete element.extend
@@ -22,6 +23,12 @@ export const applyExtend = (element, parent, options = {}) => {
     element.parent = parent
     if (!options.ignoreChildExtend) {
       childExtendStack = getExtendStack(parent.childExtend)
+
+      if (parent.childExtendRecursive) {
+        const childExtendRecursiveStack = getExtendStack(parent.childExtendRecursive)
+        childExtendStack = childExtendStack.concat(childExtendRecursiveStack)
+        element.childExtendRecursive = parent.childExtendRecursive
+      }
     }
   }
 

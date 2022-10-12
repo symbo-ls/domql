@@ -9,29 +9,23 @@ import set, { removeContentElement } from './set'
 import createState from './state'
 import createProps from './props'
 import update from './update'
-import * as on from '../event/on'
+import { on, is } from '../event'
 import { assignClass } from './mixins/classList'
 import { isFunction, isNumber, isString, createID, isNode, exec, isArray } from '../utils'
 import { remove, lookup, setProps, log, keys, parse, parseDeep, spotByPath } from './methods'
 import cacheNode from './cache'
 import { registry } from './mixins'
+import OPTIONS from './options'
 // import { overwrite, clone, fillTheRest } from '../utils'
 
 const ENV = process.env.NODE_ENV
 
-const isComponent = (key) => {
-  const isFirstKeyString = isString(key)
-  if(!isFirstKeyString) return
-
-  const firstCharKey = key.slice(0, 1)
-
-  return /^[A-Z]*$/.test(firstCharKey)
-}
-
 /**
  * Creating a domQL element using passed parameters
  */
-const create = (element, parent, key, options = {}) => {
+const create = (element, parent, key, options = OPTIONS.create || {}) => {
+  if (options && !OPTIONS.create) OPTIONS.create = options
+
   // if ELEMENT is not given
   if (element === undefined) {
     if (ENV === 'test' || ENV === 'development')
@@ -63,7 +57,7 @@ const create = (element, parent, key, options = {}) => {
 
   const { extend, props, state, childExtend, childProps } = element
 
-  if (isComponent(assignedKey)) {
+  if (isKeyComponent(assignedKey)) {
     if (!extend && !childExtend && !props && !state || childProps) {
       element = {
         extend: assignedKey.split('_')[0],
@@ -205,6 +199,15 @@ const create = (element, parent, key, options = {}) => {
   // console.groupEnd(element.key)
 
   return element
+}
+
+const isKeyComponent = (key) => {
+  const isFirstKeyString = isString(key)
+  if(!isFirstKeyString) return
+
+  const firstCharKey = key.slice(0, 1)
+
+  return /^[A-Z]*$/.test(firstCharKey)
 }
 
 export default create

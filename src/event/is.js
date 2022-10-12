@@ -1,5 +1,7 @@
 'use strict'
 
+import { isString } from '../utils'
+
 export const node = (node) => {
   const { Node } = window
   return (
@@ -11,3 +13,4 @@ export const node = (node) => {
         typeof node.tag === 'string'
   )
 }
+

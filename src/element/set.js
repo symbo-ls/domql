@@ -3,6 +3,7 @@
 import create from './create'
 import { isEqualDeep, isFunction } from '../utils'
 import { registry } from './mixins'
+import OPTIONS from './options'
 
 export const removeContentElement = function (el) {
   const element = el || this
@@ -35,7 +36,8 @@ const set = function (params, options, el) {
     if (!childExtend && element.childExtend) params.childExtend = element.childExtend
     create(params, element, 'content', {
       ignoreChildExtend: true,
-      ...registry.defaultOptions
+      ...registry.defaultOptions,
+      ...OPTIONS.create
     })
   }
 
