@@ -48,6 +48,7 @@ export default {
   __className: {},
   __classNames: {},
   __attr: {},
+  __currentSnapshot: {},
   key: {},
   tag: {},
   parent: {},

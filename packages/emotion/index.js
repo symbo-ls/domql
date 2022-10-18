@@ -6,19 +6,8 @@ import { classList } from '../../src/element/mixins'
 import createEmotion from '@emotion/css/create-instance'
 const ENV = process.env.NODE_ENV
 
-export const initEmotion = (container, options) => {
-  const {
-    flush,
-    hydrate,
-    cx,
-    merge,
-    getRegisteredStyles,
-    injectGlobal,
-    keyframes,
-    css,
-    sheet,
-    cache
-  } = createEmotion({ key: 'smbls', container })
+export const initDOMQLEmotion = (emotion, options) => {
+  if (!emotion) emotion = createEmotion(options || { key: 'smbls'})
 
   const style = (params, element, node) => {
     const execPareams = exec(params, element)
@@ -46,7 +35,7 @@ export const initEmotion = (container, options) => {
       const isEqual = isEqualDeep(__class[key], prop)
       if (!isEqual) {
         if ((ENV === 'test' || ENV === 'development') && isObject(prop)) prop.label = key || element.key
-        const CSSed = css(prop)
+        const CSSed = emotion.css(prop)
         __class[key] = prop
         __classNames[key] = CSSed
       }
@@ -61,5 +50,3 @@ export const initEmotion = (container, options) => {
     overwrite: true
   })
 }
-
-initEmotion()

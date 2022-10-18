@@ -1,25 +1,40 @@
 'use strict'
 
-import { overwrite, isFunction, isObject, isString, isNumber, isEqualDeep } from '../utils'
+import { overwrite, isFunction, isObject, isString, isNumber, createSnapshotId, merge } from '../utils'
 import { registry } from './mixins'
-import * as on from '../event/on'
+import { on } from '../event'
 import { isMethod } from './methods'
 import { throughUpdatedDefine, throughUpdatedExec } from './iterate'
-import { merge } from '../utils/object'
 import { appendNode } from './assign'
-import { createNode } from '.'
+import { createNode } from './node'
 import { updateProps } from './props'
-import createState from './state'
+
+const snapshot = {
+  snapshotId: createSnapshotId()
+}
 
 const UPDATE_DEFAULT_OPTIONS = {
   stackChanges: false,
   cleanExec: true,
-  preventRecursive: false
+  preventRecursive: false,
+  currentSnapshot: false,
+  calleeElement: false
 }
 
 const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
   const element = this
   const { define, parent, node } = element
+
+  const { currentSnapshot, calleeElement } = options
+  if (!calleeElement) {
+    element.__currentSnapshot = snapshot.snapshotId.next().value
+  }
+  const snapshotOnCallee = element.__currentSnapshot || calleeElement && calleeElement.__currentSnapshot
+  if (snapshotOnCallee && currentSnapshot < snapshotOnCallee) {
+    // console.log(calleeElement)
+    // console.log(currentSnapshot, snapshotOnCallee, 'cancelling')
+    // return
+  }
 
   if (isString(params) || isNumber(params)) {
     params = { text: params }
@@ -44,22 +59,21 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
   const overwriteChanges = overwrite(element, params, UPDATE_DEFAULT_OPTIONS)
   const execChanges = throughUpdatedExec(element, UPDATE_DEFAULT_OPTIONS)
   const definedChanges = throughUpdatedDefine(element)
-  // console.log(execChanges)
-  // console.log(definedChanges)
 
   if (options.stackChanges && element.__stackChanges) {
     const stackChanges = merge(definedChanges, merge(execChanges, overwriteChanges))
     element.__stackChanges.push(stackChanges)
   }
 
-  if (element.__ifFalsy) return element
+  if (element.__ifFalsy) return false
   if (!node) {
     // return createNode(element, options)
     return
   }
 
   if (element.on && isFunction(element.on.initUpdate) && !options.ignoreInitUpdate) {
-    on.initUpdate(element.on.initUpdate, element, element.state)
+    const whatinitreturns = on.initUpdate(element.on.initUpdate, element, element.state)
+    if (whatinitreturns === false) return
   }
 
   for (const param in element) {
@@ -78,20 +92,23 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
 
     if (ourParam) {
       if (isFunction(ourParam)) {
-        // console.log(param)
         ourParam(prop, element, node)
       }
     } else if (prop && isObject(prop) && !hasDefined) {
       if (!options.preventRecursive) {
-        const callChildUpdate = () => update.call(prop, params[prop], options)
+        const childUpdateCall = () => update.call(prop, params[prop], {  
+          ...options,
+          currentSnapshot: snapshotOnCallee,
+          calleeElement: element 
+        })
         if (element.props.lazyLoad || options.lazyLoad) {
-          window.requestAnimationFrame(() => callChildUpdate())
-        } else callChildUpdate()
+          window.requestAnimationFrame(() => childUpdateCall())
+        } else childUpdateCall()
       }
     }
   }
 
-  if (element.on && isFunction(element.on.update)) {
+  if (!options.preventUpdate && element.on && isFunction(element.on.update)) {
     on.update(element.on.update, element, element.state)
   }
 }
