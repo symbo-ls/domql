@@ -11,7 +11,7 @@ const ENV = process.env.NODE_ENV
 export const applyExtend = (element, parent, options = {}) => {
   if (isFunction(element)) element = exec(element, parent)
 
-  const { extend } = element
+  let { extend } = element
   if (isString(extend)) extend = options.components[extend]
   const extendStack = getExtendStack(extend)
 
