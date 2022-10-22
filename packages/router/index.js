@@ -13,7 +13,8 @@ const defaultOptions = {
   pushState: true,
   scrollToTop: true,
   scrollToNode: false,
-  useFragment: false
+  useFragment: false,
+  updateState: true
 }
 
 export const router = (
@@ -28,13 +29,13 @@ export const router = (
   const [pathname, hash] = (path).split('#')
 
   const route = getActiveRoute(pathname, options.level)
-  const content = element.routes[route]
+  const content = element.routes[route] || element.routes['/*']
 
   if (content) {
     if (options.pushState) window.history.pushState(state, null, pathname + (hash ? `#${hash}` : ''))
 
     element.set({ tag: options.useFragment && 'fragment', extend: content })
-    element.state.update({ route, hash })
+    if (options.updateState) element.state.update({ route, hash })
 
     const rootNode = element.node
     if (options.scrollToTop) rootNode.scrollTo({ behavior: 'smooth', top: 0, left: 0 })
