@@ -104,9 +104,8 @@ export const jointStacks = (extendStack, childExtendStack) => {
 // init
 export const getExtendStack = extend => {
   if (!extend) return []
-  if (extend.__hash) return getHashedExtend(extend)
+  if (extend.__hash) return getHashedExtend(extend) ||  []
   const stack = flattenExtend(extend, [])
-  // console.log(stack)
   return getExtendStackRegistry(extend, stack)
 }
 

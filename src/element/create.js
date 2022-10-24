@@ -201,7 +201,7 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
   return element
 }
 
-const isKeyComponent = (key) => {
+export const isKeyComponent = (key) => {
   const isFirstKeyString = isString(key)
   if(!isFirstKeyString) return
 

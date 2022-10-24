@@ -14,6 +14,7 @@ export const applyExtend = (element, parent, options = {}) => {
   let { extend } = element
   if (isString(extend)) extend = options.components[extend]
   const extendStack = getExtendStack(extend)
+  
 
   if (ENV !== 'test' || ENV !== 'development') delete element.extend
 

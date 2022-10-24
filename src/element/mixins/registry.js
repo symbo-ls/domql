@@ -30,6 +30,7 @@ export default {
   define: {},
   transform: {},
   __hash: {},
+  __componentKey: {},
   __cached: {},
   __defined: {},
   __exec: {},
