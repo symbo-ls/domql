@@ -1,6 +1,6 @@
 'use strict'
 
-import { exec, isFunction, isNumber, isString, overwrite } from '../utils'
+import { isObject, exec, isFunction, isNumber, isString, overwrite } from '../utils'
 import { isMethod } from './methods'
 
 export const applyEvents = element => {
@@ -51,9 +51,20 @@ export const throughUpdatedExec = (element, options) => {
   return changes
 }
 
-export const throughInitialDefine = element => {
+export const throughInitialDefine = (element, options) => {
   const { define } = element
-  for (const param in define) {
+  let obj = {}
+  
+  if (isObject(define)) {
+    obj = { ...define }
+  }
+  if (isObject(options.define)) {
+    // console.log('==============')
+    // console.log(options.define)
+    obj = { ...obj, ...options.define }
+  }
+
+  for (const param in obj) {
     let prop = element[param]
 
     if (isFunction(prop) && !isMethod(param)) {
@@ -62,19 +73,28 @@ export const throughInitialDefine = element => {
     }
 
     element.__cached[param] = prop
-    element[param] = define[param](prop, element, element.state)
+    element[param] = obj[param](prop, element, element.state)
   }
   return element
 }
 
-export const throughUpdatedDefine = element => {
+export const throughUpdatedDefine = (element, options) => {
   const { define, __exec } = element
   const changes = {}
-  for (const param in define) {
+  let obj = {}
+  
+  if (isObject(define)) {
+    obj = { ...define }
+  }
+  if (isObject(options.define)) {
+    obj = { ...obj, ...options.define }
+  }
+
+  for (const param in obj) {
     const execParam = __exec[param]
     if (execParam) element.__cached[param] = execParam(element, element.state)
     const cached = exec(element.__cached[param], element)
-    element[param] = define[param](cached, element, element.state)
+    element[param] = obj[param](cached, element, element.state)
   }
   return changes
 }

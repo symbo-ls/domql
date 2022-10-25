@@ -58,7 +58,7 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
 
   const overwriteChanges = overwrite(element, params, UPDATE_DEFAULT_OPTIONS)
   const execChanges = throughUpdatedExec(element, UPDATE_DEFAULT_OPTIONS)
-  const definedChanges = throughUpdatedDefine(element)
+  const definedChanges = throughUpdatedDefine(element, options)
 
   if (options.stackChanges && element.__stackChanges) {
     const stackChanges = merge(definedChanges, merge(execChanges, overwriteChanges))
@@ -90,11 +90,20 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     const hasDefined = define && define[param]
     const ourParam = registry[param]
 
-    if (ourParam) {
+    const hasOptionsDefine = options.define && options.define[param]
+
+    if (options.define) {
+      console.group('update')
+      console.log(param, options.define)
+      console.log(prop, hasOptionsDefine)
+      console.groupEnd('update')
+    }
+
+    if (ourParam && !hasOptionsDefine) {
       if (isFunction(ourParam)) {
         ourParam(prop, element, node)
       }
-    } else if (prop && isObject(prop) && !hasDefined) {
+    } else if (prop && isObject(prop) && !hasDefined && !hasOptionsDefine) {
       if (!options.preventRecursive) {
         const childUpdateCall = () => update.call(prop, params[prop], {  
           ...options,

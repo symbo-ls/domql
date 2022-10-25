@@ -169,7 +169,7 @@ export const overwrite = (element, params, options) => {
     const elementProp = element[e]
     const paramsProp = params[e]
 
-    if (paramsProp) {
+    if (paramsProp !== undefined) {
       element.__cached[e] = changes[e] = elementProp
       element[e] = paramsProp
     }

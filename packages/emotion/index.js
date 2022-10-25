@@ -6,19 +6,19 @@ import { classList } from '../../src/element/mixins'
 import createEmotion from '@emotion/css/create-instance'
 const ENV = process.env.NODE_ENV
 
-export const initDOMQLEmotion = (emotion, options) => {
-  if (!emotion) emotion = createEmotion(options || { key: 'smbls'})
-
-  const style = (params, element, node) => {
+export const transformEmotionStyle = (emotion, live) => {
+  return  (params, element, node) => {
     const execPareams = exec(params, element)
     if (params) {
       if (isObjectLike(element.class)) element.class.elementStyle = execPareams
       else element.class = { elementStyle: execPareams }
     }
-    classf(element.class, element, node, true)
+    transformEmotionClass(emotion, live)(element.class, element, node, true)
   }
+}
 
-  const classf = (params, element, node, flag) => {
+export const transformEmotionClass = (emotion, live) => {
+  return (params, element, state, flag) => {
     if (element.style && !flag) return
     const { __class, __classNames } = element
     if (!isObjectLike(params)) return
@@ -40,12 +40,16 @@ export const initDOMQLEmotion = (emotion, options) => {
         __classNames[key] = CSSed
       }
     }
-    classList(__classNames, element, node)
+    classList(__classNames, element, element.node, live)
   }
+}
+
+export const initDOMQLEmotion = (emotion, options) => {
+  if (!emotion) emotion = createEmotion(options || { key: 'smbls' })
 
   DOM.define({
-    style,
-    class: classf
+    style: transformEmotionStyle(emotion),
+    class: transformEmotionClass(emotion)
   }, {
     overwrite: true
   })

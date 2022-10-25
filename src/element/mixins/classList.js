@@ -24,7 +24,7 @@ export const classify = (obj, element) => {
   return className
 }
 
-export default (params, element, node) => {
+export default (params, element, node, live) => {
   if (!params) return
   const { key, __className } = element
   if (params === true) params = element.class = { key }

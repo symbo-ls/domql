@@ -61,7 +61,7 @@ const createNode = (element, options) => {
   // iterate through all given params
   if (element.tag !== 'string' || element.tag !== 'fragment') {
     // iterate through define
-    if (isObject(element.define)) throughInitialDefine(element)
+    throughInitialDefine(element, options)
 
     // iterate through exec
     throughInitialExec(element)
@@ -76,10 +76,18 @@ const createNode = (element, options) => {
 
       const hasDefined = element.define && element.define[param]
       const ourParam = registry[param]
+      const hasOptionsDefine = options.define && options.define[param]
 
-      if (ourParam) { // Check if param is in our method registry
+      if (options.define) {
+      // console.group('create')
+      // console.log(param, options.define)
+      //   console.log(prop, hasOptionsDefine)
+      // console.groupEnd('create')
+    }
+      
+      if (ourParam && !hasOptionsDefine) { // Check if param is in our method registry
         if (isFunction(ourParam)) ourParam(prop, element, node, options)
-      } else if (element[param] && !hasDefined) {
+      } else if (element[param] && !hasDefined&& !hasOptionsDefine) {
         create(prop, element, param, options) // Create element
       }
     }
