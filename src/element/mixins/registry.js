@@ -52,6 +52,7 @@ export default {
   __currentSnapshot: {},
   key: {},
   tag: {},
+  query: {},
   parent: {},
   node: {},
   set: {},

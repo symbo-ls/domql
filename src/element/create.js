@@ -61,7 +61,10 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
     if (!extend && !childExtend && !props && !state || childProps) {
       element = {
         extend: assignedKey.split('_')[0],
-        props: element
+        props: {
+          fromKey: assignedKey.split('_')[1],
+          ...element
+        }
       }
     } else if (!extend || extend === true) {
       element = {
