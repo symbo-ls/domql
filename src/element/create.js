@@ -9,9 +9,9 @@ import set, { removeContentElement } from './set'
 import createState from './state'
 import createProps from './props'
 import update from './update'
-import { on, is } from '../event'
+import { on } from '../event'
 import { assignClass } from './mixins/classList'
-import { isFunction, isNumber, isString, createID, isNode, exec, isArray } from '../utils'
+import { isFunction, isNumber, isString, createID, isNode, exec } from '../utils'
 import { remove, lookup, setProps, log, keys, parse, parseDeep, spotByPath } from './methods'
 import cacheNode from './cache'
 import { registry } from './mixins'
@@ -59,7 +59,7 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
 
   if (isKeyComponent(assignedKey)) {
     if (!extend && !childExtend && !props && !state || childProps) {
-      element = {
+      parent[assignedKey] = element = {
         extend: assignedKey.split('_')[0],
         props: {
           fromKey: assignedKey.split('_')[1],
@@ -67,7 +67,7 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
         }
       }
     } else if (!extend || extend === true) {
-      element = {
+      parent[assignedKey] = element = {
         ...element,
         extend: assignedKey
       }

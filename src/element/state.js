@@ -97,7 +97,8 @@ export default function (element, parent) {
   state.update = updateState
   state.systemUpdate = systemUpdate
   state.parent = element.parent.state
-  state.__system = __root && __root.state && __root.state.SYSTEM || state.SYSTEM
+  state.__root = __root ? __root.state : state
+  state.__system = state.__root.SYSTEM || state.SYSTEM
 
   // run `on.stateCreated`
   if (element.on && isFunction(element.on.stateCreated)) {
