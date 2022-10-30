@@ -3,7 +3,7 @@
 import { on } from '../event'
 import { debounce, deepClone, exec, isFunction, isObject, overwriteDeep } from '../utils'
 
-export const IGNORE_STATE_PARAMS = ['update', 'parse', 'clean', 'parent', 'systemUpdate', '__system', '__element', '__depends', '__ref']
+export const IGNORE_STATE_PARAMS = ['update', 'parse', 'clean', 'parent', 'systemUpdate', '__system', '__element', '__depends', '__ref', '__root']
 
 export const parseState = function () {
   const state = this
