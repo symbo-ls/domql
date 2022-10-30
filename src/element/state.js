@@ -44,22 +44,16 @@ export const updateState = function (obj, options = {}) {
 
   overwriteDeep(state, obj, IGNORE_STATE_PARAMS)
 
+  // TODO: try debounce
   if (!options.preventUpdate) element.update({}, options)
-
-  // debounce(element, , 150)({}, {
-  //   // preventStateUpdate: 'once',
-  //   ...options
-  // })
-
+  
   if (state.__depends) {
     for (const el in state.__depends) {
-      // const findElement = element.spotByPath(state.__depends[el])
       const findElement = state.__depends[el]
       findElement.clean().update(state.parse(), options)
     }
   }
 
-  // run `on.stateUpdated`
   if (!options.preventUpdateListener && element.on && isFunction(element.on.stateUpdated)) {
     on.stateUpdated(element.on.stateUpdated, element, state, obj)
   }
