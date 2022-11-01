@@ -11,7 +11,7 @@ const ENV = process.env.NODE_ENV
 export const applyExtend = (element, parent, options = {}) => {
   if (isFunction(element)) element = exec(element, parent)
 
-  let { extend } = element
+  let { extend, props } = element
   if (isString(extend)) extend = options.components[extend]
   const extendStack = getExtendStack(extend)
   
@@ -23,6 +23,8 @@ export const applyExtend = (element, parent, options = {}) => {
     // Assign parent attr to the element
     element.parent = parent
     if (!options.ignoreChildExtend) {
+      if (props && props.ignoreChildExtend) return
+      
       childExtendStack = getExtendStack(parent.childExtend)
 
       if (parent.childExtendRecursive) {

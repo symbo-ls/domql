@@ -129,5 +129,30 @@ export const isMethod = function (param) {
     param === 'setProps' ||
     param === 'parseDeep' ||
     param === 'if' ||
-    param === 'log'
+    param === 'log' || 
+    param === 'nextElement' ||
+    param === 'previousElement'
+}
+
+export const nextElement = function () {
+  const element = this
+  const { key, parent } = element
+  const { __children } = parent
+
+  const currentIndex = __children.indexOf(key)
+  const nextChild = __children[currentIndex + 1]
+  console.log(nextChild)
+
+  return parent[nextChild]
+}
+
+export const previousElement = function (el) {
+  const element = el || this
+  const { key, parent } = element
+  const { __children } = parent
+
+  if (!__children) return
+
+  const currentIndex = __children.indexOf(key)
+  return parent[__children[currentIndex - 1]]
 }

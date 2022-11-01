@@ -12,7 +12,7 @@ import update from './update'
 import { on } from '../event'
 import { assignClass } from './mixins/classList'
 import { isFunction, isNumber, isString, createID, isNode, exec } from '../utils'
-import { remove, lookup, setProps, log, keys, parse, parseDeep, spotByPath } from './methods'
+import { remove, lookup, setProps, log, keys, parse, parseDeep, spotByPath, nextElement, previousElement } from './methods'
 import cacheNode from './cache'
 import { registry } from './mixins'
 import OPTIONS from './options'
@@ -58,7 +58,8 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
   const { extend, props, state, childExtend, childProps } = element
 
   if (isKeyComponent(assignedKey)) {
-    if (!extend && !childExtend && !props && !state || childProps) {
+    const hasComponentAttrs = extend || childExtend || props || state || element.on
+    if (!hasComponentAttrs || childProps) {
       parent[assignedKey] = element = {
         extend: assignedKey.split('_')[0],
         props: {
@@ -147,6 +148,8 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
   element.parse = parse
   element.parseDeep = parseDeep
   element.keys = keys
+  element.nextElement = nextElement
+  element.previousElement = previousElement
   if (ENV === 'test' || ENV === 'development') {
     element.log = log
   }
