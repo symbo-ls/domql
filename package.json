@@ -23,13 +23,17 @@
   },
   "source": true,
   "dependencies": {
+    "@domql/utils": "^2.3.11",
     "regenerator-runtime": "^0.13.5"
+  },
+  "peerDependencies": {
+    "@emotion/css": "^11.10.0"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
+    "@emotion/css": "^11.10.0",
     "@babel/eslint-parser": "^7.16.3",
     "@babel/preset-env": "^7.16.4",
-    "@emotion/css": "^11.10.0",
     "@parcel/babel-preset-env": "^2.0.1",
     "babel-jest": "^29.0.0",
     "esbuild": "^0.15.5",

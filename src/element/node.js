@@ -28,7 +28,7 @@ const ENV = process.env.NODE_ENV
 //   }
 // })
 
-const createNode = (element, options) => {
+export const createNode = (element, options) => {
   // create and assign a node
   let { node, tag } = element
 

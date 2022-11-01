@@ -1,5 +1,6 @@
 'use strict'
 
+import { isNot } from '@domql/utils'
 import { exec, report } from '../../utils'
 
 /**
@@ -8,7 +9,7 @@ import { exec, report } from '../../utils'
 export default (params, element, node) => {
   const { __attr } = element
   if (params) {
-    if (!(typeof params === 'object')) report('HTMLInvalidAttr', params)
+    if (isNot('object')) report('HTMLInvalidAttr', params)
     for (const attr in params) {
       // if (!node) node = element.node
       const val = exec(params[attr], element)
