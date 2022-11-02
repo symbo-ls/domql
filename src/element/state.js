@@ -3,7 +3,7 @@
 import { on } from '../event'
 import { debounce, deepClone, exec, isFunction, isObject, overwriteDeep } from '../utils'
 
-export const IGNORE_STATE_PARAMS = ['update', 'parse', 'clean', 'parent', 'systemUpdate', '__system', '__element', '__depends', '__ref', '__root']
+export const IGNORE_STATE_PARAMS = ['update', 'parse', 'clean', 'parent', 'systemUpdate', '__client_system', '__element', '__depends', '__ref', '__root']
 
 export const parseState = function () {
   const state = this
@@ -28,8 +28,8 @@ export const cleanState = function () {
 
 export const systemUpdate = function (obj, options = {}) {
   const state = this
-  const rootState = state.__element.__root.state
-  rootState.update({ SYSTEM: obj }, options)
+  const rootState = (state.__element.__root || state.__element).state
+  rootState.update({ CLIENT_SYSTEM: obj }, options)
   return state
 }
 
@@ -92,7 +92,10 @@ export default function (element, parent) {
   state.systemUpdate = systemUpdate
   state.parent = element.parent.state
   state.__root = __root ? __root.state : state
-  state.__system = state.__root.SYSTEM || state.SYSTEM
+  state.__components = (state.__root || state).COMPONENTS
+  state.__client_system = (state.__root || state).CLIENT_SYSTEM
+  state.__client_state = (state.__root || state).CLIENT_STATE
+  state.__client_library = (state.__root || state).CLIENT_LIBRARY
 
   // run `on.stateCreated`
   if (element.on && isFunction(element.on.stateCreated)) {
