@@ -67,7 +67,7 @@ export const deepCloneExtend = obj => {
 
 export const deepMergeExtend = (element, extend) => {
   for (const e in extend) {
-    if (['parent', 'node', '__element', '__root'].indexOf(e) > -1) continue
+    if (['parent', 'node', '__element', '__root', '__key'].indexOf(e) > -1) continue
     const elementProp = element[e]
     const extendProp = extend[e]
     if (elementProp === undefined) {
