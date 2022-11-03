@@ -5,7 +5,7 @@ import { debounce, deepClone, exec, isFunction, isObject, overwriteDeep } from '
 
 export const IGNORE_STATE_PARAMS = [
   'update', 'parse', 'clean', 'parent', 'systemUpdate', '__element', '__depends', '__ref', '__root',
-  '__components', '__client_system', '__client_state', '__client_library'
+  '__components', '__projectSystem', '__projectState', '__projectLibrary'
 ]
 
 export const parseState = function () {
@@ -32,7 +32,7 @@ export const cleanState = function () {
 export const systemUpdate = function (obj, options = {}) {
   const state = this
   const rootState = (state.__element.__root || state.__element).state
-  rootState.update({ CLIENT_SYSTEM: obj }, options)
+  rootState.update({ PROJECT_SYSTEM: obj }, options)
   return state
 }
 
@@ -96,9 +96,9 @@ export default function (element, parent) {
   state.parent = element.parent.state
   state.__root = __root ? __root.state : state
   state.__components = (state.__root || state).COMPONENTS
-  state.__client_system = (state.__root || state).CLIENT_SYSTEM
-  state.__client_state = (state.__root || state).CLIENT_STATE
-  state.__client_library = (state.__root || state).CLIENT_LIBRARY
+  state.__projectSystem = (state.__root || state).PROJECT_SYSTEM
+  state.__projectState = (state.__root || state).PROJECT_STATE
+  state.__projectLibrary = (state.__root || state).PROJECT_LIBRARY
 
   // run `on.stateCreated`
   if (element.on && isFunction(element.on.stateCreated)) {
