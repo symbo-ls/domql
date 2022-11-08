@@ -1,6 +1,7 @@
 {
   "private": true,
   "repository": "https://github.com/domql/domql",
+  "workspaces": [ "packages/*" ],
   "scripts": {
     "start": "parcel examples/index.html --no-cache --port 1200",
     "build": "lerna run build",
