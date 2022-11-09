@@ -92,13 +92,6 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
 
     const hasOptionsDefine = options.define && options.define[param]
 
-    if (options.define) {
-      console.group('update')
-      console.log(param, options.define)
-      console.log(prop, hasOptionsDefine)
-      console.groupEnd('update')
-    }
-
     if (ourParam && !hasOptionsDefine) {
       if (isFunction(ourParam)) {
         ourParam(prop, element, node)
