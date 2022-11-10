@@ -8,7 +8,6 @@
   "publishConfig": {
     "registry": "https://registry.npmjs.org"
   },
-  "main": "src/index.js",
   "files": [
     "src",
     "packages"
@@ -24,6 +23,7 @@
   "source": true,
   "dependencies": {
     "@domql/utils": "^2.3.11",
+    "@swc/helpers": "^0.4.12",
     "regenerator-runtime": "^0.13.5"
   },
   "peerDependencies": {
@@ -54,7 +54,11 @@
     "presets": [
       [
         "@parcel/babel-preset-env",
-        { "targets": { "node": "current" } }
+        {
+          "targets": {
+            "node": "current"
+          }
+        }
       ]
     ]
   },
