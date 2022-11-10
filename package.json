@@ -17,7 +17,7 @@
     "start": "parcel examples/index.html --no-cache",
     "build": "parcel build examples/index.html",
     "standard": "npx standard \"src/**/*.js\"",
-    "test": "yarn standard && jest --coverage --coverageReporters=text-lcov | coveralls",
+    "test": "yarn standard; jest --coverage --coverageReporters=text-lcov | coveralls",
     "test-watch": "jest --watch",
     "bump": "npx np"
   },
@@ -31,11 +31,12 @@
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
-    "@emotion/css": "^11.10.0",
     "@babel/eslint-parser": "^7.16.3",
     "@babel/preset-env": "^7.16.4",
+    "@emotion/css": "^11.10.0",
     "@parcel/babel-preset-env": "^2.0.1",
-    "babel-jest": "^29.0.0",
+    "babel-jest": "^29.3.1",
+    "coveralls": "^3.1.1",
     "esbuild": "^0.15.5",
     "eslint": "^8.4.0",
     "eslint-config-standard": "^17.0.0",
@@ -48,6 +49,14 @@
     "np": "^7.2.0",
     "parcel": "^2.0.1",
     "standard": "^16.0.1"
+  },
+  "babel": {
+    "presets": [
+      [
+        "@parcel/babel-preset-env",
+        { "targets": { "node": "current" } }
+      ]
+    ]
   },
   "jest": {
     "collectCoverageFrom": [
