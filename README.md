@@ -36,7 +36,7 @@ Key features:
 To install all dependencies and run dev server, run:
 
 ```shell
-yarn && yarn start
+yarn setup && yarn start
 ```
 
 ### Examples
