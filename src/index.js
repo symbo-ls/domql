@@ -1,7 +1,5 @@
 'use strict'
 
-import 'regenerator-runtime/runtime'
-
 import { create, parse, set, define, tree } from './element'
 
 const ENV = process.env.NODE_ENV

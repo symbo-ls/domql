@@ -23,8 +23,7 @@
   "source": true,
   "dependencies": {
     "@domql/utils": "^2.3.11",
-    "@swc/helpers": "^0.4.12",
-    "regenerator-runtime": "^0.13.5"
+    "@swc/helpers": "^0.4.12"
   },
   "peerDependencies": {
     "@emotion/css": "^11.10.0"

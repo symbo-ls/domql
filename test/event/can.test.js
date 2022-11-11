@@ -1,6 +1,5 @@
 'use strict'
 
-import 'regenerator-runtime/runtime'
 import { can } from '../../src/event'
 
 test('checks with valid tags', () => {

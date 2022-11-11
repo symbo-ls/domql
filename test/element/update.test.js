@@ -1,6 +1,5 @@
 'use strict'
 
-import 'regenerator-runtime/runtime'
 import { create } from '../../src/element'
 
 var element = create({})
