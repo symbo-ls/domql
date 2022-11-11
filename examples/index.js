@@ -56,9 +56,12 @@ const root = {
   footer
 }
 
-DOM.create(root, null, null, {
+const app = DOM.create(root, null, null, {
   // transform: { react: transformReact }
+  transform: {
+    showMeKeys: (a, b, c, d) => Object.keys(a).map(v => v + ' hello')
+  }
 })
-
+console.log(app)
 // const later = performance.now()
 // console.log(later - now)

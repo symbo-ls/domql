@@ -23,7 +23,7 @@
     "@babel/core": "^7.16.0",
     "@babel/eslint-parser": "^7.16.3",
     "@babel/preset-env": "^7.16.4",
-    "@parcel/babel-preset-env": "^2.0.1",
+    "@parcel/babel-preset-env": "^2.7.0",
     "babel-jest": "^29.2.1",
     "esbuild": "^0.15.7",
     "eslint": "^8.4.0",
@@ -32,8 +32,8 @@
     "eslint-plugin-jest": "^27.1.3",
     "eslint-plugin-node": "^11.1.0",
     "jest": "^29.0.2",
-    "lerna": "^6.0.1",
     "jsdom": "^20.0.1",
+    "lerna": "^6.0.1",
     "nodemon": "^2.0.6",
     "np": "^7.2.0",
     "parcel": "^2.0.1",
@@ -47,6 +47,5 @@
   },
   "babel": {},
   "browserslist": "> 0.25%, not dead",
-  "dependencies": {},
   "version": "0.0.3"
 }
