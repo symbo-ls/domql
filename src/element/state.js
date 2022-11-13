@@ -42,7 +42,8 @@ export const updateState = function (obj, options = {}) {
 
   // run `on.stateUpdated`
   if (element.on && isFunction(element.on.initStateUpdated)) {
-    on.initStateUpdated(element.on.initStateUpdated, element, state)
+    const initReturns = on.initStateUpdated(element.on.initStateUpdated, element, state, obj)
+    if (initReturns === false) return
   }
 
   overwriteDeep(state, obj, IGNORE_STATE_PARAMS)

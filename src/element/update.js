@@ -56,6 +56,11 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
 
   if (!element.__ifFalsy && !options.preventPropsUpdate) updateProps(params.props, element, parent)
 
+  if (element.on && isFunction(element.on.initUpdate) && !options.ignoreInitUpdate) {
+    const whatinitreturns = on.initUpdate(element.on.initUpdate, element, element.state)
+    if (whatinitreturns === false) return
+  }
+
   const overwriteChanges = overwrite(element, params, UPDATE_DEFAULT_OPTIONS)
   const execChanges = throughUpdatedExec(element, UPDATE_DEFAULT_OPTIONS)
   const definedChanges = throughUpdatedDefine(element, options)
@@ -69,11 +74,6 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
   if (!node) {
     // return createNode(element, options)
     return
-  }
-
-  if (element.on && isFunction(element.on.initUpdate) && !options.ignoreInitUpdate) {
-    const whatinitreturns = on.initUpdate(element.on.initUpdate, element, element.state)
-    if (whatinitreturns === false) return
   }
 
   for (const param in element) {
