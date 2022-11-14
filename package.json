@@ -3,7 +3,7 @@
   "description": "DOM rendering Javascript framework at early stage.",
   "private": false,
   "author": "symbo.ls",
-  "version": "1.5.46",
+  "version": "1.5.47",
   "repository": "https://github.com/domql/domql",
   "publishConfig": {
     "registry": "https://registry.npmjs.org"
