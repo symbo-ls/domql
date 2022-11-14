@@ -59,10 +59,10 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
 
   if (isKeyComponent(assignedKey)) {
     const hasComponentAttrs = extend || childExtend || props || state || element.on
-    const [ component, key ] = assignedKey.split('_')
+    // const [ component, key ] = assignedKey.split('_')
     if (!hasComponentAttrs || childProps) {
       parent[assignedKey] = element = {
-        extend: component,
+        extend: assignedKey,
         props: {
           fromKey: key,
           ...element
@@ -71,10 +71,7 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
     } else if (!extend || extend === true) {
       parent[assignedKey] = element = {
         ...element,
-        extend: component,
-        props: {
-          fromKey: key
-        }
+        extend: assignedKey
       }
     }
   }
