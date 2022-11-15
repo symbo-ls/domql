@@ -41,7 +41,7 @@ const extend4 = {
 //   ])
 // })
 
-test('should MEGRE', () => {
+test.skip('should MEGRE', () => {
   const arr = getExtendMerged(extend4)
   expect(arr).toStrictEqual({
     div4: 'div4',

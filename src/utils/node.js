@@ -1,12 +1,14 @@
 'use strict'
 
-export const cleanWithNode = extend => delete extend.node && extend
+export const createID = (function() {
+  let index = 0
 
-export const createSnapshotId = function * () {
-  let index = 1
-  while (index < index + 1) {
-    yield index++
+  function newId() {
+    index++
+    return index
   }
-}
 
-export const createID = (createSnapshotId())
+  return newId
+})()
+
+export const createSnapshotId = createID

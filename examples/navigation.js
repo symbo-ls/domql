@@ -8,7 +8,7 @@ var listItem = {
   }
 }
 
-// var navImtes = [{
+// var navItems = [{
 //   key: 'home',
 //   text: 'Home'
 // }, {
@@ -24,7 +24,7 @@ var listItem = {
 
 var navigation = {
   childExtend: listItem,
-  // ...navImtes
+  // ...navItems
   home: 'Home',
   about: 'About',
   faq: 'FAQ',

@@ -6,19 +6,18 @@ import header from './header'
 import footer from './footer'
 import Icon from './icon'
 
-var icon = {
+const icon = {
   extend: Icon,
   name: 'toke'
 }
 
-var { performance } = window
-var now = performance.now()
+const { performance } = window
+const now = performance.now()
 
-var list = []
-
+const list = []
 for (let i = 0; i < 35; i++) {
   const afrika = {
-    text: 'Hello Afrika - ' + parseInt(Math.random() * 100),
+    text: `Hello Afrika - ${parseInt(Math.random() * 100)}`,
     tag: 'li',
     attr: {
       align: 'right'
@@ -41,21 +40,20 @@ for (let i = 0; i < 35; i++) {
 
   const yay = 'yay'
 
-  afrika[lion] = lion
-  afrika[yay] = yay
+  afrika.lion = lion
+  afrika.yay = yay
 
   list[i] = afrika
 }
 
-var root = {
+const root = {
   header,
   list,
-
   icon,
   footer
 }
 
 DOM.create(root)
 
-var later = performance.now()
+const later = performance.now()
 console.log(later - now)

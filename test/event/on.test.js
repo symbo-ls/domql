@@ -1,6 +1,5 @@
 'use strict'
 
-import 'regenerator-runtime/runtime'
 import create from '../../src/element/create'
 
 test('check if all element events are firing', () => {

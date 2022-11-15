@@ -1,6 +1,5 @@
 'use strict'
 
-import 'regenerator-runtime/runtime'
 import { create, parse } from '../../src/element'
 
 const element = create({ tag: 'header', text: 'asd' })

@@ -11,7 +11,7 @@ import { updateProps } from './props'
 import createState from './state'
 
 const snapshot = {
-  snapshotId: createSnapshotId()
+  snapshotId: createSnapshotId
 }
 
 const UPDATE_DEFAULT_OPTIONS = {
@@ -28,7 +28,7 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
 
   const { currentSnapshot, calleeElement } = options
   if (!calleeElement) {
-    element.__currentSnapshot = snapshot.snapshotId.next().value
+    element.__currentSnapshot = snapshot.snapshotId()
   }
   const snapshotOnCallee = element.__currentSnapshot || calleeElement && calleeElement.__currentSnapshot
   if (snapshotOnCallee && currentSnapshot < snapshotOnCallee) {

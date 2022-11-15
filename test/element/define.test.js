@@ -1,6 +1,5 @@
 'use strict'
 
-import 'regenerator-runtime/runtime'
 import { create, define } from '../../src/element'
 import { registry } from '../../src/element/mixins'
 
