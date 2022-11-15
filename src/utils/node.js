@@ -1,7 +1,7 @@
 'use strict'
 
 export const createID = (function() {
-  let index = 1
+  let index = 0
 
   function newId() {
     index++
