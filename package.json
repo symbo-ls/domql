@@ -8,6 +8,7 @@
   "publishConfig": {
     "registry": "https://registry.npmjs.org"
   },
+  "main": "src/index.js",
   "files": [
     "src",
     "packages"
