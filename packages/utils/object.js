@@ -53,15 +53,19 @@ export const clone = obj => {
 /**
  * Deep cloning of object
  */
-export const deepClone = (obj, excluding = ['parent', 'node', '__element', '__root']) => {
+export const deepClone = (obj) => {
+  if (isArray(obj)) {
+    return obj.map(deepClone)
+  }
   const o = {}
   for (const prop in obj) {
-    if (excluding.indexOf(prop) > -1) continue
     let objProp = obj[prop]
     if (prop === 'extend' && isArray(objProp)) {
       objProp = mergeArray(objProp)
     }
-    if (isObjectLike(objProp)) {
+    if (isArray(objProp)) {
+      o[prop] = objProp.map(deepClone)
+    } else if (isObject(objProp)) {
       o[prop] = deepClone(objProp)
     } else o[prop] = objProp
   }
