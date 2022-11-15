@@ -22,13 +22,8 @@
   },
   "source": true,
   "dependencies": {
-<<<<<<< HEAD
     "@domql/utils": "latest",
-    "regenerator-runtime": "^0.13.5"
-=======
-    "@domql/utils": "^2.3.11",
     "@swc/helpers": "^0.4.12"
->>>>>>> 665f6b702701aa1496d323fef7967c058b63e834
   },
   "peerDependencies": {
     "@emotion/css": "^11.10.0"
