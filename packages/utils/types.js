@@ -15,6 +15,10 @@ export const isNumber = arg => typeof arg === 'number'
 
 export const isFunction = arg => typeof arg === 'function'
 
+export const isBoolean = arg => arg === true || arg === false
+
+export const isNull = arg => arg === null
+
 export const isArray = arg => Array.isArray(arg)
 
 export const isObjectLike = arg => {
@@ -46,14 +50,18 @@ export const isDefined = arg => {
     isNumber(arg) ||
     isFunction(arg) ||
     isArray(arg) ||
-    isObjectLike(arg)
+    isObjectLike(arg) ||
+    isBoolean(arg) ||
+    isNull(arg)
 }
 
 export const TYPES = {
+  boolean: isBoolean,
   array: isArray,
   object: isObject,
   string: isString,
   number: isNumber,
+  null: isNull,
   function: isFunction,
   objectLike: isObjectLike,
   node: isNode,
