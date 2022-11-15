@@ -2,6 +2,7 @@
   "private": true,
   "repository": "https://github.com/domql/domql",
   "scripts": {
+    "setup": "yarn && lerna link --force-local",
     "start": "parcel examples/index.html --no-cache --port 1200",
     "build": "lerna run build",
     "build:domql": "parcel build packages/all/index.js && esbuild packages/all/index.js --bundle --format=cjs --outfile=packages/all/dist/module.bundle.cjs.js && esbuild packages/all/allExports.js --bundle --format=cjs --outfile=packages/all/dist/exports.js",
