@@ -4,7 +4,7 @@ import create from './create'
 import cacheNode from './cache'
 import * as on from '../event/on'
 
-import { isFunction, isObject } from '../utils'
+import { exec, isFunction, isObject } from '../utils'
 import {
   throughInitialDefine,
   throughInitialExec,
@@ -88,7 +88,7 @@ export const createNode = (element, options) => {
       if (ourParam && !hasOptionsDefine) { // Check if param is in our method registry
         if (isFunction(ourParam)) ourParam(prop, element, node, options)
       } else if (element[param] && !hasDefined&& !hasOptionsDefine) {
-        create(prop, element, param, options) // Create element
+        create(exec(prop, element), element, param, options) // Create element
       }
     }
   }

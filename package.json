@@ -23,7 +23,7 @@
   },
   "source": true,
   "dependencies": {
-    "@domql/utils": "^2.3.11",
+    "@domql/utils": "latest",
     "regenerator-runtime": "^0.13.5"
   },
   "peerDependencies": {

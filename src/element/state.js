@@ -1,11 +1,13 @@
 'use strict'
 
 import { on } from '../event'
-import { debounce, deepClone, exec, isFunction, isObject, overwriteDeep } from '../utils'
+import { debounce, deepClone, exec, isString, overwriteDeep } from '../utils'
+import { is, isObject, isFunction, isObjectLike, isNot } from '@domql/utils'
 
 export const IGNORE_STATE_PARAMS = [
-  'update', 'parse', 'clean', 'parent', 'systemUpdate', '__element', '__depends', '__ref', '__root',
-  '__components', '__projectSystem', '__projectState', '__projectLibrary'
+  'update', 'parse', 'clean', 'parent', '__element', '__depends', '__ref', '__root',
+  '__components', '__projectSystem', '__projectState', '__projectLibrary',
+  'projectStateUpdate', 'projectSystemUpdate'
 ]
 
 export const parseState = function () {
@@ -29,10 +31,19 @@ export const cleanState = function () {
   return state
 }
 
-export const systemUpdate = function (obj, options = {}) {
+export const projectSystemUpdate = function (obj, options = {}) {
   const state = this
+  if (!state) return
   const rootState = (state.__element.__root || state.__element).state
   rootState.update({ PROJECT_SYSTEM: obj }, options)
+  return state
+}
+
+export const projectStateUpdate = function (obj, options = {}) {
+  const state = this
+  if (!state) return
+  const rootState = (state.__element.__root || state.__element).state
+  rootState.update({ PROJECT_STATE: obj }, options)
   return state
 }
 
@@ -45,8 +56,17 @@ export const updateState = function (obj, options = {}) {
     const initReturns = on.initStateUpdated(element.on.initStateUpdated, element, state, obj)
     if (initReturns === false) return
   }
-
-  overwriteDeep(state, obj, IGNORE_STATE_PARAMS)
+  
+  if (element.__state) {
+    if (state.parent && state.parent[element.__state]) {
+      const keyInParentState = state.parent[element.__state]
+      if (keyInParentState) {
+        return state.parent.update({ [element.__state]: obj }, options)
+      }
+    }
+  } else {
+    overwriteDeep(state, obj, IGNORE_STATE_PARAMS)
+  }
 
   // TODO: try debounce
   if (!options.preventUpdate) element.update({}, options)
@@ -65,19 +85,42 @@ export const updateState = function (obj, options = {}) {
 
 export default function (element, parent) {
   let { state, __root } = element
+  
+  if (isFunction(state)) state = exec(state, element)
 
+  if (is(state)('string', 'number')) {
+    element.__state = state 
+    state = {}
+  }
+  if (state === true) {
+    element.__state = element.key 
+    state = {}
+  }
+  
   if (!state) {
     if (parent && parent.state) return parent.state
     return {}
+  } else {
+    element.__hasRootState = true
   }
-
+  
   // run `on.init`
   if (element.on && isFunction(element.on.stateInit)) {
     on.stateInit(element.on.stateInit, element, element.state)
   }
+  
+  if (element.__state) {
+    if (parent && parent.state && parent.state[element.__state]) {
+      const keyInParentState = parent.state[element.__state]
+      if (is(keyInParentState)('object', 'array')) {
+        state = deepClone(keyInParentState)
+      } else if (is(state)('string', 'number')) {
+        state = { value: state }
+      }
+    }
+  }
 
-  if (isFunction(state)) state = exec(state, element)
-
+  // reference other state
   const { __ref } = state
   if (__ref) {
     state = deepClone(__ref, IGNORE_STATE_PARAMS)
@@ -89,13 +132,16 @@ export default function (element, parent) {
   }
 
   element.state = state
-  state.__element = element
   state.clean = cleanState
   state.parse = parseState
   state.update = updateState
-  state.systemUpdate = systemUpdate
   state.parent = element.parent.state
+  state.__element = element
   state.__root = __root ? __root.state : state
+
+  // editor stuff
+  state.projectSystemUpdate = projectSystemUpdate
+  state.projectStateUpdate = projectStateUpdate
   state.__components = (state.__root || state).COMPONENTS
   state.__projectSystem = (state.__root || state).PROJECT_SYSTEM
   state.__projectState = (state.__root || state).PROJECT_STATE

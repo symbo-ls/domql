@@ -1,6 +1,6 @@
 'use strict'
 
-import { overwrite, isFunction, isObject, isString, isNumber, createSnapshotId, merge } from '../utils'
+import { overwrite, isFunction, isObject, isString, isNumber, createSnapshotId, merge, deepClone } from '../utils'
 import { registry } from './mixins'
 import { on } from '../event'
 import { isMethod } from './methods'
@@ -8,6 +8,7 @@ import { throughUpdatedDefine, throughUpdatedExec } from './iterate'
 import { appendNode } from './assign'
 import { createNode } from './node'
 import { updateProps } from './props'
+import createState from './state'
 
 const snapshot = {
   snapshotId: createSnapshotId()
@@ -23,7 +24,7 @@ const UPDATE_DEFAULT_OPTIONS = {
 
 const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
   const element = this
-  const { define, parent, node } = element
+  const { define, parent, node, state } = element
 
   const { currentSnapshot, calleeElement } = options
   if (!calleeElement) {
@@ -53,6 +54,13 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
       element.__ifFalsy = true
     }
   }
+  
+  if (element.__state) {
+    const keyInParentState = parent.state[element.__state]
+    if (keyInParentState) {
+      element.state = createState(element, parent)
+    }
+  } else if (!element.__hasRootState) element.state = parent && parent.state || {}
 
   if (!element.__ifFalsy && !options.preventPropsUpdate) updateProps(params.props, element, parent)
 

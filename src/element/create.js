@@ -33,6 +33,7 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
     element = {}
   }
   if (element === null) return
+  if (element === true) element = { text: true }
 
   // if element is extend
   if (element.__hash) {
@@ -45,10 +46,12 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
 
   // if element is STRING
   if (isString(element) || isNumber(element)) {
+    const extendTag = element.extend && element.extend.tag
+    const childExtendTag = parent.childExtend && parent.childExtend.tag
+    const isKeyValidHTMLTag = ((nodes.body.indexOf(key) > -1) && key)
     element = {
       text: element,
-      tag: (!element.extend && parent.childExtend && parent.childExtend.tag) ||
-      ((nodes.body.indexOf(key) > -1) && key) || 'string'
+      tag: extendTag || childExtendTag || isKeyValidHTMLTag || 'string'
     }
   }
 
@@ -59,19 +62,34 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
 
   if (isKeyComponent(assignedKey)) {
     const hasComponentAttrs = extend || childExtend || props || state || element.on
-    // const [ component, key ] = assignedKey.split('_')
+    const componentKey = assignedKey.split('_')[0]
     if (!hasComponentAttrs || childProps) {
       parent[assignedKey] = element = {
-        extend: assignedKey,
-        props: {
-          fromKey: key,
-          ...element
-        }
+        extend: componentKey || assignedKey,
+        props: { ...element }
       }
     } else if (!extend || extend === true) {
       parent[assignedKey] = element = {
         ...element,
-        extend: assignedKey
+        extend: componentKey || assignedKey
+      }
+    }
+  }
+
+  // Responsive rendering
+  // TODO: move as define plugin
+  if (assignedKey.slice(0, 1) === '@') {
+    if (props) {
+      props.display = 'none'
+      if (props[assignedKey]) props[assignedKey].display = props.display
+      else props[assignedKey] = { display: props.display || 'block' }
+    } else {
+      parent[assignedKey] = element = {
+        ...element,
+        props: {
+          display: 'none',
+          [assignedKey]: { display: 'block' }
+        }
       }
     }
   }
