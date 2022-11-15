@@ -114,8 +114,8 @@ export default function (element, parent) {
       const keyInParentState = parent.state[element.__state]
       if (is(keyInParentState)('object', 'array')) {
         state = deepClone(keyInParentState)
-      } else if (is(state)('string', 'number')) {
-        state = { value: state }
+      } else if (is(keyInParentState)('string', 'number')) {
+        state = { value: keyInParentState }
       }
     }
   }
