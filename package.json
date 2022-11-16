@@ -22,13 +22,6 @@
     "bump": "npx np"
   },
   "source": true,
-  "dependencies": {
-    "@domql/utils": "latest",
-    "@swc/helpers": "^0.4.12"
-  },
-  "peerDependencies": {
-    "@emotion/css": "^11.10.0"
-  },
   "devDependencies": {
     "@babel/core": "^7.16.0",
     "@babel/eslint-parser": "^7.16.3",

@@ -28,8 +28,7 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
 
   // if ELEMENT is not given
   if (element === undefined) {
-    if (ENV === 'test' || ENV === 'development')
-      console.warn(key, 'element is undefined in', parent && parent.path)
+    if (ENV === 'test' || ENV === 'development') { console.warn(key, 'element is undefined in', parent && parent.path) }
     element = {}
   }
   if (element === null) return
@@ -96,9 +95,9 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
 
   if (options.components) {
     const { components } = options
-    const { extend, component } = element
+    const { extend } = element
     const execExtend = exec(extend, element)
-    if (isString(execExtend))
+    if (isString(execExtend)) {
       if (components[execExtend]) element.extend = components[execExtend]
       else {
         if (ENV === 'test' || ENV === 'development') {
@@ -107,6 +106,7 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
         }
         element.extend = {}
       }
+    }
   }
 
   // assign context
@@ -228,7 +228,7 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
 
 export const isKeyComponent = (key) => {
   const isFirstKeyString = isString(key)
-  if(!isFirstKeyString) return
+  if (!isFirstKeyString) return
 
   const firstCharKey = key.slice(0, 1)
 

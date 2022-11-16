@@ -45,4 +45,3 @@ const set = function (params, options, el) {
 }
 
 export default set
-
