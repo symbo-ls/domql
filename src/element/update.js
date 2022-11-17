@@ -54,7 +54,7 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
       element.__ifFalsy = true
     }
   }
-  
+
   if (element.__state) {
     const keyInParentState = parent.state[element.__state]
     if (keyInParentState) {
@@ -106,10 +106,10 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
       }
     } else if (prop && isObject(prop) && !hasDefined && !hasOptionsDefine) {
       if (!options.preventRecursive) {
-        const childUpdateCall = () => update.call(prop, params[prop], {  
+        const childUpdateCall = () => update.call(prop, params[prop], {
           ...options,
           currentSnapshot: snapshotOnCallee,
-          calleeElement: element 
+          calleeElement: element
         })
         if (element.props.lazyLoad || options.lazyLoad) {
           window.requestAnimationFrame(() => childUpdateCall())

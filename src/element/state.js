@@ -1,8 +1,8 @@
 'use strict'
 
 import { on } from '../event'
-import { debounce, deepClone, exec, isString, overwriteDeep } from '../utils'
-import { is, isObject, isFunction, isObjectLike, isNot } from '@domql/utils'
+import { deepClone, exec, overwriteDeep } from '../utils'
+import { is, isObject, isFunction } from '@domql/utils'
 
 export const IGNORE_STATE_PARAMS = [
   'update', 'parse', 'clean', 'parent', '__element', '__depends', '__ref', '__root',
@@ -56,7 +56,7 @@ export const updateState = function (obj, options = {}) {
     const initReturns = on.initStateUpdated(element.on.initStateUpdated, element, state, obj)
     if (initReturns === false) return
   }
-  
+
   if (element.__state) {
     if (state.parent && state.parent[element.__state]) {
       const keyInParentState = state.parent[element.__state]
@@ -70,7 +70,7 @@ export const updateState = function (obj, options = {}) {
 
   // TODO: try debounce
   if (!options.preventUpdate) element.update({}, options)
-  
+
   if (state.__depends) {
     for (const el in state.__depends) {
       const findElement = state.__depends[el]
@@ -85,30 +85,30 @@ export const updateState = function (obj, options = {}) {
 
 export default function (element, parent) {
   let { state, __root } = element
-  
+
   if (isFunction(state)) state = exec(state, element)
 
   if (is(state)('string', 'number')) {
-    element.__state = state 
+    element.__state = state
     state = {}
   }
   if (state === true) {
-    element.__state = element.key 
+    element.__state = element.key
     state = {}
   }
-  
+
   if (!state) {
     if (parent && parent.state) return parent.state
     return {}
   } else {
     element.__hasRootState = true
   }
-  
+
   // run `on.init`
   if (element.on && isFunction(element.on.stateInit)) {
     on.stateInit(element.on.stateInit, element, element.state)
   }
-  
+
   if (element.__state) {
     if (parent && parent.state && parent.state[element.__state]) {
       const keyInParentState = parent.state[element.__state]
@@ -126,7 +126,7 @@ export default function (element, parent) {
     state = deepClone(__ref, IGNORE_STATE_PARAMS)
     if (isObject(__ref.__depends)) {
       __ref.__depends[element.key] = state
-    } else __ref.__depends = { [element.key] : state }
+    } else __ref.__depends = { [element.key]: state }
   } else {
     state = deepClone(state, IGNORE_STATE_PARAMS)
   }
