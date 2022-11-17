@@ -83,11 +83,11 @@ export const createNode = (element, options) => {
       // console.log(param, options.define)
       //   console.log(prop, hasOptionsDefine)
       // console.groupEnd('create')
-    }
-      
+      }
+
       if (ourParam && !hasOptionsDefine) { // Check if param is in our method registry
         if (isFunction(ourParam)) ourParam(prop, element, node, options)
-      } else if (element[param] && !hasDefined&& !hasOptionsDefine) {
+      } else if (element[param] && !hasDefined && !hasOptionsDefine) {
         create(exec(prop, element), element, param, options) // Create element
       }
     }

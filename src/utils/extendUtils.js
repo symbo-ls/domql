@@ -1,6 +1,6 @@
 'use strict'
 
-import { exec, isArray, isFunction, isObject } from './object'
+import { isArray, isFunction, isObject } from './object'
 
 export const generateHash = () => Math.random().toString(36).substring(2)
 
@@ -23,8 +23,7 @@ export const setHashedExtend = (extend, stack) => {
 }
 
 export const getExtendStackRegistry = (extend, stack) => {
-  if (extend.__hash)
-    return stack.concat(getHashedExtend(extend))
+  if (extend.__hash) { return stack.concat(getHashedExtend(extend)) }
   return setHashedExtend(extend, stack) // stack .concat(hashedExtend)
 }
 
@@ -104,7 +103,7 @@ export const jointStacks = (extendStack, childExtendStack) => {
 // init
 export const getExtendStack = extend => {
   if (!extend) return []
-  if (extend.__hash) return getHashedExtend(extend) ||  []
+  if (extend.__hash) return getHashedExtend(extend) || []
   const stack = flattenExtend(extend, [])
   return getExtendStackRegistry(extend, stack)
 }

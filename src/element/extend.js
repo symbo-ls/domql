@@ -14,7 +14,6 @@ export const applyExtend = (element, parent, options = {}) => {
   let { extend, props } = element
   if (isString(extend)) extend = options.components[extend]
   const extendStack = getExtendStack(extend)
-  
 
   if (ENV !== 'test' || ENV !== 'development') delete element.extend
 
@@ -24,7 +23,7 @@ export const applyExtend = (element, parent, options = {}) => {
     element.parent = parent
     if (!options.ignoreChildExtend) {
       if (props && props.ignoreChildExtend) return
-      
+
       childExtendStack = getExtendStack(parent.childExtend)
 
       if (parent.childExtendRecursive) {

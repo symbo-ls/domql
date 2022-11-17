@@ -72,5 +72,5 @@ export default {
   parseDeep: {},
   on: {},
   component: {},
-  context: {},
+  context: {}
 }
