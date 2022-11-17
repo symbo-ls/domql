@@ -1,6 +1,6 @@
 'use strict'
 
-import { overwrite, isFunction, isObject, isString, isNumber, createSnapshotId, merge, deepClone } from '../utils'
+import { overwrite, isFunction, isObject, isString, isNumber, createSnapshotId, merge } from '../utils'
 import { registry } from './mixins'
 import { on } from '../event'
 import { isMethod } from './methods'
