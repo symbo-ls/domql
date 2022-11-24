@@ -84,22 +84,18 @@ export const keys = function () {
 export const parse = function () {
   const element = this
   const obj = {}
-  const keys = element.keys()
-  keys.forEach(v => (obj[v] = element[v]))
+  const keyList = keys.call(element)
+  keyList.forEach(v => (obj[v] = element[v]))
   return obj
 }
 
-export const parseDeep = function (param) {
+export const parseDeep = function () {
   const element = this
-  const orig = param || element
-  const obj = {}
-  const keys = orig.keys && orig.keys()
-  if (!keys) return
-  keys.forEach(v => {
-    const prop = orig[v]
-    if (isObjectLike(prop)) parseDeep(prop)
-    else obj[v] = prop
-  })
+  const obj = parse.call(element)
+  for (const k in obj) {
+    if (isObjectLike(obj[k]))
+      obj[k] = parseDeep.call(obj[k])
+  }
   return obj
 }
 
