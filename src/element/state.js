@@ -109,9 +109,20 @@ export default function (element, parent) {
     on.stateInit(element.on.stateInit, element, element.state)
   }
 
-  if (element.__state) {
-    if (parent && parent.state && parent.state[element.__state]) {
-      const keyInParentState = parent.state[element.__state]
+  let stateKey = element.__state
+  if (stateKey) {
+    let parentState = parent.state
+    let parentStateKey
+    if (stateKey.includes('../')) {
+      stateKey = stateKey.split('../')[1]
+      parentState = parent.state.parent
+    }
+    if (stateKey.includes('.')) {
+      [parentStateKey, stateKey] = stateKey.split('.')
+      parentState = parentState[parentStateKey]
+    }
+    if (parentState && parentState[stateKey]) {
+      const keyInParentState = parentState[stateKey]
       if (is(keyInParentState)('object', 'array')) {
         state = deepClone(keyInParentState)
       } else if (is(keyInParentState)('string', 'number')) {
