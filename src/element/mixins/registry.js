@@ -74,3 +74,15 @@ export default {
   component: {},
   context: {}
 }
+
+// List of keys for .parse() and .parseDeep() to include in the result.
+// Keys not in the array are excluded.
+export const parseFilters = {
+  elementKeys: [
+    'tag', 'text', 'style', 'attr', 'class', 'state', 'class',
+    'data', 'content', 'html',
+    // TODO: 'props' ?
+  ],
+  propsKeys: ['__element'],
+  stateKeys: [],
+}

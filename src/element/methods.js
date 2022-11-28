@@ -1,7 +1,7 @@
 'use strict'
 
 import { isFunction, isObject, isObjectLike } from '../utils'
-import { registry } from './mixins'
+import { registry, parseFilters } from './mixins'
 import root from './root'
 import { removeContentElement } from './set'
 
@@ -74,9 +74,9 @@ export const keys = function () {
   const element = this
   const keys = []
   for (const param in element) {
-    if (!isObject(registry[param])) {
-      keys.push(param)
-    }
+    if (registry[param] && !parseFilters.elementKeys.includes(param))
+      continue
+    keys.push(param)
   }
   return keys
 }
