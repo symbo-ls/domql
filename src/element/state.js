@@ -60,7 +60,7 @@ export const updateState = function (obj, options = {}) {
   if (element.__state) {
     if (state.parent && state.parent[element.__state]) {
       const keyInParentState = state.parent[element.__state]
-      if (keyInParentState) {
+      if (keyInParentState && !options.stopStatePropogation) {
         return state.parent.update({ [element.__state]: obj }, options)
       }
     }
@@ -69,7 +69,7 @@ export const updateState = function (obj, options = {}) {
   }
 
   // TODO: try debounce
-  if (!options.preventUpdate) element.update({}, options)
+  if (!options.preventUpdate || options.preventUpdate === 'recursive') element.update({}, { ...options, preventUpdate: true })
 
   if (state.__depends) {
     for (const el in state.__depends) {
@@ -113,7 +113,7 @@ export default function (element, parent) {
   if (stateKey) {
     let parentState = parent.state
     let parentStateKey
-    if (stateKey.includes('../')) {
+    if (stateKey.includes('..')) {
       stateKey = stateKey.split('../')[1]
       parentState = parent.state.parent
     }

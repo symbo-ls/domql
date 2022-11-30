@@ -24,13 +24,13 @@ const UPDATE_DEFAULT_OPTIONS = {
 
 const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
   const element = this
-  const { define, parent, node, state } = element
+  const { define, parent, node } = element
 
   const { currentSnapshot, calleeElement } = options
   if (!calleeElement) {
     element.__currentSnapshot = snapshot.snapshotId()
   }
-  const snapshotOnCallee = element.__currentSnapshot || calleeElement && calleeElement.__currentSnapshot
+  const snapshotOnCallee = element.__currentSnapshot || (calleeElement && calleeElement.__currentSnapshot)
   if (snapshotOnCallee && currentSnapshot < snapshotOnCallee) {
     // console.log(calleeElement)
     // console.log(currentSnapshot, snapshotOnCallee, 'cancelling')
@@ -60,7 +60,7 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     if (keyInParentState) {
       element.state = createState(element, parent)
     }
-  } else if (!element.__hasRootState) element.state = parent && parent.state || {}
+  } else if (!element.__hasRootState) element.state = (parent && parent.state) || {}
 
   if (!element.__ifFalsy && !options.preventPropsUpdate) updateProps(params.props, element, parent)
 
@@ -88,9 +88,10 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     const prop = element[param]
 
     if (
-      options.preventDefineUpdate === true || options.preventDefineUpdate === param ||
-      options.preventContentUpdate && param === 'content' ||
-      options.preventStateUpdate && param === 'state' ||
+      options.preventDefineUpdate === true ||
+      options.preventDefineUpdate === param ||
+      (options.preventContentUpdate && param === 'content') ||
+      (options.preventStateUpdate && param) === 'state' ||
       isMethod(param) || isObject(registry[param]) || prop === undefined
     ) continue
     if (options.preventStateUpdate === 'once') options.preventStateUpdate = false

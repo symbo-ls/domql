@@ -3,7 +3,6 @@
 import { isFunction, isObject, isObjectLike } from '../utils'
 import { registry } from './mixins'
 import root from './root'
-import { removeContentElement } from './set'
 
 const ENV = process.env.NODE_ENV
 
@@ -12,7 +11,7 @@ export const lookup = function (key) {
   const element = this
   let { parent } = element
 
-  while (parent.key !== key){
+  while (parent.key !== key) {
     if (parent[key]) return parent[key]
     parent = parent.parent
     if (!parent) return
@@ -93,8 +92,7 @@ export const parseDeep = function () {
   const element = this
   const obj = parse.call(element)
   for (const k in obj) {
-    if (isObjectLike(obj[k]))
-      obj[k] = parseDeep.call(obj[k])
+    if (isObjectLike(obj[k])) { obj[k] = parseDeep.call(obj[k]) }
   }
   return obj
 }
@@ -125,7 +123,7 @@ export const isMethod = function (param) {
     param === 'setProps' ||
     param === 'parseDeep' ||
     param === 'if' ||
-    param === 'log' || 
+    param === 'log' ||
     param === 'nextElement' ||
     param === 'previousElement'
 }
