@@ -9,7 +9,6 @@ import style from './style'
 import text from './text'
 import state from './state'
 import registry from './registry'
-
 export {
   attr,
   classList,
@@ -19,5 +18,6 @@ export {
   text,
   html,
   state,
-  registry
+  registry,
 }
+export * from './registry'
