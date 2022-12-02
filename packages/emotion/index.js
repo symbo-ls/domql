@@ -7,11 +7,11 @@ import createEmotion from '@emotion/css/create-instance'
 const ENV = process.env.NODE_ENV
 
 export const transformEmotionStyle = (emotion, live) => {
-  return (params, element, node) => {
-    const execPareams = exec(params, element)
+  return  (params, element, node) => {
+    const execParams = exec(params, element)
     if (params) {
-      if (isObjectLike(element.class)) element.class.elementStyle = execPareams
-      else element.class = { elementStyle: execPareams }
+      if (isObjectLike(element.class)) element.class.elementStyle = execParams
+      else element.class = { elementStyle: execParams }
     }
     transformEmotionClass(emotion, live)(element.class, element, node, true)
   }
