@@ -26,7 +26,7 @@ export const classify = (obj, element) => {
 
 export default (params, element, node, live) => {
   if (!params) return
-  const { key, __className } = element
+  const { key, __className } = element // eslint-disable-line
   if (params === true) params = element.class = { key }
   if (isString(params)) params = element.class = { default: params }
   if (isObject(params)) params = classify(params, element)

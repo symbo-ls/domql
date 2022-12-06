@@ -2,7 +2,7 @@
 
 import { on } from '../event'
 import { deepClone, exec, overwriteDeep } from '../utils'
-import { is, isObject, isFunction } from '@domql/utils'
+import { is, isObject, isFunction, isUndefined } from '@domql/utils'
 
 export const IGNORE_STATE_PARAMS = [
   'update', 'parse', 'clean', 'parent', '__element', '__depends', '__ref', '__root',
@@ -113,7 +113,7 @@ export default function (element, parent) {
   if (stateKey) {
     let parentState = parent.state
     let parentStateKey
-    if (stateKey.includes('..')) {
+    while (stateKey.includes('..')) {
       stateKey = stateKey.split('../')[1]
       parentState = parent.state.parent
     }
@@ -127,6 +127,9 @@ export default function (element, parent) {
         state = deepClone(keyInParentState)
       } else if (is(keyInParentState)('string', 'number')) {
         state = { value: keyInParentState }
+      } else if (isUndefined(keyInParentState)) {
+        console.warn(stateKey, 'is not in present', 'replacing with ', {})
+        state = {}
       }
     }
   }
