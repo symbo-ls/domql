@@ -113,9 +113,10 @@ export default function (element, parent) {
   if (stateKey) {
     let parentState = parent.state
     let parentStateKey
-    while (stateKey.includes('..')) {
-      stateKey = stateKey.split('../')[1]
-      parentState = parent.state.parent
+    const parents = stateKey.split('../')
+    for (let i = 1; i < parents.length; i++) {
+      stateKey = parents[i]
+      parentState = parentState.parent
     }
     if (stateKey.includes('.')) {
       [parentStateKey, stateKey] = stateKey.split('.')

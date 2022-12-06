@@ -1,7 +1,7 @@
 'use strict'
 
 import DOM from '../../src'
-import { isObjectLike, exec, isObject, isEqualDeep, memoize } from '../../src/utils'
+import { isObjectLike, exec, isObject, isEqualDeep } from '../../src/utils'
 import { classList } from '../../src/element/mixins'
 import createEmotion from '@emotion/css/create-instance'
 const ENV = process.env.NODE_ENV
