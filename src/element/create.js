@@ -109,6 +109,12 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
     }
   }
 
+  // Only resolve extends, skip everything else
+  if (options.onlyResolveExtends) {
+    applyExtend(element, parent, options)
+    return element;
+  }
+
   // assign context
   if (options.context && !root.context) root.context = options.context
   element.context = root.context
