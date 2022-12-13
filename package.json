@@ -70,5 +70,8 @@
   "browserslist": [
     "> 1%",
     "ie >= 9"
-  ]
+  ],
+  "dependencies": {
+    "@domql/utils": "^2.3.14"
+  }
 }
