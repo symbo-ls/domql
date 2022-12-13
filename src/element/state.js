@@ -69,7 +69,10 @@ export const updateState = function (obj, options = {}) {
   }
 
   // TODO: try debounce
-  if (!options.preventUpdate || options.preventUpdate === 'recursive') element.update({}, { ...options, preventUpdate: true })
+  if (!options.preventUpdate)
+    element.update({}, options)
+  else if (options.preventUpdate === 'recursive')
+    element.update({}, { ...options, preventUpdate: true })
 
   if (state.__depends) {
     for (const el in state.__depends) {
