@@ -205,7 +205,7 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
     on.init(element.on.init, element, element.state)
   }
 
-  // run `on.init`
+  // run `on.beforeClassAssign`
   if (element.on && isFunction(element.on.beforeClassAssign)) {
     on.beforeClassAssign(element.on.beforeClassAssign, element, element.state)
   }
