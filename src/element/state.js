@@ -50,6 +50,9 @@ export const projectStateUpdate = function (obj, options = {}) {
 export const updateState = function (obj, options = {}) {
   const state = this
   const element = state.__element
+  state.parent = element.parent.state
+
+  if (!state.__element) createState(element, element.parent)
 
   // run `on.stateUpdated`
   if (element.on && isFunction(element.on.initStateUpdated)) {
@@ -57,11 +60,13 @@ export const updateState = function (obj, options = {}) {
     if (initReturns === false) return
   }
 
-  if (element.__state) {
-    if (state.parent && state.parent[element.__state]) {
-      const keyInParentState = state.parent[element.__state]
+  const stateKey = element.__state
+  if (stateKey) {
+    // TODO: check for double parent
+    if (state.parent && state.parent[stateKey]) {
+      const keyInParentState = state.parent[stateKey]
       if (keyInParentState && !options.stopStatePropogation) {
-        return state.parent.update({ [element.__state]: obj }, options)
+        return state.parent.update({ [stateKey]: obj }, options)
       }
     }
   } else {
@@ -83,7 +88,7 @@ export const updateState = function (obj, options = {}) {
   }
 }
 
-export default function (element, parent) {
+export const createState = function (element, parent) {
   let { state, __root } = element
 
   if (isFunction(state)) state = exec(state, element)
@@ -150,6 +155,7 @@ export default function (element, parent) {
   state.clean = cleanState
   state.parse = parseState
   state.update = updateState
+  state.create = createState
   state.parent = element.parent.state
   state.__element = element
   state.__root = __root ? __root.state : state
@@ -169,3 +175,5 @@ export default function (element, parent) {
 
   return state
 }
+
+export default createState

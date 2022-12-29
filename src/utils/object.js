@@ -17,11 +17,11 @@ export const memoize = (fn) => {
 }
 
 export const debounce = (element, func, timeout = 300) => {
-  let timer;
+  let timer
   return (...args) => {
-    clearTimeout(timer);
-    timer = setTimeout(() => { func.apply(element, args) }, timeout);
-  };
+    clearTimeout(timer)
+    timer = setTimeout(() => { func.apply(element, args) }, timeout)
+  }
 }
 
 export const isTagRegistered = arg => nodes.body.indexOf(arg)

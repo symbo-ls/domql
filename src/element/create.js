@@ -55,7 +55,7 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
   }
 
   // define KEY
-  const assignedKey = element.key || key || createID()
+  const assignedKey = (element.key || key || createID()).toString()
 
   const { extend, props, state, childExtend, childProps } = element
 
