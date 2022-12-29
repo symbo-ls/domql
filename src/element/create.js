@@ -109,6 +109,12 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
     }
   }
 
+  // Only resolve extends, skip everything else
+  if (options.onlyResolveExtends) {
+    applyExtend(element, parent, options)
+    return element;
+  }
+
   // assign context
   if (options.context && !root.context) root.context = options.context
   element.context = root.context
@@ -199,7 +205,7 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
     on.init(element.on.init, element, element.state)
   }
 
-  // run `on.init`
+  // run `on.beforeClassAssign`
   if (element.on && isFunction(element.on.beforeClassAssign)) {
     on.beforeClassAssign(element.on.beforeClassAssign, element, element.state)
   }
