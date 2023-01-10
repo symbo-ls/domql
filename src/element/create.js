@@ -11,8 +11,8 @@ import createProps from './props'
 import update from './update'
 import { on } from '../event'
 import { assignClass } from './mixins/classList'
-import { isFunction, isNumber, isString, createID, isNode, exec } from '../utils'
-import { remove, lookup, setProps, log, keys, parse, parseDeep, spotByPath, nextElement, previousElement } from './methods'
+import { isObject, isFunction, isNumber, isString, createID, isNode, exec } from '../utils'
+import { remove, lookup, setProps, log, keys, parse, parseDeep, spotByPath, nextElement, previousElement, isMethod } from './methods'
 import cacheNode from './cache'
 import { registry } from './mixins'
 import OPTIONS from './options'
@@ -112,7 +112,24 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
   // Only resolve extends, skip everything else
   if (options.onlyResolveExtends) {
     applyExtend(element, parent, options)
-    return element
+    //if (!element.__attr) element.__attr = {}
+
+    for (const param in element) {
+      const prop = element[param]
+      if (isMethod(param) || isObject(registry[param]) || prop === undefined) continue
+
+      const hasDefined = element.define && element.define[param]
+      const ourParam = registry[param]
+      const hasOptionsDefine = options.define && options.define[param]
+      if (ourParam && !hasOptionsDefine) {
+        continue
+      } else if (element[param] && !hasDefined && !hasOptionsDefine) {
+        create(exec(prop, element), element, param, options)
+      }
+    }
+
+    //createNode(element, options)
+    return element;
   }
 
   // assign context
