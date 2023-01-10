@@ -50,6 +50,7 @@ export default {
   __classNames: {},
   __attr: {},
   __state: {},
+  __stateType: {},
   __currentSnapshot: {},
   __hasRootState: {},
   nextElement: {},
@@ -80,9 +81,9 @@ export default {
 export const parseFilters = {
   elementKeys: [
     'tag', 'text', 'style', 'attr', 'class', 'state', 'class',
-    'data', 'content', 'html',
+    'data', 'content', 'html'
     // TODO: 'props' ?
   ],
   propsKeys: ['__element'],
-  stateKeys: [],
+  stateKeys: []
 }

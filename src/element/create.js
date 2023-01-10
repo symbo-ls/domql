@@ -112,7 +112,7 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
   // Only resolve extends, skip everything else
   if (options.onlyResolveExtends) {
     applyExtend(element, parent, options)
-    return element;
+    return element
   }
 
   // assign context

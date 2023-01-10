@@ -9,6 +9,7 @@ import { appendNode } from './assign'
 import { createNode } from './node'
 import { updateProps } from './props'
 import createState from './state'
+import { diff } from '@domql/utils'
 
 const snapshot = {
   snapshotId: createSnapshotId
@@ -58,7 +59,22 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
   if (element.__state) {
     const keyInParentState = parent.state[element.__state]
     if (keyInParentState) {
-      element.state = createState(element, parent)
+      const newState = element.__stateType === 'string'
+        ? createState(element, parent)
+        : createState(element, parent)
+      const changes = diff(newState.parse(), element.state.parse())
+
+      // run `on.stateUpdated`
+      if (element.on && isFunction(element.on.initStateUpdated)) {
+        const initReturns = on.initStateUpdated(element.on.initStateUpdated, element, element.state, changes)
+        if (initReturns === false) return
+      }
+
+      element.state = newState
+
+      if (!options.preventUpdateListener && element.on && isFunction(element.on.stateUpdated)) {
+        on.stateUpdated(element.on.stateUpdated, element, element.state, changes)
+      }
     }
   } else if (!element.__hasRootState) element.state = (parent && parent.state) || {}
 

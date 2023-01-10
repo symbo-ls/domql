@@ -27,7 +27,7 @@ const initProps = (element, parent) => {
   } else if (isMatch) {
     const hasArg = props.split(' ')
     let matchParentValue
-    //console.log('hasArg', hasArg)
+    // console.log('hasArg', hasArg)
     if (hasArg[1] && parent.props[hasArg[1]]) {
       const secondArgasParentMatchProp = parent.props[hasArg[1]]
       propsStack.push(

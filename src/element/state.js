@@ -5,7 +5,7 @@ import { deepClone, exec, overwriteDeep } from '../utils'
 import { is, isObject, isFunction, isUndefined } from '@domql/utils'
 
 export const IGNORE_STATE_PARAMS = [
-  'update', 'parse', 'clean', 'parent', '__element', '__depends', '__ref', '__root',
+  'update', 'parse', 'clean', 'create', 'parent', '__element', '__depends', '__ref', '__root',
   '__components', '__projectSystem', '__projectState', '__projectLibrary',
   'projectStateUpdate', 'projectSystemUpdate'
 ]
@@ -66,6 +66,9 @@ export const updateState = function (obj, options = {}) {
     if (state.parent && state.parent[stateKey]) {
       const keyInParentState = state.parent[stateKey]
       if (keyInParentState && !options.stopStatePropogation) {
+        if (element.__stateType === 'string') {
+          return state.parent.update({ [stateKey]: obj.value }, options)
+        }
         return state.parent.update({ [stateKey]: obj }, options)
       }
     }
@@ -74,10 +77,7 @@ export const updateState = function (obj, options = {}) {
   }
 
   // TODO: try debounce
-  if (!options.preventUpdate)
-    element.update({}, options)
-  else if (options.preventUpdate === 'recursive')
-    element.update({}, { ...options, preventUpdate: true })
+  if (!options.preventUpdate) { element.update({}, options) } else if (options.preventUpdate === 'recursive') { element.update({}, { ...options, preventUpdate: true }) }
 
   if (state.__depends) {
     for (const el in state.__depends) {
@@ -136,6 +136,7 @@ export const createState = function (element, parent) {
         state = deepClone(keyInParentState)
       } else if (is(keyInParentState)('string', 'number')) {
         state = { value: keyInParentState }
+        element.__stateType = 'string'
       } else if (isUndefined(keyInParentState)) {
         console.warn(stateKey, 'is not in present', 'replacing with ', {})
         state = {}
