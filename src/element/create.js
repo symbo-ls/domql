@@ -112,7 +112,7 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
   // Only resolve extends, skip everything else
   if (options.onlyResolveExtends) {
     applyExtend(element, parent, options)
-    //if (!element.__attr) element.__attr = {}
+    // if (!element.__attr) element.__attr = {}
 
     for (const param in element) {
       const prop = element[param]
@@ -128,8 +128,8 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
       }
     }
 
-    //createNode(element, options)
-    return element;
+    // createNode(element, options)
+    return element
   }
 
   // assign context
