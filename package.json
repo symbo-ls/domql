@@ -72,6 +72,6 @@
     "ie >= 9"
   ],
   "dependencies": {
-    "@domql/utils": "^2.3.14"
+    "@domql/utils": "latest"
   }
 }
