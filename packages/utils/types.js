@@ -55,6 +55,10 @@ export const isDefined = arg => {
     isNull(arg)
 }
 
+export const isUndefined = arg => {
+  return arg === undefined
+}
+
 export const TYPES = {
   boolean: isBoolean,
   array: isArray,
