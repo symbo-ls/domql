@@ -15,7 +15,7 @@ test('should create EMPTY element', () => {
 })
 
 test('should create valid DOM node', () => {
-  expect(dom.node).toBeInstanceOf(window.HTMLDivElement)
+  expect(dom.node).toBeInstanceOf(global.HTMLDivElement)
 })
 
 test('must be able to create valid PATH', () => {
@@ -23,9 +23,9 @@ test('must be able to create valid PATH', () => {
 })
 
 test('if it HAS a NODE, don\'t recreate', () => {
-  const node = document.createElement('div')
+  const node = global.createElement('div')
   const dom2 = create({ node })
-  expect(dom2.node.parentElement).toBe(document.body)
+  expect(dom2.node.parentElement).toBe(global.body)
 })
 
 test('create with number', () => {

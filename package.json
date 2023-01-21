@@ -8,7 +8,7 @@
   "publishConfig": {
     "registry": "https://registry.npmjs.org"
   },
-  "main": "src/index.js",
+  "main": "asd/index.js",
   "files": [
     "src",
     "packages"
@@ -72,6 +72,7 @@
     "ie >= 9"
   ],
   "dependencies": {
+    "@domql/tags": "^2.2.1",
     "@domql/utils": "^2.3.14"
   }
 }

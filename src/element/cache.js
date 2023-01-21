@@ -8,14 +8,14 @@ const cachedElements = {}
 const createNode = (element) => {
   const { tag } = element
   if (tag) {
-    if (tag === 'string') return document.createTextNode(element.text)
+    if (tag === 'string') return global.createTextNode(element.text)
     else if (tag === 'fragment') {
-      return document.createDocumentFragment()
+      return global.createDocumentFragment()
     } else if (tag === 'svg' || tag === 'path') { // change that
-      return document.createElementNS('http://www.w3.org/2000/svg', tag)
-    } else return document.createElement(tag)
+      return global.createElementNS('http://www.w3.org/2000/svg', tag)
+    } else return global.createElement(tag)
   } else {
-    return document.createElement('div')
+    return global.createElement('div')
   }
 }
 

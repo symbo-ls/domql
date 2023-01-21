@@ -6,6 +6,6 @@ import { is } from '../../src/event'
 test('checks Node validity', () => {
   var div = create({})
   expect(is.node(div.node)).toBeTruthy()
-  var div2 = document.createElement('div')
+  var div2 = global.createElement('div')
   expect(is.node(div2)).toBeTruthy()
 })

@@ -1,8 +1,8 @@
 'use strict'
 
 export const getScrollPositions = () => {
-  if (window.pageYOffset !== undefined) {
-    return [window.pageXOffset, window.pageYOffset]
+  if (global.pageYOffset !== undefined) {
+    return [global.pageXOffset, global.pageYOffset]
   } else {
     const d = document
     const r = d.documentElement

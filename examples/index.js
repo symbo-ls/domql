@@ -11,7 +11,7 @@ const icon = {
   name: 'toke'
 }
 
-const { performance } = window
+const { performance } = global
 const now = performance.now()
 
 const list = []

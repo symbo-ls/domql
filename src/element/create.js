@@ -59,21 +59,21 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
 
   const { extend, props, state, childExtend, childProps } = element
 
-  if (isKeyComponent(assignedKey)) {
-    const hasComponentAttrs = extend || childExtend || props || state || element.on
-    const componentKey = assignedKey.split('_')[0]
-    if (!hasComponentAttrs || childProps) {
-      parent[assignedKey] = element = {
-        extend: componentKey || assignedKey,
-        props: { ...element }
-      }
-    } else if (!extend || extend === true) {
-      parent[assignedKey] = element = {
-        ...element,
-        extend: componentKey || assignedKey
-      }
-    }
-  }
+  // if (isKeyComponent(assignedKey)) {
+  //   const hasComponentAttrs = extend || childExtend || props || state || element.on
+  //   const componentKey = assignedKey.split('_')[0]
+  //   if (!hasComponentAttrs || childProps) {
+  //     parent[assignedKey] = element = {
+  //       extend: componentKey || assignedKey,
+  //       props: { ...element }
+  //     }
+  //   } else if (!extend || extend === true) {
+  //     parent[assignedKey] = element = {
+  //       ...element,
+  //       extend: componentKey || assignedKey
+  //     }
+  //   }
+  // }
 
   // Responsive rendering
   // TODO: move as define plugin

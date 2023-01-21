@@ -47,16 +47,16 @@ export const isObjectLike = arg => {
 
 export const isNode = obj => {
   return (
-    typeof window.Node === 'object'
-      ? obj instanceof window.Node
+    typeof global.Node === 'object'
+      ? obj instanceof global.Node
       : obj && typeof obj === 'object' && typeof obj.nodeType === 'number' && typeof obj.nodeName === 'string'
   )
 }
 
 export const isHtmlElement = obj => {
   return (
-    typeof window.HTMLElement === 'object'
-      ? obj instanceof window.HTMLElement // DOM2
+    typeof global.HTMLElement === 'object'
+      ? obj instanceof global.HTMLElement // DOM2
       : obj && typeof obj === 'object' && obj !== null && obj.nodeType === 1 && typeof obj.nodeName === 'string'
   )
 }

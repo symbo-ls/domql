@@ -9,7 +9,7 @@ import { exec } from '../../utils'
 export default (param, element, node) => {
   const prop = exec(param, element)
   if (prop !== element.__html) {
-    // const parser = new window.DOMParser()
+    // const parser = new global.DOMParser()
     // param = parser.parseFromString(param, 'text/html')
     if (node.nodeName === 'SVG') node.textContent = prop
     else node.innerHTML = prop

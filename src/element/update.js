@@ -129,7 +129,7 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
           calleeElement: element
         })
         if (element.props.lazyLoad || options.lazyLoad) {
-          window.requestAnimationFrame(() => childUpdateCall())
+          global.requestAnimationFrame(() => childUpdateCall())
         } else childUpdateCall()
       }
     }
