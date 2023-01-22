@@ -8,9 +8,6 @@ export const generateHash = () => Math.random().toString(36).substring(2)
 export const extendStackRegistry = {}
 export const extendCachedRegistry = {}
 
-window.extendStackRegistry = extendStackRegistry
-window.extendCachedRegistry = extendCachedRegistry
-
 export const getHashedExtend = extend => {
   return extendStackRegistry[extend.__hash]
 }
