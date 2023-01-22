@@ -1,9 +1,9 @@
 'use strict'
 
-import { window } from '@domql/globals'
+import { global } from '@domql/globals'
 
 export const node = (node) => {
-  const { Node } = window
+  const { Node } = global
   return (
     typeof Node === 'function'
       ? node instanceof Node

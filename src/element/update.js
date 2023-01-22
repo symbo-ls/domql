@@ -10,6 +10,7 @@ import { createNode } from './node'
 import { updateProps } from './props'
 import createState from './state'
 import { diff } from '@domql/utils'
+import { global } from '@domql/globals'
 
 const snapshot = {
   snapshotId: createSnapshotId
@@ -129,7 +130,7 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
           calleeElement: element
         })
         if (element.props.lazyLoad || options.lazyLoad) {
-          window.requestAnimationFrame(() => childUpdateCall())
+          global.requestAnimationFrame(() => childUpdateCall())
         } else childUpdateCall()
       }
     }

@@ -1,5 +1,6 @@
 'use strict'
 
+import { global } from '@domql/globals'
 import DOM from '../src'
 
 import header from './header'
@@ -11,7 +12,7 @@ const icon = {
   name: 'toke'
 }
 
-const { performance } = window
+const { performance } = global
 const now = performance.now()
 
 const list = []

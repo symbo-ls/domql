@@ -1,10 +1,10 @@
 'use strict'
 
-import { document, window } from '@domql/globals'
+import { document, global } from '@domql/globals'
 
 export const getScrollPositions = () => {
-  if (window.pageYOffset !== undefined) {
-    return [window.pageXOffset, window.pageYOffset]
+  if (global.pageYOffset !== undefined) {
+    return [global.pageXOffset, global.pageYOffset]
   } else {
     const d = document
     const r = d.documentElement
