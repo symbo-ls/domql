@@ -1,7 +1,7 @@
 'use strict'
 
+import { window } from '@domql/globals'
 import { HTML_TAGS } from '@domql/tags'
-import { window } from '@domql//globals'
 
 export const isValidHtmlTag = arg => HTML_TAGS.body.indexOf(arg)
 
