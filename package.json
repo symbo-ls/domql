@@ -22,15 +22,15 @@
   },
   "source": true,
   "dependencies": {
-    "@domql/globals": "^2.3.16",
+    "@domql/globals": "latest",
     "@domql/utils": "latest"
   },
   "devDependencies": {
-    "@babel/core": "^7.16.0",
+    "@babel/core": "^7.20.12",
     "@babel/eslint-parser": "^7.16.3",
     "@babel/preset-env": "^7.16.4",
     "@emotion/css": "^11.10.0",
-    "@parcel/babel-preset-env": "^2.0.1",
+    "@parcel/babel-preset-env": "^2.8.3",
     "babel-jest": "^29.3.1",
     "coveralls": "^3.1.1",
     "esbuild": "^0.15.5",
