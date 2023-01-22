@@ -8,7 +8,7 @@ export const ERRORS_REGISTRY = {
     },
     OverwriteToBuiltin: {
       title: 'Overwriting to builtin method',
-      description: 'Overwriting a builtin method in the global define is not possible, please choose different name'
+      description: 'Overwriting a builtin method in the window define is not possible, please choose different name'
     },
     BrowserNotDefined: {
       title: 'Can\'t recognize environment',

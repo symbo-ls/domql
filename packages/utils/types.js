@@ -1,6 +1,6 @@
 'use strict'
 
-import { global } from '@domql/globals'
+import { window } from '@domql/globals'
 import { HTML_TAGS } from '@domql/tags'
 
 export const isValidHtmlTag = arg => HTML_TAGS.body.indexOf(arg)
@@ -30,16 +30,16 @@ export const isObjectLike = arg => {
 
 export const isNode = obj => {
   return (
-    typeof global.Node === 'object'
-      ? obj instanceof global.Node
+    typeof window.Node === 'object'
+      ? obj instanceof window.Node
       : obj && typeof obj === 'object' && typeof obj.nodeType === 'number' && typeof obj.nodeName === 'string'
   )
 }
 
 export const isHtmlElement = obj => {
   return (
-    typeof global.HTMLElement === 'object'
-      ? obj instanceof global.HTMLElement // DOM2
+    typeof window.HTMLElement === 'object'
+      ? obj instanceof window.HTMLElement // DOM2
       : obj && typeof obj === 'object' && obj !== null && obj.nodeType === 1 && typeof obj.nodeName === 'string'
   )
 }

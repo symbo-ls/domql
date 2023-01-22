@@ -73,7 +73,7 @@ const updateOnEachAvailable = (params, element, key, options) => {
     return children.push(newElement)
   }
 
-  // apply global options
+  // apply window options
   const useOption = options[updateOnEachAvailable]
   if (useOption) useOption(element, key)
 }

@@ -106,7 +106,7 @@ const onEachAvailable = (element, key, options) => {
   children.push(value)
   childrenKeys.push(key)
 
-  // apply global options
+  // apply window options
   const useOption = options[onEachAvailable]
   if (useOption) useOption(element, key)
 }

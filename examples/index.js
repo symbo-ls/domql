@@ -1,6 +1,6 @@
 'use strict'
 
-import { global } from '@domql/globals'
+import { window } from '@domql/globals'
 import DOM from '../packages/all'
 
 import header from './header'
@@ -13,7 +13,7 @@ const icon = {
   name: 'toke'
 }
 
-const { performance } = global
+const { performance } = window
 const now = performance.now() // eslint-disable-line
 
 const list = []

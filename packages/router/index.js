@@ -1,10 +1,10 @@
 'use strict'
 
-import { global } from '@domql/globals'
+import { window } from '@domql/globals'
 import { merge } from '@domql/utils'
 
 export const getActiveRoute = (
-  route = global.location.pathname, level
+  route = window.location.pathname, level
 ) => `/${route.split('/')[level + 1]}`
 
 export let lastLevel = 0
@@ -33,7 +33,7 @@ export const router = (
   const content = element.routes[route] || element.routes['/*']
 
   if (content) {
-    if (options.pushState) global.history.pushState(state, null, pathname + (hash ? `#${hash}` : ''))
+    if (options.pushState) window.history.pushState(state, null, pathname + (hash ? `#${hash}` : ''))
 
     element.set({ tag: options.useFragment && 'fragment', extend: content })
     if (options.updateState) element.state.update({ route, hash })
