@@ -1,6 +1,6 @@
 'use strict'
 
-import { isString } from '../utils'
+import { window } from '@domql/globals'
 
 export const node = (node) => {
   const { Node } = window
@@ -13,4 +13,3 @@ export const node = (node) => {
         typeof node.tag === 'string'
   )
 }
-

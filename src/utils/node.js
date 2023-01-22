@@ -1,9 +1,9 @@
 'use strict'
 
-export const createID = (function() {
+export const createID = (function () {
   let index = 0
 
-  function newId() {
+  function newId () {
     index++
     return index
   }

@@ -1,5 +1,7 @@
 'use strict'
 
+import { document } from '@domql/globals'
+
 export const isMobile = (() => /Mobi/.test(navigator.userAgent))()
 
 export const setCookie = (cname, cvalue, exdays = 365) => {

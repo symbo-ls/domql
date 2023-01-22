@@ -18,10 +18,13 @@
     "build": "parcel build examples/index.html",
     "standard": "npx standard \"src/**/*.js\"",
     "test": "yarn standard; jest --coverage --coverageReporters=text-lcov | coveralls",
-    "test-watch": "jest --watch",
-    "bump": "npx np"
+    "test-watch": "jest --watch"
   },
   "source": true,
+  "dependencies": {
+    "@domql/globals": "^2.3.16",
+    "@domql/utils": "latest"
+  },
   "devDependencies": {
     "@babel/core": "^7.16.0",
     "@babel/eslint-parser": "^7.16.3",
@@ -70,8 +73,5 @@
   "browserslist": [
     "> 1%",
     "ie >= 9"
-  ],
-  "dependencies": {
-    "@domql/utils": "latest"
-  }
+  ]
 }

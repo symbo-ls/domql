@@ -1,5 +1,6 @@
 'use strict'
 
+import { window } from '@domql/globals'
 import { create, parse, set, define, tree } from './element'
 
 const ENV = process.env.NODE_ENV

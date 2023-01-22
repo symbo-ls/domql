@@ -1,5 +1,6 @@
 'use strict'
 
+import { window } from '@domql/globals'
 import nodes from '../element/nodes'
 
 export const memoize = (fn) => {

@@ -1,5 +1,6 @@
 'use strict'
 
+import { document } from '@domql/globals'
 import { can } from '../event'
 import { exec, isString, isTagRegistered, report } from '../utils'
 
