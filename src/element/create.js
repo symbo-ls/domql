@@ -15,6 +15,7 @@ import { isObject, isFunction, isNumber, isString, createID, isNode, exec } from
 import { remove, lookup, setProps, log, keys, parse, parseDeep, spotByPath, nextElement, previousElement, isMethod } from './methods'
 import cacheNode from './cache'
 import { registry } from './mixins'
+import { throughInitialExec } from './iterate'
 import OPTIONS from './options'
 // import { overwrite, clone, fillTheRest } from '../utils'
 
@@ -109,10 +110,24 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
     }
   }
 
+  // assign context
+  if (options.context && !root.context) root.context = options.context
+  element.context = root.context
+
   // Only resolve extends, skip everything else
   if (options.onlyResolveExtends) {
+    //parent.appendChild = () => {}
+    //element.node = { setAttribute(){} }
+
     applyExtend(element, parent, options)
-    // if (!element.__attr) element.__attr = {}
+
+    if (!element.__exec) element.__exec = {}
+    if (!element.__attr) element.__attr = {}
+    //if (!element.__ifFalsy) createProps(element, parent)
+    if (!element.props && !element.__ifFalsy) element.props = {}
+    element.key = assignedKey
+
+    throughInitialExec(element)
 
     for (const param in element) {
       const prop = element[param]
@@ -122,19 +137,16 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
       const ourParam = registry[param]
       const hasOptionsDefine = options.define && options.define[param]
       if (ourParam && !hasOptionsDefine) {
-        continue
+        continue //if (isFunction(ourParam)) ourParam(prop, element, element.node, options)
       } else if (element[param] && !hasDefined && !hasOptionsDefine) {
         create(exec(prop, element), element, param, options)
       }
     }
 
     // createNode(element, options)
+    delete element.parent
     return element
   }
-
-  // assign context
-  if (options.context && !root.context) root.context = options.context
-  element.context = root.context
 
   // create EXTEND inheritance
   applyExtend(element, parent, options)
