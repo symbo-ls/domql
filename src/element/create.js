@@ -123,8 +123,7 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
 
     if (!element.__exec) element.__exec = {}
     if (!element.__attr) element.__attr = {}
-    //if (!element.__ifFalsy) createProps(element, parent)
-    if (!element.props && !element.__ifFalsy) element.props = {}
+    if (!element.__ifFalsy) createProps(element, parent)
     element.key = assignedKey
 
     throughInitialExec(element)
@@ -145,6 +144,11 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
 
     // createNode(element, options)
     delete element.parent
+    delete element.__element
+    delete element.__props
+    delete element.props.__element
+    delete element.props.update
+    delete element.update
     return element
   }
 
