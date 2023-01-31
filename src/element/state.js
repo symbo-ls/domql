@@ -6,7 +6,8 @@ import { is, isObject, isFunction, isUndefined } from '@domql/utils'
 
 export const IGNORE_STATE_PARAMS = [
   'update', 'parse', 'clean', 'create', 'parent', '__element', '__depends', '__ref', '__root',
-  '__components', '__projectSystem', '__projectState', '__projectLibrary',
+  '__components',
+  '__projectSystem', '__projectState', '__projectComponents', '__projectPages',
   'projectStateUpdate', 'projectSystemUpdate'
 ]
 
@@ -170,7 +171,8 @@ export const createState = function (element, parent) {
   state.__components = (state.__root || state).COMPONENTS
   state.__projectSystem = (state.__root || state).PROJECT_SYSTEM
   state.__projectState = (state.__root || state).PROJECT_STATE
-  state.__projectLibrary = (state.__root || state).PROJECT_LIBRARY
+  state.__projectComponents = (state.__root || state).PROJECT_COMPONENTS
+  state.__projectPages = (state.__root || state).PROJECT_PAGES
 
   // run `on.stateCreated`
   if (element.on && isFunction(element.on.stateCreated)) {
