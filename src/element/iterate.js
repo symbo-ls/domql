@@ -54,7 +54,7 @@ export const throughUpdatedExec = (element, options) => {
 export const throughInitialDefine = (element, options) => {
   const { define } = element
   let obj = {}
-  
+
   if (isObject(define)) {
     obj = { ...define }
   }
@@ -82,7 +82,7 @@ export const throughUpdatedDefine = (element, options) => {
   const { define, __exec } = element
   const changes = {}
   let obj = {}
-  
+
   if (isObject(define)) {
     obj = { ...define }
   }

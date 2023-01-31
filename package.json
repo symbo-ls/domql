@@ -1,26 +1,27 @@
 {
   "name": "domql",
   "description": "DOM rendering Javascript framework at early stage.",
-  "private": false,
   "author": "symbo.ls",
   "version": "1.5.73",
   "repository": "https://github.com/domql/domql",
   "publishConfig": {
     "registry": "https://registry.npmjs.org"
   },
+  "source": "src/index.js",
   "main": "src/index.js",
   "files": [
+    "dist",
     "src",
     "packages"
   ],
   "scripts": {
+    "prepublish": "rm -rf dist && npx esbuild src/index.js --target=es2020 --format=cjs --bundle --sourcemap=external --outfile=dist/index.cjs.js",
     "start": "parcel examples/index.html --no-cache",
     "build": "parcel build examples/index.html",
     "standard": "npx standard \"src/**/*.js\"",
     "test": "yarn standard; jest --coverage --coverageReporters=text-lcov | coveralls",
     "test-watch": "jest --watch"
   },
-  "source": true,
   "dependencies": {
     "@domql/globals": "latest",
     "@domql/utils": "latest"
