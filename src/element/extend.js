@@ -12,7 +12,7 @@ export const applyExtend = (element, parent, options = {}) => {
   if (isFunction(element)) element = exec(element, parent)
 
   let { extend, props, context } = element
-  const COMPONENTS = context.components || options.components
+  const COMPONENTS = (context && context.components) || options.components
 
   if (isString(extend)) extend = COMPONENTS[extend]
   const extendStack = getExtendStack(extend)

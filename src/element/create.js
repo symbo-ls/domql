@@ -99,7 +99,7 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
   element.context = root.context
   const { context } = element
 
-  if (context.components) {
+  if (context && context.components) {
     const { components } = context
     const { extend } = element
     const execExtend = exec(extend, element)
