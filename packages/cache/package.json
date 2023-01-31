@@ -1,6 +1,6 @@
 {
   "name": "@domql/cache",
-  "version": "2.0.8",
+  "version": "2.3.23",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
