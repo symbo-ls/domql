@@ -117,9 +117,6 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
 
   // Only resolve extends, skip everything else
   if (options.onlyResolveExtends) {
-    // parent.appendChild = () => {}
-    // element.node = { setAttribute(){} }
-
     applyExtend(element, parent, options)
 
     if (!element.__exec) element.__exec = {}
