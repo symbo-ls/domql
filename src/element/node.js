@@ -75,18 +75,11 @@ export const createNode = (element, options) => {
       if (isMethod(param) || isObject(registry[param]) || prop === undefined) continue
 
       const hasDefined = element.define && element.define[param]
-      const ourParam = registry[param]
+      const DOMQLProperty = registry[param]
       const hasOptionsDefine = options.define && options.define[param]
 
-      if (options.define) {
-      // console.group('create')
-      // console.log(param, options.define)
-      //   console.log(prop, hasOptionsDefine)
-      // console.groupEnd('create')
-      }
-
-      if (ourParam && !hasOptionsDefine) { // Check if param is in our method registry
-        if (isFunction(ourParam)) ourParam(prop, element, node, options)
+      if (DOMQLProperty && !hasOptionsDefine) { // Check if param is in our method registry
+        if (isFunction(DOMQLProperty)) DOMQLProperty(prop, element, node, options)
       } else if (element[param] && !hasDefined && !hasOptionsDefine) {
         create(exec(prop, element), element, param, options) // Create element
       }

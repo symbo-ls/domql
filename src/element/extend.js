@@ -11,8 +11,10 @@ const ENV = process.env.NODE_ENV
 export const applyExtend = (element, parent, options = {}) => {
   if (isFunction(element)) element = exec(element, parent)
 
-  let { extend, props } = element
-  if (isString(extend)) extend = options.components[extend]
+  let { extend, props, context } = element
+  const COMPONENTS = context.components || options.components
+
+  if (isString(extend)) extend = COMPONENTS[extend]
   const extendStack = getExtendStack(extend)
 
   if (ENV !== 'test' || ENV !== 'development') delete element.extend
@@ -55,8 +57,8 @@ export const applyExtend = (element, parent, options = {}) => {
   let mergedExtend = cloneAndMergeArrayExtend(stack)
 
   const component = exec(element.component || mergedExtend.component, element)
-  if (component && options.components && options.components[component]) {
-    const componentExtend = cloneAndMergeArrayExtend(getExtendStack(options.components[component]))
+  if (component && COMPONENTS && COMPONENTS[component]) {
+    const componentExtend = cloneAndMergeArrayExtend(getExtendStack(COMPONENTS[component]))
     mergedExtend = deepMergeExtend(componentExtend, mergedExtend)
   }
 

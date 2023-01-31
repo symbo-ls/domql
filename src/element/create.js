@@ -94,8 +94,13 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
     }
   }
 
-  if (options.components) {
-    const { components } = options
+  // assign context
+  if (options.context && !root.context) root.context = options.context
+  element.context = root.context
+  const { context } = element
+
+  if (context.components) {
+    const { components } = context
     const { extend } = element
     const execExtend = exec(extend, element)
     if (isString(execExtend)) {
@@ -110,14 +115,10 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
     }
   }
 
-  // assign context
-  if (options.context && !root.context) root.context = options.context
-  element.context = root.context
-
   // Only resolve extends, skip everything else
   if (options.onlyResolveExtends) {
-    //parent.appendChild = () => {}
-    //element.node = { setAttribute(){} }
+    // parent.appendChild = () => {}
+    // element.node = { setAttribute(){} }
 
     applyExtend(element, parent, options)
 
@@ -136,7 +137,7 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
       const ourParam = registry[param]
       const hasOptionsDefine = options.define && options.define[param]
       if (ourParam && !hasOptionsDefine) {
-        continue //if (isFunction(ourParam)) ourParam(prop, element, element.node, options)
+        continue // if (isFunction(ourParam)) ourParam(prop, element, element.node, options)
       } else if (element[param] && !hasDefined && !hasOptionsDefine) {
         create(exec(prop, element), element, param, options)
       }
@@ -186,8 +187,8 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
   if (!element.__children) element.__children = []
 
   // Add _root element property
-  const hasRoot = parent.parent && parent.parent.key === ':root'
-  if (!element.__root) element.__root = hasRoot ? parent : parent.__root
+  const hasRoot = parent && parent.key === ':root'
+  if (!element.__root) element.__root = hasRoot ? element : parent.__root
 
   // set the PATH array
   if (ENV === 'test' || ENV === 'development') {
