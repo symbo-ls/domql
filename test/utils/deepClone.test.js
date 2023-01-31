@@ -12,6 +12,12 @@ var obj = {
       fill: 'black'
     }
   },
+  props: {
+    propsArray: [4, 5, 6],
+    propsArray2: [8, 9, [11, 12, 13]],
+    propsArray3: [8, {}, [{ myArr: [19, 20] }, 12, 13]],
+  },
+  blabla: ["hi", ["my", "name", "is"], {name: "James Bond"}, "bye"],
   text: 'Button'
 }
 
