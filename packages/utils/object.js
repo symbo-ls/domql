@@ -1,6 +1,6 @@
 'use strict'
 
-import { isFunction, isObjectLike, isObject, isArray } from './types'
+import { isFunction, isObjectLike, isObject, isArray, isString } from './types'
 
 export const exec = (param, element, state) => {
   if (isFunction(param)) return param(element, state || element.state)
@@ -64,12 +64,45 @@ export const deepClone = (obj) => {
       objProp = mergeArray(objProp)
     }
     if (isArray(objProp)) {
-      o[prop] = objProp.map(deepClone)
+      o[prop] = objProp.map(v => isObject(v) ? deepClone(v) : v)
     } else if (isObject(objProp)) {
       o[prop] = deepClone(objProp)
     } else o[prop] = objProp
   }
   return o
+}
+
+/**
+ * Stringify object
+ */
+export const deepStringify = (obj, stringified = {}) => {
+  console.log(obj)
+  for (const prop in obj) {
+    const objProp = obj[prop]
+    if (isFunction(objProp)) {
+      stringified[prop] = objProp.toString()
+    } else stringified[prop] = objProp
+    if (isObject(objProp)) deepStringify(stringified[prop], stringified[prop])
+  }
+  return stringified
+}
+
+/**
+ * Detringify object
+ */
+export const deepDestringify = (obj, stringified = {}) => {
+  for (const prop in obj) {
+    const objProp = obj[prop]
+    if (isString(objProp)) {
+      if (objProp.slice(0, 1) === '(') {
+        try {
+          stringified[prop] = eval(objProp) // eslint-disable-line
+        } catch (e) { if (e) stringified[prop] = objProp }
+      }
+    } else stringified[prop] = objProp
+    if (isObject(objProp)) deepDestringify(stringified[prop], stringified[prop])
+  }
+  return stringified
 }
 
 /**
