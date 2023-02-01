@@ -25,7 +25,6 @@ export const merge = (element, obj) => {
 }
 
 export const deepMerge = (element, extend) => {
-  // console.groupCollapsed('deepMerge:')
   for (const e in extend) {
     const elementProp = element[e]
     const extendProp = extend[e]
@@ -37,7 +36,6 @@ export const deepMerge = (element, extend) => {
       deepMerge(elementProp, extendProp)
     }
   }
-  // console.groupEnd('deepMerge:')
   return element
 }
 
@@ -76,7 +74,6 @@ export const deepClone = (obj) => {
  * Stringify object
  */
 export const deepStringify = (obj, stringified = {}) => {
-  console.log(obj)
   for (const prop in obj) {
     const objProp = obj[prop]
     if (isFunction(objProp)) {
