@@ -118,11 +118,12 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
   // Only resolve extends, skip everything else
   if (options.onlyResolveExtends) {
     applyExtend(element, parent, options)
+    element.key = assignedKey
 
     if (!element.__exec) element.__exec = {}
     if (!element.__attr) element.__attr = {}
     if (!element.__ifFalsy) createProps(element, parent)
-    element.key = assignedKey
+    element.state = createState(element, parent, { skip: true })
 
     throughInitialExec(element)
 
@@ -141,12 +142,21 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
     }
 
     // createNode(element, options)
+
     delete element.parent
+    delete element.update
     delete element.__element
+
+    // added by createProps
     delete element.__props
     delete element.props.__element
     delete element.props.update
-    delete element.update
+
+    // added by createState
+    delete element.state.__element
+    delete element.state.__element
+    delete element.__hasRootState
+
     return element
   }
 

@@ -92,7 +92,9 @@ export const updateState = function (obj, options = {}) {
   }
 }
 
-export const createState = function (element, parent) {
+export const createState = function (element, parent, opts) {
+  const skip = (opts && opts.skip) ? opts.skip : false
+
   let { state, __root } = element
 
   if (isFunction(state)) state = exec(state, element)
@@ -157,6 +159,10 @@ export const createState = function (element, parent) {
   }
 
   element.state = state
+
+  // NOTE: Only true when 'onlyResolveExtends' option is set to true
+  if (skip) return state
+
   state.clean = cleanState
   state.parse = parseState
   state.update = updateState
