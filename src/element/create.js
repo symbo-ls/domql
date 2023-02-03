@@ -13,7 +13,7 @@ import { on } from '../event'
 import { assignClass } from './mixins/classList'
 import { isObject, isFunction, isNumber, isString, createID, isNode, exec } from '../utils'
 import { remove, lookup, setProps, log, keys, parse, parseDeep, spotByPath, nextElement, previousElement, isMethod } from './methods'
-import cacheNode from './cache'
+import cacheNode, { detectTag } from './cache'
 import { registry } from './mixins'
 import { throughInitialExec } from './iterate'
 import OPTIONS from './options'
@@ -119,6 +119,7 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
   if (options.onlyResolveExtends) {
     applyExtend(element, parent, options)
     element.key = assignedKey
+    element.tag = detectTag(element)
 
     if (!element.__exec) element.__exec = {}
     if (!element.__attr) element.__attr = {}

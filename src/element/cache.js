@@ -20,7 +20,7 @@ const createNode = (element) => {
   }
 }
 
-const detectTag = element => {
+export const detectTag = element => {
   let { tag, key } = element
   tag = exec(tag, element)
 
