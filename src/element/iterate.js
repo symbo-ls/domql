@@ -51,18 +51,12 @@ export const throughUpdatedExec = (element, options) => {
   return changes
 }
 
-export const throughInitialDefine = (element, options) => {
-  const { define } = element
-  let obj = {}
+export const throughInitialDefine = (element) => {
+  const { define, context } = element
 
-  if (isObject(define)) {
-    obj = { ...define }
-  }
-  if (isObject(options.define)) {
-    // console.log('==============')
-    // console.log(options.define)
-    obj = { ...obj, ...options.define }
-  }
+  let obj = {}
+  if (isObject(define)) obj = { ...define }
+  if (isObject(context.define)) obj = { ...obj, ...context.define }
 
   for (const param in obj) {
     let prop = element[param]
@@ -78,17 +72,13 @@ export const throughInitialDefine = (element, options) => {
   return element
 }
 
-export const throughUpdatedDefine = (element, options) => {
-  const { define, __exec } = element
+export const throughUpdatedDefine = (element) => {
+  const { context, define, __exec } = element
   const changes = {}
-  let obj = {}
 
-  if (isObject(define)) {
-    obj = { ...define }
-  }
-  if (isObject(options.define)) {
-    obj = { ...obj, ...options.define }
-  }
+  let obj = {}
+  if (isObject(define)) obj = { ...define }
+  if (isObject(context && context.define)) obj = { ...obj, ...context.define }
 
   for (const param in obj) {
     const execParam = __exec[param]

@@ -23,7 +23,7 @@ export const removeContentElement = function (el) {
   }
 }
 
-const set = function (params, options, el) {
+const set = function (params, options = {}, el) {
   const element = el || this
 
   const isEqual = isEqualDeep(params, element.content)
@@ -37,7 +37,8 @@ const set = function (params, options, el) {
     create(params, element, 'content', {
       ignoreChildExtend: true,
       ...registry.defaultOptions,
-      ...OPTIONS.create
+      ...OPTIONS.create,
+      ...options
     })
   }
 

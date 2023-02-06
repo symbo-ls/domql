@@ -1,6 +1,6 @@
 'use strict'
 
-import { isFunction, isObject, isObjectLike } from '../utils'
+import { isFunction, isObjectLike } from '../utils'
 import { registry, parseFilters } from './mixins'
 import root from './root'
 
@@ -63,7 +63,7 @@ export const setProps = function (param, options) {
   const element = this
   if (!param || !element.props) return
   element.update({ props: param }, options)
-  return element.props
+  return element
 }
 
 export const defineSetter = (element, key, get, set) =>
@@ -73,8 +73,7 @@ export const keys = function () {
   const element = this
   const keys = []
   for (const param in element) {
-    if (registry[param] && !parseFilters.elementKeys.includes(param))
-      continue
+    if (registry[param] && !parseFilters.elementKeys.includes(param)) { continue }
     keys.push(param)
   }
   return keys

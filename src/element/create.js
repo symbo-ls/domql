@@ -106,7 +106,7 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
     if (isString(execExtend)) {
       if (components[execExtend]) element.extend = components[execExtend]
       else {
-        if (ENV === 'test' || ENV === 'development') {
+        if ((ENV === 'test' || ENV === 'development') && options.verbose) {
           console.warn(execExtend, 'is not in library', components, element)
           console.warn('replacing with ', {})
         }

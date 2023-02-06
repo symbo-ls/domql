@@ -26,7 +26,7 @@ const UPDATE_DEFAULT_OPTIONS = {
 
 const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
   const element = this
-  const { define, parent, node } = element
+  const { parent, node, context } = element
 
   const { currentSnapshot, calleeElement } = options
   if (!calleeElement) {
@@ -88,7 +88,7 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
 
   const overwriteChanges = overwrite(element, params, UPDATE_DEFAULT_OPTIONS)
   const execChanges = throughUpdatedExec(element, UPDATE_DEFAULT_OPTIONS)
-  const definedChanges = throughUpdatedDefine(element, options)
+  const definedChanges = throughUpdatedDefine(element)
 
   if (options.stackChanges && element.__stackChanges) {
     const stackChanges = merge(definedChanges, merge(execChanges, overwriteChanges))
@@ -113,16 +113,16 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     ) continue
     if (options.preventStateUpdate === 'once') options.preventStateUpdate = false
 
-    const hasDefined = define && define[param]
-    const ourParam = registry[param]
+    const DOMQLProperty = registry[param]
+    const DOMQLPropertyFromContext = context.registry && context.registry[param]
+    const isGlobalTransformer = DOMQLPropertyFromContext || DOMQLProperty
 
-    const hasOptionsDefine = options.define && options.define[param]
+    const hasDefine = element.define && element.define[param]
+    const hasContextDefine = context.define && context.define[param]
 
-    if (ourParam && !hasOptionsDefine) {
-      if (isFunction(ourParam)) {
-        ourParam(prop, element, node)
-      }
-    } else if (prop && isObject(prop) && !hasDefined && !hasOptionsDefine) {
+    if (isGlobalTransformer && !hasContextDefine) {
+      if (isFunction(isGlobalTransformer)) isGlobalTransformer(prop, element, node, options)
+    } else if (prop && isObject(prop) && !hasDefine && !hasContextDefine) {
       if (!options.preventRecursive) {
         const childUpdateCall = () => update.call(prop, params[prop], {
           ...options,
