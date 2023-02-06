@@ -74,7 +74,7 @@ export const updateState = function (obj, options = {}) {
       }
     }
   } else {
-    if (opts.shallow) {
+    if (options && options.shallow) {
       overwriteShallow(state, obj, IGNORE_STATE_PARAMS)
     } else {
       overwriteDeep(state, obj, IGNORE_STATE_PARAMS)
