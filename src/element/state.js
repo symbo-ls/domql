@@ -1,7 +1,7 @@
 'use strict'
 
 import { on } from '../event'
-import { deepClone, exec, overwriteDeep } from '../utils'
+import { deepClone, exec, overwriteShallow, overwriteDeep } from '../utils'
 import { is, isObject, isFunction, isUndefined } from '@domql/utils'
 
 export const IGNORE_STATE_PARAMS = [
@@ -74,7 +74,11 @@ export const updateState = function (obj, options = {}) {
       }
     }
   } else {
-    overwriteDeep(state, obj, IGNORE_STATE_PARAMS)
+    if (opts.shallow) {
+      overwriteShallow(state, obj, IGNORE_STATE_PARAMS)
+    } else {
+      overwriteDeep(state, obj, IGNORE_STATE_PARAMS)
+    }
   }
 
   // TODO: try debounce

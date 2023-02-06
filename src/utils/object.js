@@ -181,6 +181,14 @@ export const overwrite = (element, params, options) => {
   return changes
 }
 
+export const overwriteShallow = (obj, params, excluding = ['node', '__root']) => {
+  for (const e in params) {
+    if (excluding.indexOf(e) > -1) continue
+    obj[e] = params[e]
+  }
+  return obj
+}
+
 /**
  * Overwrites DEEPly object properties with another
  */
