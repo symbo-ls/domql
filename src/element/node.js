@@ -30,7 +30,7 @@ const ENV = process.env.NODE_ENV
 
 export const createNode = (element, options) => {
   // create and assign a node
-  let { node, tag } = element
+  let { node, tag, context } = element
 
   let isNewNode
 
@@ -61,7 +61,7 @@ export const createNode = (element, options) => {
   // iterate through all given params
   if (element.tag !== 'string' || element.tag !== 'fragment') {
     // iterate through define
-    throughInitialDefine(element, options)
+    throughInitialDefine(element)
 
     // iterate through exec
     throughInitialExec(element)
@@ -74,14 +74,19 @@ export const createNode = (element, options) => {
 
       if (isMethod(param) || isObject(registry[param]) || prop === undefined) continue
 
-      const hasDefined = element.define && element.define[param]
       const DOMQLProperty = registry[param]
-      const hasOptionsDefine = options.define && options.define[param]
+      const DOMQLPropertyFromContext = context.registry && context.registry[param]
+      const isGlobalTransformer = DOMQLPropertyFromContext || DOMQLProperty
 
-      if (DOMQLProperty && !hasOptionsDefine) { // Check if param is in our method registry
-        if (isFunction(DOMQLProperty)) DOMQLProperty(prop, element, node, options)
-      } else if (element[param] && !hasDefined && !hasOptionsDefine) {
-        create(exec(prop, element), element, param, options) // Create element
+      const hasDefine = element.define && element.define[param]
+      const hasContextDefine = context.define && context.define[param]
+
+      // Check if param is in our method registry
+      if (isGlobalTransformer && !hasContextDefine) {
+        if (isFunction(isGlobalTransformer)) isGlobalTransformer(prop, element, node, options)
+      } else if (element[param] && !hasDefine && !hasContextDefine) {
+        // Create element
+        create(exec(prop, element), element, param, options)
       }
     }
   }
