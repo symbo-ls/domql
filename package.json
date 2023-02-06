@@ -61,6 +61,9 @@
   },
   "jest": {
     "testEnvironment": "jsdom",
+    "transformIgnorePatterns": [
+      "node_modules/(?!(@domql.*)/)"
+    ],
     "collectCoverageFrom": [
       "src/**/*.js"
     ]
