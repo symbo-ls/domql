@@ -174,11 +174,11 @@ export const createState = function (element, parent, opts) {
   // editor stuff
   state.projectSystemUpdate = projectSystemUpdate
   state.projectStateUpdate = projectStateUpdate
-  state.__components = (state.__root || state).COMPONENTS
-  state.__projectSystem = (state.__root || state).PROJECT_SYSTEM
-  state.__projectState = (state.__root || state).PROJECT_STATE
-  state.__projectComponents = (state.__root || state).PROJECT_COMPONENTS
-  state.__projectPages = (state.__root || state).PROJECT_PAGES
+  state.__components = state.__root.COMPONENTS
+  state.__projectSystem = state.__root.PROJECT_SYSTEM
+  state.__projectState = state.__root.PROJECT_STATE
+  state.__projectComponents = state.__root.PROJECT_COMPONENTS
+  state.__projectPages = state.__root.PROJECT_PAGES
 
   // run `on.stateCreated`
   if (element.on && isFunction(element.on.stateCreated)) {
