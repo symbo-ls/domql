@@ -46,16 +46,11 @@ export const transformEmotionClass = (emotion, live) => {
   }
 }
 
-export const initDOMQLEmotion = (emotion, options) => {
+export const transformDOMQLEmotion = (emotion, options) => {
   if (!emotion) emotion = createEmotion(options || { key: 'smbls' })
 
   return {
     style: transformEmotionStyle(emotion),
     class: transformEmotionClass(emotion)
   }
-
-  // DOM.define({
-  // }, {
-  //   overwrite: true
-  // })
 }
