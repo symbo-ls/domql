@@ -95,8 +95,8 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
   }
 
   // assign context
-  if (options.context && !root.context) root.context = options.context
-  element.context = root.context
+  if (options.context && !root.context && !element.context) root.context = options.context
+  if (!element.context) element.context = parent.context || options.context || root.context
   const { context } = element
 
   if (context && context.components) {
