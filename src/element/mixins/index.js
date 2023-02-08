@@ -18,6 +18,6 @@ export {
   text,
   html,
   state,
-  registry,
+  registry
 }
 export * from './registry'
