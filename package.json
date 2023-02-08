@@ -2,7 +2,7 @@
   "name": "domql",
   "description": "DOM rendering Javascript framework at early stage.",
   "author": "symbo.ls",
-  "version": "1.5.90",
+  "version": "1.5.91",
   "repository": "https://github.com/domql/domql",
   "publishConfig": {
     "registry": "https://registry.npmjs.org"
