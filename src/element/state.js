@@ -183,6 +183,7 @@ export const createState = function (element, parent, opts) {
   state.__projectState = state.__root.PROJECT_STATE
   state.__projectComponents = state.__root.PROJECT_COMPONENTS
   state.__projectPages = state.__root.PROJECT_PAGES
+  state.__projectFiddles = state.__root.PROJECT_FIDDLES
 
   // run `on.stateCreated`
   if (element.on && isFunction(element.on.stateCreated)) {
