@@ -7,7 +7,7 @@ import { is, isObject, isFunction, isUndefined } from '@domql/utils'
 export const IGNORE_STATE_PARAMS = [
   'update', 'parse', 'clean', 'create', 'parent', '__element', '__depends', '__ref', '__root',
   '__components',
-  '__projectSystem', '__projectState', '__projectComponents', '__projectPages',
+  '__projectSystem', '__projectState', '__projectComponents', '__projectPages', '__projectFiddles',
   'projectStateUpdate', 'projectSystemUpdate'
 ]
 
