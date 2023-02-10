@@ -114,11 +114,11 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     if (options.preventStateUpdate === 'once') options.preventStateUpdate = false
 
     const DOMQLProperty = registry[param]
-    const DOMQLPropertyFromContext = context.registry && context.registry[param]
+    const DOMQLPropertyFromContext = context && context.registry && context.registry[param]
     const isGlobalTransformer = DOMQLPropertyFromContext || DOMQLProperty
 
     const hasDefine = element.define && element.define[param]
-    const hasContextDefine = context.define && context.define[param]
+    const hasContextDefine = context && context.define && context.define[param]
 
     if (isGlobalTransformer && !hasContextDefine) {
       if (isFunction(isGlobalTransformer)) isGlobalTransformer(prop, element, node, options)

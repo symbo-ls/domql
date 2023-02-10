@@ -75,11 +75,11 @@ export const createNode = (element, options) => {
       if (isMethod(param) || isObject(registry[param]) || prop === undefined) continue
 
       const DOMQLProperty = registry[param]
-      const DOMQLPropertyFromContext = context.registry && context.registry[param]
+      const DOMQLPropertyFromContext = context && context.registry && context.registry[param]
       const isGlobalTransformer = DOMQLPropertyFromContext || DOMQLProperty
 
       const hasDefine = element.define && element.define[param]
-      const hasContextDefine = context.define && context.define[param]
+      const hasContextDefine = context && context.define && context.define[param]
 
       // Check if param is in our method registry
       if (isGlobalTransformer && !hasContextDefine) {

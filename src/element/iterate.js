@@ -56,7 +56,7 @@ export const throughInitialDefine = (element) => {
 
   let obj = {}
   if (isObject(define)) obj = { ...define }
-  if (isObject(context.define)) obj = { ...obj, ...context.define }
+  if (context && isObject(context.define)) obj = { ...obj, ...context.define }
 
   for (const param in obj) {
     let prop = element[param]
