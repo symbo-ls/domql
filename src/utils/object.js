@@ -123,16 +123,16 @@ export const clone = obj => {
 /**
  * Deep cloning of object
  */
-export const deepClone = (obj, excluding = ['parent', 'node', '__element', 'state', '__root', 'context']) => {
+export const deepClone = (obj, excluding = ['parent', 'node', '__element', 'state', '__root', '__cached', 'context']) => {
   const o = isArray(obj) ? [] : {}
   for (const prop in obj) {
     if (excluding.indexOf(prop) > -1) continue
     let objProp = obj[prop]
     if (prop === 'extend' && isArray(objProp)) {
-      objProp = mergeArray(objProp)
+      objProp = mergeArray(objProp, excluding)
     }
     if (isObjectLike(objProp)) {
-      o[prop] = deepClone(objProp)
+      o[prop] = deepClone(objProp, excluding)
     } else o[prop] = objProp
   }
   return o
@@ -217,8 +217,8 @@ export const mergeIfExisted = (a, b) => {
 /**
  * Merges array extends
  */
-export const mergeArray = (arr) => {
-  return arr.reduce((a, c) => deepMerge(a, deepClone(c)), {})
+export const mergeArray = (arr, excluding = ['parent', 'node', '__element', 'state', '__root', '__cached', 'context']) => {
+  return arr.reduce((a, c) => deepMerge(a, deepClone(c, excluding)), {})
 }
 
 /**
