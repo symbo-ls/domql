@@ -60,7 +60,9 @@ export const syncProps = (props, element) => {
   const mergedProps = { update, __element: element }
   props.forEach(v => {
     if (v === 'update' || v === '__element') return
-    element.props = deepMerge(mergedProps, deepClone(exec(v, element)))
+    const execProps = exec(v, element)
+    if (isObject(execProps) && execProps.__element) return
+    element.props = deepMerge(mergedProps, deepClone(execProps))
   })
   element.props = mergedProps
   return element.props

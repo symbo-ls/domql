@@ -127,15 +127,20 @@ export const createState = function (element, parent, opts) {
   let stateKey = element.__state
   if (stateKey) {
     let parentState = parent.state
-    let parentStateKey
-    const parents = stateKey.split('../')
-    for (let i = 1; i < parents.length; i++) {
-      stateKey = parents[i]
+    const parentKeysArr = stateKey.split('../')
+    for (let i = 1; i < parentKeysArr.length; i++) {
+      stateKey = parentKeysArr[i]
       parentState = parentState.parent
     }
-    if (stateKey.includes('.')) {
-      [parentStateKey, stateKey] = stateKey.split('.')
-      parentState = parentState[parentStateKey]
+    const childrenKeysArr = stateKey.split('.')
+    for (let i = 0; i < childrenKeysArr.length; i++) {
+      const childKey = childrenKeysArr[i]
+      const grandChildKey = childrenKeysArr[i + 1]
+      const childInParent = parentState[childKey]
+      if (childInParent && childInParent[grandChildKey]) {
+        stateKey = grandChildKey
+        parentState = childInParent
+      }
     }
     if (parentState && parentState[stateKey]) {
       const keyInParentState = parentState[stateKey]
