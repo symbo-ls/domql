@@ -49,7 +49,7 @@ export const clone = obj => {
 }
 
 // Clone anything deeply but exclude keys given in 'exclude'
-export const deepCloneExclude(obj, exclude = []) {
+export const deepCloneExclude = (obj, exclude = []) => {
   if (isArray(obj)) {
     return obj.map(x => deepCloneExclude(x, exclude))
   }
