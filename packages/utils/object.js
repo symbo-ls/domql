@@ -48,6 +48,37 @@ export const clone = obj => {
   return o
 }
 
+// Clone anything deeply but exclude keys given in 'exclude'
+export const deepCloneExclude(obj, exclude = []) {
+  if (isArray(obj)) {
+    return obj.map(x => deepCloneExclude(x, exclude))
+  }
+
+  const o = {}
+  for (const k in obj) {
+    if (exclude.indexOf(k) > -1) continue
+
+    let v = obj[k]
+
+    if (k === 'extend' && isArray(v)) {
+      v = mergeArrayExclude(v, exclude)
+    }
+
+    if (isArray(v)) {
+      o[k] = v.map(x => deepCloneExclude(x, exclude))
+    } else if (isObject(v)) {
+      o[k] = deepCloneExclude(v, exclude)
+    } else o[k] = v
+  }
+
+  return o
+}
+
+// Merge array, but exclude keys listed in 'excl'
+export const mergeArrayExclude = (arr, excl = []) => {
+  return arr.reduce((acc, curr) => deepMerge(acc, deepCloneExclude(curr, excl)), {})
+}
+
 /**
  * Deep cloning of object
  */
