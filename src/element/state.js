@@ -5,9 +5,9 @@ import { deepClone, exec, overwriteShallow, overwriteDeep } from '../utils'
 import { is, isObject, isFunction, isUndefined } from '@domql/utils'
 
 export const IGNORE_STATE_PARAMS = [
-  'update', 'parse', 'clean', 'create', 'parent', '__element', '__depends', '__ref', '__root',
-  '__components', '__extend', '__cached',
-  '__projectSystem', '__projectState', '__projectComponents', '__projectPages', '__projectFiddles',
+  'update', 'parse', 'clean', 'create', 'parent', '__element', '__depends',
+  '__ref', '__root', '__components', '__extend', '__cached', '__projectSystem',
+  '__projectState', '__projectComponents', '__projectPages', '__projectFiddles',
   'projectStateUpdate', 'projectSystemUpdate'
 ]
 
