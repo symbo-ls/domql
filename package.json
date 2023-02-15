@@ -15,11 +15,12 @@
     "packages"
   ],
   "scripts": {
-    "prepublish": "rm -rf dist && npx esbuild src/index.js --target=es2020 --format=cjs --bundle --sourcemap=external --outfile=dist/index.cjs.js",
+    "compile": "npx esbuild src/index.js --target=es2020 --format=cjs --bundle --sourcemap=external --outfile=dist/index.cjs.js",
+    "prepublish": "rm -rf dist && yarn compile && yarn test:lint",
     "start": "parcel examples/index.html --no-cache",
     "build": "parcel build examples/index.html",
-    "standard": "npx standard \"src/**/*.js\"",
-    "test": "yarn standard; jest --coverage --coverageReporters=text-lcov | coveralls",
+    "test:lint": "npx standard \"src/**/*.js\"",
+    "test": "yarn test:lint; jest --coverage --coverageReporters=text-lcov | coveralls",
     "test-watch": "jest --watch"
   },
   "dependencies": {
