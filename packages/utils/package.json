@@ -7,5 +7,6 @@
   "dependencies": {
     "@domql/globals": "latest",
     "@domql/tags": "latest"
-  }
+  },
+  "gitHead": "2dc058a7ef48a02de9c58adfe3c3459aad7668c3"
 }
