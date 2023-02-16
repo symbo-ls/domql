@@ -1,16 +1,15 @@
 'use strict'
 
-import { overwrite, isFunction, isObject, isString, isNumber, createSnapshotId, merge } from '../utils'
-import { registry } from './mixins'
+import { window } from '@domql/globals'
+import { diff } from '@domql/utils'
 import { on } from '../event'
-import { isMethod } from './methods'
+import { createSnapshotId, isFunction, isNumber, isObject, isString, merge, overwrite } from '../utils'
+import create from './create'
 import { throughUpdatedDefine, throughUpdatedExec } from './iterate'
-import { appendNode } from './assign'
-import { createNode } from './node'
+import { isMethod } from './methods'
+import { registry } from './mixins'
 import { updateProps } from './props'
 import createState from './state'
-import { diff } from '@domql/utils'
-import { window } from '@domql/globals'
 
 const snapshot = {
   snapshotId: createSnapshotId
@@ -46,14 +45,23 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
   if (isFunction(element.if)) {
     // TODO: move as fragment
     const ifPassed = element.if(element, element.state)
+    const itWasFalse = !element.__if
 
-    if (ifPassed) delete element.__ifFalsy
-    if (element.__ifFalsy && ifPassed) {
-      createNode(element)
-      appendNode(element.node, element.__ifFragment)
+    if (ifPassed) element.__if = true
+    if (itWasFalse && ifPassed) {
+      console.log('recreated')
+      console.log(element)
+      delete element.__hash
+      if (!element.__hasRootState || element.__state) delete element.state
+      const created = create(element, element.parent, element.key)
+      console.log(created)
+      if (!options.preventUpdate && element.on && isFunction(element.on.update)) {
+        on.update(element.on.update, created, created.state)
+      }
+      return created
     } else if (element.node && !ifPassed) {
       element.node.remove()
-      element.__ifFalsy = true
+      delete element.__if
     }
   }
 
@@ -79,7 +87,7 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     }
   } else if (!element.__hasRootState) element.state = (parent && parent.state) || {}
 
-  if (!element.__ifFalsy && !options.preventPropsUpdate) updateProps(params.props, element, parent)
+  if (element.__if && !options.preventPropsUpdate) updateProps(params.props, element, parent)
 
   if (element.on && isFunction(element.on.initUpdate) && !options.ignoreInitUpdate) {
     const whatinitreturns = on.initUpdate(element.on.initUpdate, element, element.state)
@@ -95,7 +103,7 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     element.__stackChanges.push(stackChanges)
   }
 
-  if (element.__ifFalsy) return false
+  if (!element.__if) return false
   if (!node) {
     // return createNode(element, options)
     return

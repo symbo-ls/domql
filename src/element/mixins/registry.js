@@ -1,14 +1,9 @@
 'use strict'
 
 import {
-  attr,
-  style,
-  text,
-  html,
-  content,
-  data,
-  classList,
-  state
+  attr, classList, content,
+  data, html, state, style,
+  text
 } from '.'
 
 export default {
@@ -41,7 +36,7 @@ export default {
   __extend: {},
   __ifFragment: {},
   __children: {},
-  __ifFalsy: {},
+  __if: {},
   __text: {},
   __element: {},
   __html: {},
@@ -81,7 +76,7 @@ export default {
 export const parseFilters = {
   elementKeys: [
     'tag', 'text', 'style', 'attr', 'class', 'state', 'class',
-    'data', 'content', 'html'
+    'data', 'content', 'html', 'on'
     // TODO: 'props' ?
   ],
   propsKeys: ['__element'],

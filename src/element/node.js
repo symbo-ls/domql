@@ -37,7 +37,7 @@ export const createNode = (element, options) => {
   if (!node) {
     isNewNode = true
 
-    if (element.__ifFalsy) return element
+    if (!element.__if) return element
 
     if (tag === 'shadow') {
       node = element.node = element.parent.node.attachShadow({ mode: 'open' })
@@ -56,7 +56,7 @@ export const createNode = (element, options) => {
     if (isFunction(node.setAttribute)) node.setAttribute('key', element.key)
   }
 
-  if (element.__ifFalsy) return element
+  if (!element.__if) return element
 
   // iterate through all given params
   if (element.tag !== 'string' || element.tag !== 'fragment') {

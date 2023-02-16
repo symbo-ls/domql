@@ -121,7 +121,7 @@ export const clone = obj => {
 /**
  * Deep cloning of object
  */
-export const deepClone = (obj, excluding = ['parent', 'node', '__element', 'state', '__root', '__cached', 'context']) => {
+export const deepClone = (obj, excluding = ['parent', 'node', '__element', 'state', '__root', '__cached', 'context', 'extend']) => {
   const o = isArray(obj) ? [] : {}
   for (const prop in obj) {
     if (excluding.indexOf(prop) > -1) continue

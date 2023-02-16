@@ -1,7 +1,7 @@
 'use strict'
 
 import { isFunction, isObjectLike } from '../utils'
-import { registry, parseFilters } from './mixins'
+import { parseFilters, registry } from './mixins'
 import root from './root'
 
 const ENV = process.env.NODE_ENV
