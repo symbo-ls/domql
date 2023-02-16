@@ -26,7 +26,6 @@ export default {
   transform: {},
   __ref: {},
   __hash: {},
-  __root: {},
   __text: {},
   nextElement: {},
   previousElement: {},

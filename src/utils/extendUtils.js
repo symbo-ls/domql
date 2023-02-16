@@ -50,7 +50,7 @@ export const flattenExtend = (extend, stack) => {
 export const deepCloneExtend = obj => {
   const o = {}
   for (const prop in obj) {
-    if (['parent', 'node', '__element', '__root', '__key'].indexOf(prop) > -1) continue
+    if (['parent', 'node', '__element'].indexOf(prop) > -1) continue
     const objProp = obj[prop]
     if (isObject(objProp)) {
       o[prop] = deepCloneExtend(objProp)
@@ -63,7 +63,7 @@ export const deepCloneExtend = obj => {
 
 export const deepMergeExtend = (element, extend) => {
   for (const e in extend) {
-    if (['parent', 'node', '__element', '__root', '__key'].indexOf(e) > -1) continue
+    if (['parent', 'node', '__element'].indexOf(e) > -1) continue
     const elementProp = element[e]
     const extendProp = extend[e]
     if (elementProp === undefined) {

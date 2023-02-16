@@ -98,11 +98,12 @@ export const parseDeep = function () {
 
 export const log = function (...args) {
   const element = this
+  const { __ref } = element
   console.group(element.key)
   if (args.length) {
     args.forEach(v => console.log(`%c${v}:\n`, 'font-weight: bold', element[v]))
   } else {
-    console.log(element.path)
+    console.log(__ref.path)
     const keys = element.keys()
     keys.forEach(v => console.log(`%c${v}:\n`, 'font-weight: bold', element[v]))
   }

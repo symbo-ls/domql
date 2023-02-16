@@ -30,7 +30,9 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
 
   // if ELEMENT is not given
   if (element === undefined) {
-    if (ENV === 'test' || ENV === 'development') { console.warn(key, 'element is undefined in', parent && parent.path) }
+    if (ENV === 'test' || ENV === 'development') {
+      console.warn(key, 'element is undefined in', parent && parent.__ref && parent.__ref.path)
+    }
     element = {}
   }
   if (element === null) return
@@ -189,6 +191,7 @@ const checkIf = (element, parent) => {
 
 const addCaching = (element, parent) => {
   const { __ref } = element
+  let { __ref: __parentRef } = parent
 
   // enable TRANSFORM in data
   if (!element.transform) element.transform = {}
@@ -214,12 +217,13 @@ const addCaching = (element, parent) => {
 
   // Add _root element property
   const hasRoot = parent && parent.key === ':root'
-  if (!element.__root) element.__root = hasRoot ? element : parent.__root
+  if (!__ref.__root) __ref.__root = hasRoot ? element : parent.__ref.__root
 
   // set the PATH array
   if (ENV === 'test' || ENV === 'development') {
-    if (!parent.path) parent.path = []
-    element.path = parent.path.concat(element.key)
+    if (!__parentRef) __parentRef = parent.__ref = {}
+    if (!__parentRef.__path) __parentRef.__path = []
+    __ref.__path = __parentRef.__path.concat(element.key)
   }
 }
 

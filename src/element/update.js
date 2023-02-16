@@ -53,7 +53,8 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     if (ifPassed) __ref.__if = true
     if (itWasFalse && ifPassed) {
       delete element.__hash
-      if (!__ref.__hasRootState || __ref.__state) delete element.state
+      if (!__ref.__hasRootState) delete element.state
+      if (__ref.__state) element.state = __ref.__state
       const created = create(element, element.parent, element.key)
       if (!options.preventUpdate && element.on && isFunction(element.on.update)) {
         on.update(element.on.update, created, created.state)

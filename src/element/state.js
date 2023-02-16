@@ -35,7 +35,7 @@ export const cleanState = function () {
 export const projectSystemUpdate = function (obj, options = {}) {
   const state = this
   if (!state) return
-  const rootState = (state.__element.__root || state.__element).state
+  const rootState = (state.__element.__ref.__root || state.__element).state
   rootState.update({ PROJECT_SYSTEM: obj }, options)
   return state
 }
@@ -43,7 +43,7 @@ export const projectSystemUpdate = function (obj, options = {}) {
 export const projectStateUpdate = function (obj, options = {}) {
   const state = this
   if (!state) return
-  const rootState = (state.__element.__root || state.__element).state
+  const rootState = (state.__element.__ref.__root || state.__element).state
   rootState.update({ PROJECT_STATE: obj }, options)
   return state
 }
@@ -100,7 +100,7 @@ export const updateState = function (obj, options = {}) {
 export const createState = function (element, parent, opts) {
   const skip = (opts && opts.skip) ? opts.skip : false
 
-  let { state, __root, __ref: __elementRef } = element
+  let { state, __ref: __elementRef } = element
 
   if (isFunction(state)) state = exec(state, element)
 
@@ -179,7 +179,7 @@ export const createState = function (element, parent, opts) {
   state.create = createState
   state.parent = element.parent.state
   state.__element = element
-  state.__root = __root ? __root.state : state
+  state.__root = __elementRef.__root ? __elementRef.__root.state : state
 
   // editor stuff
   state.projectSystemUpdate = projectSystemUpdate
