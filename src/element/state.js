@@ -5,9 +5,15 @@ import { deepClone, exec, overwriteShallow, overwriteDeep } from '../utils'
 import { is, isObject, isFunction, isUndefined } from '@domql/utils'
 
 export const IGNORE_STATE_PARAMS = [
+<<<<<<< HEAD
   'update', 'parse', 'clean', 'create', 'parent', '__element', '__depends',
   '__ref', '__root', '__components', '__extend', '__cached', '__projectSystem',
   '__projectState', '__projectComponents', '__projectPages', '__projectFiddles',
+=======
+  'update', 'parse', 'clean', 'create', 'parent', '__element', '__depends', '__ref', '__root',
+  '__components', '__extend', '__cached',
+  '__projectSystem', '__projectState', '__projectComponents', '__projectPages', '__projectSnippets',
+>>>>>>> 5e4dd98 (fiddle > snippets)
   'projectStateUpdate', 'projectSystemUpdate'
 ]
 
@@ -188,7 +194,7 @@ export const createState = function (element, parent, opts) {
   state.__projectState = state.__root.PROJECT_STATE
   state.__projectComponents = state.__root.PROJECT_COMPONENTS
   state.__projectPages = state.__root.PROJECT_PAGES
-  state.__projectFiddles = state.__root.PROJECT_FIDDLES
+  state.__projectSnippets = state.__root.PROJECT_SNIPPETS
 
   // run `on.stateCreated`
   if (element.on && isFunction(element.on.stateCreated)) {
