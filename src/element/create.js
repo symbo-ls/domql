@@ -63,6 +63,8 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
     element = applyMediaProps(element, parent, assignedKey)
   }
 
+  const __ref = element.__ref = { origin: element } // eslint-disable-line 
+
   // assign context
   applyContext(element, parent, options)
   const { context } = element
@@ -138,7 +140,6 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
 
   // run `on.render`
   if (element.on && isFunction(element.on.render)) {
-    console.log('render here')
     on.render(element.on.render, element, element.state)
   }
 
@@ -199,11 +200,13 @@ const checkIf = (element, parent) => {
 }
 
 const addCaching = (element, parent) => {
+  const { __ref } = element
+
   // enable TRANSFORM in data
   if (!element.transform) element.transform = {}
 
   // enable CACHING
-  if (!element.__cached) element.__cached = {}
+  if (!__ref.__cached) __ref.__cached = {}
 
   // enable EXEC
   if (!element.__exec) element.__exec = {}

@@ -24,6 +24,7 @@ export default {
   if: {},
   define: {},
   transform: {},
+  __ref: {},
   __hash: {},
   __componentKey: {},
   __cached: {},

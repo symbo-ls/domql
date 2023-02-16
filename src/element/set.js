@@ -7,13 +7,15 @@ import OPTIONS from './options'
 
 export const removeContentElement = function (el) {
   const element = el || this
+  const { __ref } = element
+
   if (element.content) {
     if (element.content.node) {
       if (element.content.tag === 'fragment') element.node.innerHTML = ''
       else element.node.removeChild(element.content.node)
     }
 
-    const { __cached } = element
+    const { __cached } = __ref
     if (__cached && __cached.content) {
       if (__cached.content.tag === 'fragment') __cached.content.parent.node.innerHTML = ''
       else if (__cached.content && isFunction(__cached.content.remove)) __cached.content.remove()
@@ -25,10 +27,11 @@ export const removeContentElement = function (el) {
 
 const set = function (params, options = {}, el) {
   const element = el || this
+  const __contentRef = element.content && element.content.__ref
 
   const isEqual = isEqualDeep(params, element.content)
   // console.error(params)
-  if (isEqual && element.content.__cached) return element
+  if (isEqual && __contentRef && __contentRef.__cached) return element
   removeContentElement(element)
 
   if (params) {

@@ -121,7 +121,7 @@ export const clone = obj => {
 /**
  * Deep cloning of object
  */
-export const deepClone = (obj, excluding = ['parent', 'node', '__element', 'state', '__root', '__cached', 'context', 'extend']) => {
+export const deepClone = (obj, excluding = ['parent', 'node', '__element', 'state', '__root', '__cached', 'context', 'extend', '__ref']) => {
   const o = isArray(obj) ? [] : {}
   for (const prop in obj) {
     if (excluding.indexOf(prop) > -1) continue
@@ -161,6 +161,7 @@ export const isEqualDeep = (param, element) => {
  */
 export const overwrite = (element, params, options) => {
   const changes = {}
+  const { __ref } = element
 
   for (const e in params) {
     if (e === 'props' || e === 'state') continue
@@ -169,7 +170,7 @@ export const overwrite = (element, params, options) => {
     const paramsProp = params[e]
 
     if (paramsProp !== undefined) {
-      element.__cached[e] = changes[e] = elementProp
+      __ref.__cached[e] = changes[e] = elementProp
       element[e] = paramsProp
     }
 
@@ -179,7 +180,7 @@ export const overwrite = (element, params, options) => {
   return changes
 }
 
-export const overwriteShallow = (obj, params, excluding = ['node', '__root']) => {
+export const overwriteShallow = (obj, params, excluding = ['node', '__root', '__ref']) => {
   for (const e in params) {
     if (excluding.indexOf(e) > -1) continue
     obj[e] = params[e]
@@ -190,7 +191,7 @@ export const overwriteShallow = (obj, params, excluding = ['node', '__root']) =>
 /**
  * Overwrites DEEPly object properties with another
  */
-export const overwriteDeep = (obj, params, excluding = ['node', '__root']) => {
+export const overwriteDeep = (obj, params, excluding = ['node', '__root', '__ref']) => {
   for (const e in params) {
     if (excluding.indexOf(e) > -1) continue
     const objProp = obj[e]
@@ -215,7 +216,7 @@ export const mergeIfExisted = (a, b) => {
 /**
  * Merges array extends
  */
-export const mergeArray = (arr, excluding = ['parent', 'node', '__element', 'state', '__root', '__cached', 'context']) => {
+export const mergeArray = (arr, excluding = ['parent', 'node', '__element', 'state', '__root', '__cached', 'context', '__ref']) => {
   return arr.reduce((a, c) => deepMerge(a, deepClone(c, excluding)), {})
 }
 
