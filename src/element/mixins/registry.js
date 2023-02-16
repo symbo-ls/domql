@@ -30,7 +30,6 @@ export default {
   __defined: {},
   __root: {},
   __text: {},
-  __currentSnapshot: {},
   nextElement: {},
   previousElement: {},
   key: {},

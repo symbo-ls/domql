@@ -32,13 +32,13 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
 
   const { currentSnapshot, calleeElement } = options
   if (!calleeElement) {
-    element.__currentSnapshot = snapshot.snapshotId()
+    __ref.__currentSnapshot = snapshot.snapshotId()
   }
-  const snapshotOnCallee = element.__currentSnapshot || (calleeElement && calleeElement.__currentSnapshot)
+
+  const snapshotOnCallee = __ref.__currentSnapshot ||
+    (calleeElement && calleeElement.__ref && calleeElement.__currentSnapshot)
   if (snapshotOnCallee && currentSnapshot < snapshotOnCallee) {
-    // console.log(calleeElement)
-    // console.log(currentSnapshot, snapshotOnCallee, 'cancelling')
-    // return
+    // TODO: stop previous update
   }
 
   if (isString(params) || isNumber(params)) {
@@ -55,7 +55,6 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
       delete element.__hash
       if (!__ref.__hasRootState || __ref.__state) delete element.state
       const created = create(element, element.parent, element.key)
-      console.log(created)
       if (!options.preventUpdate && element.on && isFunction(element.on.update)) {
         on.update(element.on.update, created, created.state)
       }
