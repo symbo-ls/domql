@@ -207,7 +207,7 @@ const addCaching = (element, parent) => {
   if (!element.__attr) element.__attr = {}
 
   // enable CHANGES storing
-  if (!element.__changes) element.__changes = []
+  if (!__ref.__changes) __ref.__changes = []
 
   // enable CHANGES storing
   if (!__ref.__children) __ref.__children = []
