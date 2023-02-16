@@ -1,6 +1,6 @@
 'use strict'
 
-import { isFunction, isObjectLike } from '../utils'
+import { isFunction, isObjectLike } from '@domql/utils'
 import { parseFilters, registry } from './mixins'
 import root from './root'
 

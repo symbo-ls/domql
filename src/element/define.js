@@ -1,7 +1,7 @@
 'use strict'
 
+import { report } from '@domql/report'
 import { registry } from './mixins'
-import { report } from '../utils'
 
 export default (params, options = {}) => {
   const { overwrite } = options

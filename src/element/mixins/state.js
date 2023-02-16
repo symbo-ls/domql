@@ -1,6 +1,6 @@
 'use strict'
 
-import { exec, isObject } from '../../utils'
+import { exec, isObject } from '@domql/utils'
 import { IGNORE_STATE_PARAMS } from '../state'
 
 export default (params, element, node) => {

@@ -1,7 +1,7 @@
 'use strict'
 
-import { isNot } from '@domql/utils'
-import { exec, report } from '../../utils'
+import { exec, isNot } from '@domql/utils'
+import { report } from '@domql/report'
 
 /**
  * Recursively add attributes to a DOM node

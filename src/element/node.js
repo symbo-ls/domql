@@ -1,10 +1,10 @@
 'use strict'
 
+import { exec, isFunction, isObject } from '@domql/utils'
 import create from './create'
 import cacheNode from './cache'
 import * as on from '../event/on'
 
-import { exec, isFunction, isObject } from '../utils'
 import {
   throughInitialDefine,
   throughInitialExec,

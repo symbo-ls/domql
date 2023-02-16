@@ -1,9 +1,10 @@
 'use strict'
 
 import { window } from '@domql/globals'
-import { diff } from '@domql/utils'
+import { diff, isFunction, isNumber, isObject, isString } from '@domql/utils'
+import { createSnapshotId, merge, overwrite } from '../utils'
+
 import { on } from '../event'
-import { createSnapshotId, isFunction, isNumber, isObject, isString, merge, overwrite } from '../utils'
 import create from './create'
 import { throughUpdatedDefine, throughUpdatedExec } from './iterate'
 import { isMethod } from './methods'

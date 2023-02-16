@@ -1,7 +1,7 @@
 'use strict'
 
-import { isObject, map } from '../../utils'
-import { report } from '../../utils/report'
+import { isObject, map } from '@domql/utils'
+import { report } from '@domql/report'
 
 /**
  * Recursively add styles to a DOM node

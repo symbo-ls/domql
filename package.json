@@ -25,7 +25,9 @@
   },
   "dependencies": {
     "@domql/globals": "latest",
-    "@domql/utils": "latest"
+    "@domql/utils": "latest",
+    "@domql/registry": "latest",
+    "@domql/report": "latest"
   },
   "devDependencies": {
     "@babel/core": "^7.20.12",

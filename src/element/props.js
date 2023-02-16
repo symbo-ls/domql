@@ -1,6 +1,7 @@
 'use strict'
 
-import { deepClone, deepMerge, exec, isArray, isObject, isString } from '../utils'
+import { exec, isArray, isObject, isString } from '@domql/utils'
+import { deepClone, deepMerge } from '../utils'
 
 const createPropsStack = (element, parent) => {
   const { props, __ref } = element

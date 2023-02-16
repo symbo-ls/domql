@@ -1,8 +1,11 @@
 'use strict'
 
 import { document } from '@domql/globals'
+import { exec, isString } from '@domql/utils'
+import { report } from '@domql/report'
+
 import { can } from '../event'
-import { exec, isString, isTagRegistered, report } from '../utils'
+import { isTagRegistered } from '../utils'
 
 const cachedElements = {}
 

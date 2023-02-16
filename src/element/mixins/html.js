@@ -1,6 +1,6 @@
 'use strict'
 
-import { exec } from '../../utils'
+import { exec } from '@domql/utils'
 
 /**
  * Appends raw HTML as content

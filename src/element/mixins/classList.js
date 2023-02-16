@@ -1,6 +1,6 @@
 'use strict'
 
-import { exec, isObject, isString } from '../../utils'
+import { exec, isObject, isString } from '@domql/utils'
 
 export const assignClass = (element) => {
   const { key } = element

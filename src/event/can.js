@@ -1,10 +1,10 @@
 'use strict'
 
-import { nodes } from '../element'
-import { report } from '../utils'
+import { TAGS } from '@domql/registry'
+import { report } from '@domql/report'
 
 export const render = (element) => {
   const tag = element.tag || 'div'
-  const isValid = nodes.body.indexOf(tag) > -1
+  const isValid = TAGS.body.indexOf(tag) > -1
   return isValid || report('HTMLInvalidTag')
 }

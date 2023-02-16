@@ -1,7 +1,7 @@
 'use strict'
 
-import { exec, isObject } from '../../utils'
-import { report } from '../../utils/report'
+import { exec, isObject } from '@domql/utils'
+import { report } from '@domql/report'
 
 /**
  * Apply data parameters on the DOM nodes

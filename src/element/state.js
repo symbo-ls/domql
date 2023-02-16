@@ -1,8 +1,8 @@
 'use strict'
 
 import { on } from '../event'
-import { deepClone, exec, overwriteShallow, overwriteDeep } from '../utils'
-import { is, isObject, isFunction, isUndefined } from '@domql/utils'
+import { is, isObject, exec, isFunction, isUndefined } from '@domql/utils'
+import { deepClone, overwriteShallow, overwriteDeep } from '../utils'
 
 export const IGNORE_STATE_PARAMS = [
   'update', 'parse', 'clean', 'create', 'parent', '__element', '__depends', '__ref', '__root',

@@ -1,6 +1,5 @@
 'use strict'
 
-import nodes from './nodes'
 import root from './root'
 import tree from './tree'
 import cache from './cache'
@@ -15,7 +14,6 @@ import set from './set'
 import { lookup, remove, get, setProps, log, keys } from './methods'
 
 export {
-  nodes,
   root,
   tree,
   cache,

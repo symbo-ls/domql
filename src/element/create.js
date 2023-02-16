@@ -1,23 +1,23 @@
 'use strict'
 
+import { isObject, isFunction, isString, createID, isNode, exec, is } from '@domql/utils'
+import { TAGS } from '@domql/registry'
+
 import root from './root'
 import createNode from './node'
 import { appendNode, assignNode } from './assign'
 import { applyExtend } from './extend'
-import nodes from './nodes'
 import set, { removeContentElement } from './set'
 import createState from './state'
 import createProps from './props'
 import update from './update'
 import { on } from '../event'
 import { assignClass } from './mixins/classList'
-import { isObject, isFunction, isString, createID, isNode, exec } from '../utils'
 import { remove, lookup, setProps, log, keys, parse, parseDeep, spotByPath, nextElement, previousElement, isMethod } from './methods'
 import cacheNode, { detectTag } from './cache'
 import { registry } from './mixins'
 import { throughInitialExec } from './iterate'
 import OPTIONS from './options'
-import { is } from '@domql/utils'
 // import { overwrite, clone, fillTheRest } from '../utils'
 
 const ENV = process.env.NODE_ENV
@@ -144,7 +144,7 @@ const checkIfPrimitive = (element) => {
 const applyValueAsText = (element, parent, key) => {
   const extendTag = element.extend && element.extend.tag
   const childExtendTag = parent.childExtend && parent.childExtend.tag
-  const isKeyValidHTMLTag = ((nodes.body.indexOf(key) > -1) && key)
+  const isKeyValidHTMLTag = ((TAGS.body.indexOf(key) > -1) && key)
   return {
     text: element,
     tag: extendTag || childExtendTag || isKeyValidHTMLTag || 'string'

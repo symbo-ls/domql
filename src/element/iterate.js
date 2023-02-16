@@ -1,6 +1,7 @@
 'use strict'
 
-import { isObject, exec, isFunction, isNumber, isString, overwrite } from '../utils'
+import { isObject, exec, isFunction, isNumber, isString } from '@domql/utils'
+import { overwrite } from '../utils'
 import { isMethod } from './methods'
 
 export const applyEvents = element => {
