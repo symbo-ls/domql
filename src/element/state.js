@@ -51,6 +51,7 @@ export const projectStateUpdate = function (obj, options = {}) {
 export const updateState = function (obj, options = {}) {
   const state = this
   const element = state.__element
+  const __elementRef = element.__ref
   state.parent = element.parent.state
 
   if (!state.__element) createState(element, element.parent)
@@ -61,13 +62,13 @@ export const updateState = function (obj, options = {}) {
     if (initReturns === false) return
   }
 
-  const stateKey = element.__state
+  const stateKey = __elementRef.__state
   if (stateKey) {
     // TODO: check for double parent
     if (state.parent && state.parent[stateKey]) {
       const keyInParentState = state.parent[stateKey]
       if (keyInParentState && !options.stopStatePropogation) {
-        if (element.__stateType === 'string') {
+        if (__elementRef.__stateType === 'string') {
           return state.parent.update({ [stateKey]: obj.value }, options)
         }
         return state.parent.update({ [stateKey]: obj }, options)
@@ -104,11 +105,11 @@ export const createState = function (element, parent, opts) {
   if (isFunction(state)) state = exec(state, element)
 
   if (is(state)('string', 'number')) {
-    element.__state = state
+    __elementRef.__state = state
     state = {}
   }
   if (state === true) {
-    element.__state = element.key
+    __elementRef.__state = element.key
     state = {}
   }
 
@@ -124,7 +125,7 @@ export const createState = function (element, parent, opts) {
     on.stateInit(element.on.stateInit, element, element.state)
   }
 
-  let stateKey = element.__state
+  let stateKey = __elementRef.__state
   if (stateKey) {
     let parentState = parent.state
     const parentKeysArr = stateKey.split('../')
@@ -148,7 +149,7 @@ export const createState = function (element, parent, opts) {
         state = deepClone(keyInParentState)
       } else if (is(keyInParentState)('string', 'number')) {
         state = { value: keyInParentState }
-        element.__stateType = 'string'
+        __elementRef.__stateType = 'string'
       } else if (isUndefined(keyInParentState)) {
         console.warn(stateKey, 'is not in present', 'replacing with ', {})
         state = {}
