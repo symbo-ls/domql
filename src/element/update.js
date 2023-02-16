@@ -1,8 +1,8 @@
 'use strict'
 
 import { window } from '@domql/globals'
-import { diff, isFunction, isNumber, isObject, isString } from '@domql/utils'
-import { createSnapshotId, merge, overwrite } from '../utils'
+import { diff, isFunction, isNumber, isObject, isString, createSnapshotId } from '@domql/utils'
+import { merge, overwrite } from '../utils'
 
 import { on } from '../event'
 import create from './create'
