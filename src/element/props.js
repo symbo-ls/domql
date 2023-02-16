@@ -4,7 +4,7 @@ import { deepClone, deepMerge, exec, isArray, isObject, isString } from '../util
 
 const createPropsStack = (element, parent) => {
   const { props, __ref } = element
-  const propsStack = []
+  const propsStack = __ref.propsStack = []
 
   const isMatch = isString(props) && props.indexOf('match') > -1
   const matchParent = parent.props && parent.props[element.key]
