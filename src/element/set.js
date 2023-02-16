@@ -1,7 +1,7 @@
 'use strict'
 
+import { isEqualDeep, isFunction } from '@domql/utils'
 import create from './create'
-import { isEqualDeep, isFunction } from '../utils'
 import { registry } from './mixins'
 import OPTIONS from './options'
 
