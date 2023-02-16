@@ -1,6 +1,6 @@
 {
   "name": "@domql/update",
-  "version": "2.3.23",
+  "version": "2.3.30",
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
