@@ -7,7 +7,8 @@ import { exec, report } from '../../utils'
  * Recursively add attributes to a DOM node
  */
 export default (params, element, node) => {
-  const { __attr } = element
+  const { __ref } = element
+  const { __attr } = __ref
   if (isNot('object')) report('HTMLInvalidAttr', params)
   if (params) {
     for (const attr in params) {

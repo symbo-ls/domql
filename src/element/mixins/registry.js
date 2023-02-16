@@ -34,7 +34,6 @@ export default {
   __extend: {},
   __text: {},
   __html: {},
-  __attr: {},
   __state: {},
   __stateType: {},
   __currentSnapshot: {},

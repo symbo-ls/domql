@@ -204,7 +204,7 @@ const addCaching = (element, parent) => {
   if (!__ref.__classNames) __ref.__classNames = {}
 
   // enable CLASS CACHING
-  if (!element.__attr) element.__attr = {}
+  if (!__ref.__attr) __ref.__attr = {}
 
   // enable CHANGES storing
   if (!__ref.__changes) __ref.__changes = []
@@ -228,7 +228,7 @@ const resolveExtends = (element, parent, options) => {
   element.tag = detectTag(element)
 
   if (!__ref.__exec) __ref.__exec = {}
-  if (!element.__attr) element.__attr = {}
+  if (!__ref.__attr) __ref.__attr = {}
   if (__ref.__if) createProps(element, parent)
   element.state = createState(element, parent, { skip: true })
 
