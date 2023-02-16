@@ -27,6 +27,9 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
   const element = this
   const { parent, node, context } = element
 
+  let __ref = element.__ref
+  if (!__ref) __ref = element.__ref = {}
+
   const { currentSnapshot, calleeElement } = options
   if (!calleeElement) {
     element.__currentSnapshot = snapshot.snapshotId()
@@ -45,12 +48,10 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
   if (isFunction(element.if)) {
     // TODO: move as fragment
     const ifPassed = element.if(element, element.state)
-    const itWasFalse = !element.__if
+    const itWasFalse = !__ref.__if
 
-    if (ifPassed) element.__if = true
+    if (ifPassed) __ref.__if = true
     if (itWasFalse && ifPassed) {
-      console.log('recreated')
-      console.log(element)
       delete element.__hash
       if (!element.__hasRootState || element.__state) delete element.state
       const created = create(element, element.parent, element.key)
@@ -61,7 +62,7 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
       return created
     } else if (element.node && !ifPassed) {
       element.node.remove()
-      delete element.__if
+      delete __ref.__if
     }
   }
 
@@ -87,7 +88,7 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     }
   } else if (!element.__hasRootState) element.state = (parent && parent.state) || {}
 
-  if (element.__if && !options.preventPropsUpdate) updateProps(params.props, element, parent)
+  if (__ref.__if && !options.preventPropsUpdate) updateProps(params.props, element, parent)
 
   if (element.on && isFunction(element.on.initUpdate) && !options.ignoreInitUpdate) {
     const whatinitreturns = on.initUpdate(element.on.initUpdate, element, element.state)
@@ -103,7 +104,7 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     element.__stackChanges.push(stackChanges)
   }
 
-  if (!element.__if) return false
+  if (!__ref.__if) return false
   if (!node) {
     // return createNode(element, options)
     return

@@ -22,17 +22,20 @@ export const applyEvents = element => {
 }
 
 export const throughInitialExec = element => {
+  const { __ref } = element
+  const { __exec } = __ref
   for (const param in element) {
     const prop = element[param]
     if (isFunction(prop) && !isMethod(param)) {
-      element.__exec[param] = prop
+      __exec[param] = prop
       element[param] = prop(element, element.state)
     }
   }
 }
 
 export const throughUpdatedExec = (element, options) => {
-  const { __exec, __ref } = element
+  const { __ref } = element
+  const { __exec, __cached } = __ref
   const changes = {}
 
   for (const param in __exec) {
@@ -43,7 +46,7 @@ export const throughUpdatedExec = (element, options) => {
     if (prop && prop.node && (isString(newExec) || isNumber(newExec))) {
       overwrite(prop, { text: newExec }, options)
     } else if (newExec !== prop) {
-      __ref.__cached[param] = changes[param] = prop
+      __cached[param] = changes[param] = prop
       element[param] = newExec
     }
   }
@@ -53,6 +56,7 @@ export const throughUpdatedExec = (element, options) => {
 
 export const throughInitialDefine = (element) => {
   const { define, context, __ref } = element
+  const { __exec, __cached } = __ref
 
   let obj = {}
   if (isObject(define)) obj = { ...define }
@@ -62,18 +66,19 @@ export const throughInitialDefine = (element) => {
     let prop = element[param]
 
     if (isFunction(prop) && !isMethod(param)) {
-      element.__exec[param] = prop
+      __exec[param] = prop
       element[param] = prop = exec(prop, element)
     }
 
-    __ref.__cached[param] = prop
+    __cached[param] = prop
     element[param] = obj[param](prop, element, element.state)
   }
   return element
 }
 
 export const throughUpdatedDefine = (element) => {
-  const { context, define, __exec, __ref } = element
+  const { context, define, __ref } = element
+  const { __exec, __cached } = __ref
   const changes = {}
 
   let obj = {}
@@ -82,8 +87,8 @@ export const throughUpdatedDefine = (element) => {
 
   for (const param in obj) {
     const execParam = __exec[param]
-    if (execParam) __ref.__cached[param] = execParam(element, element.state)
-    const cached = exec(__ref.__cached[param], element)
+    if (execParam) __cached[param] = execParam(element, element.state)
+    const cached = exec(__cached[param], element)
     element[param] = obj[param](cached, element, element.state)
   }
   return changes

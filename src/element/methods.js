@@ -130,7 +130,7 @@ export const isMethod = function (param) {
 export const nextElement = function () {
   const element = this
   const { key, parent } = element
-  const { __children } = parent
+  const { __children } = parent.__ref
 
   const currentIndex = __children.indexOf(key)
   const nextChild = __children[currentIndex + 1]
@@ -142,7 +142,7 @@ export const nextElement = function () {
 export const previousElement = function (el) {
   const element = el || this
   const { key, parent } = element
-  const { __children } = parent
+  const { __children } = parent.__ref
 
   if (!__children) return
 

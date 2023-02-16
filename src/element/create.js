@@ -69,21 +69,7 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
   applyContext(element, parent, options)
   const { context } = element
 
-  if (context && context.components) {
-    const { components } = context
-    const { extend } = element
-    const execExtend = exec(extend, element)
-    if (isString(execExtend)) {
-      if (components[execExtend]) element.extend = components[execExtend]
-      else {
-        if ((ENV === 'test' || ENV === 'development') && options.verbose) {
-          console.warn(execExtend, 'is not in library', components, element)
-          console.warn('replacing with ', {})
-        }
-        element.extend = {}
-      }
-    }
-  }
+  if (context && context.components) applyComponentFromContext(element, parent, options)
 
   // create EXTEND inheritance
   applyExtend(element, parent, options)
@@ -110,12 +96,12 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
   checkIf(element, parent)
 
   // if it already HAS a NODE
-  if (element.node && element.__if) { // TODO: check on if
+  if (element.node && __ref.__if) { // TODO: check on if
     return assignNode(element, parent, assignedKey)
   }
 
   // apply props settings
-  if (element.__if) createProps(element, parent)
+  if (__ref.__if) createProps(element, parent)
 
   // run `on.init`
   if (element.on && isFunction(element.on.init)) {
@@ -133,7 +119,7 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
   // CREATE a real NODE
   createNode(element, options)
 
-  if (!element.__if) return element
+  if (!__ref.__if) return element
 
   // assign NODE
   assignNode(element, parent, key)
@@ -143,7 +129,7 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
     on.render(element.on.render, element, element.state)
   }
 
-  if (parent.__children) parent.__children.push(element.key)
+  if (parent.__ref && parent.__ref.__children) parent.__ref.__children.push(element.key)
   // console.groupEnd(element.key)
 
   return element
@@ -188,15 +174,17 @@ const applyContext = (element, parent, options) => {
 }
 
 const checkIf = (element, parent) => {
+  const { __ref } = element
+
   if (isFunction(element.if)) {
     // TODO: move as fragment
     const ifPassed = element.if(element, element.state)
     if (!ifPassed) {
       const ifFragment = cacheNode({ tag: 'fragment' })
-      element.__ifFragment = appendNode(ifFragment, parent.node)
-      delete element.__if
-    } else element.__if = true
-  } else element.__if = true
+      __ref.__ifFragment = appendNode(ifFragment, parent.node)
+      delete __ref.__if
+    } else __ref.__if = true
+  } else __ref.__if = true
 }
 
 const addCaching = (element, parent) => {
@@ -209,7 +197,7 @@ const addCaching = (element, parent) => {
   if (!__ref.__cached) __ref.__cached = {}
 
   // enable EXEC
-  if (!element.__exec) element.__exec = {}
+  if (!__ref.__exec) __ref.__exec = {}
 
   // enable CLASS CACHING
   if (!element.__class) element.__class = {}
@@ -222,7 +210,7 @@ const addCaching = (element, parent) => {
   if (!element.__changes) element.__changes = []
 
   // enable CHANGES storing
-  if (!element.__children) element.__children = []
+  if (!__ref.__children) __ref.__children = []
 
   // Add _root element property
   const hasRoot = parent && parent.key === ':root'
@@ -236,11 +224,12 @@ const addCaching = (element, parent) => {
 }
 
 const resolveExtends = (element, parent, options) => {
+  const { __ref } = element
   element.tag = detectTag(element)
 
-  if (!element.__exec) element.__exec = {}
+  if (!__ref.__exec) __ref.__exec = {}
   if (!element.__attr) element.__attr = {}
-  if (element.__if) createProps(element, parent)
+  if (__ref.__if) createProps(element, parent)
   element.state = createState(element, parent, { skip: true })
 
   throughInitialExec(element)
@@ -306,6 +295,23 @@ const extendizeByKey = (element, parent, key) => {
 
 const applyKeyComponentAsExtend = (element, parent, key) => {
   return extendizeByKey(element, parent, key) || element
+}
+
+const applyComponentFromContext = (element, parent, options) => {
+  const { context } = element
+  const { components } = context
+  const { extend } = element
+  const execExtend = exec(extend, element)
+  if (isString(execExtend)) {
+    if (components[execExtend]) element.extend = components[execExtend]
+    else {
+      if ((ENV === 'test' || ENV === 'development') && options.verbose) {
+        console.warn(execExtend, 'is not in library', components, element)
+        console.warn('replacing with ', {})
+      }
+      element.extend = {}
+    }
+  }
 }
 
 const checkIfMedia = (key) => key.slice(0, 1) === '@'
