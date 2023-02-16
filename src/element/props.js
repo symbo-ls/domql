@@ -70,9 +70,10 @@ export const syncProps = (props, element) => {
 
 const createProps = function (element, parent, cached) {
   const propsStack = cached || initProps(element, parent)
+  const { __ref } = element
 
   if (propsStack.length) {
-    element.__props = propsStack
+    __ref.__props = propsStack
     syncProps(propsStack, element)
     element.props.update = update
   } else inheritProps(element, parent)
@@ -81,9 +82,10 @@ const createProps = function (element, parent, cached) {
 }
 
 export const updateProps = (newProps, element, parent) => {
-  let propsStack = element.__props
+  const { __ref } = element
+  let propsStack = __ref.__props
 
-  if (newProps) propsStack = element.__props = [].concat(newProps, propsStack)
+  if (newProps) propsStack = __ref.__props = [].concat(newProps, propsStack)
 
   if (propsStack) syncProps(propsStack, element)
   else inheritProps(element, parent)

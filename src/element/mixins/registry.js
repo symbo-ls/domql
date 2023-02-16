@@ -30,7 +30,6 @@ export default {
   __defined: {},
   __trash: {},
   __root: {},
-  __props: {},
   __text: {},
   __html: {},
   __state: {},
