@@ -11,7 +11,7 @@ export const text = (param, element, node) => {
   const prop = exec(param, element)
   if (element.tag === 'string') node.nodeValue = prop
   else if (param) {
-    if (element.__text) {
+    if (element.__text) { // TODO: add in __ref
       element.__text.text = prop
       if (element.__text.node) element.__text.node.nodeValue = prop
     } else create({ tag: 'string', text: prop }, element, '__text')

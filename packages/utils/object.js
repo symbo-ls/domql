@@ -109,12 +109,13 @@ export const deepStringify = (obj, stringified = {}) => {
     const objProp = obj[prop]
     if (isFunction(objProp)) {
       stringified[prop] = objProp.toString()
+    } else if (isObject(objProp)) {
+      stringified[prop] = {}
+      deepStringify(objProp[prop], stringified[prop])
+    } else if (isArray(objProp)) {
+      stringified[prop] = []
+      objProp.map((v, i) => deepStringify(v, stringified[prop][i]))
     } else stringified[prop] = objProp
-    // if (prop === 'src') {
-    //   console.log(typeof stringified[prop])
-    //   console.log(prop, stringified[prop])
-    // }
-    if (isObject(objProp)) deepStringify(stringified[prop], stringified[prop])
   }
   return stringified
 }
@@ -127,15 +128,10 @@ export const deepDestringify = (obj, stringified = {}) => {
     const objProp = obj[prop]
     if (isString(objProp)) {
       if (objProp.includes('=>') || objProp.includes('function') || objProp[0] === '(') {
-        // console.groupCollapsed(prop)
-        // console.log(obj)
-        // console.log(objProp)
         try {
           const evalProp = eval(objProp) // eslint-disable-line
-          // console.log(evalProp)
           stringified[prop] = evalProp
         } catch (e) { if (e) stringified[prop] = objProp }
-        // console.groupEnd(prop)
       }
     } else stringified[prop] = objProp
     if (isObject(objProp)) deepDestringify(stringified[prop], stringified[prop])
