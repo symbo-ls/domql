@@ -35,8 +35,6 @@ const applyChanges = (params, element) => {
   if (changes && hasChanges) {
     ref.__updates = [].concat(changes, ref.__updates)
 
-    // console.log('DIFF:')
-    // console.log(changes)
     overwriteDeep(changes, element)
   }
 
