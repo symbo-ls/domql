@@ -2,7 +2,7 @@
 
 import { deepClone, deepMerge, exec, isArray, isObject, isString } from '../utils'
 
-const initProps = (element, parent) => {
+const createPropsStack = (element, parent) => {
   const { props, __ref } = element
   const propsStack = []
 
@@ -69,7 +69,7 @@ export const syncProps = (props, element) => {
 }
 
 const createProps = function (element, parent, cached) {
-  const propsStack = cached || initProps(element, parent)
+  const propsStack = cached || createPropsStack(element, parent)
   const { __ref } = element
 
   if (propsStack.length) {
