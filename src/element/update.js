@@ -53,7 +53,7 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     if (ifPassed) __ref.__if = true
     if (itWasFalse && ifPassed) {
       delete element.__hash
-      if (!element.__hasRootState || element.__state) delete element.state
+      if (!__ref.__hasRootState || element.__state) delete element.state
       const created = create(element, element.parent, element.key)
       console.log(created)
       if (!options.preventUpdate && element.on && isFunction(element.on.update)) {
@@ -86,7 +86,7 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
         on.stateUpdated(element.on.stateUpdated, element, element.state, changes)
       }
     }
-  } else if (!element.__hasRootState) element.state = (parent && parent.state) || {}
+  } else if (!__ref.__hasRootState) element.state = (parent && parent.state) || {}
 
   if (__ref.__if && !options.preventPropsUpdate) updateProps(params.props, element, parent)
 

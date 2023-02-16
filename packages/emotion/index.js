@@ -20,7 +20,9 @@ export const transformEmotionStyle = (emotion, live) => {
 export const transformEmotionClass = (emotion, live) => {
   return (params, element, state, flag) => {
     if (element.style && !flag) return
-    const { __class, __classNames } = element
+    const { __ref } = element
+    const { __class, __classNames } = __ref
+
     if (!isObjectLike(params)) return
 
     for (const key in params) {

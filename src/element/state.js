@@ -99,7 +99,7 @@ export const updateState = function (obj, options = {}) {
 export const createState = function (element, parent, opts) {
   const skip = (opts && opts.skip) ? opts.skip : false
 
-  let { state, __root } = element
+  let { state, __root, __ref: __elementRef } = element
 
   if (isFunction(state)) state = exec(state, element)
 
@@ -116,7 +116,7 @@ export const createState = function (element, parent, opts) {
     if (parent && parent.state) return parent.state
     return {}
   } else {
-    element.__hasRootState = true
+    __elementRef.__hasRootState = true
   }
 
   // run `on.init`

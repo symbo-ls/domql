@@ -200,8 +200,8 @@ const addCaching = (element, parent) => {
   if (!__ref.__exec) __ref.__exec = {}
 
   // enable CLASS CACHING
-  if (!element.__class) element.__class = {}
-  if (!element.__classNames) element.__classNames = {}
+  if (!__ref.__class) __ref.__class = {}
+  if (!__ref.__classNames) __ref.__classNames = {}
 
   // enable CLASS CACHING
   if (!element.__attr) element.__attr = {}
@@ -262,7 +262,8 @@ const resolveExtends = (element, parent, options) => {
   // added by createState
   delete element.state.__element
   delete element.state.__element
-  delete element.__hasRootState
+  delete element.__hasRootState // TODO: check with NikaOto and remove
+  delete element.__ref
 
   return element
 }
