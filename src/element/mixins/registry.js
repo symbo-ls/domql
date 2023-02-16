@@ -31,7 +31,6 @@ export default {
   __trash: {},
   __root: {},
   __props: {},
-  __extend: {},
   __text: {},
   __html: {},
   __state: {},

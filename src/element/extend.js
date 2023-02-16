@@ -11,7 +11,7 @@ const ENV = process.env.NODE_ENV
 export const applyExtend = (element, parent, options = {}) => {
   if (isFunction(element)) element = exec(element, parent)
 
-  let { extend, props, context } = element
+  let { extend, props, context, __ref } = element
   const COMPONENTS = (context && context.components) || options.components
 
   if (isString(extend)) extend = COMPONENTS[extend]
@@ -53,7 +53,7 @@ export const applyExtend = (element, parent, options = {}) => {
     stack = [].concat(stack, defaultOptionsExtend)
   }
 
-  element.__extend = stack
+  __ref.__extend = stack
   let mergedExtend = cloneAndMergeArrayExtend(stack)
 
   const component = exec(element.component || mergedExtend.component, element)

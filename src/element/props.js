@@ -3,7 +3,7 @@
 import { deepClone, deepMerge, exec, isArray, isObject, isString } from '../utils'
 
 const initProps = (element, parent) => {
-  const { props } = element
+  const { props, __ref } = element
   const propsStack = []
 
   const isMatch = isString(props) && props.indexOf('match') > -1
@@ -41,8 +41,8 @@ const initProps = (element, parent) => {
     propsStack.push(matchParentValue)
   } else if (props) propsStack.push(props)
 
-  if (isArray(element.__extend)) {
-    element.__extend.map(extend => {
+  if (isArray(__ref.__extend)) {
+    __ref.__extend.map(extend => {
       if (extend.props) propsStack.push(extend.props)
       return extend.props
     })
