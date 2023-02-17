@@ -35,6 +35,11 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
     }
     element = {}
   }
+  if (isString(key) && key.slice(0, 2 === '__')) {
+    if (ENV === 'test' || ENV === 'development') {
+      console.warn(key, 'seems like to be in __ref')
+    }
+  }
   if (element === null) return
   if (element === true) element = { text: true }
 
@@ -65,7 +70,9 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
     element = applyMediaProps(element, parent, assignedKey)
   }
 
-  const __ref = element.__ref = { origin: element } // eslint-disable-line 
+  if (element.__ref) element.__ref.origin = element
+  else element.__ref = { origin: element } // eslint-disable-line 
+  const __ref = element.__ref
 
   // assign context
   applyContext(element, parent, options)
