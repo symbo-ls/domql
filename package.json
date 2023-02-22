@@ -25,7 +25,7 @@
   },
   "dependencies": {
     "@domql/globals": "latest",
-    "@domql/utils": "latest",
+    "@domql/utils": "2.3.23",
     "@domql/registry": "latest",
     "@domql/report": "latest"
   },
