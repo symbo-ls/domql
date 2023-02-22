@@ -24,7 +24,7 @@
     "test-watch": "jest --watch"
   },
   "dependencies": {
-    "@domql/globals": "latest",
+    "@domql/globals": "2.3.23",
     "@domql/utils": "latest",
     "@domql/registry": "latest",
     "@domql/report": "latest"
