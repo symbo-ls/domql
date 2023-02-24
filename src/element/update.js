@@ -92,7 +92,7 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
   if (__ref.__if && !options.preventPropsUpdate) updateProps(params.props, element, parent)
 
   if (element.on && isFunction(element.on.initUpdate) && !options.ignoreInitUpdate) {
-    const whatinitreturns = on.initUpdate(element.on.initUpdate, element, element.state)
+    const whatinitreturns = on.initUpdate(element.on.initUpdate, element, element.state, params)
     if (whatinitreturns === false) return
   }
 

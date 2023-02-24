@@ -12,8 +12,8 @@ export const render = (param, element, state) => {
   return param(element, state)
 }
 
-export const initUpdate = (param, element, state) => {
-  return param(element, state)
+export const initUpdate = (param, element, state, changes) => {
+  return param(element, state, changes)
 }
 
 export const attachNode = (param, element, state) => {

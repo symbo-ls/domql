@@ -6,8 +6,8 @@ import { deepClone, overwriteShallow, overwriteDeep } from '../utils'
 
 export const IGNORE_STATE_PARAMS = [
   'update', 'parse', 'clean', 'create', 'parent', '__element', '__depends', '__ref', '__root',
-  '__components',
-  '__projectSystem', '__projectState', '__projectComponents', '__projectPages', '__projectSnippets',
+  'COMPONENTS',
+  'PROJECT_SYSTEM', 'PROJECT_STATE', 'PROJECT_COMPONENTS', 'PROJECT_PAGES', 'PROJECT_SNIPPETS',
   'projectStateUpdate', 'projectSystemUpdate'
 ]
 
@@ -184,12 +184,12 @@ export const createState = function (element, parent, opts) {
   // editor stuff
   state.projectSystemUpdate = projectSystemUpdate
   state.projectStateUpdate = projectStateUpdate
-  state.__components = state.__root.COMPONENTS
-  state.__projectSystem = state.__root.PROJECT_SYSTEM
-  state.__projectState = state.__root.PROJECT_STATE
-  state.__projectComponents = state.__root.PROJECT_COMPONENTS
-  state.__projectPages = state.__root.PROJECT_PAGES
-  state.__projectSnippets = state.__root.PROJECT_SNIPPETS
+  state.COMPONENTS = state.__root.COMPONENTS
+  state.PROJECT_SYSTEM = state.__root.PROJECT_SYSTEM
+  state.PROJECT_STATE = state.__root.PROJECT_STATE
+  state.PROJECT_COMPONENTS = state.__root.PROJECT_COMPONENTS
+  state.PROJECT_PAGES = state.__root.PROJECT_PAGES
+  state.PROJECT_SNIPPETS = state.__root.PROJECT_SNIPPETS
 
   // run `on.stateCreated`
   if (element.on && isFunction(element.on.stateCreated)) {
