@@ -1,9 +1,16 @@
 {
   "name": "@domql/utils",
   "version": "2.3.29",
-  "main": "index.js",
   "module": "index.js",
+  "main": "index.js",
+  "browser": "dist/index.cjs.js",
+  "files": [
+    "dist"
+  ],
   "license": "MIT",
+  "scripts": {
+    "prepublish": "rm -rf dist && npx esbuild index.js --target=es2020 --format=cjs -sourcemap=external --outfile=dist/index.cjs.js"
+  },
   "dependencies": {
     "@domql/globals": "latest",
     "@domql/tags": "latest"
