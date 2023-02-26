@@ -1,10 +1,11 @@
 {
   "name": "@domql/globals",
-  "version": "2.3.38",
+  "version": "2.3.23",
+  "license": "MIT",
   "module": "index.js",
   "main": "index.js",
+  "source": "index.js",
   "browser": "dist/index.cjs.js",
-  "license": "MIT",
   "files": [
     "*.js",
     "dist"
@@ -12,6 +13,5 @@
   "scripts": {
     "prepublish": "rm -rf dist && npx esbuild index.js --target=es2020 --format=cjs --sourcemap=external --outfile=dist/index.cjs.js"
   },
-  "gitHead": "66641a0ee9c94ecbe631b7b92e2018ad18af387b",
-  "source": "index.js"
+  "gitHead": "66641a0ee9c94ecbe631b7b92e2018ad18af387b"
 }
