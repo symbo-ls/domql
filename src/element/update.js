@@ -11,6 +11,7 @@ import { isMethod } from './methods'
 import { registry } from './mixins'
 import { updateProps } from './props'
 import createState from './state'
+import { applyParam } from './applyParam'
 
 const snapshot = {
   snapshotId: createSnapshotId
@@ -26,7 +27,7 @@ const UPDATE_DEFAULT_OPTIONS = {
 
 const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
   const element = this
-  const { parent, node, context } = element
+  const { parent, node } = element
 
   let __ref = element.__ref
   if (!__ref) __ref = element.__ref = {}
@@ -123,25 +124,21 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     ) continue
     if (options.preventStateUpdate === 'once') options.preventStateUpdate = false
 
-    const DOMQLProperty = registry[param]
-    const DOMQLPropertyFromContext = context && context.registry && context.registry[param]
-    const isGlobalTransformer = DOMQLPropertyFromContext || DOMQLProperty
+    const isElement = applyParam(param, element, options)
+    if (isElement) {
+      const { hasDefine, hasContextDefine } = isElement
 
-    const hasDefine = element.define && element.define[param]
-    const hasContextDefine = context && context.define && context.define[param]
-
-    if (isGlobalTransformer && !hasContextDefine) {
-      if (isFunction(isGlobalTransformer)) isGlobalTransformer(prop, element, node, options)
-    } else if (prop && isObject(prop) && !hasDefine && !hasContextDefine) {
-      if (!options.preventRecursive) {
-        const childUpdateCall = () => update.call(prop, params[prop], {
-          ...options,
-          currentSnapshot: snapshotOnCallee,
-          calleeElement: element
-        })
-        if (element.props.lazyLoad || options.lazyLoad) {
-          window.requestAnimationFrame(() => childUpdateCall())
-        } else childUpdateCall()
+      if (prop && isObject(prop) && !hasDefine && !hasContextDefine) {
+        if (!options.preventRecursive) {
+          const childUpdateCall = () => update.call(prop, params[prop], {
+            ...options,
+            currentSnapshot: snapshotOnCallee,
+            calleeElement: element
+          })
+          if (element.props.lazyLoad || options.lazyLoad) {
+            window.requestAnimationFrame(() => childUpdateCall())
+          } else childUpdateCall()
+        }
       }
     }
   }
