@@ -951,10 +951,30 @@
   resolved "https://registry.yarnpkg.com/@domql/globals/-/globals-2.3.22.tgz#a8327ee6f92a2ba2b6b7da809c37d37398c25899"
   integrity sha512-0jnSO2P60EoFx9n/fTssapMdoT1JTJJRkubyDqLn3w4OFj3PW4rred5uxFeip53uEHO1xOAbHrWpjWMTMeuX/Q==
 
+"@domql/registry@latest":
+  version "2.3.23"
+  resolved "https://registry.yarnpkg.com/@domql/registry/-/registry-2.3.23.tgz#f763138f6209e9946e174e2e42ded080ac9ae57e"
+  integrity sha512-n5ODC/sgr8eIU73/MXZxVGknb7+Y6QeAKQDzM1TO2ai3UwP8+xF9rIQRnh7zHCq1o3MOvzmikWVbPbZT2LDnKQ==
+  dependencies:
+    "@domql/utils" latest
+
+"@domql/report@latest":
+  version "2.3.23"
+  resolved "https://registry.yarnpkg.com/@domql/report/-/report-2.3.23.tgz#5d043ca6648d230e0ad859a6b9ebc8ed0d704d29"
+  integrity sha512-e1P4fIizjPqJ91AdTc+32/Mp13YrW9D1OxFzMU0G9XkvtqOarc6BSZA/9iBHw94M6ymN+WRESbSOdYXBKfrmmQ==
+
 "@domql/tags@latest":
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/@domql/tags/-/tags-2.2.1.tgz#9a4769745cc68fa8c745ee039ff5f10f85f18ab8"
   integrity sha512-/qoIRQNUazzyfIp3bzMjox7sFlHWFRUTAUQ2/2LyN+YUflQyG5KFEq9CcrOhAtr1vN6DykMfdnLjdvUvmNm6Qg==
+
+"@domql/utils@^2.3.35":
+  version "2.3.35"
+  resolved "https://registry.yarnpkg.com/@domql/utils/-/utils-2.3.35.tgz#9de27841b6e48ff4ec38f46d92336d5256afe2da"
+  integrity sha512-2zDq2Su8B3gkdk2hEF84oF2YocwYP4mJRu3xpEPXkoSCU5zownjpzzFcoKAvobrlHPN4d2aiWdvqX0ZgmL38qA==
+  dependencies:
+    "@domql/globals" latest
+    "@domql/tags" latest
 
 "@domql/utils@latest":
   version "2.3.21"
