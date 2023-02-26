@@ -1,6 +1,6 @@
 {
   "name": "@domql/globals",
-  "version": "2.3.39",
+  "version": "2.3.41",
   "license": "MIT",
   "module": "index.js",
   "main": "index.js",
