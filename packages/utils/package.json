@@ -9,7 +9,7 @@
   ],
   "license": "MIT",
   "scripts": {
-    "prepublish": "rm -rf dist && npx esbuild index.js --target=es2020 --format=cjs --sourcemap=external --outfile=dist/index.cjs.js"
+    "prepublish": "rm -rf dist && npx esbuild index.js --bundle --target=es2020 --format=cjs --sourcemap=external --outfile=dist/index.cjs.js"
   },
   "dependencies": {
     "@domql/globals": "latest",
