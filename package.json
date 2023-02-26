@@ -2,6 +2,7 @@
   "private": true,
   "repository": "https://github.com/domql/domql",
   "scripts": {
+    "postinstall": "yarn clean:package-modules",
     "setup": "yarn && lerna link --force-local",
     "start": "parcel examples/index.html --no-cache --port 1200",
     "build": "lerna run build",
@@ -17,6 +18,7 @@
     "test": "yarn jest --coverage --coverageReporters=text-lcov | coveralls",
     "push": "echo push is not yet supported",
     "push:version": "git add . && git commit -am 'version update' && git push",
+    "clean:package-modules": "rm -rf packages/*/node_modules **/*/package-lock.json",
     "clean": "rm -rf dist node_modules yarn.lock .parcel-cache yarn-error.log",
     "clean:all": "lerna exec -- rm -rf dist node_modules yarn.lock .parcel-cache yarn-error.log"
   },
