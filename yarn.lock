@@ -968,18 +968,10 @@
   resolved "https://registry.yarnpkg.com/@domql/tags/-/tags-2.2.1.tgz#9a4769745cc68fa8c745ee039ff5f10f85f18ab8"
   integrity sha512-/qoIRQNUazzyfIp3bzMjox7sFlHWFRUTAUQ2/2LyN+YUflQyG5KFEq9CcrOhAtr1vN6DykMfdnLjdvUvmNm6Qg==
 
-"@domql/utils@^2.3.35":
+"@domql/utils@latest":
   version "2.3.35"
   resolved "https://registry.yarnpkg.com/@domql/utils/-/utils-2.3.35.tgz#9de27841b6e48ff4ec38f46d92336d5256afe2da"
   integrity sha512-2zDq2Su8B3gkdk2hEF84oF2YocwYP4mJRu3xpEPXkoSCU5zownjpzzFcoKAvobrlHPN4d2aiWdvqX0ZgmL38qA==
-  dependencies:
-    "@domql/globals" latest
-    "@domql/tags" latest
-
-"@domql/utils@latest":
-  version "2.3.21"
-  resolved "https://registry.yarnpkg.com/@domql/utils/-/utils-2.3.21.tgz#90491f9131f70970206b05d346ef5345d4040c90"
-  integrity sha512-lapiPM0b2uhu8AW6dpEzso1/9V+ixg/93DzLrKmtvPj1iXb2skOX+VZNsJVwegKnSi53xhwCQQpGjOwDSOt1+w==
   dependencies:
     "@domql/globals" latest
     "@domql/tags" latest
