@@ -11,7 +11,7 @@
     "dist"
   ],
   "scripts": {
-    "prepublish": "rm -rf dist && npx esbuild index.js --target=es2020 --format=cjs --sourcemap=external --outfile=dist/index.cjs.js"
+    "prepublish": "rm -rf dist && npx esbuild *.js --target=es2020 --format=cjs --sourcemap=external --outdir=dist/"
   },
   "gitHead": "66641a0ee9c94ecbe631b7b92e2018ad18af387b"
 }
