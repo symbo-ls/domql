@@ -1,6 +1,6 @@
 {
   "name": "@domql/utils",
-  "version": "2.3.33",
+  "version": "2.3.34",
   "module": "index.js",
   "main": "dist/index.cjs.js",
   "browser": "dist/index.cjs.js",
