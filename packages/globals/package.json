@@ -1,6 +1,6 @@
 {
   "name": "@domql/globals",
-  "version": "2.3.23",
+  "version": "2.3.38",
   "module": "index.js",
   "main": "index.js",
   "browser": "dist/index.cjs.js",
