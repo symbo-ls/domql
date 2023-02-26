@@ -267,8 +267,6 @@ const resolveExtends = (element, parent, options) => {
 
   // added by createProps
   delete element.__props // TODO: check with @Nikaoto and remove
-  delete element.props.__element
-  delete element.props.update
 
   // added by createState
   delete element.state.__element
