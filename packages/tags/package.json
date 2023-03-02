@@ -2,6 +2,7 @@
   "name": "@domql/tags",
   "version": "2.3.41",
   "license": "MIT",
+  "type": "module",
   "module": "index.js",
   "main": "index.js",
   "source": "index.js",

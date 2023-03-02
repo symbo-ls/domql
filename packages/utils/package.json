@@ -2,10 +2,11 @@
   "name": "@domql/utils",
   "version": "2.3.40",
   "license": "MIT",
+  "type": "module",
   "module": "index.js",
   "main": "index.js",
   "source": "index.js",
-  "browser": "dist/index.cjs.js",
+  "browser": "dist/index.js",
   "files": [
     "*.js",
     "dist"

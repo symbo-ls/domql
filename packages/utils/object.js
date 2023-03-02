@@ -1,6 +1,6 @@
 'use strict'
 
-import { isFunction, isObjectLike, isObject, isArray, isString } from './types'
+import { isFunction, isObjectLike, isObject, isArray, isString } from './types.js'
 
 export const exec = (param, element, state) => {
   if (isFunction(param)) return param(element, state || element.state)

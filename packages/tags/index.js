@@ -1,3 +1,3 @@
 'use strict'
 
-export * from './htmlTags'
+export * from './htmlTags.js'
