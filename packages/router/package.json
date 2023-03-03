@@ -1,6 +1,6 @@
 {
   "name": "@domql/router",
-  "version": "2.3.23",
+  "version": "2.3.43",
   "main": "index.js",
   "license": "MIT",
   "scripts": {

@@ -1,6 +1,6 @@
 {
   "name": "@domql/mixins",
-  "version": "2.3.28",
+  "version": "2.3.43",
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
