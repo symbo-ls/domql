@@ -4,12 +4,12 @@
   "license": "MIT",
   "type": "module",
   "module": "index.js",
-  "main": "index.js",
+  "main": "dist/index.js",
   "source": "index.js",
   "browser": "index.js",
   "files": [
     "*.js",
-    "dist"
+    "dist/*.js"
   ],
   "scripts": {
     "prepublish": "rm -rf dist && npx esbuild *.js --target=es2020 --format=cjs --sourcemap=external --outdir=dist/"

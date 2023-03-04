@@ -4,9 +4,9 @@
   "license": "MIT",
   "type": "module",
   "module": "index.js",
-  "main": "index.js",
+  "main": "dist/index.js",
   "source": "index.js",
-  "browser": "dist/index.cjs.js",
+  "browser": "index.js",
   "files": [
     "*.js",
     "dist"
