@@ -2,7 +2,7 @@
   "private": true,
   "repository": "https://github.com/domql/domql",
   "scripts": {
-    "postinstall": "yarn clean:package-modules",
+    "postinstall": "npx lerna link --force-local",
     "setup": "yarn && lerna link --force-local",
     "start": "parcel examples/index.html --no-cache --port 1200",
     "build": "lerna run build",

@@ -6,7 +6,7 @@
   "module": "index.js",
   "main": "index.js",
   "source": "index.js",
-  "browser": "dist/index.js",
+  "browser": "index.js",
   "files": [
     "*.js",
     "dist"
