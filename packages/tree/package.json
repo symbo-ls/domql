@@ -1,6 +1,6 @@
 {
   "name": "@domql/tree",
-  "version": "2.3.43",
+  "version": "2.3.46",
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
