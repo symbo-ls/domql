@@ -6,6 +6,12 @@
   "module": "dist/esm/index.js",
   "main": "dist/cjs/index.js",
   "source": "index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
+    }
+  },
   "files": [
     "*.js",
     "dist/*.js"
@@ -15,5 +21,5 @@
     "build:cjs": "npx esbuild *.js --target=node16 --format=cjs --outdir=dist/cjs",
     "prepublish": "rm -rf dist && yarn build:esm && yarn build:cjs"
   },
-  "gitHead": "66641a0ee9c94ecbe631b7b92e2018ad18af387b"
+  "gitHead": "d3e2a8cef1a70c00f05aaf7e91389ce046365df4"
 }
