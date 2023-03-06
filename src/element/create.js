@@ -240,7 +240,8 @@ const resolveExtends = (element, parent, options) => {
 
   if (!__ref.__exec) __ref.__exec = {}
   if (!__ref.__attr) __ref.__attr = {}
-  if (__ref.__if) createProps(element, parent)
+
+  element.props = createProps(element, parent)
   element.state = createState(element, parent, { skip: true })
 
   throughInitialExec(element)
@@ -267,12 +268,14 @@ const resolveExtends = (element, parent, options) => {
 
   // added by createProps
   delete element.__props // TODO: check with @Nikaoto and remove
+  delete element.props.props
 
   // added by createState
   delete element.state.__element
   delete element.state.__element
   delete element.__hasRootState // TODO: check with @Nikaoto and remove
   delete element.__ref
+
 
   return element
 }
