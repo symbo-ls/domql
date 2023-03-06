@@ -3,16 +3,17 @@
   "version": "2.3.48",
   "license": "MIT",
   "type": "module",
-  "module": "index.js",
-  "main": "index.js",
+  "module": "dist/esm/index.js",
+  "main": "dist/cjs/index.js",
   "source": "index.js",
-  "browser": "dist/index.js",
   "files": [
     "*.js",
-    "dist"
+    "dist/*.js"
   ],
   "scripts": {
-    "prepublish": "rm -rf dist && npx esbuild *.js --target=es2020 --format=cjs --sourcemap=external --outdir=dist/"
+    "build:esm": "npx esbuild *.js --target=es2020 --format=esm --outdir=dist/esm",
+    "build:cjs": "npx esbuild *.js --target=node16 --format=cjs --outdir=dist/cjs",
+    "prepublish": "rm -rf dist && yarn build:esm && yarn build:cjs"
   },
   "gitHead": "66641a0ee9c94ecbe631b7b92e2018ad18af387b"
 }
