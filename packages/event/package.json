@@ -1,6 +1,6 @@
 {
   "name": "@domql/event",
-  "version": "2.3.46",
+  "version": "2.3.50",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
