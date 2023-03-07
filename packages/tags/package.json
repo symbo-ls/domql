@@ -4,16 +4,20 @@
   "license": "MIT",
   "type": "module",
   "module": "dist/esm/index.js",
-  "main": "dist/cjs/index.js",
+  "unpkg": "dist/iife/index.js",
+  "jsdelivr": "dist/iife/index.js",
+  "main": "dist/esm/index.js",
+  "exports": "./dist/cjs/index.js",
   "source": "index.js",
   "files": [
     "*.js",
-    "dist/*.js"
+    "dist"
   ],
   "scripts": {
     "build:esm": "npx esbuild *.js --target=es2020 --format=esm --outdir=dist/esm",
     "build:cjs": "npx esbuild *.js --target=node16 --format=cjs --outdir=dist/cjs",
-    "prepublish": "rm -rf dist && yarn build:esm && yarn build:cjs"
+    "build:iife": "npx esbuild *.js --target=node16 --format=iife --outdir=dist/iife",
+    "prepublish": "rm -rf dist && yarn build:esm && yarn build:cjs && yarn build:iife"
   },
   "gitHead": "d3e2a8cef1a70c00f05aaf7e91389ce046365df4"
 }
