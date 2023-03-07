@@ -19,7 +19,7 @@
     "push": "echo push is not yet supported",
     "push:version": "git add . && git commit -am 'version update' && git push",
     "clean:package-modules": "rm -rf packages/*/node_modules **/*/package-lock.json",
-    "clean": "rm -rf dist node_modules yarn.lock .parcel-cache yarn-error.log",
+    "clean": "rimraf -I dist node_modules yarn.lock .parcel-cache yarn-error.log",
     "clean:all": "lerna exec -- rm -rf dist node_modules yarn.lock .parcel-cache yarn-error.log"
   },
   "devDependencies": {
