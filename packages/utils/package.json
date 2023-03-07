@@ -1,6 +1,6 @@
 {
   "name": "@domql/utils",
-  "version": "2.3.53",
+  "version": "2.3.54",
   "license": "MIT",
   "type": "module",
   "module": "dist/esm/index.js",
@@ -11,7 +11,7 @@
   "source": "index.js",
   "files": [
     "*.js",
-    "dist/**/*.js"
+    "dist"
   ],
   "scripts": {
     "build:esm": "npx esbuild *.js --target=es2020 --format=esm --outdir=dist/esm",
