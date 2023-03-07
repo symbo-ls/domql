@@ -12,6 +12,8 @@
     "test:lint": "npx standard \"packages/**/*.js\"",
     "test:build": "echo test how it builds is not yet supported",
     "test:coverage": "yarn jest --coverage --coverageReporters=text-lcov | coveralls",
+    "publish:all": "npx lerna publish --force-publish",
+    "publish": "npx lerna publish",
     "test": "yarn jest --coverage --coverageReporters=text-lcov | coveralls",
     "clean": "rm -rf dist .cache **/dist **/.cache",
     "clean:modules": "rm -rf node_modules yarn.lock package-lock.json lerna-debug.log yarn-error.log",
