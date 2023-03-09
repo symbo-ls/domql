@@ -28,9 +28,9 @@
   },
   "dependencies": {
     "@domql/globals": "latest",
-    "@domql/utils": "latest",
     "@domql/registry": "latest",
-    "@domql/report": "latest"
+    "@domql/report": "latest",
+    "@domql/utils": "latest"
   },
   "devDependencies": {
     "@babel/core": "^7.20.12",
@@ -51,6 +51,7 @@
     "jsdom": "^19.0.0",
     "nodemon": "^2.0.6",
     "parcel": "^2.0.1",
+    "rimraf": "^4.4.0",
     "standard": "^16.0.1"
   },
   "babel": {
