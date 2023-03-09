@@ -2,7 +2,7 @@
   "private": true,
   "repository": "https://github.com/domql/domql",
   "scripts": {
-    "postinstall": "npx lerna link --force-local && npx lerna run build",
+    "postinstall": "npx lerna link --force-local && npx lerna run build && npx lerna run copy:package:cjs",
     "build": "yarn build:packages",
     "build:watch": "nodemon --exec \"yarn build:cjs\" --ignore 'dist/*'",
     "build:packages": "lerna run build",
