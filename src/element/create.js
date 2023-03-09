@@ -279,7 +279,6 @@ const resolveExtends = (element, parent, options) => {
   delete element.__hasRootState // TODO: check with @Nikaoto and remove
   delete element.__ref
 
-
   return element
 }
 
