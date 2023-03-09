@@ -2,11 +2,10 @@
   "private": true,
   "repository": "https://github.com/domql/domql",
   "scripts": {
-    "postinstall": "yarn link:packages && yarn build:packages",
+    "postinstall": "npx lerna link --force-local && npx lerna run build",
     "build": "yarn build:packages",
     "build:watch": "nodemon --exec \"yarn build:cjs\" --ignore 'dist/*'",
     "build:packages": "lerna run build",
-    "link:packages": "npx lerna link --force-local",
     "test:watch": "jest 'packages/**/*.js' --watch --env=jsdom",
     "test:unit": "jest 'packages/**/*.js' --env=jsdom",
     "test:lint": "npx standard \"packages/**/*.js\"",
