@@ -2,6 +2,6 @@
 
 export const ENV = process.env.NODE_ENV
 
-export const isProduction = (ENV === 'production') || (ENV !== 'development' && ENV !== 'test')
-export const isTest = ENV === 'test'
-export const isDevelopment = ENV === 'development'
+export const isProduction = (env = process.env.NODE_ENV) => (env === 'production') || (env !== 'development' && env !== 'test')
+export const isTest = (env = process.env.NODE_ENV) => env === 'test'
+export const isDevelopment = (env = process.env.NODE_ENV) => env === 'development'
