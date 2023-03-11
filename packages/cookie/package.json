@@ -1,6 +1,6 @@
 {
   "name": "@domql/cookie",
-  "version": "2.3.65",
+  "version": "2.3.69",
   "license": "MIT",
   "type": "module",
   "module": "dist/esm/index.js",
