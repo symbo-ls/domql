@@ -256,15 +256,13 @@ const resolveExtends = (element, parent, options) => {
     const hasDefined = element.define && element.define[param]
     const ourParam = registry[param]
     const hasOptionsDefine = options.define && options.define[param]
-    if (ourParam && !hasOptionsDefine) {
-      continue // if (isFunction(ourParam)) ourParam(prop, element, element.node, options)
-    } else if (element[param] && !hasDefined && !hasOptionsDefine) {
+    if (ourParam && !hasOptionsDefine) continue
+    else if (element[param] && !hasDefined && !hasOptionsDefine) {
       create(exec(prop, element), element, param, options)
     }
   }
 
   // createNode(element, options)
-
   delete element.parent
   delete element.update
   delete element.__element

@@ -7,7 +7,7 @@ import { deepClone, overwriteShallow, overwriteDeep } from '../utils'
 export const IGNORE_STATE_PARAMS = [
   'update', 'parse', 'clean', 'create', 'parent', '__element', '__depends', '__ref', '__root',
   '__components',
-  '__projectSystem', '__projectState', '__projectComponents', '__projectPages', '__projectSnippets',
+  '__projectDesignSystem', '__projectState', '__projectComponents', '__projectPages', '__projectSnippets',
   'projectStateUpdate', 'projectSystemUpdate'
 ]
 
@@ -36,7 +36,7 @@ export const projectSystemUpdate = function (obj, options = {}) {
   const state = this
   if (!state) return
   const rootState = (state.__element.__ref.__root || state.__element).state
-  rootState.update({ PROJECT_SYSTEM: obj }, options)
+  rootState.update({ PROJECT_DESIGN_SYSTEM: obj }, options)
   return state
 }
 
@@ -185,7 +185,7 @@ export const createState = function (element, parent, opts) {
   state.projectSystemUpdate = projectSystemUpdate
   state.projectStateUpdate = projectStateUpdate
   state.__components = state.__root.COMPONENTS
-  state.__projectSystem = state.__root.PROJECT_SYSTEM
+  state.__projectDesignSystem = state.__root.PROJECT_DESIGN_SYSTEM
   state.__projectState = state.__root.PROJECT_STATE
   state.__projectComponents = state.__root.PROJECT_COMPONENTS
   state.__projectPages = state.__root.PROJECT_PAGES
