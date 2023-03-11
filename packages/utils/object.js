@@ -141,7 +141,7 @@ export const deepDestringify = (obj, stringified = {}) => {
     if (isString(objProp)) {
       if (objProp.includes('=>') || objProp.includes('function') || objProp.startsWith('(')) {
         try {
-          const evalProp = eval(`(${objProp})`) // use parentheses to convert string to function expression
+          const evalProp = window.eval(`(${objProp})`) // use parentheses to convert string to function expression
           stringified[prop] = evalProp
         } catch (e) { if (e) stringified[prop] = objProp }
       }
