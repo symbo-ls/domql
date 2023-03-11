@@ -1892,6 +1892,15 @@
   dependencies:
     "@types/istanbul-lib-report" "*"
 
+"@types/jsdom@^20.0.0":
+  version "20.0.1"
+  resolved "https://registry.yarnpkg.com/@types/jsdom/-/jsdom-20.0.1.tgz#07c14bc19bd2f918c1929541cdaacae894744808"
+  integrity sha512-d0r18sZPmMQr1eG35u12FZfhIXNrnsPU/g5wvRKCUf/tOGilKKwYMYGqh33BNR6ba+2gkHw1EUiHoN3mn7E5IQ==
+  dependencies:
+    "@types/node" "*"
+    "@types/tough-cookie" "*"
+    parse5 "^7.0.0"
+
 "@types/json-schema@^7.0.9":
   version "7.0.11"
   resolved "https://registry.yarnpkg.com/@types/json-schema/-/json-schema-7.0.11.tgz#d421b6c527a3037f7c84433fd2c4229e016863d3"
@@ -1941,6 +1950,11 @@
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/@types/stack-utils/-/stack-utils-2.0.1.tgz#20f18294f797f2209b5f65c8e3b5c8e8261d127c"
   integrity sha512-Hl219/BT5fLAaz6NDkSuhzasy49dwQS/DSdu4MdggFB8zcXv7vflBI3xp7FEmkmdDkBUI2bPUNeMttp2knYdxw==
+
+"@types/tough-cookie@*":
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/@types/tough-cookie/-/tough-cookie-4.0.2.tgz#6286b4c7228d58ab7866d19716f3696e03a09397"
+  integrity sha512-Q5vtl1W5ue16D+nIaW8JWebSSraJVlK+EthKn7e7UcD4KWsaSJ8BqGPXNaPghgtcn/fhvrN17Tv8ksUsQpiplw==
 
 "@types/yargs-parser@*":
   version "21.0.0"
@@ -4802,6 +4816,20 @@ jest-each@^29.5.0:
     jest-util "^29.5.0"
     pretty-format "^29.5.0"
 
+jest-environment-jsdom@^29.5.0:
+  version "29.5.0"
+  resolved "https://registry.yarnpkg.com/jest-environment-jsdom/-/jest-environment-jsdom-29.5.0.tgz#cfe86ebaf1453f3297b5ff3470fbe94739c960cb"
+  integrity sha512-/KG8yEK4aN8ak56yFVdqFDzKNHgF4BAymCx2LbPNPsUshUlfAl0eX402Xm1pt+eoG9SLZEUVifqXtX8SK74KCw==
+  dependencies:
+    "@jest/environment" "^29.5.0"
+    "@jest/fake-timers" "^29.5.0"
+    "@jest/types" "^29.5.0"
+    "@types/jsdom" "^20.0.0"
+    "@types/node" "*"
+    jest-mock "^29.5.0"
+    jest-util "^29.5.0"
+    jsdom "^20.0.0"
+
 jest-environment-node@^29.5.0:
   version "29.5.0"
   resolved "https://registry.yarnpkg.com/jest-environment-node/-/jest-environment-node-29.5.0.tgz#f17219d0f0cc0e68e0727c58b792c040e332c967"
@@ -5045,7 +5073,7 @@ jest-worker@^29.5.0:
     merge-stream "^2.0.0"
     supports-color "^8.0.0"
 
-jest@^29.0.2:
+jest@^29.5.0:
   version "29.5.0"
   resolved "https://registry.yarnpkg.com/jest/-/jest-29.5.0.tgz#f75157622f5ce7ad53028f2f8888ab53e1f1f24e"
   integrity sha512-juMg3he2uru1QoXX078zTa7pO85QyB9xajZc6bU+d9yEGwrKX6+vGmJQ3UdVZsvTEUARIdObzH68QItim6OSSQ==
@@ -5079,6 +5107,38 @@ js-yaml@^3.10.0, js-yaml@^3.13.1:
   dependencies:
     argparse "^1.0.7"
     esprima "^4.0.0"
+
+jsdom@^20.0.0:
+  version "20.0.3"
+  resolved "https://registry.yarnpkg.com/jsdom/-/jsdom-20.0.3.tgz#886a41ba1d4726f67a8858028c99489fed6ad4db"
+  integrity sha512-SYhBvTh89tTfCD/CRdSOm13mOBa42iTaTyfyEWBdKcGdPxPtLFBXuHR8XHb33YNYaP+lLbmSvBTsnoesCNJEsQ==
+  dependencies:
+    abab "^2.0.6"
+    acorn "^8.8.1"
+    acorn-globals "^7.0.0"
+    cssom "^0.5.0"
+    cssstyle "^2.3.0"
+    data-urls "^3.0.2"
+    decimal.js "^10.4.2"
+    domexception "^4.0.0"
+    escodegen "^2.0.0"
+    form-data "^4.0.0"
+    html-encoding-sniffer "^3.0.0"
+    http-proxy-agent "^5.0.0"
+    https-proxy-agent "^5.0.1"
+    is-potential-custom-element-name "^1.0.1"
+    nwsapi "^2.2.2"
+    parse5 "^7.1.1"
+    saxes "^6.0.0"
+    symbol-tree "^3.2.4"
+    tough-cookie "^4.1.2"
+    w3c-xmlserializer "^4.0.0"
+    webidl-conversions "^7.0.0"
+    whatwg-encoding "^2.0.0"
+    whatwg-mimetype "^3.0.0"
+    whatwg-url "^11.0.0"
+    ws "^8.11.0"
+    xml-name-validator "^4.0.0"
 
 jsdom@^21.0.0:
   version "21.1.0"
@@ -6393,7 +6453,7 @@ parse-url@^8.1.0:
   dependencies:
     parse-path "^7.0.0"
 
-parse5@^7.1.1:
+parse5@^7.0.0, parse5@^7.1.1:
   version "7.1.2"
   resolved "https://registry.yarnpkg.com/parse5/-/parse5-7.1.2.tgz#0736bebbfd77793823240a23b7fc5e010b7f8e32"
   integrity sha512-Czj1WaSVpaoj0wbhMzLmWD69anp2WH7FXMB9n1Sy8/ZFF9jolSQVMu1Ij5WIyGmcBmhk7EOndpO4mIpihVqAXw==

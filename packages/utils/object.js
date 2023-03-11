@@ -1,5 +1,6 @@
 'use strict'
 
+import { window } from '@domql/globals'
 import { isFunction, isObjectLike, isObject, isArray, isString } from './types.js'
 
 export const exec = (param, element, state) => {
@@ -26,14 +27,14 @@ export const merge = (element, obj) => {
 
 export const deepMerge = (element, extend) => {
   for (const e in extend) {
-    const elementProp = element[e]
     const extendProp = extend[e]
-    // const cachedProps = cache.props
     if (e === 'parent' || e === 'props') continue
-    if (elementProp === undefined) {
+    if (element[e] === undefined) {
       element[e] = extendProp
-    } else if (isObjectLike(elementProp) && isObject(extendProp)) {
-      deepMerge(elementProp, extendProp)
+    } else if (isObjectLike(element[e]) && isObjectLike(extendProp)) {
+      deepMerge(element[e], extendProp)
+    } else {
+      element[e] = extendProp
     }
   }
   return element
@@ -111,13 +112,23 @@ export const deepStringify = (obj, stringified = {}) => {
       stringified[prop] = objProp.toString()
     } else if (isObject(objProp)) {
       stringified[prop] = {}
-      deepStringify(objProp[prop], stringified[prop])
+      deepStringify(objProp, stringified[prop])
     } else if (isArray(objProp)) {
       stringified[prop] = []
-      objProp.map((v, i) => deepStringify(v, stringified[prop][i]))
-    } else stringified[prop] = objProp
+      objProp.forEach((v, i) => {
+        if (isObject(v)) {
+          stringified[prop][i] = {}
+          deepStringify(v, stringified[prop][i])
+        } else if (isFunction(v)) {
+          stringified[prop][i] = v.toString()
+        } else {
+          stringified[prop][i] = v
+        }
+      })
+    } else {
+      stringified[prop] = objProp
+    }
   }
-  console.log(obj, stringified)
   return stringified
 }
 
@@ -128,14 +139,35 @@ export const deepDestringify = (obj, stringified = {}) => {
   for (const prop in obj) {
     const objProp = obj[prop]
     if (isString(objProp)) {
-      if (objProp.includes('=>') || objProp.includes('function') || objProp[0] === '(') {
+      if (objProp.includes('=>') || objProp.includes('function') || objProp.startsWith('(')) {
         try {
-          const evalProp = eval(objProp) // eslint-disable-line
+          const evalProp = eval(`(${objProp})`) // use parentheses to convert string to function expression
           stringified[prop] = evalProp
         } catch (e) { if (e) stringified[prop] = objProp }
       }
-    } else stringified[prop] = objProp
-    if (isObject(objProp)) deepDestringify(stringified[prop], stringified[prop])
+    } else {
+      stringified[prop] = objProp
+    }
+
+    if (isArray(objProp)) {
+      stringified[prop] = []
+      objProp.forEach((arrProp) => {
+        if (isString(arrProp)) {
+          if (arrProp.includes('=>') || arrProp.includes('function') || arrProp.startsWith('(')) {
+            try {
+              const evalProp = window.eval(arrProp) // eslint-disable-line
+              stringified[prop].push(evalProp)
+            } catch (e) { if (e) stringified[prop].push(arrProp) }
+          } else {
+            stringified[prop].push(arrProp)
+          }
+        } else {
+          stringified[prop].push(deepDestringify(arrProp))
+        }
+      })
+    } else if (isObject(objProp)) {
+      stringified[prop] = deepDestringify(objProp, stringified[prop]) // recursively call deepDestringify for nested objects
+    }
   }
   return stringified
 }
@@ -204,7 +236,7 @@ export const overwriteDeep = (params, obj) => {
     const objProp = obj[e]
     const paramsProp = params[e]
     if (isObjectLike(objProp) && isObjectLike(paramsProp)) {
-      overwriteDeep(objProp, paramsProp)
+      overwriteDeep(paramsProp, objProp)
     } else if (paramsProp !== undefined) {
       obj[e] = paramsProp
     }

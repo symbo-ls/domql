@@ -23,8 +23,6 @@ const ENV = process.env.NODE_ENV
 //   }
 // })
 
-export * from './cache'
-
 export const createNode = (element) => {
   // create and assign a node
   let { node, tag } = element

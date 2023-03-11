@@ -1,6 +1,6 @@
 'use strict'
 
-import { report } from '@domql/report'
+// import { report } from '@domql/report'
 
 export const root = {
   key: ':root',
