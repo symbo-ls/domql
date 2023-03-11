@@ -117,6 +117,7 @@ export const deepStringify = (obj, stringified = {}) => {
       objProp.map((v, i) => deepStringify(v, stringified[prop][i]))
     } else stringified[prop] = objProp
   }
+  console.log(obj, stringified)
   return stringified
 }
 
