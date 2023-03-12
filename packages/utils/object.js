@@ -1,7 +1,7 @@
 'use strict'
 
 import { window } from '@domql/globals'
-import { isFunction, isObjectLike, isObject, isArray, isString } from './types.js'
+import { isFunction, isObjectLike, isObject, isArray, isString, is } from './types.js'
 
 export const exec = (param, element, state, context) => {
   if (isFunction(param)) {
@@ -150,29 +150,31 @@ export const deepDestringify = (obj, stringified = {}) => {
           const evalProp = window.eval(`(${objProp})`) // use parentheses to convert string to function expression
           stringified[prop] = evalProp
         } catch (e) { if (e) stringified[prop] = objProp }
+      } else {
+        stringified[prop] = objProp
       }
-    } else {
-      stringified[prop] = objProp
-    }
-
-    if (isArray(objProp)) {
+    } else if (isArray(objProp)) {
       stringified[prop] = []
       objProp.forEach((arrProp) => {
         if (isString(arrProp)) {
           if (arrProp.includes('=>') || arrProp.includes('function') || arrProp.startsWith('(')) {
             try {
-              const evalProp = window.eval(arrProp) // eslint-disable-line
+              const evalProp = window.eval(`(${arrProp})`) // use parentheses to convert string to function expression
               stringified[prop].push(evalProp)
             } catch (e) { if (e) stringified[prop].push(arrProp) }
           } else {
             stringified[prop].push(arrProp)
           }
-        } else {
+        } else if (isObject(arrProp)) {
           stringified[prop].push(deepDestringify(arrProp))
+        } else {
+          stringified[prop].push(arrProp)
         }
       })
     } else if (isObject(objProp)) {
       stringified[prop] = deepDestringify(objProp, stringified[prop]) // recursively call deepDestringify for nested objects
+    } else {
+      stringified[prop] = objProp
     }
   }
   return stringified
