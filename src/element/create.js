@@ -28,6 +28,8 @@ const ENV = process.env.NODE_ENV
 const create = (element, parent, key, options = OPTIONS.create || {}) => {
   if (options && !OPTIONS.create) OPTIONS.create = options
 
+  // console.log(element, parent)
+
   // if ELEMENT is not given
   if (element === undefined) {
     if (ENV === 'test' || ENV === 'development') {
@@ -289,6 +291,7 @@ const extendizeByKey = (element, parent, key) => {
   const { extend, props, state, childExtend, childProps } = element
   const hasComponentAttrs = extend || childExtend || props || state || element.on
   const componentKey = key.split('_')[0]
+
   if (!hasComponentAttrs || childProps) {
     return {
       extend: componentKey || key,

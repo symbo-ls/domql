@@ -1,6 +1,6 @@
 'use strict'
 
-import { isArray, isFunction, isObject } from '@domql/utils'
+import { isArray, isFunction, isObject, isString } from '@domql/utils'
 
 export const generateHash = () => Math.random().toString(36).substring(2)
 
@@ -86,6 +86,13 @@ export const cloneAndMergeArrayExtend = stack => {
   return stack.reduce((a, c) => {
     return deepMergeExtend(a, deepCloneExtend(c))
   }, {})
+}
+
+export const replaceStringsWithComponents = (stack, components) => {
+  return stack.map(v => {
+    if (isString(v)) return components[v]
+    else return v
+  })
 }
 
 // joint stacks
