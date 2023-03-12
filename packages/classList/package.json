@@ -1,6 +1,6 @@
 {
   "name": "@domql/classlist",
-  "version": "2.3.72",
+  "version": "2.3.73",
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
