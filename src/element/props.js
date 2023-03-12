@@ -3,44 +3,24 @@
 import { exec, isArray, isObject, isString } from '@domql/utils'
 import { deepClone, deepMerge } from '../utils'
 
+const objectizeStringProperty = propValue => {
+  if (isString(propValue)) return { inheritedString: propValue }
+  return propValue
+}
+
 const createPropsStack = (element, parent) => {
   const { props, __ref } = element
   const propsStack = __ref.propsStack = []
 
-  const isMatch = isString(props) && props.indexOf('match') > -1
   const matchParent = parent.props && parent.props[element.key]
-  const matchParentChild = parent.props && parent.props.childProps
+  const matchParentChildProps = parent.props && parent.props.childProps
 
-  const objectizeStringProperty = propValue => {
-    if (isString(propValue)) return { inheritedString: propValue }
-    return propValue
-  }
+  if (matchParent && props !== 'match') propsStack.push(objectizeStringProperty(matchParent))
+  if (matchParentChildProps) propsStack.push(matchParentChildProps)
 
-  if (matchParent && props !== 'match') propsStack.push(matchParent)
-  if (matchParentChild) propsStack.push(matchParentChild)
-
-  if (isObject(props)) {
-    propsStack.push(props)
-  }
-
-  if (props === 'inherit') {
-    if (parent.props) propsStack.push(parent.props)
-  } else if (isMatch) {
-    const hasArg = props.split(' ')
-    let matchParentValue
-    // console.log('hasArg', hasArg)
-    if (hasArg[1] && parent.props[hasArg[1]]) {
-      const secondArgasParentMatchProp = parent.props[hasArg[1]]
-      propsStack.push(
-        objectizeStringProperty(secondArgasParentMatchProp)
-      )
-    } else if (matchParent) {
-      propsStack.push(
-        objectizeStringProperty(matchParent)
-      )
-    }
-    propsStack.push(matchParentValue)
-  } else if (props) propsStack.push(props)
+  if (isObject(props)) propsStack.push(props)
+  else if (props === 'inherit' && parent.props) propsStack.push(parent.props)
+  else if (props) propsStack.push(props)
 
   if (isArray(__ref.__extend)) {
     __ref.__extend.map(extend => {
