@@ -1,6 +1,7 @@
 'use strict'
 
 import { on } from '../event'
+import { triggerEventOn } from '@domql/event'
 import { is, isObject, exec, isFunction, isUndefined } from '@domql/utils'
 import { deepClone, overwriteShallow, overwriteDeep } from '../utils'
 
@@ -120,10 +121,8 @@ export const createState = function (element, parent, opts) {
     __elementRef.__hasRootState = true
   }
 
-  // run `on.init`
-  if (element.on && isFunction(element.on.stateInit)) {
-    on.stateInit(element.on.stateInit, element, element.state)
-  }
+  // trigger `on.stateInit`
+  triggerEventOn('stateInit', element)
 
   let stateKey = __elementRef.__state
   if (stateKey) {
@@ -191,10 +190,8 @@ export const createState = function (element, parent, opts) {
   state.__projectPages = state.__root.PROJECT_PAGES
   state.__projectSnippets = state.__root.PROJECT_SNIPPETS
 
-  // run `on.stateCreated`
-  if (element.on && isFunction(element.on.stateCreated)) {
-    on.stateCreated(element.on.stateCreated, element, state)
-  }
+  // trigger `on.stateCreated`
+  triggerEventOn('stateCreated', element)
 
   return state
 }

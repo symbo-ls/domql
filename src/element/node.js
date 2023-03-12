@@ -1,9 +1,10 @@
 'use strict'
 
 import { exec, isFunction, isObject } from '@domql/utils'
+import { triggerEventOn } from '@domql/event'
+
 import create from './create'
 import cacheNode from './cache'
-import * as on from '../event/on'
 
 import {
   throughInitialDefine,
@@ -32,10 +33,8 @@ export const createNode = (element, options) => {
       node = element.node = element.parent.node.attachShadow({ mode: 'open' })
     } else node = element.node = cacheNode(element)
 
-    // run `on.attachNode`
-    if (element.on && isFunction(element.on.attachNode)) {
-      on.attachNode(element.on.attachNode, element, element.state)
-    }
+    // trigger `on.attachNode`
+    triggerEventOn('attachNode', element)
   }
 
   // node.dataset // .key = element.key

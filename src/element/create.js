@@ -2,6 +2,7 @@
 
 import { isObject, isFunction, isString, createID, isNode, exec, is } from '@domql/utils'
 import { TAGS } from '@domql/registry'
+import { triggerEventOn } from '@domql/event'
 
 import root from './root'
 import createNode from './node'
@@ -11,7 +12,6 @@ import set, { removeContentElement } from './set'
 import createState from './state'
 import createProps from './props'
 import update from './update'
-import { on } from '../event'
 import { assignClass } from './mixins/classList'
 import { remove, lookup, setProps, log, keys, parse, parseDeep, spotByPath, nextElement, previousElement, isMethod } from './methods'
 import cacheNode, { detectTag } from './cache'
@@ -113,14 +113,10 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
   if (__ref.__if) createProps(element, parent)
 
   // run `on.init`
-  if (element.on && isFunction(element.on.init)) {
-    on.init(element.on.init, element, element.state)
-  }
+  triggerEventOn('init', element)
 
   // run `on.beforeClassAssign`
-  if (element.on && isFunction(element.on.beforeClassAssign)) {
-    on.beforeClassAssign(element.on.beforeClassAssign, element, element.state)
-  }
+  triggerEventOn('beforeClassAssign', element)
 
   // generate a CLASS name
   assignClass(element)
@@ -134,14 +130,10 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
   assignNode(element, parent, key)
 
   // run `on.renderRouter`
-  if (element.on && isFunction(element.on.renderRouter)) {
-    on.render(element.on.renderRouter, element, element.state)
-  }
+  triggerEventOn('renderRouter', element)
 
   // run `on.render`
-  if (element.on && isFunction(element.on.render)) {
-    on.render(element.on.render, element, element.state)
-  }
+  triggerEventOn('render', element)
 
   if (parent.__ref && parent.__ref.__children) parent.__ref.__children.push(element.key)
   // console.groupEnd(element.key)
