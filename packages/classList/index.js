@@ -24,7 +24,7 @@ export const classify = (obj, element) => {
   return className
 }
 
-export const classList = (params, element, node) => {
+export const classList = (params, element) => {
   if (!params) return
   const { key } = element
   if (params === true) params = element.class = { key }
@@ -33,5 +33,12 @@ export const classList = (params, element, node) => {
   // TODO: fails on string
   const className = params.replace(/\s+/g, ' ').trim()
   element.ref.class = className
+  return className
+}
+
+// LEGACY (still needed in old domql)
+export const applyClassListOnNode = (params, element, node) => {
+  const className = classList(params, element)
+  node.classList = className
   return className
 }
