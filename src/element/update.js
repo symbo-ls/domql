@@ -2,6 +2,7 @@
 
 import { window } from '@domql/globals'
 import { diff, isFunction, isNumber, isObject, isString, createSnapshotId } from '@domql/utils'
+import { applyEvent, triggerEventOn } from '@domql/event'
 import { merge, overwrite } from '../utils'
 
 import { on } from '../event'
@@ -58,8 +59,10 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
       if (!__ref.__hasRootState) delete element.state
       if (__ref.__state) element.state = __ref.__state
       const created = create(element, element.parent, element.key)
-      if (!options.preventUpdate && element.on && isFunction(element.on.update)) {
-        on.update(element.on.update, created, created.state)
+      if (!options.preventUpdate) {
+        if (element.on && isFunction(element.on.update)) {
+          applyEvent(element.on.update, created, created.state)
+        }
       }
       return created
     } else if (element.node && !ifPassed) {
@@ -143,8 +146,8 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     }
   }
 
-  if (!options.preventUpdate && element.on && isFunction(element.on.update)) {
-    on.update(element.on.update, element, element.state)
+  if (!options.preventUpdate) {
+    triggerEventOn('update', element)
   }
 }
 
