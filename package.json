@@ -30,6 +30,7 @@
     "@domql/globals": "latest",
     "@domql/registry": "latest",
     "@domql/report": "latest",
+    "@domql/emotion": "latest",
     "@domql/utils": "latest",
     "@domql/classlist": "latest"
   },
