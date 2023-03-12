@@ -32,7 +32,7 @@ export const classList = (params, element) => {
   if (isObject(params)) params = classify(params, element)
   // TODO: fails on string
   const className = params.replace(/\s+/g, ' ').trim()
-  element.ref.class = className
+  if (element.ref) element.ref.class = className // TODO: this check is NOT needed in new DOMQL
   return className
 }
 
