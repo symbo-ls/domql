@@ -10,6 +10,10 @@ export const render = (param, element, state) => {
   param(element, state)
 }
 
+export const on = (param, element, state, context) => {
+  return param(element, state || element.state, context || element.context)
+}
+
 export const initUpdate = (element) => {
   const { ref, state, on } = element
   const { props } = ref

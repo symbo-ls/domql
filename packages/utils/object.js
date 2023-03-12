@@ -3,8 +3,14 @@
 import { window } from '@domql/globals'
 import { isFunction, isObjectLike, isObject, isArray, isString } from './types.js'
 
-export const exec = (param, element, state) => {
-  if (isFunction(param)) return param(element, state || element.state)
+export const exec = (param, element, state, context) => {
+  if (isFunction(param)) {
+    return param(
+      element,
+      state || element.state,
+      context || element.context
+    )
+  }
   return param
 }
 
