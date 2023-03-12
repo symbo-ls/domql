@@ -1,7 +1,7 @@
 'use strict'
 
 import { isFunction, exec, isString } from '@domql/utils'
-import { getExtendStack, jointStacks, cloneAndMergeArrayExtend, deepMergeExtend } from '../utils'
+import { getExtendStack, jointStacks, cloneAndMergeArrayExtend, deepMergeExtend, replaceStringsWithComponents } from '../utils'
 
 const ENV = process.env.NODE_ENV
 
@@ -55,7 +55,8 @@ export const applyExtend = (element, parent, options = {}) => {
   }
 
   __ref.__extend = stack
-  let mergedExtend = cloneAndMergeArrayExtend(stack)
+  const findAndReplaceStrings = replaceStringsWithComponents(stack, COMPONENTS)
+  let mergedExtend = cloneAndMergeArrayExtend(findAndReplaceStrings)
 
   const component = exec(element.component || mergedExtend.component, element)
   if (component && COMPONENTS && COMPONENTS[component]) {
