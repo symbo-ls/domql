@@ -241,8 +241,8 @@ const resolveExtends = (element, parent, options) => {
   element.props = {}
   element.state = {}
 
-  element.props = createProps(element, parent)
-  element.state = createState(element, parent, { skip: true })
+  createProps(element, parent)
+  createState(element, parent, { skip: true })
 
   throughInitialExec(element)
 
@@ -259,14 +259,13 @@ const resolveExtends = (element, parent, options) => {
     }
   }
 
-  // createNode(element, options)
   delete element.parent
   delete element.update
   delete element.__element
 
   // added by createProps
-  delete element.__props // TODO: check with @Nikaoto and remove
-  delete element.props.props
+  delete element.props.update
+  delete element.props.__element
 
   // added by createState
   delete element.state.__element
