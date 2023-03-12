@@ -30,7 +30,8 @@
     "@domql/globals": "latest",
     "@domql/registry": "latest",
     "@domql/report": "latest",
-    "@domql/utils": "latest"
+    "@domql/utils": "latest",
+    "@domql/classlist": "latest"
   },
   "devDependencies": {
     "@babel/core": "^7.20.12",

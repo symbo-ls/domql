@@ -135,6 +135,7 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
 
   // run `on.renderRouter`
   if (element.on && isFunction(element.on.renderRouter)) {
+    console.log(element.on.renderRouter)
     on.render(element.on.renderRouter, element, element.state)
   }
 

@@ -39,3 +39,7 @@ export const stateUpdated = (param, element, state, changes) => {
 export const update = (param, element, state) => {
   return param(element, state)
 }
+
+export default (param, element, state) => {
+  return param(element, state)
+}
