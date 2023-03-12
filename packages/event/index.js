@@ -4,11 +4,13 @@ import * as on from './on'
 import * as can from './can'
 import * as is from './is'
 
-const onEvent = on.onEvent
+const applyEvent = on.applyEvent
+const triggerEventOn = on.triggerEventOn
 
 export {
   on,
-  onEvent,
+  applyEvent,
+  triggerEventOn,
   can,
   is
 }
