@@ -133,6 +133,11 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
   // assign NODE
   assignNode(element, parent, key)
 
+  // run `on.renderRouter`
+  if (element.on && isFunction(element.on.renderRouter)) {
+    on.render(element.on.renderRouter, element, element.state)
+  }
+
   // run `on.render`
   if (element.on && isFunction(element.on.render)) {
     on.render(element.on.render, element, element.state)
