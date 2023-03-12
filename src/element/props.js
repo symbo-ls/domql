@@ -1,10 +1,10 @@
 'use strict'
 
-import { exec, isArray, isObject, isString } from '@domql/utils'
+import { exec, is, isArray, isObject, isString } from '@domql/utils'
 import { deepClone, deepMerge } from '../utils'
 
 const objectizeStringProperty = propValue => {
-  if (isString(propValue)) return { inheritedString: propValue }
+  if (is(propValue)('string', 'number')) return { inheritedString: propValue }
   return propValue
 }
 
@@ -15,7 +15,7 @@ const createPropsStack = (element, parent) => {
   const matchParent = parent.props && parent.props[element.key]
   const matchParentChildProps = parent.props && parent.props.childProps
 
-  if (matchParent && props !== 'match') propsStack.push(objectizeStringProperty(matchParent))
+  if (matchParent) propsStack.push(objectizeStringProperty(matchParent))
   if (matchParentChildProps) propsStack.push(matchParentChildProps)
 
   if (isObject(props)) propsStack.push(props)
@@ -66,6 +66,15 @@ export const updateProps = (newProps, element, parent) => {
   const { __ref } = element
   let propsStack = __ref.__props
 
+  const matchParent = parent.props && parent.props[element.key]
+  const matchParentIsString = isString(matchParent)
+  if (matchParentIsString) {
+    const inheritedStringExists = propsStack.filter(v => v.inheritedString)[0]
+    if (inheritedStringExists) inheritedStringExists.inheritedString = matchParent
+    else {
+      propsStack = __ref.__props = [].concat(objectizeStringProperty(matchParent), propsStack)
+    }
+  }
   if (newProps) propsStack = __ref.__props = [].concat(newProps, propsStack)
 
   if (propsStack) syncProps(propsStack, element)
