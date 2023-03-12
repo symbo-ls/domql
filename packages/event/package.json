@@ -7,7 +7,8 @@
     "vpatch": "npm version patch && npm publish --access public"
   },
   "dependencies": {
-    "@domql/utils": "latest"
+    "@domql/utils": "latest",
+    "@domql/globals": "latest"
   },
   "gitHead": "66641a0ee9c94ecbe631b7b92e2018ad18af387b",
   "source": "index.js"
