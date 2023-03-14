@@ -240,10 +240,9 @@ const resolveExtends = (element, parent, options) => {
   if (!__ref.__exec) __ref.__exec = {}
   if (!__ref.__attr) __ref.__attr = {}
 
-  element.props = {}
-  element.state = {}
+  element = createProps(element, parent)
 
-  createProps(element, parent)
+  element.state = {}
   createState(element, parent, { skip: true })
 
   throughInitialExec(element)
