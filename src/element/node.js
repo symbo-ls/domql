@@ -65,9 +65,7 @@ export const createNode = (element, options) => {
       const isElement = applyParam(param, element, options)
       if (isElement) {
         const { hasDefine, hasContextDefine } = isElement
-
         if (element[param] && !hasDefine && !hasContextDefine) {
-        // Create element
           create(exec(prop, element), element, param, options)
         }
       }

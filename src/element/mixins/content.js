@@ -8,6 +8,7 @@ import set from '../set'
  */
 export default (param, element, node, options) => {
   if (param && element) {
+    if (element.$setCollection || element.$setStateCollection || element.$setPropsCollection) return
     if (param.__hash === element.content.__hash && element.content.update) {
       if (!element.content.__ref) element.content.__ref = {}
       element.content.update(param)
