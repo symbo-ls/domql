@@ -5,5 +5,6 @@
   "type": "module",
   "main": "index.js",
   "source": "index.js",
-  "scripts": {}
+  "scripts": {},
+  "gitHead": "c867d7db9e2450d67e97a15ffc7b61692713c234"
 }
