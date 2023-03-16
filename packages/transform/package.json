@@ -1,6 +1,6 @@
 {
   "name": "@domql/transform",
-  "version": "2.3.80",
+  "version": "2.3.81",
   "main": "index.js",
   "license": "MIT",
   "gitHead": "c867d7db9e2450d67e97a15ffc7b61692713c234"
