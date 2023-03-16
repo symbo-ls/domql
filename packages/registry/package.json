@@ -1,6 +1,6 @@
 {
   "name": "@domql/registry",
-  "version": "2.3.70",
+  "version": "2.3.80",
   "main": "index.js",
   "license": "MIT",
   "source": "index.js",
