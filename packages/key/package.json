@@ -1,6 +1,6 @@
 {
   "name": "@domql/key",
-  "version": "2.3.81",
+  "version": "2.3.82",
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
