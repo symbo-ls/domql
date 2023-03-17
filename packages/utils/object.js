@@ -121,6 +121,24 @@ export const deepStringify = (obj, stringified = {}) => {
 }
 
 /**
+ * Stringify object
+ */
+export const detachFunctionsFromObject = (obj, detached = {}) => {
+  for (const prop in obj) {
+    const objProp = obj[prop]
+    if (isFunction(objProp)) continue
+    else if (isObject(objProp)) {
+      detached[prop] = {}
+      deepStringify(objProp[prop], detached[prop])
+    } else if (isArray(objProp)) {
+      detached[prop] = []
+      objProp.map((v, i) => deepStringify(v, detached[prop][i]))
+    } else detached[prop] = objProp
+  }
+  return detached
+}
+
+/**
  * Detringify object
  */
 export const deepDestringify = (obj, stringified = {}) => {
