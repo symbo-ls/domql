@@ -1,8 +1,8 @@
 {
   "name": "@domql/render",
-  "version": "2.3.50",
+  "version": "2.3.81",
   "main": "index.js",
   "license": "MIT",
   "source": "index.js",
-  "gitHead": "66641a0ee9c94ecbe631b7b92e2018ad18af387b"
+  "gitHead": "c867d7db9e2450d67e97a15ffc7b61692713c234"
 }

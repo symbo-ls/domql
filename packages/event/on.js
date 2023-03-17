@@ -10,6 +10,16 @@ export const render = (param, element, state) => {
   param(element, state)
 }
 
+export const applyEvent = (param, element, state, context) => {
+  return param(element, state || element.state, context || element.context)
+}
+
+export const triggerEventOn = (param, element) => {
+  if (element.on && isFunction(element.on[param])) {
+    return applyEvent(element.on[param], element)
+  }
+}
+
 export const initUpdate = (element) => {
   const { ref, state, on } = element
   const { props } = ref

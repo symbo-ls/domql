@@ -15,7 +15,8 @@ const defaultOptions = {
   scrollToTop: true,
   scrollToNode: false,
   useFragment: false,
-  updateState: true
+  updateState: true,
+  stateContentUpdate: false
 }
 
 export const router = (
@@ -36,7 +37,7 @@ export const router = (
     if (options.pushState) window.history.pushState(state, null, pathname + (hash ? `#${hash}` : ''))
 
     element.set({ tag: options.useFragment && 'fragment', extend: content })
-    if (options.updateState) element.state.update({ route, hash })
+    if (options.updateState) element.state.update({ route, hash }, { preventContentUpdate: !options.stateContentUpdate })
 
     const rootNode = element.node
     if (options.scrollToTop) rootNode.scrollTo({ behavior: 'smooth', top: 0, left: 0 })

@@ -1,12 +1,10 @@
 {
   "name": "@domql/utils",
-  "version": "2.3.65",
+  "version": "2.3.81",
   "license": "MIT",
   "type": "module",
-  "module": "dist/esm/index.js",
-  "unpkg": "dist/iife/index.js",
-  "jsdelivr": "dist/iife/index.js",
-  "main": "dist/esm/index.js",
+  "module": "index.js",
+  "main": "index.js",
   "exports": "./dist/cjs/index.js",
   "source": "index.js",
   "files": [
@@ -17,13 +15,12 @@
     "copy:package:cjs": "cp ../../.build/package-cjs.json dist/cjs/package.json",
     "build:esm": "npx esbuild *.js --target=es2020 --format=esm --outdir=dist/esm",
     "build:cjs": "npx esbuild *.js --target=node16 --format=cjs --outdir=dist/cjs",
-    "build:iife": "npx esbuild *.js --target=node16 --format=iife --outdir=dist/iife",
-    "build": "yarn build:esm && yarn build:cjs",
+    "build": "yarn build:cjs",
     "prepublish": "rimraf -I dist && yarn build && yarn copy:package:cjs"
   },
   "dependencies": {
     "@domql/globals": "latest",
     "@domql/tags": "latest"
   },
-  "gitHead": "25771014665f24c46a79b7b108d1d853014cfde1"
+  "gitHead": "c867d7db9e2450d67e97a15ffc7b61692713c234"
 }
