@@ -147,11 +147,21 @@ export const detachFunctionsFromObject = (obj, detached = {}) => {
     if (isFunction(objProp)) continue
     else if (isObject(objProp)) {
       detached[prop] = {}
-      deepStringify(objProp[prop], detached[prop])
+      deepStringify(objProp, detached[prop])
     } else if (isArray(objProp)) {
       detached[prop] = []
-      objProp.map((v, i) => deepStringify(v, detached[prop][i]))
-    } else detached[prop] = objProp
+      objProp.forEach((v, i) => {
+        if (isFunction(v)) return
+        if (isObject(v)) {
+          detached[prop][i] = {}
+          detachFunctionsFromObject(v, detached[prop][i])
+        } else {
+          detached[prop][i] = v
+        }
+      })
+    } else {
+      detached[prop] = objProp
+    }
   }
   return detached
 }
