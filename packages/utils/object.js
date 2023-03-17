@@ -1,7 +1,7 @@
 'use strict'
 
 import { window } from '@domql/globals'
-import { isFunction, isObjectLike, isObject, isArray, isString, is } from './types.js'
+import { isFunction, isObjectLike, isObject, isArray, isString } from './types.js'
 
 export const exec = (param, element, state, context) => {
   if (isFunction(param)) {
