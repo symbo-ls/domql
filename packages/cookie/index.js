@@ -1,8 +1,12 @@
 'use strict'
 
-export const isMobile = (() => /Mobi/.test(navigator.userAgent))()
+
+
+export const isMobile = (() => typeof navigator === 'undefined' ?
+                         false : /Mobi/.test(navigator.userAgent))()
 
 export const setCookie = (cname, cvalue, exdays = 365) => {
+  if (typeof document === 'undefined' || !document.cookie) return;
   const d = new Date()
   d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000))
   const expires = `expires=${d.toUTCString()}`
@@ -10,6 +14,7 @@ export const setCookie = (cname, cvalue, exdays = 365) => {
 }
 
 export const getCookie = (cname) => {
+  if (typeof document === 'undefined' || !document.cookie) return;
   const name = `${cname}=`
   const decodedCookie = decodeURIComponent(document.cookie)
   const ca = decodedCookie.split(';')
