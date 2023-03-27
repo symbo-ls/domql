@@ -157,6 +157,8 @@ export const createState = function (element, parent, opts) {
   }
 
   // reference other state
+  // TODO: check why __ref is assigned with element
+  // /docs/intro
   const { __ref } = state
   if (__ref) {
     state = deepClone(__ref, IGNORE_STATE_PARAMS)
