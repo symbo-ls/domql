@@ -28,8 +28,6 @@ const ENV = process.env.NODE_ENV
 const create = (element, parent, key, options = OPTIONS.create || {}) => {
   if (options && !OPTIONS.create) OPTIONS.create = options
 
-  // console.log(element, parent)
-
   // if ELEMENT is not given
   if (element === undefined) {
     if (ENV === 'test' || ENV === 'development') {
@@ -115,7 +113,8 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
   if (__ref.__if) createProps(element, parent)
 
   // run `on.init`
-  triggerEventOn('init', element)
+  const initReturns = triggerEventOn('init', element)
+  if (initReturns === false) return element
 
   // run `on.beforeClassAssign`
   triggerEventOn('beforeClassAssign', element)
@@ -138,7 +137,6 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
   triggerEventOn('render', element)
 
   if (parent.__ref && parent.__ref.__children) parent.__ref.__children.push(element.key)
-  // console.groupEnd(element.key)
 
   return element
 }
