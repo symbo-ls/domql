@@ -51,11 +51,12 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
   if (isFunction(element.if)) {
     // TODO: move as fragment
     const ifPassed = element.if(element, element.state)
-    const itWasFalse = !__ref.__if
+    const itWasFalse = __ref.__if !== true
 
     if (ifPassed) __ref.__if = true
     if (itWasFalse && ifPassed) {
       delete element.__hash
+      delete element.extend
       if (!__ref.__hasRootState) delete element.state
       if (__ref.__state) element.state = __ref.__state
       const created = create(element, element.parent, element.key)
