@@ -13,6 +13,9 @@
     "*.js",
     "dist"
   ],
+  "dependencies": {
+    "@domql/utils": "latest"
+  },
   "scripts": {
     "copy:package:cjs": "cp ../../.build/package-cjs.json dist/cjs/package.json",
     "build:esm": "npx esbuild *.js --target=es2020 --format=esm --outdir=dist/esm",
