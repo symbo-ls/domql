@@ -29,7 +29,7 @@
   "dependencies": {
     "@domql/globals": "latest",
     "@domql/registry": "latest",
-    "@domql/event": "latest",
+    "@domql/event": "2.3.82",
     "@domql/report": "latest",
     "@domql/emotion": "latest",
     "@domql/utils": "latest",
