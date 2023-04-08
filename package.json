@@ -33,7 +33,7 @@
     "@domql/report": "latest",
     "@domql/emotion": "latest",
     "@domql/utils": "latest",
-    "@domql/classlist": "latest"
+    "@domql/classlist": "2.3.82"
   },
   "devDependencies": {
     "@babel/core": "^7.20.12",
