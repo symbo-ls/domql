@@ -12,25 +12,6 @@ You can start with [domql](https://github.com/domql/domql) as a boilerplate, or 
 [![npm version](https://badge.fury.io/js/domql.svg)](https://badge.fury.io/js/domql)
 [![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://lerna.js.org/)
 
-Key features:
-- [x] error reporting
-- [x] virtual DOM tree
-- [x] create
-  - [x] create using extendtype class
-  - [x] support multiple level extendtypes
-  - [x] DOM caching
-- [x] state
-- [x] binding
-  - [x] with other component
-  - [x] with state
-- [x] update
-  - [x] set (recreate)
-  - [x] only iterate with diff
-- [x] events
-  - [x] event handling
-  - [ ] bubbling and propogation
-- [ ] run changes inside animationFrame
-
 ### Getting started
 
 To install all dependencies and run dev server, run:
