@@ -12,6 +12,8 @@ You can start with [domql](https://github.com/domql/domql) as a boilerplate, or 
 [![npm version](https://badge.fury.io/js/domql.svg)](https://badge.fury.io/js/domql)
 [![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://lerna.js.org/)
 
+Learn using it in [Symbols](https://symbols.app/developers)
+
 ### Getting started
 
 To install all dependencies and run dev server, run:
