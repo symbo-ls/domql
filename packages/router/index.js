@@ -14,7 +14,12 @@ const defaultOptions = {
   pushState: true,
   scrollToTop: true,
   scrollToNode: false,
+<<<<<<< HEAD
   scrollDocument: false,
+=======
+  scrollBody: false,
+  scrollDocument: true,
+>>>>>>> 629f21b (fixing router options)
   useFragment: false,
   updateState: true,
   scrollToOffset: 0,
@@ -42,7 +47,11 @@ export const router = (
     if (options.updateState) element.state.update({ route, hash }, { preventContentUpdate: !options.stateContentUpdate })
 
     const rootNode = element.node
-    const scrollNode = options.scrollDocument ? document.documentElement : rootNode
+    const scrollNode = options.scrollBody
+      ? document.body
+      : options.scrollDocument
+        ? document.documentElement
+        : options.scrollBody ? document.body : rootNode
     if (options.scrollToTop) {
       scrollNode.scrollTo({
         ...(options.scrollToOptions || {}), top: 0, left: 0
