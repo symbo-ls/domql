@@ -14,12 +14,8 @@ const defaultOptions = {
   pushState: true,
   scrollToTop: true,
   scrollToNode: false,
-<<<<<<< HEAD
-  scrollDocument: false,
-=======
   scrollBody: false,
   scrollDocument: true,
->>>>>>> 629f21b (fixing router options)
   useFragment: false,
   updateState: true,
   scrollToOffset: 0,
