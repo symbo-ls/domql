@@ -14,9 +14,11 @@ const defaultOptions = {
   pushState: true,
   scrollToTop: true,
   scrollToNode: false,
+  scrollDocument: false,
   useFragment: false,
   updateState: true,
-  stateContentUpdate: false
+  scrollToOffset: 0,
+  scrollToOptions: { behavior: 'smooth' }
 }
 
 export const router = (
@@ -40,14 +42,25 @@ export const router = (
     if (options.updateState) element.state.update({ route, hash }, { preventContentUpdate: !options.stateContentUpdate })
 
     const rootNode = element.node
-    if (options.scrollToTop) rootNode.scrollTo({ behavior: 'smooth', top: 0, left: 0 })
-    if (options.scrollToNode) content.content.node.scrollTo({ behavior: 'smooth', top: 0, left: 0 })
+    const scrollNode = options.scrollDocument ? document.documentElement : rootNode
+    if (options.scrollToTop) {
+      scrollNode.scrollTo({
+        ...(options.scrollToOptions || {}), top: 0, left: 0
+      })
+    }
+    if (options.scrollToNode) {
+      content.content.node.scrollTo({
+        ...(options.scrollToOptions || {}), top: 0, left: 0
+      })
+    }
 
     if (hash) {
       const activeNode = document.getElementById(hash)
       if (activeNode) {
-        const top = activeNode.getBoundingClientRect().top + rootNode.scrollToTopp - 140
-        rootNode.scrollTo({ behavior: 'smooth', top, left: 0 })
+        const top = activeNode.getBoundingClientRect().top + rootNode.scrollTop - options.scrollToOffset || 0
+        scrollNode.scrollTo({
+          ...(options.scrollToOptions || {}), top, left: 0
+        })
       }
     }
   }
