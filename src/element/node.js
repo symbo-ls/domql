@@ -39,7 +39,7 @@ export const createNode = (element, options) => {
 
   // node.dataset // .key = element.key
 
-  if (ENV === 'test' || ENV === 'development') {
+  if (ENV === 'test' || ENV === 'development' || options.alowRefReference) {
     node.ref = element
     if (isFunction(node.setAttribute)) node.setAttribute('key', element.key)
   }
