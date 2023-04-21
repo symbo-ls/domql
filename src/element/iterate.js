@@ -23,9 +23,7 @@ export const applyEvents = element => {
 
     const appliedFunction = element.on[param]
     if (isFunction(appliedFunction)) {
-      node.addEventListener(param, event =>
-        appliedFunction(event, element, element.state, element.context),
-      true)
+      node.addEventListener(param, event => appliedFunction(event, element, element.state, element.context))
     }
   }
 }
