@@ -8,7 +8,7 @@ import root from './root'
 import createNode from './node'
 import { appendNode, assignNode } from './assign'
 import { applyExtend } from './extend'
-import set, { removeContentElement } from './set'
+import set from './set'
 import createState from './state'
 import createProps from './props'
 import update from './update'
@@ -18,6 +18,13 @@ import cacheNode, { detectTag } from './cache'
 import { registry } from './mixins'
 import { throughInitialExec } from './iterate'
 import OPTIONS from './options'
+
+import {
+  applyComponentFromContext,
+  applyKeyComponentAsExtend,
+  checkIfKeyIsComponent
+} from '../utils/component'
+import { removeContentElement } from './remove'
 // import { overwrite, clone, fillTheRest } from '../utils'
 
 const ENV = process.env.NODE_ENV
@@ -274,54 +281,6 @@ const resolveExtends = (element, parent, options) => {
   delete element.__ref
 
   return element
-}
-
-const checkIfKeyIsComponent = (key) => {
-  const isFirstKeyString = isString(key)
-  if (!isFirstKeyString) return
-
-  const firstCharKey = key.slice(0, 1)
-
-  return /^[A-Z]*$/.test(firstCharKey)
-}
-
-const extendizeByKey = (element, parent, key) => {
-  const { extend, props, state, childExtend, childProps } = element
-  const hasComponentAttrs = extend || childExtend || props || state || element.on
-  const componentKey = key.split('_')[0]
-
-  if (!hasComponentAttrs || childProps) {
-    return {
-      extend: componentKey || key,
-      props: { ...element }
-    }
-  } else if (!extend || extend === true) {
-    return {
-      ...element,
-      extend: componentKey || key
-    }
-  }
-}
-
-const applyKeyComponentAsExtend = (element, parent, key) => {
-  return extendizeByKey(element, parent, key) || element
-}
-
-const applyComponentFromContext = (element, parent, options) => {
-  const { context } = element
-  const { components } = context
-  const { extend } = element
-  const execExtend = exec(extend, element)
-  if (isString(execExtend)) {
-    if (components[execExtend]) element.extend = components[execExtend]
-    else {
-      if ((ENV === 'test' || ENV === 'development') && options.verbose) {
-        console.warn(execExtend, 'is not in library', components, element)
-        console.warn('replacing with ', {})
-      }
-      element.extend = {}
-    }
-  }
 }
 
 const checkIfMedia = (key) => key.slice(0, 1) === '@'

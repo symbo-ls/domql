@@ -8,15 +8,33 @@ const objectizeStringProperty = propValue => {
   return propValue
 }
 
+const inheritParentProps = (element, parent) => {
+  let propsStack = []
+  const parentProps = exec(parent, parent.state).props
+
+  const matchParent = parent.props && parentProps[element.key]
+  const matchParentIsString = isString(matchParent)
+  const matchParentChildProps = parentProps && parentProps.childProps
+
+  if (matchParent) {
+    if (matchParentIsString) {
+      const inheritedStringExists = propsStack.filter(v => v.inheritedString)[0]
+      if (inheritedStringExists) inheritedStringExists.inheritedString = matchParent
+      else {
+        propsStack = [].concat(objectizeStringProperty(matchParent), propsStack)
+      }
+    } else {
+      propsStack.push(objectizeStringProperty(matchParent))
+    }
+  }
+  if (matchParentChildProps) propsStack.push(matchParentChildProps)
+
+  return propsStack
+}
+
 const createPropsStack = (element, parent) => {
   const { props, __ref } = element
-  const propsStack = __ref.propsStack = []
-
-  const matchParent = parent.props && parent.props[element.key]
-  const matchParentChildProps = parent.props && parent.props.childProps
-
-  if (matchParent) propsStack.push(objectizeStringProperty(matchParent))
-  if (matchParentChildProps) propsStack.push(matchParentChildProps)
+  const propsStack = __ref.__props = inheritParentProps(element, parent)
 
   if (isObject(props)) propsStack.push(props)
   else if (props === 'inherit' && parent.props) propsStack.push(parent.props)
@@ -29,11 +47,9 @@ const createPropsStack = (element, parent) => {
     })
   }
 
-  return propsStack
-}
+  __ref.__props = propsStack
 
-const inheritProps = (element, parent) => {
-  element.props = (parent && parent.props) || { update, __element: element }
+  return propsStack
 }
 
 export const syncProps = (props, element) => {
@@ -57,7 +73,7 @@ const createProps = function (element, parent, cached) {
     __ref.__props = propsStack
     syncProps(propsStack, element)
     element.props.update = update
-  } else inheritProps(element, parent)
+  }
 
   return element
 }
@@ -66,19 +82,11 @@ export const updateProps = (newProps, element, parent) => {
   const { __ref } = element
   let propsStack = __ref.__props
 
-  const matchParent = parent.props && parent.props[element.key]
-  const matchParentIsString = isString(matchParent)
-  if (matchParentIsString) {
-    const inheritedStringExists = propsStack.filter(v => v.inheritedString)[0]
-    if (inheritedStringExists) inheritedStringExists.inheritedString = matchParent
-    else {
-      propsStack = __ref.__props = [].concat(objectizeStringProperty(matchParent), propsStack)
-    }
-  }
+  const parentProps = inheritParentProps(element, parent)
+  if (parentProps) propsStack = __ref.__props = [].concat(parentProps, propsStack)
   if (newProps) propsStack = __ref.__props = [].concat(newProps, propsStack)
 
   if (propsStack) syncProps(propsStack, element)
-  else inheritProps(element, parent)
 
   // console.log(cachedProps)
   return element
@@ -86,7 +94,6 @@ export const updateProps = (newProps, element, parent) => {
 
 function update (props, options) {
   const element = this.__element
-  // element.update({ props })
   element.update({ props }, options)
 }
 

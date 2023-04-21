@@ -28,7 +28,7 @@ const UPDATE_DEFAULT_OPTIONS = {
 
 const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
   const element = this
-  const { parent, node } = element
+  const { parent, node, key } = element
 
   let __ref = element.__ref
   if (!__ref) __ref = element.__ref = {}
@@ -94,7 +94,11 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     }
   } else if (!__ref.__hasRootState) element.state = (parent && parent.state) || {}
 
-  if (__ref.__if && !options.preventPropsUpdate) updateProps(params.props, element, parent)
+  if (__ref.__if && !options.preventPropsUpdate) {
+    const hasParentProps = parent.props && (parent.props[key] || parent.props.childProps)
+    // if (hasParentProps) console.log(hasParentProps.value)
+    updateProps(params.props || (hasParentProps && {}), element, parent)
+  }
 
   if (element.on && isFunction(element.on.initUpdate) && !options.ignoreInitUpdate) {
     const whatinitreturns = on.initUpdate(element.on.initUpdate, element, element.state)
