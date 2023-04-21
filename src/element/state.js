@@ -6,7 +6,7 @@ import { is, isObject, exec, isFunction, isUndefined } from '@domql/utils'
 import { deepClone, overwriteShallow, overwriteDeep } from '../utils'
 
 export const IGNORE_STATE_PARAMS = [
-  'update', 'parse', 'clean', 'create', 'parent', '__element', '__depends', '__ref', '__root'
+  'update', 'parse', 'clean', 'create', 'parent', '__element', '__depends', '__ref', '__root', 'rootUpdate'
 ]
 
 export const parseState = function () {
@@ -42,6 +42,8 @@ export const updateState = function (obj, options = {}) {
   const element = state.__element
   const __elementRef = element.__ref
   state.parent = element.parent.state
+
+  for (const param in state) if (isUndefined(state[param])) delete state[param]
 
   if (!state.__element) createState(element, element.parent)
 
