@@ -23,15 +23,15 @@ const defaultOptions = {
 }
 
 export const router = (
-  element,
   path,
+  element,
   state = {},
   options = defaultOptions
 ) => {
   merge(options, defaultOptions)
   lastLevel = options.lastLevel
 
-  const [pathname, hash] = (path).split('#')
+  const [pathname, hash] = path.split('#')
 
   const route = getActiveRoute(pathname, options.level)
   const content = element.routes[route] || element.routes['/*']
