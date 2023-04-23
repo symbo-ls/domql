@@ -1,46 +1,44 @@
 'use strict'
 
-import { exec, isArray, isObject, isString } from '@domql/utils'
+import { exec, is, isArray, isObject, isString } from '@domql/utils'
 import { deepClone, deepMerge } from '../utils'
+
+const objectizeStringProperty = propValue => {
+  if (is(propValue)('string', 'number')) return { inheritedString: propValue }
+  return propValue
+}
+
+const inheritParentProps = (element, parent) => {
+  let propsStack = []
+  const parentProps = exec(parent, parent.state).props
+
+  const matchParent = parent.props && parentProps[element.key]
+  const matchParentIsString = isString(matchParent)
+  const matchParentChildProps = parentProps && parentProps.childProps
+
+  if (matchParent) {
+    if (matchParentIsString) {
+      const inheritedStringExists = propsStack.filter(v => v.inheritedString)[0]
+      if (inheritedStringExists) inheritedStringExists.inheritedString = matchParent
+      else {
+        propsStack = [].concat(objectizeStringProperty(matchParent), propsStack)
+      }
+    } else {
+      propsStack.push(objectizeStringProperty(matchParent))
+    }
+  }
+  if (matchParentChildProps) propsStack.push(matchParentChildProps)
+
+  return propsStack
+}
 
 const createPropsStack = (element, parent) => {
   const { props, __ref } = element
-  const propsStack = __ref.propsStack = []
+  const propsStack = __ref.__props = inheritParentProps(element, parent)
 
-  const isMatch = isString(props) && props.indexOf('match') > -1
-  const matchParent = parent.props && parent.props[element.key]
-  const matchParentChild = parent.props && parent.props.childProps
-
-  const objectizeStringProperty = propValue => {
-    if (isString(propValue)) return { inheritedString: propValue }
-    return propValue
-  }
-
-  if (matchParent && props !== 'match') propsStack.push(matchParent)
-  if (matchParentChild) propsStack.push(matchParentChild)
-
-  if (isObject(props)) {
-    propsStack.push(props)
-  }
-
-  if (props === 'inherit') {
-    if (parent.props) propsStack.push(parent.props)
-  } else if (isMatch) {
-    const hasArg = props.split(' ')
-    let matchParentValue
-    // console.log('hasArg', hasArg)
-    if (hasArg[1] && parent.props[hasArg[1]]) {
-      const secondArgasParentMatchProp = parent.props[hasArg[1]]
-      propsStack.push(
-        objectizeStringProperty(secondArgasParentMatchProp)
-      )
-    } else if (matchParent) {
-      propsStack.push(
-        objectizeStringProperty(matchParent)
-      )
-    }
-    propsStack.push(matchParentValue)
-  } else if (props) propsStack.push(props)
+  if (isObject(props)) propsStack.push(props)
+  else if (props === 'inherit' && parent.props) propsStack.push(parent.props)
+  else if (props) propsStack.push(props)
 
   if (isArray(__ref.__extend)) {
     __ref.__extend.map(extend => {
@@ -49,11 +47,9 @@ const createPropsStack = (element, parent) => {
     })
   }
 
-  return propsStack
-}
+  __ref.__props = propsStack
 
-const inheritProps = (element, parent) => {
-  element.props = (parent && parent.props) || { update, __element: element }
+  return propsStack
 }
 
 export const syncProps = (props, element) => {
@@ -77,7 +73,7 @@ const createProps = function (element, parent, cached) {
     __ref.__props = propsStack
     syncProps(propsStack, element)
     element.props.update = update
-  } else inheritProps(element, parent)
+  }
 
   return element
 }
@@ -86,10 +82,11 @@ export const updateProps = (newProps, element, parent) => {
   const { __ref } = element
   let propsStack = __ref.__props
 
+  const parentProps = inheritParentProps(element, parent)
+  if (parentProps) propsStack = __ref.__props = [].concat(parentProps, propsStack)
   if (newProps) propsStack = __ref.__props = [].concat(newProps, propsStack)
 
   if (propsStack) syncProps(propsStack, element)
-  else inheritProps(element, parent)
 
   // console.log(cachedProps)
   return element
@@ -97,7 +94,6 @@ export const updateProps = (newProps, element, parent) => {
 
 function update (props, options) {
   const element = this.__element
-  // element.update({ props })
   element.update({ props }, options)
 }
 

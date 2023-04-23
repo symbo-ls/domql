@@ -2,22 +2,29 @@
 
 import { isObject, isFunction, isString, createID, isNode, exec, is } from '@domql/utils'
 import { TAGS } from '@domql/registry'
+import { triggerEventOn } from '@domql/event'
 
 import root from './root'
 import createNode from './node'
 import { appendNode, assignNode } from './assign'
 import { applyExtend } from './extend'
-import set, { removeContentElement } from './set'
+import set from './set'
 import createState from './state'
 import createProps from './props'
 import update from './update'
-import { on } from '../event'
 import { assignClass } from './mixins/classList'
 import { remove, lookup, setProps, log, keys, parse, parseDeep, spotByPath, nextElement, previousElement, isMethod } from './methods'
 import cacheNode, { detectTag } from './cache'
 import { registry } from './mixins'
 import { throughInitialExec } from './iterate'
 import OPTIONS from './options'
+
+import {
+  applyComponentFromContext,
+  applyKeyComponentAsExtend,
+  checkIfKeyIsComponent
+} from '../utils/component'
+import { removeContentElement } from './remove'
 // import { overwrite, clone, fillTheRest } from '../utils'
 
 const ENV = process.env.NODE_ENV
@@ -113,14 +120,11 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
   if (__ref.__if) createProps(element, parent)
 
   // run `on.init`
-  if (element.on && isFunction(element.on.init)) {
-    on.init(element.on.init, element, element.state)
-  }
+  const initReturns = triggerEventOn('init', element)
+  if (initReturns === false) return element
 
   // run `on.beforeClassAssign`
-  if (element.on && isFunction(element.on.beforeClassAssign)) {
-    on.beforeClassAssign(element.on.beforeClassAssign, element, element.state)
-  }
+  triggerEventOn('beforeClassAssign', element)
 
   // generate a CLASS name
   assignClass(element)
@@ -133,13 +137,13 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
   // assign NODE
   assignNode(element, parent, key)
 
+  // run `on.renderRouter`
+  triggerEventOn('renderRouter', element)
+
   // run `on.render`
-  if (element.on && isFunction(element.on.render)) {
-    on.render(element.on.render, element, element.state)
-  }
+  triggerEventOn('render', element)
 
   if (parent.__ref && parent.__ref.__children) parent.__ref.__children.push(element.key)
-  // console.groupEnd(element.key)
 
   return element
 }
@@ -240,8 +244,12 @@ const resolveExtends = (element, parent, options) => {
 
   if (!__ref.__exec) __ref.__exec = {}
   if (!__ref.__attr) __ref.__attr = {}
-  if (__ref.__if) createProps(element, parent)
-  element.state = createState(element, parent, { skip: true })
+
+  if (!element.props) element.props = {}
+  if (!element.state) element.state = {}
+
+  element = createProps(element, parent)
+  createState(element, parent, { skip: true })
 
   throughInitialExec(element)
 
@@ -252,23 +260,19 @@ const resolveExtends = (element, parent, options) => {
     const hasDefined = element.define && element.define[param]
     const ourParam = registry[param]
     const hasOptionsDefine = options.define && options.define[param]
-    if (ourParam && !hasOptionsDefine) {
-      continue // if (isFunction(ourParam)) ourParam(prop, element, element.node, options)
-    } else if (element[param] && !hasDefined && !hasOptionsDefine) {
+    if (ourParam && !hasOptionsDefine) continue
+    else if (element[param] && !hasDefined && !hasOptionsDefine) {
       create(exec(prop, element), element, param, options)
     }
   }
-
-  // createNode(element, options)
 
   delete element.parent
   delete element.update
   delete element.__element
 
   // added by createProps
-  delete element.__props // TODO: check with @Nikaoto and remove
-  delete element.props.__element
   delete element.props.update
+  delete element.props.__element
 
   // added by createState
   delete element.state.__element
@@ -277,53 +281,6 @@ const resolveExtends = (element, parent, options) => {
   delete element.__ref
 
   return element
-}
-
-const checkIfKeyIsComponent = (key) => {
-  const isFirstKeyString = isString(key)
-  if (!isFirstKeyString) return
-
-  const firstCharKey = key.slice(0, 1)
-
-  return /^[A-Z]*$/.test(firstCharKey)
-}
-
-const extendizeByKey = (element, parent, key) => {
-  const { extend, props, state, childExtend, childProps } = element
-  const hasComponentAttrs = extend || childExtend || props || state || element.on
-  const componentKey = key.split('_')[0]
-  if (!hasComponentAttrs || childProps) {
-    return {
-      extend: componentKey || key,
-      props: { ...element }
-    }
-  } else if (!extend || extend === true) {
-    return {
-      ...element,
-      extend: componentKey || key
-    }
-  }
-}
-
-const applyKeyComponentAsExtend = (element, parent, key) => {
-  return extendizeByKey(element, parent, key) || element
-}
-
-const applyComponentFromContext = (element, parent, options) => {
-  const { context } = element
-  const { components } = context
-  const { extend } = element
-  const execExtend = exec(extend, element)
-  if (isString(execExtend)) {
-    if (components[execExtend]) element.extend = components[execExtend]
-    else {
-      if ((ENV === 'test' || ENV === 'development') && options.verbose) {
-        console.warn(execExtend, 'is not in library', components, element)
-        console.warn('replacing with ', {})
-      }
-      element.extend = {}
-    }
-  }
 }
 
 const checkIfMedia = (key) => key.slice(0, 1) === '@'

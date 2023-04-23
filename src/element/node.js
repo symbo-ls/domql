@@ -1,9 +1,10 @@
 'use strict'
 
 import { exec, isFunction, isObject } from '@domql/utils'
+import { triggerEventOn } from '@domql/event'
+
 import create from './create'
 import cacheNode from './cache'
-import * as on from '../event/on'
 
 import {
   throughInitialDefine,
@@ -12,25 +13,14 @@ import {
 } from './iterate'
 import { registry } from './mixins'
 import { isMethod } from './methods'
+import { applyParam } from './applyParam'
 // import { defineSetter } from './methods'
 
 const ENV = process.env.NODE_ENV
 
-// const defineSetter = (element, key) => Object.defineProperty(element, key, {
-//   get: function () {
-//     console.log('GET', key)
-//     return element.__data[key]
-//   },
-//   set: function (new_value) {
-//     console.log('SET', key, new_value)
-//     element.__data[key] = new_value
-//     element.__data['modified'] = (new Date()).getTime()
-//   }
-// })
-
 export const createNode = (element, options) => {
   // create and assign a node
-  let { node, tag, context, __ref } = element
+  let { node, tag, __ref } = element
 
   let isNewNode
 
@@ -43,15 +33,13 @@ export const createNode = (element, options) => {
       node = element.node = element.parent.node.attachShadow({ mode: 'open' })
     } else node = element.node = cacheNode(element)
 
-    // run `on.attachNode`
-    if (element.on && isFunction(element.on.attachNode)) {
-      on.attachNode(element.on.attachNode, element, element.state)
-    }
+    // trigger `on.attachNode`
+    triggerEventOn('attachNode', element)
   }
 
   // node.dataset // .key = element.key
 
-  if (ENV === 'test' || ENV === 'development') {
+  if (ENV === 'test' || ENV === 'development' || options.alowRefReference) {
     node.ref = element
     if (isFunction(node.setAttribute)) node.setAttribute('key', element.key)
   }
@@ -74,19 +62,12 @@ export const createNode = (element, options) => {
 
       if (isMethod(param) || isObject(registry[param]) || prop === undefined) continue
 
-      const DOMQLProperty = registry[param]
-      const DOMQLPropertyFromContext = context && context.registry && context.registry[param]
-      const isGlobalTransformer = DOMQLPropertyFromContext || DOMQLProperty
-
-      const hasDefine = element.define && element.define[param]
-      const hasContextDefine = context && context.define && context.define[param]
-
-      // Check if param is in our method registry
-      if (isGlobalTransformer && !hasContextDefine) {
-        if (isFunction(isGlobalTransformer)) isGlobalTransformer(prop, element, node, options)
-      } else if (element[param] && !hasDefine && !hasContextDefine) {
-        // Create element
-        create(exec(prop, element), element, param, options)
+      const isElement = applyParam(param, element, options)
+      if (isElement) {
+        const { hasDefine, hasContextDefine } = isElement
+        if (element[param] && !hasDefine && !hasContextDefine) {
+          create(exec(prop, element), element, param, options)
+        }
       }
     }
   }

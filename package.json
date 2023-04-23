@@ -1,8 +1,7 @@
 {
   "name": "domql",
   "description": "DOM rendering Javascript framework at early stage.",
-  "author": "symbo.ls",
-  "version": "1.5.103",
+  "version": "1.5.136",
   "repository": "https://github.com/domql/domql",
   "publishConfig": {
     "registry": "https://registry.npmjs.org"
@@ -15,19 +14,25 @@
     "packages"
   ],
   "scripts": {
-    "compile": "npx esbuild src/index.js --target=es2020 --format=cjs --bundle --sourcemap=external --outfile=dist/index.cjs.js",
-    "prepublish": "rm -rf dist && yarn compile && yarn test:lint",
+    "copy:package:cjs": "cp ./.build/package-cjs.json dist/cjs/package.json",
+    "build:esm": "npx esbuild src/index.js src/**/*.js --target=es2020 --format=esm --outdir=dist/esm",
+    "build:cjs": "npx esbuild src/index.js src/**/*.js --target=node16 --format=cjs --outdir=dist/cjs",
+    "build:iife": "npx esbuild src/index.js --target=node16 --format=iife --outdir=dist/iife --bundle",
+    "build": "yarn build:esm && yarn build:cjs && yarn build:iife",
+    "prepublish": "rimraf -I dist && yarn test:lint && yarn build && yarn copy:package:cjs",
     "start": "parcel examples/index.html --no-cache",
-    "build": "parcel build examples/index.html",
     "test:lint": "npx standard \"src/**/*.js\"",
     "test": "yarn test:lint; jest --coverage --coverageReporters=text-lcov | coveralls",
     "test-watch": "jest --watch"
   },
   "dependencies": {
     "@domql/globals": "latest",
-    "@domql/utils": "2.3.23",
     "@domql/registry": "latest",
-    "@domql/report": "latest"
+    "@domql/event": latest",
+    "@domql/report": "latest",
+    "@domql/emotion": "latest",
+    "@domql/utils": "latest",
+    "@domql/classlist": "latest"
   },
   "devDependencies": {
     "@babel/core": "^7.20.12",
@@ -48,6 +53,7 @@
     "jsdom": "^19.0.0",
     "nodemon": "^2.0.6",
     "parcel": "^2.0.1",
+    "rimraf": "^4.4.0",
     "standard": "^16.0.1"
   },
   "babel": {

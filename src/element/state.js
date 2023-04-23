@@ -1,14 +1,12 @@
 'use strict'
 
 import { on } from '../event'
+import { triggerEventOn } from '@domql/event'
 import { is, isObject, exec, isFunction, isUndefined } from '@domql/utils'
 import { deepClone, overwriteShallow, overwriteDeep } from '../utils'
 
 export const IGNORE_STATE_PARAMS = [
-  'update', 'parse', 'clean', 'create', 'parent', '__element', '__depends', '__ref', '__root',
-  '__components',
-  '__projectSystem', '__projectState', '__projectComponents', '__projectPages', '__projectSnippets',
-  'projectStateUpdate', 'projectSystemUpdate'
+  'update', 'parse', 'clean', 'create', 'parent', '__element', '__depends', '__ref', '__root', 'rootUpdate'
 ]
 
 export const parseState = function () {
@@ -32,20 +30,11 @@ export const cleanState = function () {
   return state
 }
 
-export const projectSystemUpdate = function (obj, options = {}) {
+export const rootUpdate = function (obj, options = {}) {
   const state = this
   if (!state) return
-  const rootState = (state.__element.__ref.__root || state.__element).state
-  rootState.update({ PROJECT_SYSTEM: obj }, options)
-  return state
-}
-
-export const projectStateUpdate = function (obj, options = {}) {
-  const state = this
-  if (!state) return
-  const rootState = (state.__element.__ref.__root || state.__element).state
-  rootState.update({ PROJECT_STATE: obj }, options)
-  return state
+  const rootState = (state.__element.__ref.__root).state
+  return rootState.update(obj, options)
 }
 
 export const updateState = function (obj, options = {}) {
@@ -53,6 +42,8 @@ export const updateState = function (obj, options = {}) {
   const element = state.__element
   const __elementRef = element.__ref
   state.parent = element.parent.state
+
+  for (const param in state) if (isUndefined(state[param])) delete state[param]
 
   if (!state.__element) createState(element, element.parent)
 
@@ -95,6 +86,8 @@ export const updateState = function (obj, options = {}) {
   if (!options.preventUpdateListener && element.on && isFunction(element.on.stateUpdated)) {
     on.stateUpdated(element.on.stateUpdated, element, state, obj)
   }
+
+  return state
 }
 
 export const createState = function (element, parent, opts) {
@@ -120,10 +113,8 @@ export const createState = function (element, parent, opts) {
     __elementRef.__hasRootState = true
   }
 
-  // run `on.init`
-  if (element.on && isFunction(element.on.stateInit)) {
-    on.stateInit(element.on.stateInit, element, element.state)
-  }
+  // trigger `on.stateInit`
+  triggerEventOn('stateInit', element)
 
   let stateKey = __elementRef.__state
   if (stateKey) {
@@ -158,6 +149,8 @@ export const createState = function (element, parent, opts) {
   }
 
   // reference other state
+  // TODO: check why __ref is assigned with element
+  // /docs/intro
   const { __ref } = state
   if (__ref) {
     state = deepClone(__ref, IGNORE_STATE_PARAMS)
@@ -176,25 +169,14 @@ export const createState = function (element, parent, opts) {
   state.clean = cleanState
   state.parse = parseState
   state.update = updateState
+  state.rootUpdate = rootUpdate
   state.create = createState
   state.parent = element.parent.state
   state.__element = element
   state.__root = __elementRef.__root ? __elementRef.__root.state : state
 
-  // editor stuff
-  state.projectSystemUpdate = projectSystemUpdate
-  state.projectStateUpdate = projectStateUpdate
-  state.__components = state.__root.COMPONENTS
-  state.__projectSystem = state.__root.PROJECT_SYSTEM
-  state.__projectState = state.__root.PROJECT_STATE
-  state.__projectComponents = state.__root.PROJECT_COMPONENTS
-  state.__projectPages = state.__root.PROJECT_PAGES
-  state.__projectSnippets = state.__root.PROJECT_SNIPPETS
-
-  // run `on.stateCreated`
-  if (element.on && isFunction(element.on.stateCreated)) {
-    on.stateCreated(element.on.stateCreated, element, state)
-  }
+  // trigger `on.stateCreated`
+  triggerEventOn('stateCreated', element)
 
   return state
 }

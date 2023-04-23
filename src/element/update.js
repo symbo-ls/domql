@@ -2,6 +2,7 @@
 
 import { window } from '@domql/globals'
 import { diff, isFunction, isNumber, isObject, isString, createSnapshotId } from '@domql/utils'
+import { applyEvent, triggerEventOn } from '@domql/event'
 import { merge, overwrite } from '../utils'
 
 import { on } from '../event'
@@ -11,6 +12,7 @@ import { isMethod } from './methods'
 import { registry } from './mixins'
 import { updateProps } from './props'
 import createState from './state'
+import { applyParam } from './applyParam'
 
 const snapshot = {
   snapshotId: createSnapshotId
@@ -26,7 +28,7 @@ const UPDATE_DEFAULT_OPTIONS = {
 
 const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
   const element = this
-  const { parent, node, context } = element
+  const { parent, node, key } = element
 
   let __ref = element.__ref
   if (!__ref) __ref = element.__ref = {}
@@ -49,16 +51,19 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
   if (isFunction(element.if)) {
     // TODO: move as fragment
     const ifPassed = element.if(element, element.state)
-    const itWasFalse = !__ref.__if
+    const itWasFalse = __ref.__if !== true
 
     if (ifPassed) __ref.__if = true
     if (itWasFalse && ifPassed) {
       delete element.__hash
+      delete element.extend
       if (!__ref.__hasRootState) delete element.state
       if (__ref.__state) element.state = __ref.__state
       const created = create(element, element.parent, element.key)
-      if (!options.preventUpdate && element.on && isFunction(element.on.update)) {
-        on.update(element.on.update, created, created.state)
+      if (!options.preventUpdate) {
+        if (element.on && isFunction(element.on.update)) {
+          applyEvent(element.on.update, created, created.state)
+        }
       }
       return created
     } else if (element.node && !ifPassed) {
@@ -89,7 +94,11 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     }
   } else if (!__ref.__hasRootState) element.state = (parent && parent.state) || {}
 
-  if (__ref.__if && !options.preventPropsUpdate) updateProps(params.props, element, parent)
+  if (__ref.__if && !options.preventPropsUpdate) {
+    const hasParentProps = parent.props && (parent.props[key] || parent.props.childProps)
+    // if (hasParentProps) console.log(hasParentProps.value)
+    updateProps(params.props || (hasParentProps && {}), element, parent)
+  }
 
   if (element.on && isFunction(element.on.initUpdate) && !options.ignoreInitUpdate) {
     const whatinitreturns = on.initUpdate(element.on.initUpdate, element, element.state)
@@ -123,31 +132,27 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     ) continue
     if (options.preventStateUpdate === 'once') options.preventStateUpdate = false
 
-    const DOMQLProperty = registry[param]
-    const DOMQLPropertyFromContext = context && context.registry && context.registry[param]
-    const isGlobalTransformer = DOMQLPropertyFromContext || DOMQLProperty
+    const isElement = applyParam(param, element, options)
+    if (isElement) {
+      const { hasDefine, hasContextDefine } = isElement
 
-    const hasDefine = element.define && element.define[param]
-    const hasContextDefine = context && context.define && context.define[param]
-
-    if (isGlobalTransformer && !hasContextDefine) {
-      if (isFunction(isGlobalTransformer)) isGlobalTransformer(prop, element, node, options)
-    } else if (prop && isObject(prop) && !hasDefine && !hasContextDefine) {
-      if (!options.preventRecursive) {
-        const childUpdateCall = () => update.call(prop, params[prop], {
-          ...options,
-          currentSnapshot: snapshotOnCallee,
-          calleeElement: element
-        })
-        if (element.props.lazyLoad || options.lazyLoad) {
-          window.requestAnimationFrame(() => childUpdateCall())
-        } else childUpdateCall()
+      if (prop && isObject(prop) && !hasDefine && !hasContextDefine) {
+        if (!options.preventRecursive) {
+          const childUpdateCall = () => update.call(prop, params[prop], {
+            ...options,
+            currentSnapshot: snapshotOnCallee,
+            calleeElement: element
+          })
+          if (element.props.lazyLoad || options.lazyLoad) {
+            window.requestAnimationFrame(() => childUpdateCall())
+          } else childUpdateCall()
+        }
       }
     }
   }
 
-  if (!options.preventUpdate && element.on && isFunction(element.on.update)) {
-    on.update(element.on.update, element, element.state)
+  if (!options.preventUpdate) {
+    triggerEventOn('update', element)
   }
 }
 

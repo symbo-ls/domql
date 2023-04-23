@@ -9,15 +9,21 @@ export const applyEvents = element => {
   for (const param in on) {
     if (
       param === 'init' ||
+      param === 'beforeClassAssign' ||
       param === 'render' ||
+      param === 'renderRouter' ||
+      param === 'attachNode' ||
+      param === 'stateInit' ||
+      param === 'stateCreated' ||
+      param === 'initStateUpdated' ||
+      param === 'stateUpdated' ||
+      param === 'initUpdate' ||
       param === 'update'
     ) continue
 
     const appliedFunction = element.on[param]
     if (isFunction(appliedFunction)) {
-      node.addEventListener(param, event =>
-        appliedFunction(event, element, element.state),
-      true)
+      node.addEventListener(param, event => appliedFunction(event, element, element.state, element.context))
     }
   }
 }
