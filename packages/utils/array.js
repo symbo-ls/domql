@@ -20,3 +20,7 @@ export const removeFromArray = (arr, index) => {
   }
   return arr
 }
+
+export const swapItemsInArray = (arr, i, j) => {
+  [arr[i], arr[j]] = [arr[j], arr[i]]
+}
