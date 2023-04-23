@@ -54,27 +54,27 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
   const inheritState = inheritStateUpdates(element, options)
   if (inheritState === false) return
 
-  if (__ref.__state) {
-    const keyInParentState = parent.state[__ref.__state]
-    if (keyInParentState) {
-      const newState = __ref.__stateType === 'string'
-        ? createState(element, parent)
-        : createState(element, parent)
-      const changes = diff(newState.parse(), element.state.parse())
+  // if (__ref.__state) {
+  //   const keyInParentState = parent.state[__ref.__state]
+  //   if (keyInParentState) {
+  //     const newState = __ref.__stateType === 'string'
+  //       ? createState(element, parent)
+  //       : createState(element, parent)
+  //     const changes = diff(newState.parse(), element.state.parse())
 
-      // run `on.stateUpdated`
-      if (element.on && isFunction(element.on.initStateUpdated)) {
-        const initReturns = on.initStateUpdated(element.on.initStateUpdated, element, element.state, changes)
-        if (initReturns === false) return
-      }
+  //     // run `on.stateUpdated`
+  //     if (element.on && isFunction(element.on.initStateUpdated)) {
+  //       const initReturns = on.initStateUpdated(element.on.initStateUpdated, element, element.state, changes)
+  //       if (initReturns === false) return
+  //     }
 
-      element.state = newState
+  //     element.state = newState
 
-      if (!options.preventUpdateListener && element.on && isFunction(element.on.stateUpdated)) {
-        on.stateUpdated(element.on.stateUpdated, element, element.state, changes)
-      }
-    }
-  } else if (!__ref.__hasRootState) element.state = (parent && parent.state) || {}
+  //     if (!options.preventUpdateListener && element.on && isFunction(element.on.stateUpdated)) {
+  //       on.stateUpdated(element.on.stateUpdated, element, element.state, changes)
+  //     }
+  //   }
+  // } else if (!__ref.__hasRootState) element.state = (parent && parent.state) || {}
 
   if (__ref.__if && !options.preventPropsUpdate) {
     const hasParentProps = parent.props && (parent.props[key] || parent.props.childProps)
@@ -168,8 +168,8 @@ const checkIfOnUpdate = (element, options) => {
 const inheritStateUpdates = (element, options) => {
   const { parent } = element
   const __ref = element.__ref
-  if (!__ref.__state) {
-    const stateKey = __ref.__state
+  const stateKey = __ref.__state
+  if (stateKey) {
     const parentState = parent.state
     const keyInParentState = parentState && parentState[stateKey]
 

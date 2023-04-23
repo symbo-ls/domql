@@ -196,21 +196,21 @@ export const createState = function (element, parent, opts) {
   const skip = (opts && opts.skip) ? opts.skip : false
   let { state, __ref: __elementRef } = element
 
-  if (isFunction(state)) state = exec(state, element)
+  if (isFunction(state)) element.state = exec(state, element)
 
   if (is(state)('string', 'number')) {
     __elementRef.__state = state
-    state = {}
+    element.state = {}
   }
   if (state === true) {
     __elementRef.__state = element.key
-    state = {}
+    element.state = {}
   }
 
   // trigger `on.stateInit`
   triggerEventOn('stateInit', element)
 
-  state = createInheritedState(element, parent)
+  state = element.state = createInheritedState(element, parent)
 
   if (!state) {
     if (parent && parent.state) return parent.state
