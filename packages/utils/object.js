@@ -1,7 +1,7 @@
 'use strict'
 
 import { window } from '@domql/globals'
-import { isFunction, isObjectLike, isObject, isArray, isString } from './types.js'
+import { isFunction, isObjectLike, isObject, isArray, isString, is } from './types.js'
 
 export const exec = (param, element, state, context) => {
   if (isFunction(param)) {
@@ -331,4 +331,16 @@ export const isEqualDeep = (param, element) => {
     }
   }
   return true
+}
+
+export const removeFromObject = (obj, props) => {
+  if (props === undefined || props === null) return obj
+  if (is(props)('string', 'number')) {
+    delete obj[props]
+  } else if (isArray(props)) {
+    props.forEach(prop => delete obj[prop])
+  } else {
+    throw new Error('Invalid input: props must be a string or an array of strings')
+  }
+  return obj
 }
