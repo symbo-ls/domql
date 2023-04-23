@@ -2,14 +2,16 @@
 
 import { on } from '../event'
 import { triggerEventOn } from '@domql/event'
-import { is, isObject, exec, isFunction, isUndefined, arrayContainsOtherArray, isObjectLike, isArray } from '@domql/utils'
+import { is, isObject, exec, isFunction, isUndefined, arrayContainsOtherArray, isObjectLike, isArray, removeFromArray, removeFromObject } from '@domql/utils'
 import { deepClone, overwriteShallow, overwriteDeep } from '../utils'
+import { create } from '.'
 
 export const IGNORE_STATE_PARAMS = [
-  'update', 'parse', 'clean', 'create', 'parent', '__element', '__depends', '__ref', '__root', 'rootUpdate'
+  'update', 'parse', 'clean', 'create', 'destroy', 'remove', 'rootUpdate',
+  'parent', '__element', '__depends', '__ref', '__children', '__root'
 ]
 
-export const parseState = function () {
+export const parse = function () {
   const state = this
   if (isObject(state)) {
     const obj = {}
@@ -24,7 +26,7 @@ export const parseState = function () {
   }
 }
 
-export const cleanState = function () {
+export const clean = function () {
   const state = this
   for (const param in state) {
     if (!IGNORE_STATE_PARAMS.includes(param)) {
@@ -34,6 +36,21 @@ export const cleanState = function () {
   return state
 }
 
+export const destroy = function () {
+  const state = this
+  const element = state.__element
+  delete element.state
+  element.state = state.parent
+  if (state.parent) delete state.parent.__children[element.key]
+  if (state.__children) {
+    for (const key in state.__children) {
+      const child = state.__children[key]
+      if (child.state) child.parent = state.parent
+    }
+  }
+  return element.state.update()
+}
+
 export const rootUpdate = function (obj, options = {}) {
   const state = this
   if (!state) return
@@ -41,7 +58,7 @@ export const rootUpdate = function (obj, options = {}) {
   return rootState.update(obj, options)
 }
 
-export const updateState = function (obj, options = {}) {
+export const update = function (obj, options = {}) {
   const state = this
   const element = state.__element
   const __elementRef = element.__ref
@@ -49,7 +66,7 @@ export const updateState = function (obj, options = {}) {
 
   for (const param in state) if (isUndefined(state[param])) delete state[param]
 
-  if (!state.__element) createState(element, element.parent)
+  if (!state.__element) create(element, element.parent)
 
   // run `on.stateUpdated`
   if (element.on && isFunction(element.on.initStateUpdated)) {
@@ -58,12 +75,10 @@ export const updateState = function (obj, options = {}) {
   }
 
   const stateKey = __elementRef.__state
-  console.log(stateKey)
   if (stateKey) {
     // TODO: check for double parent
     if (state.parent && state.parent[stateKey]) {
       const keyInParentState = state.parent[stateKey]
-      console.log(keyInParentState)
       if (keyInParentState && !options.stopStatePropogation) {
         if (__elementRef.__stateType === 'string') {
           return state.parent.update({ [stateKey]: obj.value }, options)
@@ -81,7 +96,9 @@ export const updateState = function (obj, options = {}) {
   }
 
   // TODO: try debounce
-  if (!options.preventUpdate) { element.update({}, options) } else if (options.preventUpdate === 'recursive') { element.update({}, { ...options, preventUpdate: true }) }
+  if (!options.preventUpdate) { element.update({}, options) } else if (options.preventUpdate === 'recursive') {
+    element.update({}, { ...options, preventUpdate: true })
+  }
 
   if (state.__depends) {
     for (const el in state.__depends) {
@@ -97,9 +114,66 @@ export const updateState = function (obj, options = {}) {
   return state
 }
 
+export const remove = function (key) {
+  const state = this
+  if (isArray(state)) removeFromArray(state, key)
+  if (isObject(state)) removeFromObject(state, key)
+  return state.update()
+}
+
+const getParentStateInKey = (stateKey, parentState) => {
+  const arr = stateKey.split('../')
+  const arrLength = arr.length - 1
+  for (let i = 0; i < arrLength; i++) {
+    if (!parentState.parent) return null
+    parentState = parentState.parent
+  }
+  return parentState
+}
+
+const getChildStateInKey = (stateKey, parentState) => {
+  const arr = stateKey.split('/')
+  const arrLength = arr.length - 1
+  for (let i = 0; i < arrLength; i++) {
+    const childKey = arr[i]
+    const grandChildKey = arr[i + 1]
+    const childInParent = parentState[childKey]
+    if (childInParent && childInParent[grandChildKey]) {
+      stateKey = grandChildKey
+      parentState = childInParent
+    }
+  }
+  return parentState[stateKey]
+}
+
+const createInheritedState = function (element, parent) {
+  const __elementRef = element.__ref
+  let stateKey = __elementRef.__state
+  if (!stateKey) return element.state
+
+  let parentState = parent.state
+  if (stateKey.includes('../')) {
+    parentState = getParentStateInKey(stateKey, parent.state)
+    stateKey = stateKey.replaceAll('../', '')
+  }
+  if (!parentState) return
+
+  const keyInParentState = getChildStateInKey(stateKey, parentState)
+  if (!keyInParentState) return
+
+  if (is(keyInParentState)('object', 'array')) {
+    return deepClone(keyInParentState)
+  } else if (is(keyInParentState)('string', 'number')) {
+    __elementRef.__stateType = 'string'
+    return { value: keyInParentState }
+  }
+
+  console.warn(stateKey, 'is not present. Replacing with', {})
+  return {}
+}
+
 export const createState = function (element, parent, opts) {
   const skip = (opts && opts.skip) ? opts.skip : false
-
   let { state, __ref: __elementRef } = element
 
   if (isFunction(state)) state = exec(state, element)
@@ -113,46 +187,16 @@ export const createState = function (element, parent, opts) {
     state = {}
   }
 
+  // trigger `on.stateInit`
+  triggerEventOn('stateInit', element)
+
+  state = createInheritedState(element, parent)
+
   if (!state) {
     if (parent && parent.state) return parent.state
     return {}
   } else {
     __elementRef.__hasRootState = true
-  }
-
-  // trigger `on.stateInit`
-  triggerEventOn('stateInit', element)
-
-  let stateKey = __elementRef.__state
-  if (stateKey) {
-    let parentState = parent.state
-    const parentKeysArr = stateKey.split('../')
-    for (let i = 1; i < parentKeysArr.length; i++) {
-      stateKey = parentKeysArr[i]
-      parentState = parentState.parent
-    }
-    const childrenKeysArr = stateKey.split('.')
-    for (let i = 0; i < childrenKeysArr.length; i++) {
-      const childKey = childrenKeysArr[i]
-      const grandChildKey = childrenKeysArr[i + 1]
-      const childInParent = parentState[childKey]
-      if (childInParent && childInParent[grandChildKey]) {
-        stateKey = grandChildKey
-        parentState = childInParent
-      }
-    }
-    if (parentState && parentState[stateKey]) {
-      const keyInParentState = parentState[stateKey]
-      if (is(keyInParentState)('object', 'array')) {
-        state = deepClone(keyInParentState)
-      } else if (is(keyInParentState)('string', 'number')) {
-        state = { value: keyInParentState }
-        __elementRef.__stateType = 'string'
-      } else if (isUndefined(keyInParentState)) {
-        console.warn(stateKey, 'is not in present', 'replacing with ', {})
-        state = {}
-      }
-    }
   }
 
   // reference other state
@@ -173,14 +217,7 @@ export const createState = function (element, parent, opts) {
   // NOTE: Only true when 'onlyResolveExtends' option is set to true
   if (skip) return state
 
-  state.clean = cleanState
-  state.parse = parseState
-  state.update = updateState
-  state.rootUpdate = rootUpdate
-  state.create = createState
-  state.parent = element.parent.state
-  state.__element = element
-  state.__root = __elementRef.__root ? __elementRef.__root.state : state
+  applyMethods(element, state)
 
   // trigger `on.stateCreated`
   triggerEventOn('stateCreated', element)
@@ -193,6 +230,24 @@ export const isState = function (state) {
   const keys = Object.keys(state)
   const checkIF = arrayContainsOtherArray(keys, ['update', 'parse', 'clean', 'create', 'parent', 'rootUpdate'])
   return checkIF
+}
+
+const applyMethods = (element, state) => {
+  const __elementRef = element.__ref
+
+  state.clean = clean
+  state.parse = parse
+  state.destroy = destroy
+  state.update = update
+  state.rootUpdate = rootUpdate
+  state.create = createState
+  state.remove = remove
+  state.parent = element.parent.state
+  state.__element = element
+  state.__children = {}
+  state.__root = __elementRef.__root ? __elementRef.__root.state : state
+
+  if (state.parent) state.parent.__children[element.key] = state
 }
 
 export default createState

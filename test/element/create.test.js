@@ -9,9 +9,9 @@ test('should create EMPTY element', () => {
   expect(dom).toHaveProperty('state')
   expect(dom).toHaveProperty('parent')
   expect(dom).toHaveProperty('node')
-  expect(dom).toHaveProperty('path')
   expect(dom).toHaveProperty('set')
   expect(dom).toHaveProperty('update')
+  expect(dom).toHaveProperty('__ref')
 })
 
 test('should create valid DOM node', () => {
@@ -19,7 +19,7 @@ test('should create valid DOM node', () => {
 })
 
 test('must be able to create valid PATH', () => {
-  expect(dom.path).toStrictEqual([dom.key])
+  expect(dom.__ref.__path).toStrictEqual([dom.key])
 })
 
 test('if it HAS a NODE, don\'t recreate', () => {

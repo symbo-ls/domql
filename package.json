@@ -23,7 +23,7 @@
     "start": "parcel examples/index.html --no-cache",
     "test:lint": "npx standard \"src/**/*.js\"",
     "test": "yarn test:lint; jest --coverage --coverageReporters=text-lcov | coveralls",
-    "test-watch": "jest --watch"
+    "test:watch": "jest --watch"
   },
   "dependencies": {
     "@domql/globals": "latest",
