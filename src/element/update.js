@@ -53,7 +53,7 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
 
   const inheritState = inheritStateUpdates(element, options)
   if (inheritState === false) return
-  
+
   if (__ref.__state) {
     const keyInParentState = parent.state[__ref.__state]
     if (keyInParentState) {
@@ -117,18 +117,17 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     const isElement = applyParam(param, element, options)
     if (isElement) {
       const { hasDefine, hasContextDefine } = isElement
+      const canUpdate = isObject(prop) && !hasDefine && !hasContextDefine && !options.preventRecursive
 
-      if (prop && isObject(prop) && !hasDefine && !hasContextDefine) {
-        if (!options.preventRecursive) {
-          const childUpdateCall = () => update.call(prop, params[prop], {
-            ...options,
-            currentSnapshot: snapshotOnCallee,
-            calleeElement: element
-          })
-          if (element.props.lazyLoad || options.lazyLoad) {
-            window.requestAnimationFrame(() => childUpdateCall())
-          } else childUpdateCall()
-        }
+      if (canUpdate) {
+        const childUpdateCall = () => update.call(prop, params[prop], {
+          ...options,
+          currentSnapshot: snapshotOnCallee,
+          calleeElement: element
+        })
+        if (element.props.lazyLoad || options.lazyLoad) {
+          window.requestAnimationFrame(() => childUpdateCall())
+        } else childUpdateCall()
       }
     }
   }
@@ -139,7 +138,7 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
 const checkIfOnUpdate = (element, options) => {
   if (!isFunction(element.if)) return
 
-  let __ref = element.__ref
+  const __ref = element.__ref
   const ifPassed = element.if(element, element.state)
   const itWasFalse = __ref.__if !== true
 
@@ -167,31 +166,32 @@ const checkIfOnUpdate = (element, options) => {
 }
 
 const inheritStateUpdates = (element, options) => {
-  let __ref = element.__ref
+  const { parent } = element
+  const __ref = element.__ref
   if (!__ref.__state) {
-    const stateKey = __ref.__state;
-    const parentState = parent.state;
-    const keyInParentState = parentState[stateKey];
-  
+    const stateKey = __ref.__state
+    const parentState = parent.state
+    const keyInParentState = parentState && parentState[stateKey]
+
     if (keyInParentState) {
-      const newState = createState(element, parent);
-      const changes = diff(newState.parse(), element.state.parse());
-  
+      const newState = createState(element, parent)
+      const changes = diff(newState.parse(), element.state.parse())
+
       // run `on.stateUpdated`
-      const { on } = element;
+      const { on } = element
       if (on?.initStateUpdated) {
-        const initReturns = on.initStateUpdated(on.initStateUpdated, element, element.state, changes);
+        const initReturns = on.initStateUpdated(on.initStateUpdated, element, element.state, changes)
         if (initReturns === false) return false
       }
-  
-      element.state = newState;
-  
+
+      element.state = newState
+
       if (!options.preventUpdateListener && on?.stateUpdated) {
-        on.stateUpdated(on.stateUpdated, element, element.state, changes);
+        on.stateUpdated(on.stateUpdated, element, element.state, changes)
       }
     }
   } else if (!__ref.__hasRootState) {
-    element.state = parent?.state || {};
+    element.state = parent?.state || {}
   }
 }
 

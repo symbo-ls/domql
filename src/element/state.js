@@ -68,62 +68,62 @@ export const rootUpdate = function (obj, options = {}) {
 }
 
 export const update = function (obj, options = {}) {
-  const state = this;
-  const element = state.__element;
-  const __elementRef = element.__ref;
-  const parentState = element.parent.state;
-  state.parent = parentState;
+  const state = this
+  const element = state.__element
+  const __elementRef = element.__ref
+  const parentState = element.parent.state
+  state.parent = parentState
 
   for (const param in state) {
     if (isUndefined(state[param])) {
-      delete state[param];
+      delete state[param]
     }
   }
 
   if (!state.__element) {
-    create(element, element.parent);
+    create(element, element.parent)
   }
 
   if (element.on && isFunction(element.on.initStateUpdated)) {
-    const initReturns = on.initStateUpdated(element.on.initStateUpdated, element, state, obj);
+    const initReturns = on.initStateUpdated(element.on.initStateUpdated, element, state, obj)
     if (initReturns === false) {
-      return;
+      return
     }
   }
 
   if (options.shallow) {
-    overwriteShallow(state, obj, IGNORE_STATE_PARAMS);
+    overwriteShallow(state, obj, IGNORE_STATE_PARAMS)
   } else {
-    overwriteDeep(state, obj, IGNORE_STATE_PARAMS);
+    overwriteDeep(state, obj, IGNORE_STATE_PARAMS)
   }
 
-  const stateKey = __elementRef.__state;
-  const shouldPropagateState = stateKey && parentState && parentState[stateKey] && !options.stopStatePropogation;
+  const stateKey = __elementRef.__state
+  const shouldPropagateState = stateKey && parentState && parentState[stateKey] && !options.stopStatePropogation
   if (shouldPropagateState) {
-    const isStringState = (__elementRef.__stateType === 'string');
-    parentState[stateKey] = isStringState ? state.value : state.parse();
-    parentState.update({}, options);
-    return state;
+    const isStringState = (__elementRef.__stateType === 'string')
+    parentState[stateKey] = isStringState ? state.value : state.parse()
+    parentState.update({}, options)
+    return state
   }
 
   if (!options.preventUpdate) {
-    element.update({}, options);
+    element.update({}, options)
   } else if (options.preventUpdate === 'recursive') {
-    element.update({}, { ...options, preventUpdate: true });
+    element.update({}, { ...options, preventUpdate: true })
   }
 
   if (state.__depends) {
     for (const el in state.__depends) {
-      const findElement = state.__depends[el];
-      findElement.clean().update(state.parse(), options);
+      const findElement = state.__depends[el]
+      findElement.clean().update(state.parse(), options)
     }
   }
 
   if (element.on && isFunction(element.on.stateUpdated) && !options.preventUpdateListener) {
-    on.stateUpdated(element.on.stateUpdated, element, state, obj);
+    on.stateUpdated(element.on.stateUpdated, element, state, obj)
   }
 
-  return state;
+  return state
 }
 
 export const remove = function (key, options) {
