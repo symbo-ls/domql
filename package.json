@@ -1,7 +1,6 @@
 {
   "name": "domql",
   "description": "DOM rendering Javascript framework at early stage.",
-  "author": "symbo.ls",
   "version": "1.5.136",
   "repository": "https://github.com/domql/domql",
   "publishConfig": {
@@ -29,11 +28,11 @@
   "dependencies": {
     "@domql/globals": "latest",
     "@domql/registry": "latest",
-    "@domql/event": "2.3.82",
+    "@domql/event": latest",
     "@domql/report": "latest",
     "@domql/emotion": "2.3.82",
     "@domql/utils": "latest",
-    "@domql/classlist": "2.3.82"
+    "@domql/classlist": "latest"
   },
   "devDependencies": {
     "@babel/core": "^7.20.12",
