@@ -28,9 +28,9 @@
   "dependencies": {
     "@domql/globals": "latest",
     "@domql/registry": "latest",
-    "@domql/event": latest",
+    "@domql/event": "latest",
     "@domql/report": "latest",
-    "@domql/emotion": "2.3.82",
+    "@domql/emotion": "latest",
     "@domql/utils": "latest",
     "@domql/classlist": "latest"
   },
