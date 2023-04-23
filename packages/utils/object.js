@@ -33,13 +33,12 @@ export const merge = (element, obj) => {
 
 export const deepMerge = (element, extend) => {
   for (const e in extend) {
+    const elementProp = element[e]
     const extendProp = extend[e]
     if (e === 'parent' || e === 'props') continue
-    if (element[e] === undefined) {
-      element[e] = extendProp
-    } else if (isObjectLike(element[e]) && isObjectLike(extendProp)) {
-      deepMerge(element[e], extendProp)
-    } else {
+    if (isObjectLike(elementProp) && isObjectLike(extendProp)) {
+      deepMerge(elementProp, extendProp)
+    } else if (elementProp === undefined) {
       element[e] = extendProp
     }
   }

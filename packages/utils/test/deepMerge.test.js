@@ -23,9 +23,9 @@ describe('deepMerge', () => {
     }
     const expected = {
       a: {
-        b: 4,
+        b: 1,
         c: {
-          d: 5,
+          d: 2,
           f: 6
         }
       },
@@ -46,7 +46,7 @@ describe('deepMerge', () => {
       c: 4
     }
     const expected = {
-      a: 3,
+      a: 1,
       b: 2,
       c: 4
     }
@@ -70,7 +70,7 @@ describe('deepMerge', () => {
     }
     const expected = {
       a: {
-        b: 4,
+        b: 1,
         c: 2
       },
       d: 3,
@@ -90,9 +90,51 @@ describe('deepMerge', () => {
       props: 6
     }
     const expected = {
-      a: 4
+      a: 1
     }
     const result = deepMerge(obj1, obj2)
     expect(result).toEqual(expected)
+  })
+
+  test('should set extend from a original to a new element', () => {
+    const extend = {
+      tag: 'button',
+      style: {
+        backgroundColor: 'white',
+        color: 'black',
+        outline: 0
+      },
+      icon: {
+        style: {
+          fill: 'black'
+        }
+      },
+      text: 'Button'
+    }
+
+    const element = {
+      style: {
+        backgroundColor: 'green',
+        color: 'white'
+      },
+      text: 'Submit'
+    }
+
+    deepMerge(element, extend)
+
+    expect(element).toStrictEqual({
+      tag: 'button',
+      style: {
+        backgroundColor: 'green',
+        color: 'white',
+        outline: 0
+      },
+      icon: {
+        style: {
+          fill: 'black'
+        }
+      },
+      text: 'Submit'
+    })
   })
 })

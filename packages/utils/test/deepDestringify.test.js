@@ -18,7 +18,6 @@ describe('deepDestringify', () => {
     }
 
     const result = deepDestringify(obj)
-    console.log(result)
 
     expect(result.strFunc()).toBe(42)
     expect(result.nestedObj.nestedStrFunc()).toBe('hello')
