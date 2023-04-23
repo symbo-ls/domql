@@ -33,6 +33,7 @@ export const clean = function () {
       delete state[param]
     }
   }
+  state.update()
   return state
 }
 
@@ -41,14 +42,22 @@ export const destroy = function () {
   const element = state.__element
   delete element.state
   element.state = state.parent
-  if (state.parent) delete state.parent.__children[element.key]
+
+  if (state.parent) {
+    delete state.parent.__children[element.key]
+  }
+
   if (state.__children) {
     for (const key in state.__children) {
       const child = state.__children[key]
-      if (child.state) child.parent = state.parent
+      if (child.state) {
+        child.parent = state.parent
+      }
     }
   }
-  return element.state.update()
+
+  element.state.update()
+  return element.state
 }
 
 export const rootUpdate = function (obj, options = {}) {
@@ -59,62 +68,62 @@ export const rootUpdate = function (obj, options = {}) {
 }
 
 export const update = function (obj, options = {}) {
-  const state = this
-  const element = state.__element
-  const __elementRef = element.__ref
-  state.parent = element.parent.state
+  const state = this;
+  const element = state.__element;
+  const __elementRef = element.__ref;
+  const parentState = element.parent.state;
+  state.parent = parentState;
 
-  for (const param in state) if (isUndefined(state[param])) delete state[param]
-
-  if (!state.__element) create(element, element.parent)
-
-  // run `on.stateUpdated`
-  if (element.on && isFunction(element.on.initStateUpdated)) {
-    const initReturns = on.initStateUpdated(element.on.initStateUpdated, element, state, obj)
-    if (initReturns === false) return
-  }
-
-  if (options && options.shallow) {
-    overwriteShallow(state, obj, IGNORE_STATE_PARAMS)
-  } else {
-    overwriteDeep(state, obj, IGNORE_STATE_PARAMS)
-  }
-
-  const stateKey = __elementRef.__state
-  if (stateKey) {
-    // TODO: check for double parent
-    if (state.parent && state.parent[stateKey]) {
-      const keyInParentState = state.parent[stateKey]
-      if (keyInParentState && !options.stopStatePropogation) {
-        if (__elementRef.__stateType === 'string') {
-          state.parent[stateKey] = state.value
-          state.parent.update({}, options)
-          return state
-        }
-        state.parent[stateKey] = state.parse()
-        state.parent.update({}, options)
-        return state
-      }
+  for (const param in state) {
+    if (isUndefined(state[param])) {
+      delete state[param];
     }
   }
 
-  // TODO: try debounce
-  if (!options.preventUpdate) { element.update({}, options) } else if (options.preventUpdate === 'recursive') {
-    element.update({}, { ...options, preventUpdate: true })
+  if (!state.__element) {
+    create(element, element.parent);
+  }
+
+  if (element.on && isFunction(element.on.initStateUpdated)) {
+    const initReturns = on.initStateUpdated(element.on.initStateUpdated, element, state, obj);
+    if (initReturns === false) {
+      return;
+    }
+  }
+
+  if (options.shallow) {
+    overwriteShallow(state, obj, IGNORE_STATE_PARAMS);
+  } else {
+    overwriteDeep(state, obj, IGNORE_STATE_PARAMS);
+  }
+
+  const stateKey = __elementRef.__state;
+  const shouldPropagateState = stateKey && parentState && parentState[stateKey] && !options.stopStatePropogation;
+  if (shouldPropagateState) {
+    const isStringState = (__elementRef.__stateType === 'string');
+    parentState[stateKey] = isStringState ? state.value : state.parse();
+    parentState.update({}, options);
+    return state;
+  }
+
+  if (!options.preventUpdate) {
+    element.update({}, options);
+  } else if (options.preventUpdate === 'recursive') {
+    element.update({}, { ...options, preventUpdate: true });
   }
 
   if (state.__depends) {
     for (const el in state.__depends) {
-      const findElement = state.__depends[el]
-      findElement.clean().update(state.parse(), options)
+      const findElement = state.__depends[el];
+      findElement.clean().update(state.parse(), options);
     }
   }
 
-  if (!options.preventUpdateListener && element.on && isFunction(element.on.stateUpdated)) {
-    on.stateUpdated(element.on.stateUpdated, element, state, obj)
+  if (element.on && isFunction(element.on.stateUpdated) && !options.preventUpdateListener) {
+    on.stateUpdated(element.on.stateUpdated, element, state, obj);
   }
 
-  return state
+  return state;
 }
 
 export const remove = function (key, options) {

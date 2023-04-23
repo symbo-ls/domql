@@ -48,30 +48,12 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     params = { text: params }
   }
 
-  if (isFunction(element.if)) {
-    // TODO: move as fragment
-    const ifPassed = element.if(element, element.state)
-    const itWasFalse = __ref.__if !== true
+  const ifFails = checkIfOnUpdate(element, options)
+  if (ifFails) return
 
-    if (ifPassed) __ref.__if = true
-    if (itWasFalse && ifPassed) {
-      delete element.__hash
-      delete element.extend
-      if (!__ref.__hasRootState) delete element.state
-      if (__ref.__state) element.state = __ref.__state
-      const created = create(element, element.parent, element.key)
-      if (!options.preventUpdate) {
-        if (element.on && isFunction(element.on.update)) {
-          applyEvent(element.on.update, created, created.state)
-        }
-      }
-      return created
-    } else if (element.node && !ifPassed) {
-      element.node.remove()
-      delete __ref.__if
-    }
-  }
-
+  const inheritState = inheritStateUpdates(element, options)
+  if (inheritState === false) return
+  
   if (__ref.__state) {
     const keyInParentState = parent.state[__ref.__state]
     if (keyInParentState) {
@@ -151,8 +133,65 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     }
   }
 
-  if (!options.preventUpdate) {
-    triggerEventOn('update', element)
+  if (!options.preventUpdateListener) triggerEventOn('update', element)
+}
+
+const checkIfOnUpdate = (element, options) => {
+  if (!isFunction(element.if)) return
+
+  let __ref = element.__ref
+  const ifPassed = element.if(element, element.state)
+  const itWasFalse = __ref.__if !== true
+
+  if (ifPassed) {
+    __ref.__if = true
+    if (itWasFalse) {
+      delete element.__hash
+      delete element.extend
+      if (!__ref.__hasRootState) {
+        delete element.state
+      }
+      if (__ref.__state) {
+        element.state = __ref.__state
+      }
+      const created = create(element, element.parent, element.key)
+      if (!options.preventUpdate && element.on && isFunction(element.on.update)) {
+        applyEvent(element.on.update, created, created.state)
+      }
+      return created
+    }
+  } else if (element.node && !ifPassed) {
+    element.node.remove()
+    delete __ref.__if
+  }
+}
+
+const inheritStateUpdates = (element, options) => {
+  let __ref = element.__ref
+  if (!__ref.__state) {
+    const stateKey = __ref.__state;
+    const parentState = parent.state;
+    const keyInParentState = parentState[stateKey];
+  
+    if (keyInParentState) {
+      const newState = createState(element, parent);
+      const changes = diff(newState.parse(), element.state.parse());
+  
+      // run `on.stateUpdated`
+      const { on } = element;
+      if (on?.initStateUpdated) {
+        const initReturns = on.initStateUpdated(on.initStateUpdated, element, element.state, changes);
+        if (initReturns === false) return false
+      }
+  
+      element.state = newState;
+  
+      if (!options.preventUpdateListener && on?.stateUpdated) {
+        on.stateUpdated(on.stateUpdated, element, element.state, changes);
+      }
+    }
+  } else if (!__ref.__hasRootState) {
+    element.state = parent?.state || {};
   }
 }
 
