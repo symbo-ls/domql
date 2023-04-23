@@ -178,16 +178,15 @@ const inheritStateUpdates = (element, options) => {
       const changes = diff(newState.parse(), element.state.parse())
 
       // run `on.stateUpdated`
-      const { on } = element
-      if (on?.initStateUpdated) {
-        const initReturns = on.initStateUpdated(on.initStateUpdated, element, element.state, changes)
+      if (element.on?.initStateUpdated) {
+        const initReturns = on.initStateUpdated(element.on.initStateUpdated, element, element.state, changes)
         if (initReturns === false) return false
       }
 
       element.state = newState
 
-      if (!options.preventUpdateListener && on?.stateUpdated) {
-        on.stateUpdated(on.stateUpdated, element, element.state, changes)
+      if (!options.preventUpdateListener && element.on?.stateUpdated) {
+        on.stateUpdated(element.on.stateUpdated, element, element.state, changes)
       }
     }
   } else if (!__ref.__hasRootState) {
