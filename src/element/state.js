@@ -74,6 +74,12 @@ export const update = function (obj, options = {}) {
     if (initReturns === false) return
   }
 
+  if (options && options.shallow) {
+    overwriteShallow(state, obj, IGNORE_STATE_PARAMS)
+  } else {
+    overwriteDeep(state, obj, IGNORE_STATE_PARAMS)
+  }
+
   const stateKey = __elementRef.__state
   if (stateKey) {
     // TODO: check for double parent
@@ -81,17 +87,14 @@ export const update = function (obj, options = {}) {
       const keyInParentState = state.parent[stateKey]
       if (keyInParentState && !options.stopStatePropogation) {
         if (__elementRef.__stateType === 'string') {
-          return state.parent.update({ [stateKey]: obj.value }, options)
+          state.parent[stateKey] = state.value
+          state.parent.update({}, options)
+          return state
         }
-        return state.parent.update({ [stateKey]: obj }, options)
+        state.parent[stateKey] = state.parse()
+        state.parent.update({}, options)
+        return state
       }
-      console.warn(state.parent)
-    }
-  } else {
-    if (options && options.shallow) {
-      overwriteShallow(state, obj, IGNORE_STATE_PARAMS)
-    } else {
-      overwriteDeep(state, obj, IGNORE_STATE_PARAMS)
     }
   }
 
@@ -114,11 +117,11 @@ export const update = function (obj, options = {}) {
   return state
 }
 
-export const remove = function (key) {
+export const remove = function (key, options) {
   const state = this
   if (isArray(state)) removeFromArray(state, key)
   if (isObject(state)) removeFromObject(state, key)
-  return state.update()
+  return state.update({}, options)
 }
 
 const getParentStateInKey = (stateKey, parentState) => {
@@ -141,7 +144,7 @@ const getChildStateInKey = (stateKey, parentState) => {
     if (childInParent && childInParent[grandChildKey]) {
       stateKey = grandChildKey
       parentState = childInParent
-    }
+    } else return
   }
   return parentState[stateKey]
 }
@@ -156,10 +159,10 @@ const createInheritedState = function (element, parent) {
     parentState = getParentStateInKey(stateKey, parent.state)
     stateKey = stateKey.replaceAll('../', '')
   }
-  if (!parentState) return
+  if (!parentState) return {}
 
   const keyInParentState = getChildStateInKey(stateKey, parentState)
-  if (!keyInParentState) return
+  if (!keyInParentState) return {}
 
   if (is(keyInParentState)('object', 'array')) {
     return deepClone(keyInParentState)
@@ -228,8 +231,7 @@ export const createState = function (element, parent, opts) {
 export const isState = function (state) {
   if (!isObjectLike(state)) return false
   const keys = Object.keys(state)
-  const checkIF = arrayContainsOtherArray(keys, ['update', 'parse', 'clean', 'create', 'parent', 'rootUpdate'])
-  return checkIF
+  return arrayContainsOtherArray(keys, ['update', 'parse', 'clean', 'create', 'parent', 'rootUpdate'])
 }
 
 const applyMethods = (element, state) => {
