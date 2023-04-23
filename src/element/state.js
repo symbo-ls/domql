@@ -7,7 +7,7 @@ import { deepClone, overwriteShallow, overwriteDeep } from '../utils'
 import { create } from '.'
 
 export const IGNORE_STATE_PARAMS = [
-  'update', 'parse', 'clean', 'create', 'destroy', 'remove', 'rootUpdate',
+  'update', 'parse', 'clean', 'create', 'destroy', 'remove', 'apply', 'rootUpdate',
   'parent', '__element', '__depends', '__ref', '__children', '__root'
 ]
 
@@ -122,6 +122,14 @@ export const remove = function (key, options) {
   if (isArray(state)) removeFromArray(state, key)
   if (isObject(state)) removeFromObject(state, key)
   return state.update({}, options)
+}
+
+export const apply = function (func, options) {
+  const state = this
+  if (isFunction(func)) {
+    func(state)
+    return state.update({}, options)
+  }
 }
 
 const getParentStateInKey = (stateKey, parentState) => {
@@ -244,6 +252,7 @@ const applyMethods = (element, state) => {
   state.rootUpdate = rootUpdate
   state.create = createState
   state.remove = remove
+  state.apply = apply
   state.parent = element.parent.state
   state.__element = element
   state.__children = {}
