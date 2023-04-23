@@ -2,7 +2,7 @@
 
 import { on } from '../event'
 import { triggerEventOn } from '@domql/event'
-import { is, isObject, exec, isFunction, isUndefined } from '@domql/utils'
+import { is, isObject, exec, isFunction, isUndefined, arrayContainsOtherArray, isObjectLike, isArray } from '@domql/utils'
 import { deepClone, overwriteShallow, overwriteDeep } from '../utils'
 
 export const IGNORE_STATE_PARAMS = [
@@ -11,13 +11,17 @@ export const IGNORE_STATE_PARAMS = [
 
 export const parseState = function () {
   const state = this
-  const parseState = {}
-  for (const param in state) {
-    if (!IGNORE_STATE_PARAMS.includes(param)) {
-      parseState[param] = state[param]
+  if (isObject(state)) {
+    const obj = {}
+    for (const param in state) {
+      if (!IGNORE_STATE_PARAMS.includes(param)) {
+        obj[param] = state[param]
+      }
     }
+    return obj
+  } else if (isArray(state)) {
+    return state.filter(item => !IGNORE_STATE_PARAMS.includes(item))
   }
-  return parseState
 }
 
 export const cleanState = function () {
@@ -54,16 +58,19 @@ export const updateState = function (obj, options = {}) {
   }
 
   const stateKey = __elementRef.__state
+  console.log(stateKey)
   if (stateKey) {
     // TODO: check for double parent
     if (state.parent && state.parent[stateKey]) {
       const keyInParentState = state.parent[stateKey]
+      console.log(keyInParentState)
       if (keyInParentState && !options.stopStatePropogation) {
         if (__elementRef.__stateType === 'string') {
           return state.parent.update({ [stateKey]: obj.value }, options)
         }
         return state.parent.update({ [stateKey]: obj }, options)
       }
+      console.warn(state.parent)
     }
   } else {
     if (options && options.shallow) {
@@ -179,6 +186,13 @@ export const createState = function (element, parent, opts) {
   triggerEventOn('stateCreated', element)
 
   return state
+}
+
+export const isState = function (state) {
+  if (!isObjectLike(state)) return false
+  const keys = Object.keys(state)
+  const checkIF = arrayContainsOtherArray(keys, ['update', 'parse', 'clean', 'create', 'parent', 'rootUpdate'])
+  return checkIF
 }
 
 export default createState
