@@ -10,7 +10,8 @@ export default (param, element, node, options) => {
   if (param && element) {
     if (element.content.update) {
       // if (!element.content.__ref) element.content.__ref = {}
-      element.content.update(param)
+      console.log(element.content.parseDeep())
+      element.content.update(element.content.parseDeep())
     } else {
       // if (element.$setCollection || element.$setStateCollection || element.$setPropsCollection) return
       set.call(element, param, options)

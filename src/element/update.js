@@ -7,11 +7,11 @@ import { merge, overwrite } from '../utils'
 
 import create from './create'
 import { throughUpdatedDefine, throughUpdatedExec } from './iterate'
-import { isMethod } from './methods'
 import { registry } from './mixins'
 import { updateProps } from './props'
 import createState from './state'
 import { applyParam } from './applyParam'
+import { isMethod } from '@domql/methods'
 
 const snapshot = {
   snapshotId: createSnapshotId
@@ -47,7 +47,8 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
 
   if (__ref.__if && !options.preventPropsUpdate) {
     const hasParentProps = parent.props && (parent.props[key] || parent.props.childProps)
-    updateProps(params.props || (hasParentProps && {}), element, parent)
+    const props = params.props || hasParentProps
+    if (props) updateProps(props, element, parent)
   }
 
   if (!options.preventInitUpdateListener) {
@@ -94,7 +95,7 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
         calleeElement: calleeElement
       })
 
-      if (element.props.lazyLoad || options.lazyLoad) {
+      if ((element.props && element.props.lazyLoad) || options.lazyLoad) {
         window.requestAnimationFrame(() => childUpdateCall())
       } else childUpdateCall()
     }
@@ -173,7 +174,7 @@ const inheritStateUpdates = (element, options) => {
   const newState = createState(element, parent)
   element.state = newState
 
-  triggerEventOn('stateUpdated', element, newState)
+  triggerEventOn('stateUpdated', element, newState.parse())
 }
 
 export default update

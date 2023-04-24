@@ -54,10 +54,9 @@ export default {
 // Keys not in the array are excluded.
 export const parseFilters = {
   elementKeys: [
-    'tag', 'text', 'style', 'attr', 'class', 'state', 'class',
+    'tag', 'text', 'style', 'attr', 'class', 'state', 'props',
     'data', 'content', 'html', 'on'
-    // TODO: 'props' ?
   ],
-  propsKeys: ['__element'],
+  propsKeys: ['__element', 'update'],
   stateKeys: []
 }

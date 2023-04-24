@@ -3,6 +3,8 @@
 import { exec, is, isArray, isObject, isString } from '@domql/utils'
 import { deepClone, deepMerge } from '../utils'
 
+export const IGNORE_PROPS_PARAMS = ['update', '__element']
+
 const objectizeStringProperty = propValue => {
   if (is(propValue)('string', 'number')) return { inheritedString: propValue }
   return propValue
@@ -56,7 +58,7 @@ export const syncProps = (props, element) => {
   element.props = {}
   const mergedProps = { update, __element: element }
   props.forEach(v => {
-    if (v === 'update' || v === '__element') return
+    if (IGNORE_PROPS_PARAMS.includes(v)) return
     const execProps = exec(v, element)
     if (isObject(execProps) && execProps.__element) return
     element.props = deepMerge(mergedProps, deepClone(execProps))

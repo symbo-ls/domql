@@ -1,19 +1,20 @@
 'use strict'
 
 import { isObject, isFunction, isString, createID, isNode, exec, is } from '@domql/utils'
+import { ROOT } from '@domql/tree'
 import { TAGS } from '@domql/registry'
 import { triggerEventOn } from '@domql/event'
+import { isMethod, lookup, setProps, remove, spotByPath } from '@domql/methods'
+import { appendNode, assignNode } from '@domql/render'
+import { assignClass } from '@domql/classlist'
 
-import root from './root'
 import createNode from './node'
-import { appendNode, assignNode } from './assign'
 import { applyExtend } from './extend'
 import set from './set'
 import createState from './state'
 import createProps from './props'
 import update from './update'
-import { assignClass } from './mixins/classList'
-import { remove, lookup, setProps, log, keys, parse, parseDeep, spotByPath, nextElement, previousElement, isMethod } from './methods'
+import { log, keys, parse, parseDeep, nextElement, previousElement } from './methods'
 import cacheNode, { detectTag } from './cache'
 import { registry } from './mixins'
 import { throughInitialExec } from './iterate'
@@ -56,8 +57,8 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
   }
 
   // if PARENT is not given
-  if (!parent) parent = root
-  if (isNode(parent)) parent = root[`${key}_parent`] = { key: ':root', node: parent }
+  if (!parent) parent = ROOT
+  if (isNode(parent)) parent = ROOT[`${key}_parent`] = { key: ':root', node: parent }
 
   // if element is STRING
   if (checkIfPrimitive(element)) {
@@ -182,8 +183,8 @@ const addMethods = (element, parent) => {
 }
 
 const applyContext = (element, parent, options) => {
-  if (options.context && !root.context && !element.context) root.context = options.context
-  if (!element.context) element.context = parent.context || options.context || root.context
+  if (options.context && !ROOT.context && !element.context) ROOT.context = options.context
+  if (!element.context) element.context = parent.context || options.context || ROOT.context
 }
 
 const checkIf = (element, parent) => {

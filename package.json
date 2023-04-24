@@ -26,8 +26,12 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
+    "@domql/env": "latest",
+    "@domql/render": "latest",
+    "@domql/tree": "latest",
     "@domql/globals": "latest",
     "@domql/registry": "latest",
+    "@domql/methods": "latest",
     "@domql/event": "latest",
     "@domql/report": "latest",
     "@domql/emotion": "latest",

@@ -1,7 +1,6 @@
 'use strict'
 
-import root from './root'
-import tree from './tree'
+import { TREE } from '@domql/tree'
 import cache from './cache'
 import create from './create'
 import createNode from './node'
@@ -11,11 +10,11 @@ import update from './update'
 import parse from './parse'
 import set from './set'
 
-import { lookup, remove, get, setProps, log, keys } from './methods'
+import { log, keys } from './methods'
+import { setProps, get, remove, lookup } from '@domql/methods'
 
 export {
-  root,
-  tree,
+  TREE,
   cache,
   create,
   createNode,

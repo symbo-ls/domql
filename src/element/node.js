@@ -2,6 +2,7 @@
 
 import { exec, isFunction, isObject } from '@domql/utils'
 import { applyEventsOnNode, triggerEventOn } from '@domql/event'
+import { isMethod } from '@domql/methods'
 
 import create from './create'
 import cacheNode from './cache'
@@ -11,7 +12,6 @@ import {
   throughInitialExec
 } from './iterate'
 import { registry } from './mixins'
-import { isMethod } from './methods'
 import { applyParam } from './applyParam'
 // import { defineSetter } from './methods'
 
