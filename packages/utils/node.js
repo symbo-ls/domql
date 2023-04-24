@@ -14,8 +14,8 @@ export const isNode = (node) => {
   )
 }
 
-/** @url https://github.com/jimbrittain/isHTMLElement/tree/master */
 export const isHtmlElement = obj => {
+  /** @url https://github.com/jimbrittain/isHTMLElement */
   let hasHTMLElement = false
   try {
     if (window.HTMLElement !== undefined) { hasHTMLElement = true }
