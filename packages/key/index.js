@@ -1,12 +1,14 @@
 'use strict'
 
-import 'regenerator-runtime/runtime'
+export const createKey = (function () {
+  let index = 0
 
-const id = function * () {
-  let index = 1
-  while (index < index + 1) {
-    yield index++
+  function newId () {
+    index++
+    return index
   }
-}
 
-export const createKey = id()
+  return newId
+})()
+
+export const createSnapshotId = createKey
