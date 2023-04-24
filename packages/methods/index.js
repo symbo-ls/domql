@@ -83,14 +83,23 @@ export const log = function (...args) {
   return element
 }
 
+export const METHODS = [
+  'set',
+  'update',
+  'remove',
+  'removeContent',
+  'lookup',
+  'spotByPath',
+  'keys',
+  'parse',
+  'setProps',
+  'parseDeep',
+  'if',
+  'log',
+  'nextElement',
+  'previousElement'
+]
+
 export const isMethod = function (param) {
-  return param === 'set' ||
-    param === 'update' ||
-    param === 'remove' ||
-    param === 'lookup' ||
-    param === 'keys' ||
-    param === 'parse' ||
-    param === 'parseDeep' ||
-    param === 'if' ||
-    param === 'log'
+  return METHODS.includes(param)
 }

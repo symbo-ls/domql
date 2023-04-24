@@ -24,3 +24,7 @@ export const removeFromArray = (arr, index) => {
 export const swapItemsInArray = (arr, i, j) => {
   [arr[i], arr[j]] = [arr[j], arr[i]]
 }
+
+export const joinArrays = (...arrays) => {
+  return [].concat(...arrays)
+}
