@@ -1,7 +1,8 @@
 'use strict'
 
-import { isObject, isObjectLike } from '@domql/utils'
+import { isFunction, isObject, isObjectLike } from '@domql/utils'
 import { DEFAULT_METHODS } from '@domql/registry'
+const ENV = process.env.NODE_ENV
 
 // TODO: update these files
 export const lookup = function (key) {
@@ -9,6 +10,7 @@ export const lookup = function (key) {
   let { parent } = element
 
   while (parent.key !== key) {
+    if (parent[key]) return parent[key]
     parent = parent.parent
     if (!parent) return
   }
@@ -18,13 +20,24 @@ export const lookup = function (key) {
 
 export const remove = function (params) {
   const element = this
-  element.node.remove()
+  if (isFunction(element.node.remove)) element.node.remove()
+  else if (ENV === 'test' || ENV === 'development') {
+    console.warn('This item cant be removed')
+    element.log()
+  }
   delete element.parent[element.key]
 }
 
 export const get = function (param) {
   const element = this
   return element[param]
+}
+
+export const setProps = function (param, options) {
+  const element = this
+  if (!param || !element.props) return
+  element.update({ props: param }, options)
+  return element
 }
 
 // export const set = function () {
