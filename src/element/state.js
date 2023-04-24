@@ -1,6 +1,5 @@
 'use strict'
 
-import { on } from '../event'
 import { triggerEventOn } from '@domql/event'
 import { is, isObject, exec, isFunction, isUndefined, arrayContainsOtherArray, isObjectLike, isArray, removeFromArray, removeFromObject } from '@domql/utils'
 import { deepClone, overwriteShallow, overwriteDeep } from '../utils'
@@ -26,14 +25,14 @@ export const parse = function () {
   }
 }
 
-export const clean = function () {
+export const clean = function (options = {}) {
   const state = this
   for (const param in state) {
     if (!IGNORE_STATE_PARAMS.includes(param)) {
       delete state[param]
     }
   }
-  state.update()
+  state.update(state, { skipOverwrite: true, options })
   return state
 }
 
@@ -67,7 +66,7 @@ export const rootUpdate = function (obj, options = {}) {
   return rootState.update(obj, options)
 }
 
-export const update = function (obj, options = {}) {
+export const updateState = function (obj, options = {}) {
   const state = this
   const element = state.__element
   const __elementRef = element.__ref
@@ -84,25 +83,24 @@ export const update = function (obj, options = {}) {
     create(element, element.parent)
   }
 
-  if (element.on && isFunction(element.on.initStateUpdated)) {
-    const initReturns = on.initStateUpdated(element.on.initStateUpdated, element, state, obj)
-    if (initReturns === false) {
-      return
+  const initStateUpdateReturns = triggerEventOn('initStateUpdated', element, obj)
+  if (initStateUpdateReturns === false) return element
+
+  if (!options.skipOverwrite) {
+    if (options.shallow) {
+      overwriteShallow(state, obj, IGNORE_STATE_PARAMS)
+    } else {
+      overwriteDeep(state, obj, IGNORE_STATE_PARAMS)
     }
   }
 
-  if (options.shallow) {
-    overwriteShallow(state, obj, IGNORE_STATE_PARAMS)
-  } else {
-    overwriteDeep(state, obj, IGNORE_STATE_PARAMS)
-  }
-
   const stateKey = __elementRef.__state
-  const shouldPropagateState = stateKey && parentState && parentState[stateKey] && !options.stopStatePropogation
+  const shouldPropagateState = stateKey && parentState && parentState[stateKey] && !options.stopStatePropagation
   if (shouldPropagateState) {
     const isStringState = (__elementRef.__stateType === 'string')
-    parentState[stateKey] = isStringState ? state.value : state.parse()
-    parentState.update({}, options)
+    const value = isStringState ? state.value : state.parse()
+    parentState[stateKey] = value
+    parentState.update(value, { skipOverwrite: true, ...options })
     return state
   }
 
@@ -119,8 +117,8 @@ export const update = function (obj, options = {}) {
     }
   }
 
-  if (element.on && isFunction(element.on.stateUpdated) && !options.preventUpdateListener) {
-    on.stateUpdated(element.on.stateUpdated, element, state, obj)
+  if (!options.preventUpdateListener) {
+    triggerEventOn('stateUpdated', element, obj)
   }
 
   return state
@@ -130,14 +128,14 @@ export const remove = function (key, options) {
   const state = this
   if (isArray(state)) removeFromArray(state, key)
   if (isObject(state)) removeFromObject(state, key)
-  return state.update({}, options)
+  return state.update(state, { skipOverwrite: true, options })
 }
 
 export const apply = function (func, options) {
   const state = this
   if (isFunction(func)) {
     func(state)
-    return state.update({}, options)
+    return state.update(state, { skipOverwrite: true, options })
   }
 }
 
@@ -257,7 +255,7 @@ const applyMethods = (element, state) => {
   state.clean = clean
   state.parse = parse
   state.destroy = destroy
-  state.update = update
+  state.update = updateState
   state.rootUpdate = rootUpdate
   state.create = createState
   state.remove = remove

@@ -4,30 +4,6 @@ import { isObject, exec, isFunction, isNumber, isString } from '@domql/utils'
 import { overwrite } from '../utils'
 import { isMethod } from './methods'
 
-export const applyEvents = element => {
-  const { node, on } = element
-  for (const param in on) {
-    if (
-      param === 'init' ||
-      param === 'beforeClassAssign' ||
-      param === 'render' ||
-      param === 'renderRouter' ||
-      param === 'attachNode' ||
-      param === 'stateInit' ||
-      param === 'stateCreated' ||
-      param === 'initStateUpdated' ||
-      param === 'stateUpdated' ||
-      param === 'initUpdate' ||
-      param === 'update'
-    ) continue
-
-    const appliedFunction = element.on[param]
-    if (isFunction(appliedFunction)) {
-      node.addEventListener(param, event => appliedFunction(event, element, element.state, element.context))
-    }
-  }
-}
-
 export const throughInitialExec = element => {
   const { __ref } = element
   const { __exec } = __ref

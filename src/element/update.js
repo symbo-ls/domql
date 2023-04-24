@@ -1,11 +1,10 @@
 'use strict'
 
 import { window } from '@domql/globals'
-import { diff, isFunction, isNumber, isObject, isString, createSnapshotId } from '@domql/utils'
+import { isFunction, isNumber, isObject, isString, createSnapshotId } from '@domql/utils'
 import { applyEvent, triggerEventOn } from '@domql/event'
 import { merge, overwrite } from '../utils'
 
-import { on } from '../event'
 import create from './create'
 import { throughUpdatedDefine, throughUpdatedExec } from './iterate'
 import { isMethod } from './methods'
@@ -54,37 +53,14 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
   const inheritState = inheritStateUpdates(element, options)
   if (inheritState === false) return
 
-  // if (__ref.__state) {
-  //   const keyInParentState = parent.state[__ref.__state]
-  //   if (keyInParentState) {
-  //     const newState = __ref.__stateType === 'string'
-  //       ? createState(element, parent)
-  //       : createState(element, parent)
-  //     const changes = diff(newState.parse(), element.state.parse())
-
-  //     // run `on.stateUpdated`
-  //     if (element.on && isFunction(element.on.initStateUpdated)) {
-  //       const initReturns = on.initStateUpdated(element.on.initStateUpdated, element, element.state, changes)
-  //       if (initReturns === false) return
-  //     }
-
-  //     element.state = newState
-
-  //     if (!options.preventUpdateListener && element.on && isFunction(element.on.stateUpdated)) {
-  //       on.stateUpdated(element.on.stateUpdated, element, element.state, changes)
-  //     }
-  //   }
-  // } else if (!__ref.__hasRootState) element.state = (parent && parent.state) || {}
-
   if (__ref.__if && !options.preventPropsUpdate) {
     const hasParentProps = parent.props && (parent.props[key] || parent.props.childProps)
-    // if (hasParentProps) console.log(hasParentProps.value)
     updateProps(params.props || (hasParentProps && {}), element, parent)
   }
 
-  if (element.on && isFunction(element.on.initUpdate) && !options.ignoreInitUpdate) {
-    const whatinitreturns = on.initUpdate(element.on.initUpdate, element, element.state)
-    if (whatinitreturns === false) return
+  if (!options.preventInitUpdateListener) {
+    const initUpdateReturns = triggerEventOn('initUpdate', element, params)
+    if (initUpdateReturns === false) return element
   }
 
   const overwriteChanges = overwrite(element, params, UPDATE_DEFAULT_OPTIONS)
@@ -166,32 +142,27 @@ const checkIfOnUpdate = (element, options) => {
 }
 
 const inheritStateUpdates = (element, options) => {
-  const { parent } = element
-  const __ref = element.__ref
+  const { __ref } = element
   const stateKey = __ref.__state
-  if (stateKey) {
-    const parentState = parent.state
-    const keyInParentState = parentState && parentState[stateKey]
+  const { parent } = element
 
-    if (keyInParentState) {
-      const newState = createState(element, parent)
-      const changes = diff(newState.parse(), element.state.parse())
-
-      // run `on.stateUpdated`
-      if (element.on?.initStateUpdated) {
-        const initReturns = on.initStateUpdated(element.on.initStateUpdated, element, element.state, changes)
-        if (initReturns === false) return false
-      }
-
-      element.state = newState
-
-      if (!options.preventUpdateListener && element.on?.stateUpdated) {
-        on.stateUpdated(element.on.stateUpdated, element, element.state, changes)
-      }
-    }
-  } else if (!__ref.__hasRootState) {
+  if (!stateKey && !__ref.__hasRootState) {
     element.state = parent?.state || {}
+    return
   }
+
+  const parentState = parent?.state || {}
+  const keyInParentState = parentState[stateKey]
+
+  if (!keyInParentState) return
+
+  const initStateReturns = triggerEventOn('initStateUpdated', element, keyInParentState)
+  if (initStateReturns === false) return element
+
+  const newState = createState(element, parent)
+  element.state = newState
+
+  triggerEventOn('stateUpdated', element, newState)
 }
 
 export default update

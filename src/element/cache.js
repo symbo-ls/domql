@@ -3,8 +3,8 @@
 import { document } from '@domql/globals'
 import { exec, isString } from '@domql/utils'
 import { report } from '@domql/report'
+import { canRender } from '@domql/event'
 
-import { can } from '../event'
 import { isTagRegistered } from '../utils'
 
 const cachedElements = {}
@@ -43,7 +43,7 @@ export const detectTag = element => {
 export default (element) => {
   const tag = element.tag = detectTag(element)
 
-  if (!can.render(element)) {
+  if (!canRender(element)) {
     return report('HTMLInvalidTag')
   }
 
