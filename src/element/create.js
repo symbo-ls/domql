@@ -1,7 +1,8 @@
 'use strict'
 
-import { isObject, isFunction, isString, createID, isNode, exec, is } from '@domql/utils'
+import { isObject, isFunction, isString, isNode, exec, is } from '@domql/utils'
 import { ROOT } from '@domql/tree'
+import { createKey } from '@domql/key'
 import { TAGS } from '@domql/registry'
 import { triggerEventOn } from '@domql/event'
 import { appendNode, assignNode } from '@domql/render'
@@ -66,7 +67,7 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
   }
 
   // define KEY
-  const assignedKey = (element.key || key || createID()).toString()
+  const assignedKey = (element.key || key || createKey()).toString()
 
   if (checkIfKeyIsComponent(assignedKey)) {
     element = applyKeyComponentAsExtend(element, parent, assignedKey)

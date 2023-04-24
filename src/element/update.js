@@ -1,17 +1,18 @@
 'use strict'
 
 import { window } from '@domql/globals'
-import { isFunction, isNumber, isObject, isString, createSnapshotId } from '@domql/utils'
+import { isFunction, isNumber, isObject, isString } from '@domql/utils'
 import { applyEvent, triggerEventOn } from '@domql/event'
-import { merge, overwrite } from '../utils'
+import { isMethod } from '@domql/methods'
+import { createSnapshotId } from '@domql/key'
 
+import { merge, overwrite } from '../utils'
 import create from './create'
 import { throughUpdatedDefine, throughUpdatedExec } from './iterate'
 import { registry } from './mixins'
 import { updateProps } from './props'
 import createState from './state'
 import { applyParam } from './applyParam'
-import { isMethod } from '@domql/methods'
 
 const snapshot = {
   snapshotId: createSnapshotId

@@ -5,6 +5,13 @@ import { IGNORE_STATE_PARAMS } from '../element/state'
 import { IGNORE_PROPS_PARAMS } from '../element/props'
 import { METHODS } from '../element/methods'
 
+const METHODS_EXL = joinArrays(
+  ['node', 'state', 'context', 'extend'],
+  METHODS,
+  IGNORE_STATE_PARAMS,
+  IGNORE_PROPS_PARAMS
+)
+
 export const merge = (element, obj) => {
   for (const e in obj) {
     const elementProp = element[e]
@@ -16,12 +23,11 @@ export const merge = (element, obj) => {
   return element
 }
 
-export const deepMerge = (element, extend) => {
+export const deepMerge = (element, extend, exclude = METHODS_EXL) => {
   for (const e in extend) {
+    if (exclude.includes(e)) continue
     const elementProp = element[e]
     const extendProp = extend[e]
-    // const cachedProps = cache.props
-    if (e === 'parent' || e === 'props' || e === 'state') continue
     if (elementProp === undefined) {
       element[e] = extendProp
     } else if (isObjectLike(elementProp) && isObject(extendProp)) {
@@ -31,11 +37,11 @@ export const deepMerge = (element, extend) => {
   return element
 }
 
-export const clone = obj => {
+export const clone = (obj, exclude = METHODS_EXL) => {
   const o = {}
-  for (const prop in obj) {
-    if (prop === 'node') continue
-    o[prop] = obj[prop]
+  for (const e in obj) {
+    if (exclude.includes(e)) continue
+    o[e] = obj[e]
   }
   return o
 }
@@ -43,24 +49,17 @@ export const clone = obj => {
 /**
  * Deep cloning of object
  */
-const METHODS_EXL = joinArrays(
-  ['node', 'state', 'context', 'extend'],
-  METHODS,
-  IGNORE_STATE_PARAMS,
-  IGNORE_PROPS_PARAMS
-)
-
 export const deepClone = (obj, exclude = METHODS_EXL) => {
   const o = isArray(obj) ? [] : {}
-  for (const prop in obj) {
-    if (exclude.includes(prop)) continue
-    let objProp = obj[prop]
-    if (prop === 'extend' && isArray(objProp)) {
+  for (const e in obj) {
+    if (exclude.includes(e)) continue
+    let objProp = obj[e]
+    if (e === 'extend' && isArray(objProp)) {
       objProp = mergeArray(objProp, exclude)
     }
     if (isObjectLike(objProp)) {
-      o[prop] = deepClone(objProp, exclude)
-    } else o[prop] = objProp
+      o[e] = deepClone(objProp, exclude)
+    } else o[e] = objProp
   }
   return o
 }
