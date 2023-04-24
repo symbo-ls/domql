@@ -32,16 +32,8 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
   let __ref = element.__ref
   if (!__ref) __ref = element.__ref = {}
 
-  const { currentSnapshot, calleeElement } = options
-  if (!calleeElement) {
-    __ref.__currentSnapshot = snapshot.snapshotId()
-  }
-
-  const snapshotOnCallee = __ref.__currentSnapshot ||
-    (calleeElement && calleeElement.__ref && calleeElement.__currentSnapshot)
-  if (snapshotOnCallee && currentSnapshot < snapshotOnCallee) {
-    // TODO: stop previous update
-  }
+  const [snapshotOnCallee, calleeElement, snapshotHasUpdated] = captureSnapshot(element, options)
+  if (snapshotHasUpdated) return
 
   if (isString(params) || isNumber(params)) {
     params = { text: params }
@@ -94,21 +86,40 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     if (isElement) {
       const { hasDefine, hasContextDefine } = isElement
       const canUpdate = isObject(prop) && !hasDefine && !hasContextDefine && !options.preventRecursive
+      if (!canUpdate) continue
 
-      if (canUpdate) {
-        const childUpdateCall = () => update.call(prop, params[prop], {
-          ...options,
-          currentSnapshot: snapshotOnCallee,
-          calleeElement: element
-        })
-        if (element.props.lazyLoad || options.lazyLoad) {
-          window.requestAnimationFrame(() => childUpdateCall())
-        } else childUpdateCall()
-      }
+      const childUpdateCall = () => update.call(prop, params[prop], {
+        ...options,
+        currentSnapshot: snapshotOnCallee,
+        calleeElement: calleeElement
+      })
+
+      if (element.props.lazyLoad || options.lazyLoad) {
+        window.requestAnimationFrame(() => childUpdateCall())
+      } else childUpdateCall()
     }
   }
 
   if (!options.preventUpdateListener) triggerEventOn('update', element)
+}
+
+const captureSnapshot = (element, options) => {
+  const __ref = element.__ref
+
+  const { currentSnapshot, calleeElement } = options
+  const isCallee = calleeElement === element
+  if (!calleeElement || isCallee) {
+    const createdStanpshot = snapshot.snapshotId()
+    __ref.__currentSnapshot = createdStanpshot
+    return [createdStanpshot, element]
+  }
+
+  const snapshotOnCallee = calleeElement.__ref.__currentSnapshot
+  if (currentSnapshot < snapshotOnCallee) {
+    return [snapshotOnCallee, calleeElement, true]
+  }
+
+  return [snapshotOnCallee, calleeElement]
 }
 
 const checkIfOnUpdate = (element, options) => {
