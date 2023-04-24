@@ -13,7 +13,6 @@
     "test": "yarn test:unit && yarn test:lint",
     "publish:all": "npx lerna publish --force-publish",
     "publish:packages": "yarn test && npx lerna publish",
-    "prepublish": "yarn test",
     "clean": "rm -rf dist .cache **/dist **/.cache",
     "clean:modules": "rm -rf node_modules yarn.lock package-lock.json lerna-debug.log yarn-error.log",
     "clean:packages": "lerna exec -- rm -rf dist node_modules yarn.lock yarn-error.log package-lock.json",
