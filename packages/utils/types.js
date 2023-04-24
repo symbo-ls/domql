@@ -3,7 +3,7 @@
 import { window } from '@domql/globals'
 import { HTML_TAGS } from '@domql/tags'
 
-export const isValidHtmlTag = arg => HTML_TAGS.body.indexOf(arg)
+export const isValidHtmlTag = arg => HTML_TAGS.body.includes(arg)
 
 export const isObject = arg => {
   if (arg === null) return false

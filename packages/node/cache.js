@@ -1,17 +1,17 @@
 'use strict'
 
-import { can } from '@domql/event'
-import { exec, isString, isValidHtmlTag } from '@domql/utils'
 import { report } from '@domql/report'
+import { canRender } from '@domql/event'
+import { exec, isString, isValidHtmlTag } from '@domql/utils'
 import { cache } from '@domql/cache'
 
-const createNode = (element) => {
+export const createHTMLNode = (element) => {
   const { tag } = element
   if (tag) {
     if (tag === 'string') return document.createTextNode(element.text)
     else if (tag === 'fragment') {
       return document.createDocumentFragment()
-    } else if (tag === 'svg' || tag === 'path') { // change that
+    } else if (tag === 'svg' || tag === 'path') { // TODO: change that
       return document.createElementNS('http://www.w3.org/2000/svg', tag)
     } else return document.createElement(tag)
   } else {
@@ -19,17 +19,17 @@ const createNode = (element) => {
   }
 }
 
-const detectTag = element => {
+export const detectTag = element => {
   let { tag, key } = element
   tag = exec(tag, element)
 
   if (tag === true) tag = key
 
   if (isString(tag)) {
-    const tagExists = isValidHtmlTag(tag) > -1
+    const tagExists = isValidHtmlTag(tag)
     if (tagExists) return tag
   } else {
-    const isKeyATag = isValidHtmlTag(key) > -1
+    const isKeyATag = isValidHtmlTag(key)
     if (isKeyATag) return key
   }
 
@@ -39,12 +39,12 @@ const detectTag = element => {
 export const cacheNode = (element) => {
   const tag = element.tag = detectTag(element)
 
-  if (!can.render(element)) {
+  if (!canRender(element)) {
     return report('HTMLInvalidTag')
   }
 
   let cachedTag = cache[tag]
-  if (!cachedTag) cachedTag = cache[tag] = createNode(element)
+  if (!cachedTag) cachedTag = cache[tag] = createHTMLNode(element)
 
   const clonedNode = cachedTag.cloneNode(true)
   if (tag === 'string') clonedNode.nodeValue = element.text
