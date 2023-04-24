@@ -13,7 +13,7 @@ export const createHTMLNode = (element) => {
       return document.createDocumentFragment()
     } else if (tag === 'svg' || tag === 'path') { // TODO: change that
       return document.createElementNS('http://www.w3.org/2000/svg', tag)
-    } else return document.createElement(tag)
+    } else return document.createElement(tag) // TODO: allow strict mode to check validity
   } else {
     return document.createElement('div')
   }
@@ -40,7 +40,7 @@ export const cacheNode = (element) => {
   const tag = element.tag = detectTag(element)
 
   if (!canRender(element)) {
-    return report('HTMLInvalidTag')
+    return report('HTMLInvalidTag', element.tag, element)
   }
 
   let cachedTag = cache[tag]

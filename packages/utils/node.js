@@ -1,16 +1,15 @@
 'use strict'
 
-export const cleanWithNode = extend => delete extend.node && extend
+import { window } from '@domql/globals'
 
-export const createID = (function () {
-  let index = 0
-
-  function newId () {
-    index++
-    return index
-  }
-
-  return newId
-})()
-
-export const createSnapshotId = createID
+export const isNode = (node) => {
+  const { Node } = window
+  return (
+    typeof Node === 'function'
+      ? node instanceof Node
+      : node &&
+        typeof node === 'object' &&
+        typeof node.nodeType === 'number' &&
+        typeof node.tag === 'string'
+  )
+}
