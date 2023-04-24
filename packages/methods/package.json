@@ -1,6 +1,6 @@
 {
   "name": "@domql/methods",
-  "version": "2.3.94",
+  "version": "2.3.95",
   "license": "MIT",
   "type": "module",
   "module": "dist/esm/index.js",
@@ -22,8 +22,8 @@
     "prepublish": "rimraf -I dist && yarn build && yarn copy:package:cjs"
   },
   "dependencies": {
-    "@domql/tree": "latest",
     "@domql/registry": "latest",
+    "@domql/tree": "latest",
     "@domql/utils": "latest"
   },
   "gitHead": "c867d7db9e2450d67e97a15ffc7b61692713c234"
