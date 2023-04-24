@@ -3,7 +3,7 @@
 import { TREE } from '@domql/tree'
 import { isFunction, isObject, isObjectLike } from '@domql/utils'
 import { DEFAULT_METHODS } from '@domql/registry'
-const ENV = process.env.NODE_ENV
+import { isProduction } from '@domql/env'
 
 // TODO: update these files
 export const spotByPath = function (path) {
@@ -40,7 +40,7 @@ export const lookup = function (key) {
 export const remove = function (params) {
   const element = this
   if (isFunction(element.node.remove)) element.node.remove()
-  else if (ENV === 'test' || ENV === 'development') {
+  else if (!isProduction()) {
     console.warn('This item cant be removed')
     element.log()
   }

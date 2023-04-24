@@ -24,6 +24,7 @@
   "dependencies": {
     "@domql/registry": "latest",
     "@domql/tree": "latest",
+    "@domql/env": "latest",
     "@domql/utils": "latest"
   },
   "gitHead": "261d178b8a4575a11de4b4a0e5c6e97ece829d2a"
