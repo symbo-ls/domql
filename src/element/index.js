@@ -1,10 +1,8 @@
 'use strict'
 
 import { TREE } from '@domql/tree'
-import cache from './cache'
 import create from './create'
 import createNode from './node'
-import * as assign from './assign'
 import define from './define'
 import update from './update'
 import parse from './parse'
@@ -15,10 +13,8 @@ import { setProps, get, remove, lookup } from '@domql/methods'
 
 export {
   TREE,
-  cache,
   create,
   createNode,
-  assign,
   define,
   remove,
   update,

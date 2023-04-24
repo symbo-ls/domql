@@ -1,12 +1,9 @@
 'use strict'
 
-import { TAGS } from '@domql/registry'
 import { isArray, isObject, isObjectLike, joinArrays } from '@domql/utils'
 import { IGNORE_STATE_PARAMS } from '../element/state'
 import { IGNORE_PROPS_PARAMS } from '../element/props'
 import { METHODS } from '../element/methods'
-
-export const isTagRegistered = arg => TAGS.body.indexOf(arg)
 
 export const merge = (element, obj) => {
   for (const e in obj) {
