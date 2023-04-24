@@ -9,7 +9,7 @@ import parse from './parse'
 import set from './set'
 
 import { log, keys } from './methods'
-import { setProps, get, remove, lookup } from '@domql/methods'
+import { get, remove, lookup } from '@domql/methods'
 
 export {
   TREE,
@@ -20,7 +20,6 @@ export {
   update,
   parse,
   lookup,
-  setProps,
   set,
   get,
   log,

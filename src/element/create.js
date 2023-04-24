@@ -59,7 +59,9 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
 
   // if PARENT is not given
   if (!parent) parent = ROOT
-  if (isNode(parent)) parent = ROOT[`${key}_parent`] = { key: ':root', node: parent }
+  if (isNode(parent)) {
+    parent = ROOT[`${key}_parent`] = { key: ':root', node: parent }
+  }
 
   // if element is STRING
   if (checkIfPrimitive(element)) {
@@ -230,7 +232,7 @@ const addCaching = (element, parent) => {
 
   // Add _root element property
   const hasRoot = parent && parent.key === ':root'
-  if (!__ref.__root) __ref.__root = hasRoot ? element : parent.__ref.__root
+  if (!__ref.__root) __ref.__root = hasRoot ? element : __parentRef.__root
 
   // set the PATH array
   if (ENV === 'test' || ENV === 'development') {

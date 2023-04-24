@@ -50,11 +50,13 @@ export const throughInitialDefine = (element) => {
 
     if (isFunction(prop) && !isMethod(param)) {
       __exec[param] = prop
-      element[param] = prop = exec(prop, element)
+      const execParam = prop = exec(prop, element)
+      if (execParam) element[param] = execParam
     }
 
     __cached[param] = prop
-    element[param] = obj[param](prop, element, element.state)
+    const execParam = obj[param](prop, element, element.state)
+    if (execParam) element[param] = execParam
   }
   return element
 }
@@ -72,7 +74,8 @@ export const throughUpdatedDefine = (element) => {
     const execParam = __exec[param]
     if (execParam) __cached[param] = execParam(element, element.state)
     const cached = exec(__cached[param], element)
-    element[param] = obj[param](cached, element, element.state)
+    const newExecParam = obj[param](cached, element, element.state)
+    if (newExecParam) element[param] = newExecParam
   }
   return changes
 }

@@ -1,6 +1,6 @@
 'use strict'
 
-import { isDefined, isObjectLike } from '@domql/utils'
+import { isDefined, isFunction, isObjectLike } from '@domql/utils'
 import { parseFilters, registry } from './mixins'
 
 export const set = function () {
@@ -28,12 +28,13 @@ export const parse = function () {
   const keyList = keys.call(element)
   keyList.forEach(v => {
     let val = element[v]
-    if (v === 'state' && val.parse) val = val.parse()
-    if (v === 'props' && val.parse) {
-      const { __element, update, ...props } = obj[v]
+    if (v === 'state') {
+      if (element.__ref && element.__ref.__hasRootState) return
+      if (isFunction(val?.parse)) val = val.parse()
+    } else if (v === 'props') {
+      const { __element, update, ...props } = element[v]
       obj[v] = props
-    }
-    if (isDefined(val)) obj[v] = val
+    } else if (isDefined(val)) obj[v] = val
   })
   return obj
 }
@@ -42,11 +43,7 @@ export const parseDeep = function () {
   const element = this
   const obj = parse.call(element)
   for (const v in obj) {
-    if (v === 'state' && obj[v].parse) obj[v] = obj[v].parse()
-    else if (v === 'props') {
-      const { __element, update, ...props } = obj[v]
-      obj[v] = props
-    } else if (isObjectLike(obj[v])) { obj[v] = parseDeep.call(obj[v]) }
+    if (isObjectLike(obj[v])) { obj[v] = parseDeep.call(obj[v]) }
   }
   return obj
 }

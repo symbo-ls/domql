@@ -1,6 +1,5 @@
 'use strict'
 
-import { window } from '@domql/globals'
 import DOM from '../src'
 
 import header from './header'
