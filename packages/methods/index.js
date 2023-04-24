@@ -1,8 +1,27 @@
 'use strict'
 
+import { TREE } from '@domql/tree'
 import { isFunction, isObject, isObjectLike } from '@domql/utils'
 import { DEFAULT_METHODS } from '@domql/registry'
 const ENV = process.env.NODE_ENV
+
+// TODO: update these files
+export const spotByPath = function (path) {
+  const element = this
+  const arr = [].concat(path)
+  let active = TREE[arr[0]]
+
+  if (!arr || !arr.length) return console.log(arr, 'on', element.key, 'is undefined')
+
+  while (active.key === arr[0]) {
+    arr.shift()
+    if (!arr.length) break
+    active = active[arr[0]]
+    if (!active) return
+  }
+
+  return active
+}
 
 // TODO: update these files
 export const lookup = function (key) {

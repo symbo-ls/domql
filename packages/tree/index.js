@@ -1,6 +1,6 @@
 'use strict'
 
-import { root } from './root'
+import { ROOT } from './root'
 
-export const tree = root
-export { root } from './root'
+export const TREE = ROOT
+export { ROOT } from './root'

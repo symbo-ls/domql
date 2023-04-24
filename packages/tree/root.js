@@ -1,10 +1,9 @@
 'use strict'
 
-// import { report } from '@domql/report'
+import { document } from '@domql/globals'
+import { report } from '@domql/report'
 
-export const root = {
+export const ROOT = {
   key: ':root',
-  ref: {
-    // node: document ? document.body : report('DocumentNotDefined', document)
-  }
+  node: document ? document.body : report('DocumentNotDefined', document)
 }
