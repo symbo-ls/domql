@@ -7,7 +7,8 @@ import { cacheNode } from './cache'
 // import { defineSetter } from './methods'
 import { create } from '@domql/create'
 import { isMethod } from '@domql/methods'
-import { throughInitialDefine, throughInitialExec, applyEvents } from '@domql/iterate'
+import { throughInitialDefine, throughInitialExec } from '@domql/iterate'
+import { applyEventsOnNode } from '@domql/event/on'
 
 const ENV = process.env.NODE_ENV
 
@@ -62,7 +63,7 @@ export const createNode = (element) => {
     throughInitialExec(element)
 
     // apply events
-    if (isNewNode && isObject(element.on)) applyEvents(element)
+    if (isNewNode && isObject(element.on)) applyEventsOnNode(element)
 
     for (const param in element) {
       const prop = element[param]

@@ -229,20 +229,50 @@ export const overwrite = (element, params, options) => {
   return changes
 }
 
-export const diff = (obj, original, cache) => {
-  const changes = cache || {}
-  for (const e in obj) {
+export const diffObjects = (original, objToDiff, cache) => {
+  for (const e in objToDiff) {
     if (e === 'ref') continue
+
     const originalProp = original[e]
-    const objProp = obj[e]
-    if (isObjectLike(originalProp) && isObjectLike(objProp)) {
-      changes[e] = {}
-      diff(originalProp, objProp, changes[e])
-    } else if (objProp !== undefined) {
-      changes[e] = objProp
+    const objToDiffProp = objToDiff[e]
+
+    if (isObject(originalProp) && isObject(objToDiffProp)) {
+      cache[e] = {}
+      diff(originalProp, objToDiffProp, cache[e])
+    } else if (objToDiffProp !== undefined) {
+      cache[e] = objToDiffProp
     }
   }
-  return changes
+  return cache
+}
+
+export const diffArrays = (original, objToDiff, cache) => {
+  if (original.length !== objToDiff.length) {
+    cache = objToDiff
+  } else {
+    const diffArr = []
+    for (let i = 0; i < original.length; i++) {
+      const diffObj = diff(original[i], objToDiff[i])
+      if (Object.keys(diffObj).length > 0) {
+        diffArr.push(diffObj)
+      }
+    }
+    if (diffArr.length > 0) {
+      cache = diffArr
+    }
+  }
+  return cache
+}
+
+export const diff = (original, objToDiff, cache = {}) => {
+  if (isArray(original) && isArray(objToDiff)) {
+    cache = []
+    diffArrays(original, objToDiff, cache)
+  } else {
+    diffObjects(original, objToDiff, cache)
+  }
+
+  return cache
 }
 
 /**
@@ -264,7 +294,7 @@ export const overwriteObj = (params, obj) => {
 }
 
 /**
- * Overwrites DEEPly object properties with another
+ * Overwrites DEEPLY object properties with another
  */
 export const overwriteDeep = (params, obj) => {
   for (const e in params) {

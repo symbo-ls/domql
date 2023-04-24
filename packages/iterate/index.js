@@ -3,54 +3,6 @@
 import { exec, isFunction } from '@domql/utils'
 import { isMethod } from '@domql/methods'
 
-export const applyEvents = element => {
-  const { node, on } = element
-  for (const param in on) {
-    if (
-      param === 'init' ||
-      param === 'render' ||
-      param === 'update'
-    ) continue
-
-    const appliedFunction = element.on[param]
-    if (isFunction(appliedFunction)) {
-      node.addEventListener(param, event =>
-        appliedFunction(event, element, element.state),
-      true)
-    }
-  }
-}
-
-// export const throughInitialExec = element => {
-//   for (const param in element) {
-//     const prop = element[param]
-//     if (isFunction(prop) && !isMethod(param)) {
-//       element.__exec[param] = prop
-//       element[param] = prop(element, element.state)
-//     }
-//   }
-// }
-
-// export const execUpdatedParams = (options, element) => {
-//   const { __exec } = element
-//   const changes = {}
-
-//   for (const param in __exec) {
-//     const prop = element[param]
-//     const newExec = __exec[param](element, element.state)
-
-//     // if element is string
-//     if (prop && prop.node && (isString(newExec) || isNumber(newExec))) {
-//       overwrite(prop, { text: newExec }, options)
-//     } else if (newExec !== prop) {
-//       element.__cache[param] = changes[param] = prop
-//       element[param] = newExec
-//     }
-//   }
-
-//   return changes
-// }
-
 export const throughInitialDefine = element => {
   const { define } = element
   for (const param in define) {

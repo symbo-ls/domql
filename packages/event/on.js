@@ -2,67 +2,42 @@
 
 import { isFunction } from '@domql/utils'
 
-export const init = (param, element, state) => {
-  param(element, state)
-}
-
-export const render = (param, element, state) => {
-  param(element, state)
-}
-
-export const applyEvent = (param, element, state, context) => {
+export const applyEvent = (param, element, state, context, updatedObj) => {
+  if (updatedObj) return param(updatedObj, element, state || element.state, context || element.context)
   return param(element, state || element.state, context || element.context)
 }
 
-export const triggerEventOn = (param, element) => {
+export const triggerEventOn = (param, element, updatedObj) => {
   if (element.on && isFunction(element.on[param])) {
+    if (updatedObj) {
+      const { state, context } = element
+      return applyEvent(element.on[param], element, state, context, updatedObj)
+    }
     return applyEvent(element.on[param], element)
   }
 }
 
-export const initUpdate = (element) => {
-  const { ref, state, on } = element
-  const { props } = ref
-  if (on && isFunction(on.initUpdate)) {
-    on.initUpdate(props, state, ref)
-  }
-}
+export const applyEventsOnNode = element => {
+  const { node, on } = element
+  for (const param in on) {
+    if (
+      param === 'init' ||
+      param === 'beforeClassAssign' ||
+      param === 'render' ||
+      param === 'renderRouter' ||
+      param === 'attachNode' ||
+      param === 'stateInit' ||
+      param === 'stateCreated' ||
+      param === 'initStateUpdated' ||
+      param === 'stateUpdated' ||
+      param === 'initUpdate' ||
+      param === 'update'
+    ) continue
 
-// export const attachNode = (param, element, state) => {
-//   param(element, state)
-// }
-
-export const createState = (state, element) => {
-  const { on, ...el } = element
-  if (on && isFunction(on.createState)) {
-    on.createState(state, el)
+    const appliedFunction = element.on[param]
+    if (isFunction(appliedFunction)) {
+      const { state, context } = element
+      node.addEventListener(param, event => appliedFunction(event, element, state, context))
+    }
   }
-}
-
-export const updateStateInit = (changes, element) => {
-  const { state, on, ...el } = element
-  if (on && isFunction(on.updateStateInit)) {
-    on.updateStateInit(changes, state, el)
-  }
-}
-
-export const updateState = (changes, element) => {
-  const { state, on } = element
-  if (on && isFunction(on.updateState)) {
-    on.updateState(changes, state, element)
-  }
-}
-
-export const propsUpdated = (element) => {
-  const { props, state, on } = element
-  if (on && isFunction(on.propsUpdated)) {
-    on.propsUpdated(props, state, element)
-  }
-}
-
-export const update = (params, element, state) => {
-  if (element.on && isFunction(element.on.update)) {
-    element.on.update(element, state)
-  }
-  return params
 }
