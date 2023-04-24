@@ -1,6 +1,6 @@
 {
   "name": "@domql/node",
-  "version": "2.3.99",
+  "version": "2.3.100",
   "license": "MIT",
   "type": "module",
   "module": "index.js",
