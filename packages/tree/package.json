@@ -1,6 +1,6 @@
 {
   "name": "@domql/tree",
-  "version": "2.3.95",
+  "version": "2.3.96",
   "license": "MIT",
   "type": "module",
   "module": "dist/esm/index.js",
