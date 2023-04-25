@@ -1,6 +1,6 @@
 'use strict'
 
-import { isObject, isFunction, isString, isNode, exec, is } from '@domql/utils'
+import { isObject, isFunction, isString, exec, is, isNode } from '@domql/utils'
 import { ROOT } from '@domql/tree'
 import { createKey } from '@domql/key'
 import { TAGS } from '@domql/registry'
@@ -27,7 +27,6 @@ import {
   checkIfKeyIsComponent
 } from '../utils/component'
 import { removeContentElement } from './remove'
-// import { overwrite, clone, fillTheRest } from '../utils'
 
 const ENV = process.env.NODE_ENV
 

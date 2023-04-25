@@ -91,7 +91,7 @@ export const overwrite = (element, params, options) => {
 
 export const overwriteShallow = (obj, params, exclude = METHODS_EXL) => {
   for (const e in params) {
-    if (exclude.indexOf(e) > -1) continue
+    if (exclude.includes(e)) continue
     obj[e] = params[e]
   }
   return obj
@@ -102,7 +102,7 @@ export const overwriteShallow = (obj, params, exclude = METHODS_EXL) => {
  */
 export const overwriteDeep = (obj, params, exclude = METHODS_EXL) => {
   for (const e in params) {
-    if (exclude.indexOf(e) > -1) continue
+    if (exclude.includes(e)) continue
     const objProp = obj[e]
     const paramsProp = params[e]
     if (isObjectLike(objProp) && isObjectLike(paramsProp)) {

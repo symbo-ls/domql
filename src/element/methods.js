@@ -22,11 +22,12 @@ export const keys = function () {
   return keys
 }
 
-export const parse = function () {
+export const parse = function (excl = []) {
   const element = this
   const obj = {}
   const keyList = keys.call(element)
   keyList.forEach(v => {
+    if (excl.includes(v)) return
     let val = element[v]
     if (v === 'state') {
       if (element.__ref && element.__ref.__hasRootState) return
@@ -39,11 +40,12 @@ export const parse = function () {
   return obj
 }
 
-export const parseDeep = function () {
+export const parseDeep = function (excl = []) {
   const element = this
-  const obj = parse.call(element)
+  const obj = parse.call(element, excl)
   for (const v in obj) {
-    if (isObjectLike(obj[v])) { obj[v] = parseDeep.call(obj[v]) }
+    if (excl.includes(v)) return
+    if (isObjectLike(obj[v])) { obj[v] = parseDeep.call(obj[v], excl) }
   }
   return obj
 }

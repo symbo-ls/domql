@@ -55,7 +55,7 @@ export default {
 export const parseFilters = {
   elementKeys: [
     'tag', 'text', 'style', 'attr', 'class', 'state', 'props',
-    'data', 'content', 'html', 'on'
+    'data', 'content', 'html', 'on', 'key'
   ],
   propsKeys: ['__element', 'update'],
   stateKeys: []

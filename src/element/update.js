@@ -6,7 +6,7 @@ import { applyEvent, triggerEventOn } from '@domql/event'
 import { isMethod } from '@domql/methods'
 import { createSnapshotId } from '@domql/key'
 
-import { merge, overwrite } from '../utils'
+import { merge, overwriteDeep } from '../utils'
 import create from './create'
 import { throughUpdatedDefine, throughUpdatedExec } from './iterate'
 import { registry } from './mixins'
@@ -48,7 +48,8 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
 
   if (__ref.__if && !options.preventPropsUpdate) {
     const hasParentProps = parent.props && (parent.props[key] || parent.props.childProps)
-    const props = params.props || hasParentProps
+    const hasFunctionInProps = element.__ref.__props.filter(v => isFunction(v))
+    const props = params.props || hasParentProps || hasFunctionInProps.length
     if (props) updateProps(props, element, parent)
   }
 
@@ -57,7 +58,7 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     if (initUpdateReturns === false) return element
   }
 
-  const overwriteChanges = overwrite(element, params, UPDATE_DEFAULT_OPTIONS)
+  const overwriteChanges = overwriteDeep(params, element)
   const execChanges = throughUpdatedExec(element, UPDATE_DEFAULT_OPTIONS)
   const definedChanges = throughUpdatedDefine(element)
 
