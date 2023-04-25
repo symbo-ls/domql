@@ -1,5 +1,6 @@
 'use strict'
 
+export * from '@domql/key'
 export * from './types.js'
 export * from './object.js'
 export * from './function.js'

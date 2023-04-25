@@ -19,6 +19,7 @@
     "prepublish": "rimraf -I dist && yarn build && yarn copy:package:cjs"
   },
   "dependencies": {
+    "@domql/key": "latest",
     "@domql/globals": "latest",
     "@domql/tags": "latest"
   },
