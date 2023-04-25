@@ -1,6 +1,6 @@
 {
   "name": "@domql/utils",
-  "version": "2.3.105",
+  "version": "2.3.106",
   "license": "MIT",
   "type": "module",
   "module": "index.js",
@@ -19,8 +19,8 @@
     "prepublish": "rimraf -I dist && yarn build && yarn copy:package:cjs"
   },
   "dependencies": {
-    "@domql/key": "latest",
     "@domql/globals": "latest",
+    "@domql/key": "latest",
     "@domql/tags": "latest"
   },
   "gitHead": "82d0f23182e270fbcaf995f59346c0eded5976c3"
