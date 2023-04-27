@@ -1,0 +1,24 @@
+{
+  "name": "domql",
+  "version": "2.3.46",
+  "main": "dist/main.js",
+  "license": "MIT",
+  "source": "dist/main.js",
+  "module": "dist/module.bundle.cjs.js",
+  "dependencies": {
+    "@domql/cache": "latest",
+    "@domql/create": "latest",
+    "@domql/define": "latest",
+    "@domql/event": "latest",
+    "@domql/extends": "latest",
+    "@domql/key": "latest",
+    "@domql/props": "latest",
+    "@domql/registry": "latest",
+    "@domql/report": "latest",
+    "@domql/state": "latest",
+    "@domql/tree": "latest",
+    "@domql/update": "latest",
+    "@domql/utils": "latest"
+  },
+  "gitHead": "66641a0ee9c94ecbe631b7b92e2018ad18af387b"
+}
