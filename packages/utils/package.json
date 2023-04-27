@@ -23,5 +23,8 @@
     "@domql/key": "latest",
     "@domql/tags": "latest"
   },
-  "gitHead": "82d0f23182e270fbcaf995f59346c0eded5976c3"
+  "gitHead": "82d0f23182e270fbcaf995f59346c0eded5976c3",
+  "devDependencies": {
+    "@babel/core": "^7.12.0"
+  }
 }
