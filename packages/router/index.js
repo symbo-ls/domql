@@ -37,7 +37,7 @@ export const router = (
   const route = getActiveRoute(pathname, options.level)
   const content = element.routes[route] || element.routes['/*']
 
-  if (content) return
+  if (!content) return
   if (options.pushState) window.history.pushState(state, null, pathname + (hash ? `#${hash}` : ''))
 
   element.set({ tag: options.useFragment && 'fragment', extend: content })
