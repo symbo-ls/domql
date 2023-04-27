@@ -1,18 +1,17 @@
 'use strict'
 
 import { exec, isFunction, isObject } from '@domql/utils'
-import { triggerEventOn } from '@domql/event'
+import { applyEventsOnNode, triggerEventOn } from '@domql/event'
+import { isMethod } from '@domql/methods'
+import { cacheNode } from '@domql/node'
 
 import create from './create'
-import cacheNode from './cache'
 
 import {
   throughInitialDefine,
-  throughInitialExec,
-  applyEvents
+  throughInitialExec
 } from './iterate'
 import { registry } from './mixins'
-import { isMethod } from './methods'
 import { applyParam } from './applyParam'
 // import { defineSetter } from './methods'
 
@@ -55,7 +54,7 @@ export const createNode = (element, options) => {
     throughInitialExec(element)
 
     // apply events
-    if (isNewNode && isObject(element.on)) applyEvents(element)
+    if (isNewNode && isObject(element.on)) applyEventsOnNode(element)
 
     for (const param in element) {
       const prop = element[param]

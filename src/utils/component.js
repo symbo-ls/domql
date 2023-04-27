@@ -26,7 +26,6 @@ export const extendizeByKey = (element, parent, key) => {
       extend: componentKey || key
     }
   } else if (isFunction(element)) {
-    console.log(element)
     return {
       extend: componentKey || key,
       props: { ...element }

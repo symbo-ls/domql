@@ -1,9 +1,16 @@
 'use strict'
 
-import { TAGS } from '@domql/registry'
-import { isArray, isObject, isObjectLike } from '@domql/utils'
+import { isArray, isObject, isObjectLike, joinArrays } from '@domql/utils'
+import { IGNORE_STATE_PARAMS } from '../element/state'
+import { IGNORE_PROPS_PARAMS } from '../element/props'
+import { METHODS } from '../element/methods'
 
-export const isTagRegistered = arg => TAGS.body.indexOf(arg)
+const METHODS_EXL = joinArrays(
+  ['node', 'state', 'context', 'extend'],
+  METHODS,
+  IGNORE_STATE_PARAMS,
+  IGNORE_PROPS_PARAMS
+)
 
 export const merge = (element, obj) => {
   for (const e in obj) {
@@ -16,12 +23,11 @@ export const merge = (element, obj) => {
   return element
 }
 
-export const deepMerge = (element, extend) => {
+export const deepMerge = (element, extend, exclude = METHODS_EXL) => {
   for (const e in extend) {
+    if (exclude.includes(e)) continue
     const elementProp = element[e]
     const extendProp = extend[e]
-    // const cachedProps = cache.props
-    if (e === 'parent' || e === 'props' || e === 'state') continue
     if (elementProp === undefined) {
       element[e] = extendProp
     } else if (isObjectLike(elementProp) && isObject(extendProp)) {
@@ -31,11 +37,11 @@ export const deepMerge = (element, extend) => {
   return element
 }
 
-export const clone = obj => {
+export const clone = (obj, exclude = METHODS_EXL) => {
   const o = {}
-  for (const prop in obj) {
-    if (prop === 'node') continue
-    o[prop] = obj[prop]
+  for (const e in obj) {
+    if (exclude.includes(e)) continue
+    o[e] = obj[e]
   }
   return o
 }
@@ -43,17 +49,17 @@ export const clone = obj => {
 /**
  * Deep cloning of object
  */
-export const deepClone = (obj, excluding = ['parent', 'node', '__element', 'state', 'context', 'extend', '__ref']) => {
+export const deepClone = (obj, exclude = METHODS_EXL) => {
   const o = isArray(obj) ? [] : {}
-  for (const prop in obj) {
-    if (excluding.indexOf(prop) > -1) continue
-    let objProp = obj[prop]
-    if (prop === 'extend' && isArray(objProp)) {
-      objProp = mergeArray(objProp, excluding)
+  for (const e in obj) {
+    if (exclude.includes(e)) continue
+    let objProp = obj[e]
+    if (e === 'extend' && isArray(objProp)) {
+      objProp = mergeArray(objProp, exclude)
     }
     if (isObjectLike(objProp)) {
-      o[prop] = deepClone(objProp, excluding)
-    } else o[prop] = objProp
+      o[e] = deepClone(objProp, exclude)
+    } else o[e] = objProp
   }
   return o
 }
@@ -83,9 +89,9 @@ export const overwrite = (element, params, options) => {
   return changes
 }
 
-export const overwriteShallow = (obj, params, excluding = ['node', '__ref']) => {
+export const overwriteShallow = (obj, params, exclude = METHODS_EXL) => {
   for (const e in params) {
-    if (excluding.indexOf(e) > -1) continue
+    if (exclude.includes(e)) continue
     obj[e] = params[e]
   }
   return obj
@@ -94,9 +100,9 @@ export const overwriteShallow = (obj, params, excluding = ['node', '__ref']) => 
 /**
  * Overwrites DEEPly object properties with another
  */
-export const overwriteDeep = (obj, params, excluding = ['node', '__ref']) => {
+export const overwriteDeep = (obj, params, exclude = METHODS_EXL) => {
   for (const e in params) {
-    if (excluding.indexOf(e) > -1) continue
+    if (exclude.includes(e)) continue
     const objProp = obj[e]
     const paramsProp = params[e]
     if (isObjectLike(objProp) && isObjectLike(paramsProp)) {
@@ -119,8 +125,8 @@ export const mergeIfExisted = (a, b) => {
 /**
  * Merges array extends
  */
-export const mergeArray = (arr, excluding = ['parent', 'node', '__element', 'state', 'context', '__ref']) => {
-  return arr.reduce((a, c) => deepMerge(a, deepClone(c, excluding)), {})
+export const mergeArray = (arr, exclude = ['parent', 'node', '__element', 'state', 'context', '__ref']) => {
+  return arr.reduce((a, c) => deepMerge(a, deepClone(c, exclude)), {})
 }
 
 /**

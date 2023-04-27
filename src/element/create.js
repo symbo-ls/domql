@@ -1,20 +1,22 @@
 'use strict'
 
-import { isObject, isFunction, isString, createID, isNode, exec, is } from '@domql/utils'
+import { isObject, isFunction, isString, exec, is, isNode } from '@domql/utils'
+import { ROOT } from '@domql/tree'
+import { createKey } from '@domql/key'
 import { TAGS } from '@domql/registry'
 import { triggerEventOn } from '@domql/event'
+import { appendNode, assignNode } from '@domql/render'
+import { isMethod, lookup, setProps, remove, spotByPath } from '@domql/methods'
+import { assignClass } from '@domql/classlist'
+import { cacheNode, detectTag } from '@domql/node'
 
-import root from './root'
 import createNode from './node'
-import { appendNode, assignNode } from './assign'
 import { applyExtend } from './extend'
 import set from './set'
 import createState from './state'
 import createProps from './props'
 import update from './update'
-import { assignClass } from './mixins/classList'
-import { remove, lookup, setProps, log, keys, parse, parseDeep, spotByPath, nextElement, previousElement, isMethod } from './methods'
-import cacheNode, { detectTag } from './cache'
+import { log, keys, parse, parseDeep, nextElement, previousElement } from './methods'
 import { registry } from './mixins'
 import { throughInitialExec } from './iterate'
 import OPTIONS from './options'
@@ -25,7 +27,6 @@ import {
   checkIfKeyIsComponent
 } from '../utils/component'
 import { removeContentElement } from './remove'
-// import { overwrite, clone, fillTheRest } from '../utils'
 
 const ENV = process.env.NODE_ENV
 
@@ -56,8 +57,10 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
   }
 
   // if PARENT is not given
-  if (!parent) parent = root
-  if (isNode(parent)) parent = root[`${key}_parent`] = { key: ':root', node: parent }
+  if (!parent) parent = ROOT
+  if (isNode(parent)) {
+    parent = ROOT[`${key}_parent`] = { key: ':root', node: parent }
+  }
 
   // if element is STRING
   if (checkIfPrimitive(element)) {
@@ -65,7 +68,7 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
   }
 
   // define KEY
-  const assignedKey = (element.key || key || createID()).toString()
+  const assignedKey = (element.key || key || createKey()).toString()
 
   if (checkIfKeyIsComponent(assignedKey)) {
     element = applyKeyComponentAsExtend(element, parent, assignedKey)
@@ -182,8 +185,8 @@ const addMethods = (element, parent) => {
 }
 
 const applyContext = (element, parent, options) => {
-  if (options.context && !root.context && !element.context) root.context = options.context
-  if (!element.context) element.context = parent.context || options.context || root.context
+  if (options.context && !ROOT.context && !element.context) ROOT.context = options.context
+  if (!element.context) element.context = parent.context || options.context || ROOT.context
 }
 
 const checkIf = (element, parent) => {
@@ -228,7 +231,7 @@ const addCaching = (element, parent) => {
 
   // Add _root element property
   const hasRoot = parent && parent.key === ':root'
-  if (!__ref.__root) __ref.__root = hasRoot ? element : parent.__ref.__root
+  if (!__ref.__root) __ref.__root = hasRoot ? element : __parentRef.__root
 
   // set the PATH array
   if (ENV === 'test' || ENV === 'development') {

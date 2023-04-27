@@ -1,69 +1,12 @@
 'use strict'
 
-import { isFunction, isObjectLike } from '@domql/utils'
+import { isDefined, isFunction, isObjectLike } from '@domql/utils'
 import { parseFilters, registry } from './mixins'
-import root from './root'
-
-const ENV = process.env.NODE_ENV
-
-// TODO: update these files
-export const lookup = function (key) {
-  const element = this
-  let { parent } = element
-
-  while (parent.key !== key) {
-    if (parent[key]) return parent[key]
-    parent = parent.parent
-    if (!parent) return
-  }
-
-  return parent
-}
-
-// TODO: update these files
-export const spotByPath = function (path) {
-  const element = this
-  const arr = [].concat(path)
-  let active = root[arr[0]]
-
-  if (!arr || !arr.length) return console.log(arr, 'on', element.key, 'is undefined')
-
-  while (active.key === arr[0]) {
-    arr.shift()
-    if (!arr.length) break
-    active = active[arr[0]]
-    if (!active) return
-  }
-
-  return active
-}
-
-export const remove = function (params) {
-  const element = this
-  if (isFunction(element.node.remove)) element.node.remove()
-  else if (ENV === 'test' || ENV === 'development') {
-    console.warn('This item cant be removed')
-    element.log()
-  }
-  delete element.parent[element.key]
-}
-
-export const get = function (param) {
-  const element = this
-  return element[param]
-}
 
 export const set = function () {
 }
 
 export const update = function () {
-}
-
-export const setProps = function (param, options) {
-  const element = this
-  if (!param || !element.props) return
-  element.update({ props: param }, options)
-  return element
 }
 
 export const defineSetter = (element, key, get, set) =>
@@ -79,19 +22,30 @@ export const keys = function () {
   return keys
 }
 
-export const parse = function () {
+export const parse = function (excl = []) {
   const element = this
   const obj = {}
   const keyList = keys.call(element)
-  keyList.forEach(v => (obj[v] = element[v]))
+  keyList.forEach(v => {
+    if (excl.includes(v)) return
+    let val = element[v]
+    if (v === 'state') {
+      if (element.__ref && element.__ref.__hasRootState) return
+      if (isFunction(val?.parse)) val = val.parse()
+    } else if (v === 'props') {
+      const { __element, update, ...props } = element[v]
+      obj[v] = props
+    } else if (isDefined(val)) obj[v] = val
+  })
   return obj
 }
 
-export const parseDeep = function () {
+export const parseDeep = function (excl = []) {
   const element = this
-  const obj = parse.call(element)
-  for (const k in obj) {
-    if (isObjectLike(obj[k])) { obj[k] = parseDeep.call(obj[k]) }
+  const obj = parse.call(element, excl)
+  for (const v in obj) {
+    if (excl.includes(v)) return
+    if (isObjectLike(obj[v])) { obj[v] = parseDeep.call(obj[v], excl) }
   }
   return obj
 }
@@ -109,23 +63,6 @@ export const log = function (...args) {
   }
   console.groupEnd(element.key)
   return element
-}
-
-export const isMethod = function (param) {
-  return param === 'set' ||
-    param === 'update' ||
-    param === 'remove' ||
-    param === 'removeContent' ||
-    param === 'lookup' ||
-    param === 'spotByPath' ||
-    param === 'keys' ||
-    param === 'parse' ||
-    param === 'setProps' ||
-    param === 'parseDeep' ||
-    param === 'if' ||
-    param === 'log' ||
-    param === 'nextElement' ||
-    param === 'previousElement'
 }
 
 export const nextElement = function () {

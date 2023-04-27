@@ -1,15 +1,16 @@
 'use strict'
 
 import { window } from '@domql/globals'
-import { create, parse, set, define, tree } from './element'
+import { TREE } from '@domql/tree'
+import { create, parse, set, define } from './element'
+import { isDevelopment, isTest } from '@domql/env'
 
-const ENV = process.env.NODE_ENV
-if (ENV === 'test' || ENV === 'development') window.tree = tree
+if (isTest() || isDevelopment()) window.tree = TREE
 
 export default {
+  TREE,
   create,
   parse,
   set,
-  define,
-  tree
+  define
 }

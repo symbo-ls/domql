@@ -1,14 +1,14 @@
 'use strict'
 
 import { window } from '@domql/globals'
-import { diff, isFunction, isNumber, isObject, isString, createSnapshotId } from '@domql/utils'
+import { isFunction, isNumber, isObject, isString } from '@domql/utils'
 import { applyEvent, triggerEventOn } from '@domql/event'
-import { merge, overwrite } from '../utils'
+import { isMethod } from '@domql/methods'
+import { createSnapshotId } from '@domql/key'
 
-import { on } from '../event'
+import { merge, overwriteDeep } from '../utils'
 import create from './create'
 import { throughUpdatedDefine, throughUpdatedExec } from './iterate'
-import { isMethod } from './methods'
 import { registry } from './mixins'
 import { updateProps } from './props'
 import createState from './state'
@@ -33,79 +33,32 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
   let __ref = element.__ref
   if (!__ref) __ref = element.__ref = {}
 
-  const { currentSnapshot, calleeElement } = options
-  if (!calleeElement) {
-    __ref.__currentSnapshot = snapshot.snapshotId()
-  }
-
-  const snapshotOnCallee = __ref.__currentSnapshot ||
-    (calleeElement && calleeElement.__ref && calleeElement.__currentSnapshot)
-  if (snapshotOnCallee && currentSnapshot < snapshotOnCallee) {
-    // TODO: stop previous update
-  }
+  const [snapshotOnCallee, calleeElement, snapshotHasUpdated] = captureSnapshot(element, options)
+  if (snapshotHasUpdated) return
 
   if (isString(params) || isNumber(params)) {
     params = { text: params }
   }
 
-  if (isFunction(element.if)) {
-    // TODO: move as fragment
-    const ifPassed = element.if(element, element.state)
-    const itWasFalse = __ref.__if !== true
+  const ifFails = checkIfOnUpdate(element, options)
+  if (ifFails) return
 
-    if (ifPassed) __ref.__if = true
-    if (itWasFalse && ifPassed) {
-      delete element.__hash
-      delete element.extend
-      if (!__ref.__hasRootState) delete element.state
-      if (__ref.__state) element.state = __ref.__state
-      const created = create(element, element.parent, element.key)
-      if (!options.preventUpdate) {
-        if (element.on && isFunction(element.on.update)) {
-          applyEvent(element.on.update, created, created.state)
-        }
-      }
-      return created
-    } else if (element.node && !ifPassed) {
-      element.node.remove()
-      delete __ref.__if
-    }
-  }
-
-  if (__ref.__state) {
-    const keyInParentState = parent.state[__ref.__state]
-    if (keyInParentState) {
-      const newState = __ref.__stateType === 'string'
-        ? createState(element, parent)
-        : createState(element, parent)
-      const changes = diff(newState.parse(), element.state.parse())
-
-      // run `on.stateUpdated`
-      if (element.on && isFunction(element.on.initStateUpdated)) {
-        const initReturns = on.initStateUpdated(element.on.initStateUpdated, element, element.state, changes)
-        if (initReturns === false) return
-      }
-
-      element.state = newState
-
-      if (!options.preventUpdateListener && element.on && isFunction(element.on.stateUpdated)) {
-        on.stateUpdated(element.on.stateUpdated, element, element.state, changes)
-      }
-    }
-  } else if (!__ref.__hasRootState) element.state = (parent && parent.state) || {}
+  const inheritState = inheritStateUpdates(element, options)
+  if (inheritState === false) return
 
   if (__ref.__if && !options.preventPropsUpdate) {
     const hasParentProps = parent.props && (parent.props[key] || parent.props.childProps)
-    // if (hasParentProps) console.log(hasParentProps.value)
-    updateProps(params.props || (hasParentProps && {}), element, parent)
+    const hasFunctionInProps = element.__ref.__props.filter(v => isFunction(v))
+    const props = params.props || hasParentProps || hasFunctionInProps.length
+    if (props) updateProps(props, element, parent)
   }
 
-  if (element.on && isFunction(element.on.initUpdate) && !options.ignoreInitUpdate) {
-    const whatinitreturns = on.initUpdate(element.on.initUpdate, element, element.state)
-    if (whatinitreturns === false) return
+  if (!options.preventInitUpdateListener) {
+    const initUpdateReturns = triggerEventOn('initUpdate', element, params)
+    if (initUpdateReturns === false) return element
   }
 
-  const overwriteChanges = overwrite(element, params, UPDATE_DEFAULT_OPTIONS)
+  const overwriteChanges = overwriteDeep(params, element)
   const execChanges = throughUpdatedExec(element, UPDATE_DEFAULT_OPTIONS)
   const definedChanges = throughUpdatedDefine(element)
 
@@ -135,25 +88,95 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     const isElement = applyParam(param, element, options)
     if (isElement) {
       const { hasDefine, hasContextDefine } = isElement
+      const canUpdate = isObject(prop) && !hasDefine && !hasContextDefine && !options.preventRecursive
+      if (!canUpdate) continue
 
-      if (prop && isObject(prop) && !hasDefine && !hasContextDefine) {
-        if (!options.preventRecursive) {
-          const childUpdateCall = () => update.call(prop, params[prop], {
-            ...options,
-            currentSnapshot: snapshotOnCallee,
-            calleeElement: element
-          })
-          if (element.props.lazyLoad || options.lazyLoad) {
-            window.requestAnimationFrame(() => childUpdateCall())
-          } else childUpdateCall()
-        }
-      }
+      const childUpdateCall = () => update.call(prop, params[prop], {
+        ...options,
+        currentSnapshot: snapshotOnCallee,
+        calleeElement: calleeElement
+      })
+
+      if ((element.props && element.props.lazyLoad) || options.lazyLoad) {
+        window.requestAnimationFrame(() => childUpdateCall())
+      } else childUpdateCall()
     }
   }
 
-  if (!options.preventUpdate) {
-    triggerEventOn('update', element)
+  if (!options.preventUpdateListener) triggerEventOn('update', element)
+}
+
+const captureSnapshot = (element, options) => {
+  const __ref = element.__ref
+
+  const { currentSnapshot, calleeElement } = options
+  const isCallee = calleeElement === element
+  if (!calleeElement || isCallee) {
+    const createdStanpshot = snapshot.snapshotId()
+    __ref.__currentSnapshot = createdStanpshot
+    return [createdStanpshot, element]
   }
+
+  const snapshotOnCallee = calleeElement.__ref.__currentSnapshot
+  if (currentSnapshot < snapshotOnCallee) {
+    return [snapshotOnCallee, calleeElement, true]
+  }
+
+  return [snapshotOnCallee, calleeElement]
+}
+
+const checkIfOnUpdate = (element, options) => {
+  if (!isFunction(element.if)) return
+
+  const __ref = element.__ref
+  const ifPassed = element.if(element, element.state)
+  const itWasFalse = __ref.__if !== true
+
+  if (ifPassed) {
+    __ref.__if = true
+    if (itWasFalse) {
+      delete element.__hash
+      delete element.extend
+      if (!__ref.__hasRootState) {
+        delete element.state
+      }
+      if (__ref.__state) {
+        element.state = __ref.__state
+      }
+      const created = create(element, element.parent, element.key)
+      if (!options.preventUpdate && element.on && isFunction(element.on.update)) {
+        applyEvent(element.on.update, created, created.state)
+      }
+      return created
+    }
+  } else if (element.node && !ifPassed) {
+    element.node.remove()
+    delete __ref.__if
+  }
+}
+
+const inheritStateUpdates = (element, options) => {
+  const { __ref } = element
+  const stateKey = __ref.__state
+  const { parent } = element
+
+  if (!stateKey && !__ref.__hasRootState) {
+    element.state = parent?.state || {}
+    return
+  }
+
+  const parentState = parent?.state || {}
+  const keyInParentState = parentState[stateKey]
+
+  if (!keyInParentState) return
+
+  const initStateReturns = triggerEventOn('initStateUpdated', element, keyInParentState)
+  if (initStateReturns === false) return element
+
+  const newState = createState(element, parent)
+  element.state = newState
+
+  triggerEventOn('stateUpdated', element, newState.parse())
 }
 
 export default update
