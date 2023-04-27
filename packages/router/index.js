@@ -41,7 +41,9 @@ export const router = (
   if (options.pushState) window.history.pushState(state, null, pathname + (hash ? `#${hash}` : ''))
 
   element.set({ tag: options.useFragment && 'fragment', extend: content })
-  if (options.updateState) element.state.update({ route, hash }, { preventContentUpdate: !options.stateContentUpdate })
+  if (options.updateState) element.state.update({ route, hash }, {
+    preventContentUpdate: !options.stateContentUpdate
+  })
 
   const rootNode = element.node
   const scrollNode = options.scrollNode
