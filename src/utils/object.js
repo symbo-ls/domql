@@ -3,7 +3,7 @@
 import { isArray, isObject, isObjectLike, joinArrays } from '@domql/utils'
 import { IGNORE_STATE_PARAMS } from '../element/state'
 import { IGNORE_PROPS_PARAMS } from '../element/props'
-import { METHODS } from '../element/methods'
+import { METHODS } from '@domql/methods'
 
 const METHODS_EXL = joinArrays(
   ['node', 'state', 'context', 'extend'],
