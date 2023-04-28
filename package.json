@@ -37,7 +37,7 @@
     "@domql/event": "latest",
     "@domql/report": "latest",
     "@domql/emotion": "latest",
-    "@domql/utils": "latest",
+    "@domql/utils": "2.3.84",
     "@domql/classlist": "latest"
   },
   "devDependencies": {
