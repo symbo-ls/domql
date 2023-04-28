@@ -35,6 +35,8 @@ node_modules
 .DS_Store
 
 # Parcel files
+.parcel-cache
 .cache
+.parcel-cache
 dist
 .parcel-cache

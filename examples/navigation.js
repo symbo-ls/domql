@@ -8,7 +8,7 @@ var listItem = {
   }
 }
 
-// var navImtes = [{
+// var navItems = [{
 //   key: 'home',
 //   text: 'Home'
 // }, {

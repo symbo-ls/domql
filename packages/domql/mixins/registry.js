@@ -6,7 +6,7 @@ import {
   text
 } from '.'
 
-export const defaultMethods = {
+export default {
   attr,
   style,
   text,
@@ -54,10 +54,9 @@ export const defaultMethods = {
 // Keys not in the array are excluded.
 export const parseFilters = {
   elementKeys: [
-    'tag', 'text', 'style', 'attr', 'class', 'state', 'class',
-    'data', 'content', 'html', 'on'
-    // TODO: 'props' ?
+    'tag', 'text', 'style', 'attr', 'class', 'state', 'props',
+    'data', 'content', 'html', 'on', 'key'
   ],
-  propsKeys: ['__element'],
+  propsKeys: ['__element', 'update'],
   stateKeys: []
 }

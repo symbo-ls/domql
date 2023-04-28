@@ -14,6 +14,8 @@ export const TAGS = {
   ],
 
   body: [
+    'html',
+    'body',
     'string',
     'fragment',
     'a',

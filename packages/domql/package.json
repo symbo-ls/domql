@@ -1,0 +1,38 @@
+{
+  "name": "domql",
+  "description": "Schema-like DOM rendering Javascript framework.",
+  "version": "1.6.2",
+  "repository": "https://github.com/domql/domql",
+  "source": "index.js",
+  "main": "index.js",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "copy:package:cjs": "cp ./.build/package-cjs.json dist/cjs/package.json",
+    "build:esm": "npx esbuild index.js **/*.js --target=es2020 --format=esm --outdir=dist/esm --bundle",
+    "build:cjs": "npx esbuild index.js **/*.js --target=node16 --format=cjs --outdir=dist/cjs",
+    "build:iife": "npx esbuild index.js --target=node16 --format=iife --outdir=dist/iife --bundle",
+    "build": "yarn build:esm && yarn build:cjs && yarn build:iife",
+    "prepublish": "rimraf -I dist && yarn test:lint && yarn build && yarn copy:package:cjs",
+    "start": "parcel examples/index.html --no-cache",
+    "test:lint": "npx standard \"**/*.js\"",
+    "test": "yarn test:lint; jest --coverage --coverageReporters=text-lcov | coveralls",
+    "test:watch": "jest --watch"
+  },
+  "dependencies": {
+    "@domql/key": "latest",
+    "@domql/env": "latest",
+    "@domql/node": "latest",
+    "@domql/render": "latest",
+    "@domql/tree": "latest",
+    "@domql/globals": "latest",
+    "@domql/registry": "latest",
+    "@domql/methods": "latest",
+    "@domql/event": "latest",
+    "@domql/report": "latest",
+    "@domql/emotion": "latest",
+    "@domql/utils": "latest",
+    "@domql/classlist": "latest"
+  }
+}

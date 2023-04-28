@@ -1,7 +1,7 @@
 'use strict'
 
 import { window } from '@domql/globals'
-import DOM from '../packages/all'
+import DOM from '../src'
 
 import header from './header'
 import footer from './footer'
@@ -14,13 +14,12 @@ const icon = {
 }
 
 const { performance } = window
-const now = performance.now() // eslint-disable-line
+const now = performance.now()
 
 const list = []
-
 for (let i = 0; i < 35; i++) {
   const afrika = {
-    text: 'Hello Afrika - ' + parseInt(Math.random() * 100),
+    text: `Hello Afrika - ${parseInt(Math.random() * 100)}`,
     tag: 'li',
     attr: {
       align: 'right'
@@ -43,17 +42,16 @@ for (let i = 0; i < 35; i++) {
 
   const yay = 'yay'
 
-  afrika[lion] = lion
-  afrika[yay] = yay
+  afrika.lion = lion
+  afrika.yay = yay
 
   list[i] = afrika
 }
 
 const root = {
   header,
-  // list,
-
-  // icon,
+  list,
+  icon,
   footer
 }
 
@@ -61,5 +59,5 @@ DOM.create(root, null, null, {
   // transform: { react: transformReact }
 })
 
-// const later = performance.now()
-// console.log(later - now)
+const later = performance.now()
+console.log(later - now)

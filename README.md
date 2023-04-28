@@ -7,33 +7,15 @@ DOM rendering Javascript framework.
 - No transpilations, simple ES6 code
 - One-time import and subtrees
 
-You can start with [domql](https://github.com/domql/domql) as a boilerplate, or jump into the live editor [playground](https://domql.com/playground/).
+You can start with [starter-kit](https://github.com/domql/starter-kit) as a boilerplate, or jump into the [playground](https://domql.com/playground/).
 
 [![npm version](https://badge.fury.io/js/domql.svg)](https://badge.fury.io/js/domql)
-[![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://lerna.js.org/)
-
-Learn using it in [Symbols](https://symbols.app/developers)
-
-### Getting started
-
-To install all dependencies and run dev server, run:
-
-```shell
-yarn setup && yarn start
-```
-
-### Examples
-
-Initialization:
 
 ```javascript
 import DOM from 'domql'
 
 DOM.create({ text: 'Rendered' })
 ```
-
-Attributes:
-
 ```javascript
 var link = {
   tag: 'a',
@@ -52,8 +34,6 @@ var img = {
   }
 }
 ```
-
-Reusing:
 ```javascript
 var Link = {
   tag: 'a'
@@ -78,8 +58,6 @@ var header = {
   menu
 }
 ```
-
-Array Support:
 ```javascript
 var navItems = ['Home', 'About', 'FAQ', 'Contact']
 
@@ -88,8 +66,6 @@ var menu = {
   ...navItems
 }
 ```
-
-Update:
 ```javascript
 var val = {
   text: 0

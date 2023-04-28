@@ -4,7 +4,7 @@ import { exec, isObject, isString } from '@domql/utils'
 
 export const assignClass = (element) => {
   const { key } = element
-  if (element.class === true) element.class = key
+  if (element.class === true) element.class = keyw
   else if (!element.class && typeof key === 'string' && key.charAt(0) === '_' && key.charAt(1) !== '_') {
     element.class = key.slice(1)
   }
@@ -26,7 +26,7 @@ export const classify = (obj, element) => {
 
 export const classList = (params, element) => {
   if (!params) return
-  const { key } = element
+  const { key } = element // eslint-disable-line
   if (params === true) params = element.class = { key }
   if (isString(params)) params = element.class = { default: params }
   if (isObject(params)) params = classify(params, element)
