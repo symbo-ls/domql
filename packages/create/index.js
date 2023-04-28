@@ -1,8 +1,7 @@
 'use strict'
 
 import { DEFAULT_METHODS, TAGS } from '@domql/registry'
-
-import { root } from '@domql/tree'
+import { ROOT } from '@domql/tree'
 import { createKey } from '@domql/key'
 import { isNumber, isString, isObject, isNode, isFunction, isArray, exec } from '@domql/utils'
 import { createState } from '@domql/state'
@@ -51,9 +50,9 @@ const applyParent = (element, key) => {
   const { ref } = element
   const { parent } = ref
   if (isNode(parent)) {
-    ref.parent = root.ref.parent = { node: parent }
+    ref.parent = ROOT.ref.parent = { node: parent }
   }
-  if (!parent) ref.parent = root
+  if (!parent) ref.parent = ROOT
   return element
 }
 
