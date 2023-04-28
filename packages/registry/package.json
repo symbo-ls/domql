@@ -1,6 +1,6 @@
 {
   "name": "@domql/registry",
-  "version": "2.3.93",
+  "version": "2.3.112",
   "license": "MIT",
   "type": "module",
   "module": "dist/esm/index.js",
