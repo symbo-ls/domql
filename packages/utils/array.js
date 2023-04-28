@@ -33,8 +33,8 @@ export const joinArrays = (...arrays) => {
 /**
  * Merges array extendtypes
  */
-export const mergeArray = (arr) => {
-  return arr.reduce((a, c) => deepMerge(a, deepClone(c)), {})
+export const mergeArray = (arr, excludeFrom = []) => {
+  return arr.reduce((a, c) => deepMerge(a, deepClone(c, excludeFrom), excludeFrom), {})
 }
 
 /**

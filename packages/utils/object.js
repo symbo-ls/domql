@@ -81,11 +81,6 @@ export const deepCloneExclude = (obj, excludeFrom = []) => {
   return o
 }
 
-// Merge array, but excludeFrom keys listed in 'excl'
-export const mergeArrayExclude = (arr, excl = []) => {
-  return arr.reduce((acc, curr) => deepMerge(acc, deepCloneExclude(curr, excl)), {})
-}
-
 /**
  * Deep cloning of object
  */
@@ -321,13 +316,6 @@ export const overwriteDeep = (params, obj, excludeFrom = []) => {
 export const mergeIfExisted = (a, b) => {
   if (isObjectLike(a) && isObjectLike(b)) return deepMerge(a, b)
   return a || b
-}
-
-/**
- * Merges array extendtypes
- */
-export const mergeAndCloneIfArray = obj => {
-  return isArray(obj) ? mergeArray(obj) : deepClone(obj)
 }
 
 /**
