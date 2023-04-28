@@ -1,7 +1,7 @@
 'use strict'
 
 import { isObject, exec, isFunction, isNumber, isString } from '@domql/utils'
-import { overwrite } from '../utils'
+import { overwrite } from './utils'
 import { isMethod } from '@domql/methods'
 
 export const throughInitialExec = element => {

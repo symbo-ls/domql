@@ -2,7 +2,7 @@
 
 import { triggerEventOn } from '@domql/event'
 import { is, isObject, exec, isFunction, isUndefined, arrayContainsOtherArray, isObjectLike, isArray, removeFromArray, removeFromObject } from '@domql/utils'
-import { deepClone, overwriteShallow, overwriteDeep } from '../utils'
+import { deepClone, overwriteShallow, overwriteDeep } from './utils'
 import { create } from '.'
 
 export const IGNORE_STATE_PARAMS = [

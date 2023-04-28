@@ -6,7 +6,7 @@ import { applyEvent, triggerEventOn } from '@domql/event'
 import { isMethod } from '@domql/methods'
 import { createSnapshotId } from '@domql/key'
 
-import { merge, overwriteDeep } from '../utils'
+import { merge, overwriteDeep } from './utils'
 import create from './create'
 import { throughUpdatedDefine, throughUpdatedExec } from './iterate'
 import { registry } from './mixins'

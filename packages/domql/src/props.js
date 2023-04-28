@@ -1,7 +1,7 @@
 'use strict'
 
 import { exec, is, isArray, isObject, isString } from '@domql/utils'
-import { deepClone, deepMerge } from '../utils'
+import { deepClone, deepMerge } from './utils'
 
 export const IGNORE_PROPS_PARAMS = ['update', '__element']
 
