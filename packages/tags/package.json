@@ -1,6 +1,6 @@
 {
   "name": "@domql/tags",
-  "version": "2.3.112",
+  "version": "2.3.113",
   "license": "MIT",
   "type": "module",
   "module": "dist/esm/index.js",
