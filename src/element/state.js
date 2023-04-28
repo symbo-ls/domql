@@ -6,7 +6,7 @@ import { deepClone, overwriteShallow, overwriteDeep } from '../utils'
 import { create } from '.'
 
 export const IGNORE_STATE_PARAMS = [
-  'update', 'parse', 'clean', 'create', 'destroy', 'remove', 'apply', 'rootUpdate',
+  'update', 'parse', 'clean', 'create', 'destroy', 'add', 'remove', 'apply', 'rootUpdate',
   'parent', '__element', '__depends', '__ref', '__children', '__root'
 ]
 
@@ -73,15 +73,7 @@ export const updateState = function (obj, options = {}) {
   const parentState = element.parent.state
   state.parent = parentState
 
-  for (const param in state) {
-    if (isUndefined(state[param])) {
-      delete state[param]
-    }
-  }
-
-  if (!state.__element) {
-    create(element, element.parent)
-  }
+  if (!state.__element && options.createElementFallback) { create(element, element.parent) }
 
   const initStateUpdateReturns = triggerEventOn('initStateUpdated', element, obj)
   if (initStateUpdateReturns === false) return element
@@ -99,9 +91,20 @@ export const updateState = function (obj, options = {}) {
   if (shouldPropagateState) {
     const isStringState = (__elementRef.__stateType === 'string')
     const value = isStringState ? state.value : state.parse()
+    const passedValue = isStringState ? state.value : obj
+
     parentState[stateKey] = value
-    parentState.update(value, { skipOverwrite: true, ...options })
-    return state
+    parentState.update({ [stateKey]: passedValue }, {
+      skipOverwrite: true,
+      preventUpdate: options.preventHoistElementUpdate,
+      ...options
+    })
+
+    if (!options.preventUpdateListener) {
+      triggerEventOn('stateUpdated', element, value)
+    }
+
+    if (!options.preventHoistElementUpdate) return state
   }
 
   if (!options.preventUpdate) {
@@ -124,18 +127,27 @@ export const updateState = function (obj, options = {}) {
   return state
 }
 
-export const remove = function (key, options) {
+export const add = function (value, options = {}) {
+  const state = this
+  if (isArray(state)) {
+    state.push(value)
+    console.log(state)
+    state.update(state.parse(), { skipOverwrite: true, ...options })
+  }
+}
+
+export const remove = function (key, options = {}) {
   const state = this
   if (isArray(state)) removeFromArray(state, key)
   if (isObject(state)) removeFromObject(state, key)
-  return state.update(state, { skipOverwrite: true, options })
+  return state.update(state.parse(), { skipOverwrite: true, ...options })
 }
 
-export const apply = function (func, options) {
+export const apply = function (func, options = {}) {
   const state = this
   if (isFunction(func)) {
     func(state)
-    return state.update(state, { skipOverwrite: true, options })
+    return state.update(state, { skipOverwrite: true, ...options })
   }
 }
 
@@ -258,6 +270,7 @@ const applyMethods = (element, state) => {
   state.update = updateState
   state.rootUpdate = rootUpdate
   state.create = createState
+  state.add = add
   state.remove = remove
   state.apply = apply
   state.parent = element.parent.state
