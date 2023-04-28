@@ -1,7 +1,7 @@
 'use strict'
 
 import { window } from '@domql/globals'
-import { isFunction, isNumber, isObject, isString } from '@domql/utils'
+import { exec, isFunction, isNumber, isObject, isString } from '@domql/utils'
 import { applyEvent, triggerEventOn } from '@domql/event'
 import { isMethod } from '@domql/methods'
 import { createSnapshotId } from '@domql/key'
@@ -158,11 +158,19 @@ const checkIfOnUpdate = (element, options) => {
 const inheritStateUpdates = (element, options) => {
   const { __ref } = element
   const stateKey = __ref.__state
-  const { parent } = element
+  const { parent, state } = element
+
+  if (options.preventUpdateTriggerStateUpdate) return
 
   if (!stateKey && !__ref.__hasRootState) {
     element.state = (parent && parent.state) || {}
     return
+  }
+
+  if (isFunction(stateKey)) {
+    const execState = exec(stateKey, element)
+    state.update(execState, { preventUpdateTriggerStateUpdate: true, ...options })
+    return false
   }
 
   const parentState = (parent && parent.state) || {}

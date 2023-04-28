@@ -1,7 +1,18 @@
 'use strict'
 
 import { triggerEventOn } from '@domql/event'
-import { is, isObject, exec, isFunction, isUndefined, arrayContainsOtherArray, isObjectLike, isArray, removeFromArray, removeFromObject } from '@domql/utils'
+import {
+  is,
+  isObject,
+  exec,
+  isFunction,
+  arrayContainsOtherArray,
+  isObjectLike,
+  isArray,
+  removeFromArray,
+  removeFromObject,
+  isNot
+} from '@domql/utils'
 import { deepClone, overwriteShallow, overwriteDeep } from '../utils'
 import { create } from '.'
 
@@ -179,7 +190,7 @@ const getChildStateInKey = (stateKey, parentState) => {
 const createInheritedState = function (element, parent) {
   const __elementRef = element.__ref
   let stateKey = __elementRef.__state
-  if (!stateKey) return element.state
+  if (!stateKey || isNot(stateKey)('number', 'string')) return element.state
 
   let parentState = parent.state
   if (stateKey.includes('../')) {
@@ -206,7 +217,10 @@ export const createState = function (element, parent, opts) {
   const skip = (opts && opts.skip) ? opts.skip : false
   let { state, __ref: __elementRef } = element
 
-  if (isFunction(state)) element.state = exec(state, element)
+  if (isFunction(state)) {
+    __elementRef.__state = state
+    state = element.state = exec(state, element)
+  }
 
   if (is(state)('string', 'number')) {
     __elementRef.__state = state
