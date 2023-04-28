@@ -142,7 +142,6 @@ export const add = function (value, options = {}) {
   const state = this
   if (isArray(state)) {
     state.push(value)
-    console.log(state)
     state.update(state.parse(), { skipOverwrite: true, ...options })
   }
 }
