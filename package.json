@@ -31,7 +31,7 @@
     "@domql/node": "latest",
     "@domql/render": "latest",
     "@domql/tree": "latest",
-    "@domql/globals": "latest",
+    "@domql/globals": "2.3.82",
     "@domql/registry": "latest",
     "@domql/methods": "latest",
     "@domql/event": "latest",
