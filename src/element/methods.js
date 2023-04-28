@@ -31,7 +31,7 @@ export const parse = function (excl = []) {
     let val = element[v]
     if (v === 'state') {
       if (element.__ref && element.__ref.__hasRootState) return
-      if (isFunction(val?.parse)) val = val.parse()
+      if (isFunction(val && val.parse)) val = val.parse()
     } else if (v === 'props') {
       const { __element, update, ...props } = element[v]
       obj[v] = props
