@@ -1,23 +1,14 @@
 'use strict'
 
-import { IGNORE_STATE_PARAMS } from './ignore'
-
 import { triggerEventOn } from '@domql/event'
-import {
-  is,
-  isObject,
-  exec,
-  isFunction,
-  isUndefined,
-  arrayContainsOtherArray,
-  isObjectLike,
-  isArray,
-  removeFromArray,
-  removeFromObject,
-  deepClone,
-  overwriteShallow,
-  overwriteDeep
-} from '@domql/utils'
+import { is, isObject, exec, isFunction, isUndefined, arrayContainsOtherArray, isObjectLike, isArray, removeFromArray, removeFromObject } from '@domql/utils'
+import { deepClone, overwriteShallow, overwriteDeep } from './utils'
+import { create } from '.'
+
+export const IGNORE_STATE_PARAMS = [
+  'update', 'parse', 'clean', 'create', 'destroy', 'remove', 'apply', 'rootUpdate',
+  'parent', '__element', '__depends', '__ref', '__children', '__root'
+]
 
 export const parse = function () {
   const state = this
@@ -189,7 +180,7 @@ const createInheritedState = function (element, parent) {
   if (!keyInParentState) return {}
 
   if (is(keyInParentState)('object', 'array')) {
-    return deepClone(keyInParentState, IGNORE_STATE_PARAMS)
+    return deepClone(keyInParentState)
   } else if (is(keyInParentState)('string', 'number')) {
     __elementRef.__stateType = 'string'
     return { value: keyInParentState }

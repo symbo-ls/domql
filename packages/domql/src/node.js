@@ -11,7 +11,6 @@ import {
   throughInitialDefine,
   throughInitialExec
 } from './iterate'
-
 import { registry } from './mixins'
 import { applyParam } from './applyParam'
 // import { defineSetter } from './methods'
