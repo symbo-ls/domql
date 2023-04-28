@@ -1,6 +1,6 @@
 {
   "name": "@domql/iterate",
-  "version": "2.3.92",
+  "version": "2.3.114",
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
