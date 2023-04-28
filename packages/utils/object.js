@@ -2,6 +2,7 @@
 
 import { window } from '@domql/globals'
 import { isFunction, isObjectLike, isObject, isArray, isString, is } from './types.js'
+import { mergeArray } from './array.js'
 
 
 export const exec = (param, element, state, context) => {
