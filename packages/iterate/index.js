@@ -30,3 +30,7 @@ export const throughUpdatedDefine = element => {
   }
   return changes
 }
+
+export const throughInitialExec = element => {}
+
+export const throughUpdatedExec = (element, options) => {}
