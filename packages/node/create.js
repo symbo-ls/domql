@@ -1,7 +1,7 @@
 'use strict'
 
 import { isFunction, isObject } from '@domql/utils'
-import { on, applyEventsOnNode } from '@domql/event'
+import { applyEventsOnNode } from '@domql/event'
 import { defaultMethods } from '@domql/mixins'
 import { cacheNode } from './cache'
 // import { defineSetter } from './methods'
@@ -23,10 +23,7 @@ export const createNode = (element) => {
       node = element.node = element.parent.node.attachShadow({ mode: 'open' })
     } else node = element.node = cacheNode(element)
 
-    // run `on.attachNode`
-    if (element.on && isFunction(element.on.attachNode)) {
-      on.attachNode(element.on.attachNode, element, element.state)
-    }
+    triggerEventOn('attachNode', element)
   }
 
   // node.dataset // .key = element.key
