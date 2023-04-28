@@ -11,6 +11,8 @@ import set from './set'
 import { log, keys } from './methods'
 import { get, remove, lookup } from '@domql/methods'
 
+export * from './exclude'
+
 export {
   TREE,
   create,

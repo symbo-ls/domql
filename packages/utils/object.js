@@ -3,6 +3,7 @@
 import { window } from '@domql/globals'
 import { isFunction, isObjectLike, isObject, isArray, isString, is } from './types.js'
 
+
 export const exec = (param, element, state, context) => {
   if (isFunction(param)) {
     return param(
@@ -31,11 +32,11 @@ export const merge = (element, obj) => {
   return element
 }
 
-export const deepMerge = (element, extend) => {
+export const deepMerge = (element, extend, excludeFrom = []) => {
   for (const e in extend) {
+    if (excludeFrom.includes(e) || e.includes('__')) continue
     const elementProp = element[e]
     const extendProp = extend[e]
-    if (e === 'parent' || e === 'props') continue
     if (isObjectLike(elementProp) && isObjectLike(extendProp)) {
       deepMerge(elementProp, extendProp)
     } else if (elementProp === undefined) {
@@ -45,42 +46,42 @@ export const deepMerge = (element, extend) => {
   return element
 }
 
-export const clone = obj => {
+export const clone = (obj, excludeFrom = []) => {
   const o = {}
   for (const prop in obj) {
-    if (prop === 'node') continue
+    if (excludeFrom.includes(e) || e.includes('__')) continue
     o[prop] = obj[prop]
   }
   return o
 }
 
-// Clone anything deeply but exclude keys given in 'exclude'
-export const deepCloneExclude = (obj, exclude = []) => {
+// Clone anything deeply but excludeFrom keys given in 'excludeFrom'
+export const deepCloneExclude = (obj, excludeFrom = []) => {
   if (isArray(obj)) {
-    return obj.map(x => deepCloneExclude(x, exclude))
+    return obj.map(x => deepCloneExclude(x, excludeFrom))
   }
 
   const o = {}
   for (const k in obj) {
-    if (exclude.indexOf(k) > -1) continue
+    if (excludeFrom.includes(k) || k.includes('__')) continue
 
     let v = obj[k]
 
     if (k === 'extend' && isArray(v)) {
-      v = mergeArrayExclude(v, exclude)
+      v = mergeArrayExclude(v, excludeFrom)
     }
 
     if (isArray(v)) {
-      o[k] = v.map(x => deepCloneExclude(x, exclude))
+      o[k] = v.map(x => deepCloneExclude(x, excludeFrom))
     } else if (isObject(v)) {
-      o[k] = deepCloneExclude(v, exclude)
+      o[k] = deepCloneExclude(v, excludeFrom)
     } else o[k] = v
   }
 
   return o
 }
 
-// Merge array, but exclude keys listed in 'excl'
+// Merge array, but excludeFrom keys listed in 'excl'
 export const mergeArrayExclude = (arr, excl = []) => {
   return arr.reduce((acc, curr) => deepMerge(acc, deepCloneExclude(curr, excl)), {})
 }
@@ -88,20 +89,16 @@ export const mergeArrayExclude = (arr, excl = []) => {
 /**
  * Deep cloning of object
  */
-export const deepClone = (obj) => {
-  if (isArray(obj)) {
-    return obj.map(deepClone)
-  }
-  const o = {}
+export const deepClone = (obj, excludeFrom = []) => {
+  const o = isArray(obj) ? [] : {}
   for (const prop in obj) {
+    if (excludeFrom.includes(prop) || prop.includes('__')) continue
     let objProp = obj[prop]
     if (prop === 'extend' && isArray(objProp)) {
       objProp = mergeArray(objProp)
     }
-    if (isArray(objProp)) {
-      o[prop] = objProp.map(v => isObject(v) ? deepClone(v) : v)
-    } else if (isObject(objProp)) {
-      o[prop] = deepClone(objProp)
+    if (isObjectLike(objProp)) {
+      o[prop] = deepClone(objProp, excludeFrom)
     } else o[prop] = objProp
   }
   return o
@@ -210,12 +207,12 @@ export const deepDestringify = (obj, stringified = {}) => {
 /**
  * Overwrites object properties with another
  */
-export const overwrite = (element, params, options) => {
+export const overwrite = (element, params, excludeFrom = []) => {
   const { ref } = element
   const changes = {}
 
   for (const e in params) {
-    if (e === 'props') continue
+    if (excludeFrom.includes(e) || e.includes('__')) continue
 
     const elementProp = element[e]
     const paramsProp = params[e]
@@ -293,11 +290,20 @@ export const overwriteObj = (params, obj) => {
   return changes
 }
 
+export const overwriteShallow = (obj, params, excludeFrom = []) => {
+  for (const e in params) {
+    if (excludeFrom.includes(e) || e.includes('__')) continue
+    obj[e] = params[e]
+  }
+  return obj
+}
+
 /**
  * Overwrites DEEPLY object properties with another
  */
-export const overwriteDeep = (params, obj) => {
+export const overwriteDeep = (params, obj, excludeFrom = []) => {
   for (const e in params) {
+    if (excludeFrom.includes(e) || e.includes('__')) continue
     const objProp = obj[e]
     const paramsProp = params[e]
     if (isObjectLike(objProp) && isObjectLike(paramsProp)) {
@@ -315,13 +321,6 @@ export const overwriteDeep = (params, obj) => {
 export const mergeIfExisted = (a, b) => {
   if (isObjectLike(a) && isObjectLike(b)) return deepMerge(a, b)
   return a || b
-}
-
-/**
- * Merges array extendtypes
- */
-export const mergeArray = (arr) => {
-  return arr.reduce((a, c) => deepMerge(a, deepClone(c)), {})
 }
 
 /**

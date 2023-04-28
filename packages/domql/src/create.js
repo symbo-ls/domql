@@ -5,16 +5,17 @@ import { ROOT } from '@domql/tree'
 import { createKey } from '@domql/key'
 import { TAGS } from '@domql/registry'
 import { triggerEventOn } from '@domql/event'
-import { appendNode, assignNode } from '@domql/render'
 import { isMethod, lookup, setProps, remove, spotByPath } from '@domql/methods'
 import { assignClass } from '@domql/classlist'
 import { cacheNode, detectTag } from '@domql/node'
+import { appendNode, assignNode } from '@domql/render'
 
-import createNode from './node'
+import { createState } from '@domql/state'
+import { createProps } from '@domql/props'
+
+import { createNode } from './node'
 import { applyExtend } from './extend'
 import set from './set'
-import createState from './state'
-import createProps from './props'
 import update from './update'
 import { log, keys, parse, parseDeep, nextElement, previousElement } from './methods'
 import { registry } from './mixins'
@@ -25,7 +26,7 @@ import {
   applyComponentFromContext,
   applyKeyComponentAsExtend,
   checkIfKeyIsComponent
-} from '../utils/component'
+} from './utils/component'
 import { removeContentElement } from './remove'
 
 const ENV = process.env.NODE_ENV

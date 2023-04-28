@@ -1,5 +1,6 @@
 'use strict'
 
+import { deepClone, deepMerge } from './object'
 import { isArray, isNumber, isString } from './types'
 
 export const arrayContainsOtherArray = (arr1, arr2) => {
@@ -27,4 +28,18 @@ export const swapItemsInArray = (arr, i, j) => {
 
 export const joinArrays = (...arrays) => {
   return [].concat(...arrays)
+}
+
+/**
+ * Merges array extendtypes
+ */
+export const mergeArray = (arr) => {
+  return arr.reduce((a, c) => deepMerge(a, deepClone(c)), {})
+}
+
+/**
+ * Merges array extends
+ */
+export const mergeAndCloneIfArray = obj => {
+  return isArray(obj) ? mergeArray(obj) : deepClone(obj)
 }

@@ -1,18 +1,28 @@
 'use strict'
 
 import { window } from '@domql/globals'
-import { isFunction, isNumber, isObject, isString } from '@domql/utils'
 import { applyEvent, triggerEventOn } from '@domql/event'
 import { isMethod } from '@domql/methods'
 import { createSnapshotId } from '@domql/key'
+import { updateProps } from '@domql/props'
+import { createState } from '@domql/state'
+import {
+  isFunction,
+  isNumber,
+  isObject,
+  isString,
+  merge,
+  overwriteDeep
+} from '@domql/utils'
 
-import { merge, overwriteDeep } from './utils'
 import create from './create'
-import { throughUpdatedDefine, throughUpdatedExec } from './iterate'
+import {
+  throughUpdatedDefine,
+  throughUpdatedExec
+} from './iterate'
 import { registry } from './mixins'
-import { updateProps } from './props'
-import createState from './state'
 import { applyParam } from './applyParam'
+import { METHODS_EXL } from './exclude'
 
 const snapshot = {
   snapshotId: createSnapshotId
@@ -58,12 +68,12 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     if (initUpdateReturns === false) return element
   }
 
-  const overwriteChanges = overwriteDeep(params, element)
+  const overwriteChanges = overwriteDeep(params, element, METHODS_EXL)
   const execChanges = throughUpdatedExec(element, UPDATE_DEFAULT_OPTIONS)
   const definedChanges = throughUpdatedDefine(element)
 
   if (options.stackChanges && element.__stackChanges) {
-    const stackChanges = merge(definedChanges, merge(execChanges, overwriteChanges))
+    const stackChanges = merge(definedChanges, merge(execChanges, overwriteChanges), METHODS_EXL)
     element.__stackChanges.push(stackChanges)
   }
 
