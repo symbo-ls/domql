@@ -161,11 +161,11 @@ const inheritStateUpdates = (element, options) => {
   const { parent } = element
 
   if (!stateKey && !__ref.__hasRootState) {
-    element.state = parent?.state || {}
+    element.state = (parent && parent.state) || {}
     return
   }
 
-  const parentState = parent?.state || {}
+  const parentState = (parent && parent.state) || {}
   const keyInParentState = parentState[stateKey]
 
   if (!keyInParentState) return
