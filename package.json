@@ -32,7 +32,7 @@
     "@domql/render": "latest",
     "@domql/tree": "latest",
     "@domql/globals": "2.3.82",
-    "@domql/registry": "latest",
+    "@domql/registry": "2.3.82",
     "@domql/methods": "latest",
     "@domql/event": "2.3.82",
     "@domql/report": "latest",
