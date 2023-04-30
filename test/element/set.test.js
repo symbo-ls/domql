@@ -2,7 +2,7 @@
 
 import { create } from '../../src/element'
 
-var element = create({})
+const element = create({})
 
 test('should SET element', () => {
   element.set({ text: 'test' })

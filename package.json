@@ -87,6 +87,11 @@
   "standard": {
     "env": [
       "jest"
+    ],
+    "ignore": [
+      "examples/*.js",
+      "test/**/*.js",
+      "*.jsx"
     ]
   },
   "browserslist": [
