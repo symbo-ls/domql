@@ -32,6 +32,7 @@
     "@domql/render": "latest",
     "@domql/tree": "latest",
     "@domql/globals": "2.3.82",
+    "@domql/mixins": "2.3.82",
     "@domql/registry": "latest",
     "@domql/methods": "latest",
     "@domql/state": "latest",
