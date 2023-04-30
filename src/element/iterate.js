@@ -41,21 +41,25 @@ export const throughUpdatedExec = (element, options = { excludes: METHODS_EXL })
 export const throughInitialDefine = (element) => {
   const { define, context, __ref: ref } = element
 
-  let obj = {}
-  if (isObject(define)) obj = { ...define }
-  if (context && isObject(context.define)) obj = { ...obj, ...context.define }
+  let defineObj = {}
+  const hasGlobalDefine = context && isObject(context.define)
+  if (isObject(define)) defineObj = { ...define }
+  if (hasGlobalDefine) defineObj = { ...defineObj, ...context.define }
 
-  for (const param in obj) {
-    let prop = element[param]
+  for (const param in defineObj) {
+    let elementProp = element[param]
 
-    if (isFunction(prop) && !isMethod(param)) {
-      ref.__exec[param] = prop
-      const execParam = prop = exec(prop, element)
-      if (execParam) element[param] = execParam
+    if (isFunction(elementProp) && !isMethod(param)) {
+      ref.__exec[param] = elementProp
+      const execParam = elementProp = exec(elementProp, element)
+
+      if (execParam) {
+        elementProp = element[param] = execParam.parse ? execParam.parse() : execParam
+        ref.__defineCache[param] = elementProp
+      }
     }
 
-    ref.__defineCache[param] = prop
-    const execParam = obj[param](prop, element, element.state)
+    const execParam = defineObj[param](elementProp, element, element.state)
     if (execParam) element[param] = execParam
   }
   return element
