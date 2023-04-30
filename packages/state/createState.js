@@ -5,7 +5,7 @@ import { deepClone, exec, is, isFunction, isObject } from '@domql/utils'
 import { IGNORE_STATE_PARAMS } from './ignore'
 import { add, apply, clean, destroy, parse, remove, rootUpdate, toggle } from './methods'
 import { updateState } from './updateState'
-import { checkIfInherits, createInheritedState } from './utils'
+import { checkIfInherits, createInheritedState } from './inherit'
 
 export const createState = function (element, parent, opts) {
   const skip = (opts && opts.skip) ? opts.skip : false

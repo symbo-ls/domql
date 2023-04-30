@@ -4,7 +4,7 @@ import { report } from '@domql/report'
 import { triggerEventOn } from '@domql/event'
 import { IGNORE_STATE_PARAMS } from './ignore'
 import { deepMerge, overwriteDeep, overwriteShallow } from '@domql/utils'
-import { checkIfInherits } from './utils'
+import { checkIfInherits, findInheritedState } from './inherit'
 
 export const updateState = function (obj, options = {}) {
   const state = this
@@ -48,21 +48,22 @@ const applyOverwrite = (state, obj, options) => {
 
 const hoistStateUpdate = (state, obj, options) => {
   const element = state.__element
-  const __elementRef = element.__ref
-  const stateKey = __elementRef.__state
+  const { parent, __ref: ref } = element
+  const stateKey = ref.__state
   if (!stateKey) return
 
   const asksForInherit = checkIfInherits(element)
-  const shouldPropagateState = asksForInherit && !options.stopStatePropagation
-  const parentState = element.parent.state
-
+  const inheritedState = findInheritedState(element, parent)
+  const shouldPropagateState = asksForInherit && inheritedState && !options.stopStatePropagation
   if (!shouldPropagateState) return
-  const isStringState = (__elementRef.__stateType === 'string')
+  console.log(inheritedState)
+
+  const isStringState = (ref.__stateType === 'string')
   const value = isStringState ? state.value : state.parse()
   const passedValue = isStringState ? state.value : obj
 
-  parentState[stateKey] = value
-  parentState.update({ [stateKey]: passedValue }, {
+  inheritedState[stateKey] = value
+  inheritedState.update({ [stateKey]: passedValue }, {
     skipOverwrite: true,
     preventUpdate: options.preventHoistElementUpdate,
     ...options
