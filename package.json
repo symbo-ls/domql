@@ -40,11 +40,15 @@
   },
   "standard": {
     "parser": "@babel/eslint-parser",
+    "ignore": [
+      "examples/*.js",
+      "**/test/*.js",
+      "*.jsx"
+    ],
     "env": [
       "jest"
     ]
   },
-  "babel": {},
   "browserslist": "> 0.25%, not dead",
   "dependencies": {},
   "version": "0.0.5"

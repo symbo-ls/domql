@@ -1,16 +1,6 @@
-'use strict'
 
-import {
-  exec,
-  is,
-  isArray,
-  isObject,
-  isString,
-  deepClone,
-  deepMerge
-} from '@domql/utils'
-
-export const IGNORE_PROPS_PARAMS = ['update', '__element']
+import { exec, is, isArray, isObject, isString, deepClone, deepMerge } from '@domql/utils'
+import { IGNORE_PROPS_PARAMS } from './ignore'
 
 const objectizeStringProperty = propValue => {
   if (is(propValue)('string', 'number')) return { inheritedString: propValue }
@@ -50,9 +40,8 @@ const createPropsStack = (element, parent) => {
   else if (props) propsStack.push(props)
 
   if (isArray(__ref.__extend)) {
-    __ref.__extend.map(extend => {
+    __ref.__extend.forEach(extend => {
       if (extend.props) propsStack.push(extend.props)
-      return extend.props
     })
   }
 
@@ -68,7 +57,11 @@ export const syncProps = (props, element) => {
     if (IGNORE_PROPS_PARAMS.includes(v)) return
     const execProps = exec(v, element)
     if (isObject(execProps) && execProps.__element) return
-    element.props = deepMerge(mergedProps, deepClone(execProps, IGNORE_PROPS_PARAMS), IGNORE_PROPS_PARAMS)
+    element.props = deepMerge(
+      mergedProps,
+      deepClone(execProps, IGNORE_PROPS_PARAMS),
+      IGNORE_PROPS_PARAMS
+    )
   })
   element.props = mergedProps
   return element.props
@@ -106,4 +99,4 @@ function update (props, options) {
   element.update({ props }, options)
 }
 
-export default createProps
+export { IGNORE_PROPS_PARAMS }

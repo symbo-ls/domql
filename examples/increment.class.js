@@ -1,10 +1,10 @@
 'use strict'
 
-var val = {
+const val = {
   text: 0
 }
 
-var Button = {
+const Button = {
   tag: 'button',
   on: {
     click: (e, element) => {
@@ -13,12 +13,12 @@ var Button = {
   }
 }
 
-var increment = {
+const increment = {
   class: Button,
   text: 'Increment'
 }
 
-var decrement = {
+const decrement = {
   class: Button,
   text: 'Decrement'
 }

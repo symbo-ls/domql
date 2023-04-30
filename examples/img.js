@@ -1,6 +1,6 @@
 'use strict'
 
-var img = {
+const img = {
   tag: 'img',
   define: {
     name: file => `assets/${file}`,

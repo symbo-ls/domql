@@ -1,14 +1,14 @@
 'use strict'
 
-var val = {
+const val = {
   text: 0
 }
 
-var Button = {
+const Button = {
   tag: 'button'
 }
 
-var increment = {
+const increment = {
   extend: Button,
   text: 'Increment',
   on: {
@@ -18,7 +18,7 @@ var increment = {
   }
 }
 
-var decrement = {
+const decrement = {
   extend: Button,
   text: 'Decrement',
   on: {

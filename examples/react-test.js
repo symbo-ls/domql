@@ -50,9 +50,8 @@ export const transformReact = (element, key) => {
   const { ref } = element
   const { tag, props, ...rest } = ref
   let children = ref.children
-  if (children && children.length)
-    children = children.map(child => child.ref.transform.react)
-  if (rest .class) props.className = rest.class
+  if (children && children.length) { children = children.map(child => child.ref.transform.react) }
+  if (rest.class) props.className = rest.class
   return {
     type: tag,
     props,

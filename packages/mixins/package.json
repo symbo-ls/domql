@@ -4,6 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
+    "@domql/state": "latest",
     "@domql/create": "latest",
     "@domql/report": "latest",
     "@domql/set": "latest",

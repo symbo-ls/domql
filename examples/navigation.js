@@ -1,6 +1,6 @@
 'use strict'
 
-var listItem = {
+const listItem = {
   tag: 'a',
   class: ['ui link', (element) => `icon-${element.key}`],
   attr: {
@@ -22,7 +22,7 @@ var listItem = {
 //   text: 'Contact'
 // }]
 
-var navigation = {
+const navigation = {
   childExtend: listItem,
   // ...navImtes
   home: 'Home',

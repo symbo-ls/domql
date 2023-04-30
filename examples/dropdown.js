@@ -1,6 +1,6 @@
 'use strict'
 
-var result = {
+const result = {
   avatar: {
     query: true,
     tag: 'img',
@@ -13,11 +13,11 @@ var result = {
   }
 }
 
-var input = {
+const input = {
   tag: 'input'
 }
 
-var dropdown = {
+const dropdown = {
   query: input.value,
   results: {
     query: true,

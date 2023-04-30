@@ -45,6 +45,10 @@ export const ERRORS_REGISTRY = {
     HTMLInvalidText: {
       title: 'Text string is invalid',
       description: 'Please pass a valid string to apply text to DOM node'
+    },
+    ElementOnStateIsNotDefined: {
+      title: 'Element on state is not defined',
+      description: 'Please check the element object'
     }
   }
 }
