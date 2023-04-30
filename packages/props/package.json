@@ -1,6 +1,6 @@
 {
   "name": "@domql/props",
-  "version": "2.3.117",
+  "version": "2.3.119",
   "license": "MIT",
   "type": "module",
   "module": "dist/esm/index.js",
