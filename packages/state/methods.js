@@ -65,8 +65,7 @@ export const add = function (value, options = {}) {
   if (isArray(state)) {
     state.push(value)
     state.update(state.parse(), { replace: true, ...options })
-  }
-  else if (isObject(state)) {
+  } else if (isObject(state)) {
     const key = Object.keys(state).length
     state.update({ [key]: value }, options)
   }
@@ -81,6 +80,7 @@ export const remove = function (key, options = {}) {
   const state = this
   if (isArray(state)) removeFromArray(state, key)
   if (isObject(state)) removeFromObject(state, key)
+  console.log(state)
   return state.update(state.parse(), { replace: true, ...options })
 }
 

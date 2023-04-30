@@ -1,4 +1,4 @@
-const { createHTMLNode } = require('../dist/cjs/cache')
+const { createHTMLNode } = require('../dist/cjs/cacheNode')
 
 describe('createHTMLNode', () => {
   test('returns a text node when passed an element with a "string" tag', () => {

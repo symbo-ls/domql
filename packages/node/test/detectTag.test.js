@@ -1,4 +1,4 @@
-const { detectTag } = require('../dist/cjs/cache')
+const { detectTag } = require('../dist/cjs/cacheNode')
 
 describe('detectTag', () => {
   test('returns the tag string if it is a valid HTML tag', () => {

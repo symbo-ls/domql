@@ -1,4 +1,4 @@
-const { cacheNode } = require('../dist/cjs/cache')
+const { cacheNode } = require('../dist/cjs/cacheNode')
 
 describe('cacheNode', () => {
   beforeEach(() => {

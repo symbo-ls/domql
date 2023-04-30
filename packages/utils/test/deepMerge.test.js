@@ -92,7 +92,7 @@ describe('deepMerge', () => {
     const expected = {
       a: 1
     }
-    const result = deepMerge(obj1, obj2)
+    const result = deepMerge(obj1, obj2, ['parent', 'props'])
     expect(result).toEqual(expected)
   })
 

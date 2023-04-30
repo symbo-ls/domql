@@ -46,6 +46,11 @@ const applyOverwrite = (state, obj, options) => {
     return
   }
 
+  // if (skipOverwrite === 'skipOverwrite') {
+  //   deepMerge(state, obj, IGNORE_STATE_PARAMS)
+  //   return
+  // }
+
   if (!skipOverwrite) {
     const overwriteFunc = shallow ? overwriteShallow : overwriteDeep
     overwriteFunc(state, obj, IGNORE_STATE_PARAMS)
