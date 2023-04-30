@@ -7,7 +7,8 @@ import { deepMerge, overwriteDeep, overwriteShallow } from '@domql/utils'
 import { checkIfInherits, createChangesByKey, findInheritedState, getParentStateInKey } from './inherit'
 
 const STATE_UPDATE_OPTIONS = {
-  preventHoistElementUpdate: true
+  preventHoistElementUpdate: false,
+  updateByState: true
 }
 
 export const updateState = function (obj, options = STATE_UPDATE_OPTIONS) {
@@ -23,7 +24,8 @@ export const updateState = function (obj, options = STATE_UPDATE_OPTIONS) {
 
   applyOverwrite(state, obj, options)
 
-  hoistStateUpdate(state, obj, options)
+  const updateIsHousted = hoistStateUpdate(state, obj, options)
+  if (updateIsHousted) return state
 
   updateDependentState(state, obj, options)
 
@@ -74,6 +76,7 @@ const hoistStateUpdate = (state, obj, options) => {
     preventUpdate: options.preventHoistElementUpdate,
     skipOverwrite: options.replace
   })
+  return true
 }
 
 const updateDependentState = (state, obj, options) => {
@@ -89,13 +92,11 @@ const applyElementUpdate = (state, obj, options) => {
   if (!options.preventUpdate) {
     element.update({}, {
       ...options,
-      updateByState: true,
-      preventUpdateTriggerStateUpdate: true
+      updateByState: true
     })
   } else if (options.preventUpdate === 'recursive') {
     element.update({}, {
       ...options,
-      preventUpdateTriggerStateUpdate: true,
       updateByState: true,
       preventUpdate: true
     })
