@@ -49,7 +49,7 @@ export const deepMerge = (element, extend, excludeFrom = []) => {
 export const clone = (obj, excludeFrom = []) => {
   const o = {}
   for (const prop in obj) {
-    if (excludeFrom.includes(e) || e.includes('__')) continue
+    if (excludeFrom.includes(prop) || prop.includes('__')) continue
     o[prop] = obj[prop]
   }
   return o
@@ -79,6 +79,11 @@ export const deepCloneExclude = (obj, excludeFrom = []) => {
   }
 
   return o
+}
+
+// Merge array, but exclude keys listed in 'excl'
+export const mergeArrayExclude = (arr, excl = []) => {
+  return arr.reduce((acc, curr) => deepMerge(acc, deepCloneExclude(curr, excl)), {})
 }
 
 /**

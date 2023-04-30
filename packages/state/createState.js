@@ -4,28 +4,15 @@ import { triggerEventOn } from '@domql/event'
 import { deepClone, exec, is, isFunction, isObject } from '@domql/utils'
 import { IGNORE_STATE_PARAMS } from './ignore'
 import { add, apply, clean, destroy, parse, remove, rootUpdate, toggle } from './methods'
-import { updateState } from './update'
+import { updateState } from './updateState'
 import { checkIfInherits, createInheritedState } from './utils'
 
 export const createState = function (element, parent, opts) {
   const skip = (opts && opts.skip) ? opts.skip : false
   let { state, __ref: __elementRef } = element
 
-  if (isFunction(state)) {
-    __elementRef.__state = state
-    state = element.state = exec(state, element)
-  }
+  state = checkForTypes(element)
 
-  if (is(state)('string', 'number')) {
-    __elementRef.__state = state
-    element.state = {}
-  }
-  if (state === true) {
-    __elementRef.__state = element.key
-    element.state = {}
-  }
-
-  // trigger `on.stateInit`
   triggerEventOn('stateInit', element)
 
   if (checkIfInherits(element)) {
@@ -62,6 +49,23 @@ export const createState = function (element, parent, opts) {
   // trigger `on.stateCreated`
   triggerEventOn('stateCreated', element)
 
+  return state
+}
+
+const checkForTypes = (element) => {
+  const { state, __ref: __elementRef } = element
+  if (isFunction(state)) {
+    __elementRef.__state = state
+    return exec(state, element)
+  }
+  if (is(state)('string', 'number')) {
+    __elementRef.__state = state
+    return {}
+  }
+  if (state === true) {
+    __elementRef.__state = element.key
+    return {}
+  }
   return state
 }
 
