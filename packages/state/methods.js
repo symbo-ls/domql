@@ -66,7 +66,7 @@ export const add = function (value, options = {}) {
     state.push(value)
     state.update(state.parse(), { replace: true, ...options })
   }
-  if (isObject(state)) {
+  else if (isObject(state)) {
     const key = Object.keys(state).length
     state.update({ [key]: value }, options)
   }

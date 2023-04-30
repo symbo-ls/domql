@@ -6,7 +6,11 @@ import { IGNORE_STATE_PARAMS } from './ignore'
 import { deepMerge, overwriteDeep, overwriteShallow } from '@domql/utils'
 import { checkIfInherits, createChangesByKey, findInheritedState, getParentStateInKey } from './inherit'
 
-export const updateState = function (obj, options = {}) {
+const STATE_UPDATE_OPTIONS = {
+  preventHoistElementUpdate: true
+}
+
+export const updateState = function (obj, options = STATE_UPDATE_OPTIONS) {
   const state = this
   const element = state.__element
 
@@ -64,13 +68,6 @@ const hoistStateUpdate = (state, obj, options) => {
   const findGrandParentState = getParentStateInKey(stateKey, parent.state)
   const changesValue = createChangesByKey(stateKey, passedValue)
   const targetParent = findGrandParentState || parent.state
-  // console.warn(stateKey)
-  // console.group(stateKey)
-  // console.log(targetParent)
-  // console.log(changesValue)
-  // console.log(passedValue)
-  // console.log(value)
-  // console.groupEnd(stateKey)
   if (options.replace) targetParent[stateKey] = value
   targetParent.update(changesValue, {
     ...options,
