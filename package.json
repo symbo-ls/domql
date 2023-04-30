@@ -20,7 +20,7 @@
     "reinstall": "yarn clean:all && yarn"
   },
   "devDependencies": {
-    "@babel/core": "^7.16.0",
+    "@babel/core": "^7.21.5",
     "@babel/eslint-parser": "^7.16.3",
     "@babel/preset-env": "^7.16.4",
     "babel-jest": "^29.2.1",
@@ -33,10 +33,10 @@
     "jest": "^29.5.0",
     "jest-environment-jsdom": "^29.5.0",
     "jsdom": "^21.0.0",
-    "lerna": "^6.0.1",
+    "lerna": "^6.6.1",
     "nodemon": "^2.0.6",
     "rimraf": "^5.0.0",
-    "standard": "^16.0.1"
+    "standard": "^17.0.0"
   },
   "standard": {
     "parser": "@babel/eslint-parser",
