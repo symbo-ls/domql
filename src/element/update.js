@@ -5,13 +5,13 @@ import { exec, isFunction, isNumber, isObject, isString } from '@domql/utils'
 import { applyEvent, triggerEventOn } from '@domql/event'
 import { isMethod } from '@domql/methods'
 import { createSnapshotId } from '@domql/key'
+import { updateProps } from '@domql/props'
+import { createState } from '@domql/state'
 
 import { merge, overwriteDeep } from '../utils'
 import create from './create'
 import { throughUpdatedDefine, throughUpdatedExec } from './iterate'
 import { registry } from './mixins'
-import { updateProps } from './props'
-import createState from './state'
 import { applyParam } from './applyParam'
 
 const snapshot = {
@@ -169,7 +169,11 @@ const inheritStateUpdates = (element, options) => {
 
   if (isFunction(stateKey)) {
     const execState = exec(stateKey, element)
-    state.update(execState, { preventUpdateTriggerStateUpdate: true, ...options })
+    state.update(execState, {
+      ...options,
+      skipOverwrite: 'merge',
+      preventUpdateTriggerStateUpdate: true
+    })
     return false
   }
 
@@ -178,13 +182,17 @@ const inheritStateUpdates = (element, options) => {
 
   if (!keyInParentState) return
 
-  const initStateReturns = triggerEventOn('initStateUpdated', element, keyInParentState)
-  if (initStateReturns === false) return element
+  if (!options.preventInitStateUpdateListener && !options.updateByState) {
+    const initStateReturns = triggerEventOn('initStateUpdated', element, keyInParentState)
+    if (initStateReturns === false) return element
+  }
 
   const newState = createState(element, parent)
   element.state = newState
 
-  triggerEventOn('stateUpdated', element, newState.parse())
+  if (!options.preventStateUpdateListener && !options.updateByState) {
+    triggerEventOn('stateUpdated', element, newState.parse())
+  }
 }
 
 export default update

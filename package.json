@@ -34,7 +34,12 @@
     "@domql/globals": "2.3.82",
     "@domql/registry": "latest",
     "@domql/methods": "latest",
+<<<<<<< HEAD
     "@domql/event": "2.3.82",
+=======
+    "@domql/state": "latest",
+    "@domql/event": "latest",
+>>>>>>> ab03072 (cleaning from props and state)
     "@domql/report": "latest",
     "@domql/emotion": "latest",
     "@domql/utils": "latest",

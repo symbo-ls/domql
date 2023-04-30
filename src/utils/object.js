@@ -1,8 +1,8 @@
 'use strict'
 
 import { isArray, isObject, isObjectLike, joinArrays } from '@domql/utils'
-import { IGNORE_STATE_PARAMS } from '../element/state'
-import { IGNORE_PROPS_PARAMS } from '../element/props'
+import { IGNORE_STATE_PARAMS } from '@domql/state'
+import { IGNORE_PROPS_PARAMS } from '@domql/props'
 import { METHODS } from '@domql/methods'
 
 const METHODS_EXL = joinArrays(
