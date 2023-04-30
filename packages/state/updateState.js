@@ -21,7 +21,7 @@ export const updateState = function (obj, options = {}) {
 
   hoistStateUpdate(state, obj, options)
 
-  applyDependentState(state, obj, options)
+  updateDependentState(state, obj, options)
 
   applyElementUpdate(state, obj, options)
 
@@ -50,30 +50,30 @@ const hoistStateUpdate = (state, obj, options) => {
   const element = state.__element
   const __elementRef = element.__ref
   const stateKey = __elementRef.__state
-  const hasParentState = checkIfInherits(element)
-  const shouldPropagateState = stateKey && hasParentState && !options.stopStatePropagation
+  if (!stateKey) return
+
+  const asksForInherit = checkIfInherits(element)
+  const shouldPropagateState = asksForInherit && !options.stopStatePropagation
   const parentState = element.parent.state
 
-  if (shouldPropagateState) {
-    const isStringState = (__elementRef.__stateType === 'string')
-    const value = isStringState ? state.value : state.parse()
-    const passedValue = isStringState ? state.value : obj
+  if (!shouldPropagateState) return
+  const isStringState = (__elementRef.__stateType === 'string')
+  const value = isStringState ? state.value : state.parse()
+  const passedValue = isStringState ? state.value : obj
 
-    parentState[stateKey] = value
-    parentState.update({ [stateKey]: passedValue }, {
-      skipOverwrite: true,
-      preventUpdate: options.preventHoistElementUpdate,
-      ...options
-    })
-  }
+  parentState[stateKey] = value
+  parentState.update({ [stateKey]: passedValue }, {
+    skipOverwrite: true,
+    preventUpdate: options.preventHoistElementUpdate,
+    ...options
+  })
 }
 
-const applyDependentState = (state, obj, options) => {
-  if (state.__depends) {
-    for (const el in state.__depends) {
-      const findElement = state.__depends[el]
-      findElement.clean().update(state.parse(), options)
-    }
+const updateDependentState = (state, obj, options) => {
+  if (!state.__depends) return
+  for (const el in state.__depends) {
+    const dependentState = state.__depends[el]
+    dependentState.clean().update(state.parse(), options)
   }
 }
 

@@ -9,68 +9,68 @@ import { checkIfInherits, createInheritedState } from './utils'
 
 export const createState = function (element, parent, opts) {
   const skip = (opts && opts.skip) ? opts.skip : false
-  let { state, __ref: __elementRef } = element
 
-  state = element.state = checkForTypes(element)
+  const objectizeState = checkForTypes(element)
+  if (objectizeState === false) return parent.state || {}
+  else element.state = objectizeState
 
-  triggerEventOn('stateInit', element)
+  const whatInitReturns = triggerEventOn('stateInit', element)
+  if (whatInitReturns === false) return element.state
 
   if (checkIfInherits(element)) {
-    state = element.state = createInheritedState(element, parent) || {}
+    element.state = createInheritedState(element, parent) || {}
   }
 
-  if (!state) {
-    if (parent && parent.state) return parent.state
-    return {}
-  } else {
-    __elementRef.__hasRootState = true
-  }
-
-  // reference other state
-  // TODO: check why __ref is assigned with element
-  // /docs/intro
-  const { __ref } = state
-  if (__ref) {
-    state = deepClone(__ref, IGNORE_STATE_PARAMS)
-    if (isObject(__ref.__depends)) {
-      __ref.__depends[element.key] = state
-    } else __ref.__depends = { [element.key]: state }
-  } else {
-    state = deepClone(state, IGNORE_STATE_PARAMS)
-  }
-
-  element.state = state
+  const dependentState = applyDependentState(element, state)
+  if (dependentState) element.state = dependentState
 
   // NOTE: Only true when 'onlyResolveExtends' option is set to true
-  if (skip) return state
+  if (skip) return element.state
 
-  applyMethods(element, state)
+  applyMethods(element)
 
   // trigger `on.stateCreated`
   triggerEventOn('stateCreated', element)
 
-  return state
+  return element.state
+}
+
+const applyDependentState = (element, state) => {
+  const { __ref: ref } = state
+  if (!ref) return
+  const dependentState = deepClone(ref, IGNORE_STATE_PARAMS)
+  const newDepends = { [element.key]: dependentState }
+  ref.__depends = isObject(ref.__depends)
+    ? { ...ref.__depends, ...newDepends }
+    : newDepends
+
+  return dependentState
 }
 
 const checkForTypes = (element) => {
-  const { state, __ref: __elementRef } = element
+  const { state, __ref: ref } = element
   if (isFunction(state)) {
-    __elementRef.__state = state
+    ref.__state = state
     return exec(state, element)
   }
   if (is(state)('string', 'number')) {
-    __elementRef.__state = state
+    ref.__state = state
     return {}
   }
   if (state === true) {
-    __elementRef.__state = element.key
+    ref.__state = element.key
     return {}
   }
-  return state
+  if (state) {
+    ref.__hasRootState = true
+    return state
+  }
+  return false
 }
 
-const applyMethods = (element, state) => {
-  const __elementRef = element.__ref
+const applyMethods = (element) => {
+  const state = element.state
+  const ref = element.__ref
 
   state.clean = clean
   state.parse = parse
@@ -85,7 +85,7 @@ const applyMethods = (element, state) => {
   state.parent = element.parent.state
   state.__element = element
   state.__children = {}
-  state.__root = __elementRef.__root ? __elementRef.__root.state : state
+  state.__root = ref.__root ? ref.__root.state : state
 
   if (state.parent) state.parent.__children[element.key] = state
 }
