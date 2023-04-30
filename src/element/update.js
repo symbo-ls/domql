@@ -1,14 +1,14 @@
 'use strict'
 
 import { window } from '@domql/globals'
-import { exec, isFunction, isNumber, isObject, isString, overwriteDeep } from '@domql/utils'
+import { exec, isFunction, isNumber, isObject, isString, merge, overwriteDeep } from '@domql/utils'
 import { applyEvent, triggerEventOn } from '@domql/event'
 import { isMethod } from '@domql/methods'
 import { createSnapshotId } from '@domql/key'
 import { updateProps } from '@domql/props'
 import { createState } from '@domql/state'
 
-import { METHODS_EXL, merge } from '../utils'
+import { METHODS_EXL } from '../utils'
 import create from './create'
 import { throughUpdatedDefine, throughUpdatedExec } from './iterate'
 import { registry } from './mixins'
@@ -30,6 +30,8 @@ const UPDATE_DEFAULT_OPTIONS = {
 const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
   const element = this
   const { parent, node, key } = element
+
+  if (!options.excludes) merge(options, UPDATE_DEFAULT_OPTIONS)
 
   let __ref = element.__ref
   if (!__ref) __ref = element.__ref = {}
@@ -168,11 +170,11 @@ const inheritStateUpdates = (element, options) => {
     return
   }
 
-  if (isFunction(stateKey)) {
+  if (options.forceStateFunction && isFunction(stateKey)) {
     const execState = exec(stateKey, element)
     state.update(execState, {
       ...options,
-      skipOverwrite: 'merge',
+      skipOverwrite: options.stateFunctionOverwrite,
       preventUpdateTriggerStateUpdate: true
     })
     return false

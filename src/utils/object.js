@@ -12,17 +12,6 @@ export const METHODS_EXL = joinArrays(
   IGNORE_PROPS_PARAMS
 )
 
-export const merge = (element, obj) => {
-  for (const e in obj) {
-    const elementProp = element[e]
-    const objProp = obj[e]
-    if (elementProp === undefined) {
-      element[e] = objProp
-    }
-  }
-  return element
-}
-
 export const deepMerge = (element, extend, exclude = METHODS_EXL) => {
   for (const e in extend) {
     if (exclude.includes(e)) continue

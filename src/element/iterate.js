@@ -21,14 +21,14 @@ export const throughUpdatedExec = (element, options = { excludes: METHODS_EXL })
 
   for (const param in ref.__exec) {
     const prop = element[param]
-    
+
     const isDefinedParam = ref.__defineCache[param]
     if (isDefinedParam) continue
 
     const newExec = ref.__exec[param](element, element.state)
     const execReturnsString = isString(newExec) || isNumber(newExec)
     if (prop && prop.node && execReturnsString) {
-      overwrite(prop, { text: newExec }, options.excludes)
+      overwrite(prop, { text: newExec }, options)
     } else if (newExec !== prop) {
       ref.__cached[param] = changes[param] = prop
       element[param] = newExec
