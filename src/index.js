@@ -1,16 +1,18 @@
 'use strict'
 
-import { window } from '@domql/globals'
-import { TREE } from '@domql/tree'
-import { create, parse, set, define } from './element'
-import { isDevelopment, isTest } from '@domql/env'
+import { create } from '@domql/create'
+import { define } from '@domql/define'
+import { update } from '@domql/update'
 
-if (isTest() || isDevelopment()) window.tree = TREE
+export * as _ from './allExports'
+
+// export { parse } from '@domql/parse'
+export { define } from '@domql/define'
+export { tree } from '@domql/tree'
 
 export default {
   TREE,
   create,
-  parse,
-  set,
-  define
+  define,
+  update
 }

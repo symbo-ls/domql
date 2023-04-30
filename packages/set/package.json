@@ -1,0 +1,11 @@
+{
+  "name": "@domql/set",
+  "version": "2.3.117",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@domql/create": "latest"
+  },
+  "gitHead": "c867d7db9e2450d67e97a15ffc7b61692713c234",
+  "source": "src/index.js"
+}

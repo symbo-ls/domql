@@ -1,0 +1,30 @@
+{
+  "name": "@domql/utils",
+  "version": "2.3.120",
+  "license": "MIT",
+  "type": "module",
+  "module": "index.js",
+  "main": "index.js",
+  "exports": "./dist/cjs/index.js",
+  "source": "index.js",
+  "files": [
+    "*.js",
+    "dist"
+  ],
+  "scripts": {
+    "copy:package:cjs": "cp ../../.build/package-cjs.json dist/cjs/package.json",
+    "build:esm": "npx esbuild *.js --target=es2019 --format=esm --outdir=dist/esm",
+    "build:cjs": "npx esbuild *.js --target=node16 --format=cjs --outdir=dist/cjs",
+    "build": "yarn build:cjs",
+    "prepublish": "rimraf -I dist && yarn build && yarn copy:package:cjs"
+  },
+  "dependencies": {
+    "@domql/globals": "latest",
+    "@domql/key": "latest",
+    "@domql/tags": "latest"
+  },
+  "gitHead": "82d0f23182e270fbcaf995f59346c0eded5976c3",
+  "devDependencies": {
+    "@babel/core": "^7.12.0"
+  }
+}

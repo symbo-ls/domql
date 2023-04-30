@@ -24,7 +24,7 @@ const listItem = {
 
 const navigation = {
   childExtend: listItem,
-  // ...navItems
+  // ...navImtes
   home: 'Home',
   about: 'About',
   faq: 'FAQ',
