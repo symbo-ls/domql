@@ -5,7 +5,7 @@ import { IGNORE_STATE_PARAMS } from '@domql/state'
 import { IGNORE_PROPS_PARAMS } from '@domql/props'
 import { METHODS } from '@domql/methods'
 
-const METHODS_EXL = joinArrays(
+export const METHODS_EXL = joinArrays(
   ['node', 'state', 'context', 'extend'],
   METHODS,
   IGNORE_STATE_PARAMS,

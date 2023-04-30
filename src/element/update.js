@@ -1,14 +1,14 @@
 'use strict'
 
 import { window } from '@domql/globals'
-import { exec, isFunction, isNumber, isObject, isString } from '@domql/utils'
+import { exec, isFunction, isNumber, isObject, isString, overwriteDeep } from '@domql/utils'
 import { applyEvent, triggerEventOn } from '@domql/event'
 import { isMethod } from '@domql/methods'
 import { createSnapshotId } from '@domql/key'
 import { updateProps } from '@domql/props'
 import { createState } from '@domql/state'
 
-import { merge, overwriteDeep } from '../utils'
+import { METHODS_EXL, merge } from '../utils'
 import create from './create'
 import { throughUpdatedDefine, throughUpdatedExec } from './iterate'
 import { registry } from './mixins'
@@ -58,7 +58,7 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     if (initUpdateReturns === false) return element
   }
 
-  const overwriteChanges = overwriteDeep(element, params)
+  const overwriteChanges = overwriteDeep(element, params, METHODS_EXL)
   const execChanges = throughUpdatedExec(element, UPDATE_DEFAULT_OPTIONS)
   const definedChanges = throughUpdatedDefine(element)
 
