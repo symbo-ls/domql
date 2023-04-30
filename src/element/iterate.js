@@ -1,35 +1,36 @@
 'use strict'
 
 import { isObject, exec, isFunction, isNumber, isString } from '@domql/utils'
-import { overwrite } from '../utils'
+import { METHODS_EXL, overwrite } from '../utils'
 import { isMethod } from '@domql/methods'
 
 export const throughInitialExec = element => {
-  const { __ref } = element
-  const { __exec } = __ref
+  const { __ref: ref } = element
   for (const param in element) {
     const prop = element[param]
     if (isFunction(prop) && !isMethod(param)) {
-      __exec[param] = prop
+      ref.__exec[param] = prop
       element[param] = prop(element, element.state)
     }
   }
 }
 
-export const throughUpdatedExec = (element, options) => {
-  const { __ref } = element
-  const { __exec, __cached } = __ref
+export const throughUpdatedExec = (element, options = { excludes: METHODS_EXL }) => {
+  const { __ref: ref } = element
   const changes = {}
 
-  for (const param in __exec) {
+  for (const param in ref.__exec) {
     const prop = element[param]
-    const newExec = __exec[param](element, element.state)
+    
+    const isDefinedParam = ref.__defineCache[param]
+    if (isDefinedParam) continue
 
-    // if element is string
-    if (prop && prop.node && (isString(newExec) || isNumber(newExec))) {
-      overwrite(prop, { text: newExec }, options)
+    const newExec = ref.__exec[param](element, element.state)
+    const execReturnsString = isString(newExec) || isNumber(newExec)
+    if (prop && prop.node && execReturnsString) {
+      overwrite(prop, { text: newExec }, options.excludes)
     } else if (newExec !== prop) {
-      __cached[param] = changes[param] = prop
+      ref.__cached[param] = changes[param] = prop
       element[param] = newExec
     }
   }
@@ -38,8 +39,7 @@ export const throughUpdatedExec = (element, options) => {
 }
 
 export const throughInitialDefine = (element) => {
-  const { define, context, __ref } = element
-  const { __exec, __cached } = __ref
+  const { define, context, __ref: ref } = element
 
   let obj = {}
   if (isObject(define)) obj = { ...define }
@@ -49,12 +49,12 @@ export const throughInitialDefine = (element) => {
     let prop = element[param]
 
     if (isFunction(prop) && !isMethod(param)) {
-      __exec[param] = prop
+      ref.__exec[param] = prop
       const execParam = prop = exec(prop, element)
       if (execParam) element[param] = execParam
     }
 
-    __cached[param] = prop
+    ref.__defineCache[param] = prop
     const execParam = obj[param](prop, element, element.state)
     if (execParam) element[param] = execParam
   }
@@ -62,8 +62,7 @@ export const throughInitialDefine = (element) => {
 }
 
 export const throughUpdatedDefine = (element) => {
-  const { context, define, __ref } = element
-  const { __exec, __cached } = __ref
+  const { context, define, __ref: ref } = element
   const changes = {}
 
   let obj = {}
@@ -71,9 +70,9 @@ export const throughUpdatedDefine = (element) => {
   if (isObject(context && context.define)) obj = { ...obj, ...context.define }
 
   for (const param in obj) {
-    const execParam = __exec[param]
-    if (execParam) __cached[param] = execParam(element, element.state)
-    const cached = exec(__cached[param], element)
+    const execParam = ref.__exec[param]
+    if (execParam) ref.__defineCache[param] = execParam(element, element.state)
+    const cached = exec(ref.__defineCache[param], element)
     const newExecParam = obj[param](cached, element, element.state)
     if (newExecParam) element[param] = newExecParam
   }

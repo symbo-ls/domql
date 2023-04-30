@@ -204,40 +204,41 @@ const checkIf = (element, parent) => {
 }
 
 const addCaching = (element, parent) => {
-  const { __ref } = element
-  let { __ref: __parentRef } = parent
+  const { __ref: ref } = element
+  let { __ref: parentRef } = parent
 
   // enable TRANSFORM in data
   if (!element.transform) element.transform = {}
 
   // enable CACHING
-  if (!__ref.__cached) __ref.__cached = {}
+  if (!ref.__cached) ref.__cached = {}
+  if (!ref.__defineCache) ref.__defineCache = {}
 
   // enable EXEC
-  if (!__ref.__exec) __ref.__exec = {}
+  if (!ref.__exec) ref.__exec = {}
 
   // enable CLASS CACHING
-  if (!__ref.__class) __ref.__class = {}
-  if (!__ref.__classNames) __ref.__classNames = {}
+  if (!ref.__class) ref.__class = {}
+  if (!ref.__classNames) ref.__classNames = {}
 
   // enable CLASS CACHING
-  if (!__ref.__attr) __ref.__attr = {}
+  if (!ref.__attr) ref.__attr = {}
 
   // enable CHANGES storing
-  if (!__ref.__changes) __ref.__changes = []
+  if (!ref.__changes) ref.__changes = []
 
   // enable CHANGES storing
-  if (!__ref.__children) __ref.__children = []
+  if (!ref.__children) ref.__children = []
 
   // Add _root element property
   const hasRoot = parent && parent.key === ':root'
-  if (!__ref.__root) __ref.__root = hasRoot ? element : __parentRef.__root
+  if (!ref.__root) ref.__root = hasRoot ? element : parentRef.__root
 
   // set the PATH array
   if (ENV === 'test' || ENV === 'development') {
-    if (!__parentRef) __parentRef = parent.__ref = {}
-    if (!__parentRef.__path) __parentRef.__path = []
-    __ref.__path = __parentRef.__path.concat(element.key)
+    if (!parentRef) parentRef = parent.ref = {}
+    if (!parentRef.__path) parentRef.__path = []
+    ref.__path = parentRef.__path.concat(element.key)
   }
 }
 

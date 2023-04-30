@@ -23,7 +23,8 @@ const UPDATE_DEFAULT_OPTIONS = {
   cleanExec: true,
   preventRecursive: false,
   currentSnapshot: false,
-  calleeElement: false
+  calleeElement: false,
+  excludes: METHODS_EXL
 }
 
 const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
@@ -59,7 +60,7 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
   }
 
   const overwriteChanges = overwriteDeep(element, params, METHODS_EXL)
-  const execChanges = throughUpdatedExec(element, UPDATE_DEFAULT_OPTIONS)
+  const execChanges = throughUpdatedExec(element, { ignore: UPDATE_DEFAULT_OPTIONS })
   const definedChanges = throughUpdatedDefine(element)
 
   if (options.stackChanges && element.__stackChanges) {
