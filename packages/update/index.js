@@ -35,7 +35,7 @@ const applyChanges = (params, element) => {
   if (changes && hasChanges) {
     ref.__updates = [].concat(changes, ref.__updates)
 
-    overwriteDeep(changes, element)
+    overwriteDeep(element, changes)
   }
 
   return params

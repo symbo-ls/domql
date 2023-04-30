@@ -11,7 +11,7 @@ export const createState = function (element, parent, opts) {
   const skip = (opts && opts.skip) ? opts.skip : false
   let { state, __ref: __elementRef } = element
 
-  state = checkForTypes(element)
+  state = element.state = checkForTypes(element)
 
   triggerEventOn('stateInit', element)
 

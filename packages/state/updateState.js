@@ -9,8 +9,6 @@ import { checkIfInherits } from './utils'
 export const updateState = function (obj, options = {}) {
   const state = this
   const element = state.__element
-  const parentState = element.parent.state
-  state.parent = parentState
 
   if (!state.__element) report('ElementOnStateIsNotDefined')
 
@@ -35,14 +33,16 @@ export const updateState = function (obj, options = {}) {
 }
 
 const applyOverwrite = (state, obj, options) => {
-  if (!options.skipOverwrite) {
-    if (options.shallow) {
-      overwriteShallow(state, obj, IGNORE_STATE_PARAMS)
-    } else {
-      overwriteDeep(state, obj, IGNORE_STATE_PARAMS)
-    }
-  } else if (options.skipOverwrite === 'merge') {
+  const { skipOverwrite, shallow } = options
+
+  if (skipOverwrite === 'merge') {
     deepMerge(state, obj, IGNORE_STATE_PARAMS)
+    return
+  }
+
+  if (!skipOverwrite) {
+    const overwriteFunc = shallow ? overwriteShallow : overwriteDeep
+    overwriteFunc(state, obj, IGNORE_STATE_PARAMS)
   }
 }
 

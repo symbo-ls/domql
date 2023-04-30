@@ -2,7 +2,7 @@
 
 import { window } from '@domql/globals'
 import { isFunction, isObjectLike, isObject, isArray, isString, is } from './types.js'
-import { mergeArray } from './array.js'
+import { mergeAndCloneIfArray, mergeArray } from './array.js'
 
 export const exec = (param, element, state, context) => {
   if (isFunction(param)) {
@@ -301,13 +301,13 @@ export const overwriteShallow = (obj, params, excludeFrom = []) => {
 /**
  * Overwrites DEEPLY object properties with another
  */
-export const overwriteDeep = (params, obj, excludeFrom = []) => {
+export const overwriteDeep = (obj, params, excludeFrom = []) => {
   for (const e in params) {
     if (excludeFrom.includes(e) || e.includes('__')) continue
     const objProp = obj[e]
     const paramsProp = params[e]
     if (isObjectLike(objProp) && isObjectLike(paramsProp)) {
-      overwriteDeep(paramsProp, objProp)
+      overwriteDeep(objProp, paramsProp)
     } else if (paramsProp !== undefined) {
       obj[e] = paramsProp
     }
