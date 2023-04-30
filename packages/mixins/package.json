@@ -1,6 +1,6 @@
 {
   "name": "@domql/mixins",
-  "version": "2.3.119",
+  "version": "2.3.124",
   "license": "MIT",
   "type": "module",
   "module": "dist/esm/index.js",
