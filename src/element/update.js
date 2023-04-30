@@ -58,7 +58,7 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     if (initUpdateReturns === false) return element
   }
 
-  const overwriteChanges = overwriteDeep(params, element)
+  const overwriteChanges = overwriteDeep(element, params)
   const execChanges = throughUpdatedExec(element, UPDATE_DEFAULT_OPTIONS)
   const definedChanges = throughUpdatedDefine(element)
 
