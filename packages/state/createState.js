@@ -12,16 +12,17 @@ export const createState = function (element, parent, opts) {
 
   const objectizeState = checkForTypes(element)
   if (objectizeState === false) return parent.state || {}
-  else element.state = objectizeState
+  else element.state = deepClone(objectizeState, IGNORE_STATE_PARAMS)
 
   const whatInitReturns = triggerEventOn('stateInit', element)
   if (whatInitReturns === false) return element.state
 
   if (checkIfInherits(element)) {
-    element.state = createInheritedState(element, parent) || {}
+    const inheritedState = createInheritedState(element, parent)
+    element.state = inheritedState || {}
   }
 
-  const dependentState = applyDependentState(element, state)
+  const dependentState = applyDependentState(element, element.state)
   if (dependentState) element.state = dependentState
 
   // NOTE: Only true when 'onlyResolveExtends' option is set to true

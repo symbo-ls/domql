@@ -64,27 +64,30 @@ export const add = function (value, options = {}) {
   const state = this
   if (isArray(state)) {
     state.push(value)
-    state.update(state.parse(), { skipOverwrite: true, ...options })
+    state.update(state.parse(), { replace: true, ...options })
+  }
+  if (isObject(state)) {
+    const key = Object.keys(state).length
+    state.update({ [key]: value }, options)
   }
 }
 
 export const toggle = function (key, options = {}) {
   const state = this
-  state[key] = !state[key]
-  state.update({ [key]: !state[key] }, { skipOverwrite: true, ...options })
+  state.update({ [key]: !state[key] }, options)
 }
 
 export const remove = function (key, options = {}) {
   const state = this
   if (isArray(state)) removeFromArray(state, key)
   if (isObject(state)) removeFromObject(state, key)
-  return state.update(state.parse(), { skipOverwrite: true, ...options })
+  return state.update(state.parse(), { replace: true, ...options })
 }
 
 export const apply = function (func, options = {}) {
   const state = this
   if (isFunction(func)) {
     func(state)
-    return state.update(state, { skipOverwrite: true, ...options })
+    return state.update(state, { replace: true, ...options })
   }
 }
