@@ -21,8 +21,9 @@ export const map = (obj, extention, element) => {
   }
 }
 
-export const merge = (element, obj) => {
+export const merge = (element, obj, excludeFrom = []) => {
   for (const e in obj) {
+    if (excludeFrom.includes(e) || e.includes('__')) continue
     const elementProp = element[e]
     const objProp = obj[e]
     if (elementProp === undefined) {

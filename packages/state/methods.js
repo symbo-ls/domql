@@ -26,7 +26,9 @@ export const clean = function (options = {}) {
       delete state[param]
     }
   }
-  state.update(state, { skipOverwrite: true, options })
+  if (!options.preventStateUpdate) {
+    state.update(state, { replace: true, skipOverwrite: true, options })
+  }
   return state
 }
 
@@ -78,10 +80,16 @@ export const toggle = function (key, options = {}) {
 
 export const remove = function (key, options = {}) {
   const state = this
+  console.log(state)
   if (isArray(state)) removeFromArray(state, key)
   if (isObject(state)) removeFromObject(state, key)
-  console.log(state)
   return state.update(state.parse(), { replace: true, ...options })
+}
+
+export const set = function (value, options = {}) {
+  const state = this
+  state.clean({ preventStateUpdate: true })
+  return state.update(value, { replace: true, ...options })
 }
 
 export const apply = function (func, options = {}) {
