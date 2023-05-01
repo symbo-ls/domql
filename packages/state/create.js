@@ -4,7 +4,7 @@ import { triggerEventOn } from '@domql/event'
 import { deepClone, exec, is, isFunction, isObject } from '@domql/utils'
 import { IGNORE_STATE_PARAMS } from './ignore'
 import { add, apply, clean, destroy, parse, remove, rootUpdate, set, toggle } from './methods'
-import { updateState } from './updateState'
+import { updateState } from './update'
 import { checkIfInherits, createInheritedState } from './inherit'
 
 export const createState = function (element, parent, opts) {
