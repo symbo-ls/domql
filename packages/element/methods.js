@@ -1,6 +1,6 @@
 'use strict'
 
-import { TREE } from '@domql/tree'
+import { TREE } from './tree'
 import { isFunction, isObject, isObjectLike } from '@domql/utils'
 import { DEFAULT_METHODS } from '@domql/registry'
 import { isProduction } from '@domql/env'
@@ -39,7 +39,7 @@ export const lookup = function (key) {
 
 export const remove = function (params) {
   const element = this
-  if (isFunction(element.node.remove)) element.node.remove()
+  if (element.node && isFunction(element.node.remove)) element.node.remove()
   else if (!isProduction()) {
     console.warn('This item cant be removed')
     element.log()
