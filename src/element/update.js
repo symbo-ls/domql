@@ -13,6 +13,7 @@ import create from './create'
 import { throughUpdatedDefine, throughUpdatedExec } from './iterate'
 import { registry } from './mixins'
 import { applyParam } from './applyParam'
+import OPTIONS from './options'
 
 const snapshot = {
   snapshotId: createSnapshotId
@@ -30,8 +31,10 @@ const UPDATE_DEFAULT_OPTIONS = {
 const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
   const element = this
   const { parent, node, key } = element
+  const { excludes, preventInheritAtCurrentState } = options
 
-  if (!options.excludes) merge(options, UPDATE_DEFAULT_OPTIONS)
+  if (preventInheritAtCurrentState && preventInheritAtCurrentState.__element === element) return
+  if (!excludes) merge(options, UPDATE_DEFAULT_OPTIONS)
 
   let __ref = element.__ref
   if (!__ref) __ref = element.__ref = {}
@@ -43,7 +46,7 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     params = { text: params }
   }
 
-  const ifFails = checkIfOnUpdate(element, options)
+  const ifFails = checkIfOnUpdate(element, parent, options,)
   if (ifFails) return
 
   const inheritState = inheritStateUpdates(element, options)
@@ -128,25 +131,25 @@ const captureSnapshot = (element, options) => {
   return [snapshotOnCallee, calleeElement]
 }
 
-const checkIfOnUpdate = (element, options) => {
+const checkIfOnUpdate = (element, parent, options) => {
   if (!isFunction(element.if)) return
 
-  const __ref = element.__ref
+  const ref = element.__ref
   const ifPassed = element.if(element, element.state)
-  const itWasFalse = __ref.__if !== true
+  const itWasFalse = ref.__if !== true
 
   if (ifPassed) {
-    __ref.__if = true
+    ref.__if = true
     if (itWasFalse) {
       delete element.__hash
       delete element.extend
-      if (!__ref.__hasRootState) {
+      if (!ref.__hasRootState) {
         delete element.state
       }
-      if (__ref.__state) {
-        element.state = __ref.__state
+      if (ref.__state) {
+        element.state = ref.__state
       }
-      const created = create(element, element.parent, element.key)
+      const created = create(element, parent, element.key, OPTIONS.create)
       if (!options.preventUpdate && element.on && isFunction(element.on.update)) {
         applyEvent(element.on.update, created, created.state)
       }
@@ -154,7 +157,7 @@ const checkIfOnUpdate = (element, options) => {
     }
   } else if (element.node && !ifPassed) {
     element.node.remove()
-    delete __ref.__if
+    delete ref.__if
   }
 }
 

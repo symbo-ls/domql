@@ -13,9 +13,10 @@ export const applyExtend = (element, parent, options = {}) => {
   if (isFunction(element)) element = exec(element, parent)
 
   let { extend, props, context, __ref } = element
-  const COMPONENTS = (context && context.components) || options.components
 
-  if (isString(extend)) extend = COMPONENTS[extend]
+  const COMPONENTS = (context && context.components) || options.components
+  if (isString(extend) && COMPONENTS) extend = COMPONENTS[extend]
+
   const extendStack = getExtendStack(extend)
 
   if (ENV !== 'test' || ENV !== 'development') delete element.extend
