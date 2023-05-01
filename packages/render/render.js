@@ -5,8 +5,6 @@ import { applyEventsOnNode, triggerEventOn } from '@domql/event'
 import { isMethod } from '@domql/methods'
 import { cacheNode } from '@domql/node'
 
-import create from './create'
-
 import {
   throughInitialDefine,
   throughInitialExec

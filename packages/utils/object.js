@@ -56,153 +56,90 @@ export const clone = (obj, excludeFrom = []) => {
   return o
 }
 
-// Clone anything deeply but excludeFrom keys given in 'excludeFrom'
-export const deepCloneExclude = (obj, excludeFrom = []) => {
-  if (isArray(obj)) {
-    return obj.map(x => deepCloneExclude(x, excludeFrom))
-  }
-
-  const o = {}
-  for (const k in obj) {
-    if (excludeFrom.includes(k) || k.includes('__')) continue
-
-    let v = obj[k]
-
-    if (k === 'extend' && isArray(v)) {
-      v = mergeArrayExclude(v, excludeFrom)
-    }
-
-    if (isArray(v)) {
-      o[k] = v.map(x => deepCloneExclude(x, excludeFrom))
-    } else if (isObject(v)) {
-      o[k] = deepCloneExclude(v, excludeFrom)
-    } else o[k] = v
-  }
-
-  return o
-}
-
-// Merge array, but exclude keys listed in 'excl'
-export const mergeArrayExclude = (arr, excl = []) => {
-  return arr.reduce((acc, curr) => deepMerge(acc, deepCloneExclude(curr, excl)), {})
-}
-
 /**
- * Deep cloning of object
+ * Creates a deep copy of an object or array, excluding specific properties.
+ * @param {Object|Array} obj - The object or array to clone.
+ * @param {Array<string>} [excludeFrom=[]] - An array of property names to exclude from the clone.
+ * @returns {Object|Array} The cloned object or array.
  */
-export const deepClone = (obj, excludeFrom = []) => {
-  const o = isArray(obj) ? [] : {}
+export function deepClone(obj, excludeFrom = []) {
+  if (!isObjectLike(obj)) {
+    return obj
+  }
+  
+  if (Array.isArray(obj)) {
+    return obj.map(item => deepClone(item, excludeFrom))
+  }
+  
+  const clonedObj = {}
   for (const prop in obj) {
     if (excludeFrom.includes(prop) || prop.includes('__')) continue
-    let objProp = obj[prop]
-    if (prop === 'extend' && isArray(objProp)) {
-      objProp = mergeArray(objProp)
-    }
-    if (isObjectLike(objProp)) {
-      o[prop] = deepClone(objProp, excludeFrom)
-    } else o[prop] = objProp
+    clonedObj[prop] = deepClone(obj[prop], excludeFrom)
   }
-  return o
+  return clonedObj
 }
 
 /**
- * Stringify object
+ * Recursively stringifies an object, converting functions to strings.
+ *
+ * @param {object} obj - The object to stringify.
+ * @param {object} [stringified={}] - The resulting stringified object.
+ * @returns {object} - The stringified object.
  */
 export const deepStringify = (obj, stringified = {}) => {
   for (const prop in obj) {
-    const objProp = obj[prop]
+    if (!obj.hasOwnProperty(prop)) continue; // skip inherited properties
+    const objProp = obj[prop];
     if (isFunction(objProp)) {
-      stringified[prop] = objProp.toString()
+      stringified[prop] = objProp.toString();
     } else if (isObject(objProp)) {
-      stringified[prop] = {}
-      deepStringify(objProp, stringified[prop])
+      stringified[prop] = {};
+      deepStringify(objProp, stringified[prop]);
     } else if (isArray(objProp)) {
-      stringified[prop] = []
+      stringified[prop] = [];
       objProp.forEach((v, i) => {
         if (isObject(v)) {
-          stringified[prop][i] = {}
-          deepStringify(v, stringified[prop][i])
+          stringified[prop][i] = {};
+          deepStringify(v, stringified[prop][i]);
         } else if (isFunction(v)) {
-          stringified[prop][i] = v.toString()
+          stringified[prop][i] = v.toString();
         } else {
-          stringified[prop][i] = v
+          stringified[prop][i] = v;
         }
-      })
+      });
     } else {
-      stringified[prop] = objProp
+      stringified[prop] = objProp;
     }
   }
-  return stringified
+  return stringified;
 }
 
 /**
- * Stringify object
+ * Converts a deep object containing stringified functions to their original form.
+ * @param {object} obj - The object to destingify.
+ * @returns {object} - The destingified object.
  */
-export const detachFunctionsFromObject = (obj, detached = {}) => {
-  for (const prop in obj) {
-    const objProp = obj[prop]
-    if (isFunction(objProp)) continue
-    else if (isObject(objProp)) {
-      detached[prop] = {}
-      deepStringify(objProp, detached[prop])
-    } else if (isArray(objProp)) {
-      detached[prop] = []
-      objProp.forEach((v, i) => {
-        if (isFunction(v)) return
-        if (isObject(v)) {
-          detached[prop][i] = {}
-          detachFunctionsFromObject(v, detached[prop][i])
-        } else {
-          detached[prop][i] = v
-        }
-      })
-    } else {
-      detached[prop] = objProp
-    }
-  }
-  return detached
-}
-
-/**
- * Detringify object
- */
-export const deepDestringify = (obj, stringified = {}) => {
-  for (const prop in obj) {
-    const objProp = obj[prop]
-    if (isString(objProp)) {
-      if (objProp.includes('=>') || objProp.includes('function') || objProp.startsWith('(')) {
-        try {
-          const evalProp = window.eval(`(${objProp})`) // use parentheses to convert string to function expression
-          stringified[prop] = evalProp
-        } catch (e) { if (e) stringified[prop] = objProp }
-      } else {
-        stringified[prop] = objProp
+export const deepDestringify = (obj) => {
+  const destingified = {}
+  for (const [key, value] of Object.entries(obj)) {
+    if (isString(value)) {
+      try {
+        const evalValue = window.eval(`(${value})`) // use parentheses to convert string to function expression
+        destingified[key] = evalValue
+      } catch {
+        destingified[key] = value
       }
-    } else if (isArray(objProp)) {
-      stringified[prop] = []
-      objProp.forEach((arrProp) => {
-        if (isString(arrProp)) {
-          if (arrProp.includes('=>') || arrProp.includes('function') || arrProp.startsWith('(')) {
-            try {
-              const evalProp = window.eval(`(${arrProp})`) // use parentheses to convert string to function expression
-              stringified[prop].push(evalProp)
-            } catch (e) { if (e) stringified[prop].push(arrProp) }
-          } else {
-            stringified[prop].push(arrProp)
-          }
-        } else if (isObject(arrProp)) {
-          stringified[prop].push(deepDestringify(arrProp))
-        } else {
-          stringified[prop].push(arrProp)
-        }
-      })
-    } else if (isObject(objProp)) {
-      stringified[prop] = deepDestringify(objProp, stringified[prop]) // recursively call deepDestringify for nested objects
+    } else if (isArray(value)) {
+      destingified[key] = value.map((item) =>
+        isObject(item) ? deepDestringify(item) : item
+      )
+    } else if (isObject(value)) {
+      destingified[key] = deepDestringify(value)
     } else {
-      stringified[prop] = objProp
+      destingified[key] = value
     }
   }
-  return stringified
+  return destingified
 }
 
 /**

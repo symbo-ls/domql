@@ -1,14 +1,15 @@
 'use strict'
 
+/**
+ * Returns a unique key each time it is called.
+ * @returns {number} - A unique key value.
+ */
 export const createKey = (function () {
   let index = 0
-
-  function newId () {
+  return function () {
     index++
     return index
   }
-
-  return newId
 })()
 
 export const createSnapshotId = createKey

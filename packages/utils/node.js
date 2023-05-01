@@ -1,7 +1,12 @@
 'use strict'
 
-import { window } from '@domql/globals'
+import { window } from './globals'
 
+/**
+ * Determines whether the given object is a Node.
+ * @param {*} obj - The object to be evaluated.
+ * @returns {boolean} - True if the object is a Node, false otherwise.
+ */
 export const isNode = (obj) => {
   return (
     typeof Node === 'object'
@@ -10,7 +15,11 @@ export const isNode = (obj) => {
   ) || false
 }
 
-// Returns true if it is a DOM element
+/**
+ * Determines whether the given object is an HTML element.
+ * @param {*} obj - The object to be evaluated.
+ * @returns {boolean} - True if the object is an HTML element, false otherwise.
+ */
 export const isHtmlElement = obj => {
   return (
     typeof HTMLElement === 'object'
