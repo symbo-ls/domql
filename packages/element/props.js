@@ -1,6 +1,7 @@
 
 import { exec, is, isArray, isObject, isString, deepClone, deepMerge } from '@domql/utils'
-import { IGNORE_PROPS_PARAMS } from './ignore'
+
+export const IGNORE_PROPS_PARAMS = ['update', '__element']
 
 const objectizeStringProperty = propValue => {
   if (is(propValue)('string', 'number')) return { inheritedString: propValue }
