@@ -58,6 +58,7 @@ export const destroy = function () {
 export const rootUpdate = function (obj, options = {}) {
   const state = this
   if (!state) return
+  console.log(options)
   const rootState = (state.__element.__ref.__root).state
   return rootState.update(obj, options)
 }

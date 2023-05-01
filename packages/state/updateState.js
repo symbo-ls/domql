@@ -16,6 +16,9 @@ export const updateState = function (obj, options = STATE_UPDATE_OPTIONS) {
   const element = state.__element
 
   if (!state.__element) report('ElementOnStateIsNotDefined')
+  if (options.preventInheritAtCurrentState === true) {
+    options.preventInheritAtCurrentState = state
+  } else if (options.preventInheritAtCurrentState) return
 
   if (!options.preventInitStateUpdateListener) {
     const initStateUpdateReturns = triggerEventOn('initStateUpdated', element, obj)

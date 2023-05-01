@@ -37,7 +37,6 @@ export const transformEmotionClass = (emotion) => {
       const isEqual = isEqualDeep(__class[key], prop)
       if (!isEqual) {
         if (!isProduction() && isObject(prop)) prop.label = key || element.key
-
         const CSSed = emotion.css(prop)
         __class[key] = prop
         __classNames[key] = CSSed
