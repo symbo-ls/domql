@@ -1,6 +1,6 @@
 'use strict'
 
-import { isArray, isFunction, isObject, removeFromArray, removeFromObject } from '@domql/utils'
+import { isArray, isFunction, isObject, isString, removeFromArray, removeFromObject } from '@domql/utils'
 
 import { IGNORE_STATE_PARAMS } from './ignore'
 
@@ -27,14 +27,21 @@ export const clean = function (options = {}) {
     }
   }
   if (!options.preventStateUpdate) {
-    state.update(state, { replace: true, skipOverwrite: true, options })
+    state.update(state, { replace: true, options })
   }
   return state
 }
 
-export const destroy = function () {
+export const destroy = function (options = {}) {
   const state = this
   const element = state.__element
+
+  const stateKey = element.__ref.__state
+  if (isString(stateKey)) {
+    element.parent.state.remove(stateKey, { isHoisted: true, ...options })
+    return element.state
+  }
+
   delete element.state
   element.state = state.parent
 
@@ -51,7 +58,7 @@ export const destroy = function () {
     }
   }
 
-  element.state.update()
+  element.state.update({}, { isHoisted: true, ...options })
   return element.state
 }
 
@@ -67,7 +74,7 @@ export const add = function (value, options = {}) {
   const state = this
   if (isArray(state)) {
     state.push(value)
-    state.update(state.parse(), { replace: true, ...options })
+    state.update(state.parse(), { overwrite: 'replace', ...options })
   } else if (isObject(state)) {
     const key = Object.keys(state).length
     state.update({ [key]: value }, options)
@@ -81,7 +88,6 @@ export const toggle = function (key, options = {}) {
 
 export const remove = function (key, options = {}) {
   const state = this
-  console.log(state)
   if (isArray(state)) removeFromArray(state, key)
   if (isObject(state)) removeFromObject(state, key)
   return state.update(state.parse(), { replace: true, ...options })
@@ -89,14 +95,14 @@ export const remove = function (key, options = {}) {
 
 export const set = function (value, options = {}) {
   const state = this
-  state.clean({ preventStateUpdate: true })
-  return state.update(value, { replace: true, ...options })
+  return state.clean({ preventStateUpdate: true })
+    .update(value, { replace: true, ...options })
 }
 
 export const apply = function (func, options = {}) {
   const state = this
   if (isFunction(func)) {
     func(state)
-    return state.update(state, { replace: true, ...options })
+    return state.update(state, { overwrite: 'replace', ...options })
   }
 }

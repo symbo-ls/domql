@@ -7,14 +7,14 @@ import { add, apply, clean, destroy, parse, remove, rootUpdate, set, toggle } fr
 import { updateState } from './updateState'
 import { checkIfInherits, createInheritedState } from './inherit'
 
-export const createState = function (element, parent, opts) {
-  const skip = (opts && opts.skip) ? opts.skip : false
+export const createState = function (element, parent, options) {
+  const skip = (options && options.skip) ? options.skip : false
 
   const objectizeState = checkForTypes(element)
   if (objectizeState === false) return parent.state || {}
   else element.state = deepClone(objectizeState, IGNORE_STATE_PARAMS)
 
-  const whatInitReturns = triggerEventOn('stateInit', element)
+  const whatInitReturns = triggerEventOn('stateInit', element, options)
   if (whatInitReturns === false) return element.state
 
   if (checkIfInherits(element)) {

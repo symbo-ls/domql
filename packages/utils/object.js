@@ -205,28 +205,6 @@ export const deepDestringify = (obj, stringified = {}) => {
   return stringified
 }
 
-/**
- * Overwrites object properties with another
- */
-export const overwrite = (element, params, excludeFrom = []) => {
-  const { ref } = element
-  const changes = {}
-
-  for (const e in params) {
-    if (excludeFrom.includes(e) || e.includes('__')) continue
-
-    const elementProp = element[e]
-    const paramsProp = params[e]
-
-    if (paramsProp) {
-      ref.__cache[e] = changes[e] = elementProp
-      ref[e] = paramsProp
-    }
-  }
-
-  return changes
-}
-
 export const diffObjects = (original, objToDiff, cache) => {
   for (const e in objToDiff) {
     if (e === 'ref') continue
@@ -276,15 +254,19 @@ export const diff = (original, objToDiff, cache = {}) => {
 /**
  * Overwrites object properties with another
  */
-export const overwriteObj = (params, obj) => {
+export const overwrite = (element, params, excludeFrom = []) => {
+  const { ref } = element
   const changes = {}
 
   for (const e in params) {
-    const objProp = obj[e]
+    if (excludeFrom.includes(e) || e.includes('__')) continue
+
+    const elementProp = element[e]
     const paramsProp = params[e]
 
     if (paramsProp) {
-      obj[e] = changes[e] = objProp
+      ref.__cache[e] = changes[e] = elementProp
+      ref[e] = paramsProp
     }
   }
 
