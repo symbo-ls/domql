@@ -62,10 +62,15 @@ export const destroy = function (options = {}) {
   return element.state
 }
 
+export const parentUpdate = function (obj, options = {}) {
+  const state = this
+  if (!state || !state.parent) return
+  return state.parent.update(obj, { isHoisted: true, ...options })
+}
+
 export const rootUpdate = function (obj, options = {}) {
   const state = this
   if (!state) return
-  console.log(options)
   const rootState = (state.__element.__ref.__root).state
   return rootState.update(obj, options)
 }
