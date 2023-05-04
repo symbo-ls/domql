@@ -33,7 +33,7 @@ export const createNode = (element, options) => {
     } else node = element.node = cacheNode(element)
 
     // trigger `on.attachNode`
-    triggerEventOn('attachNode', element)
+    triggerEventOn('attachNode', element, options)
   }
 
   // node.dataset // .key = element.key

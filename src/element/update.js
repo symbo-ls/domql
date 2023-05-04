@@ -2,13 +2,13 @@
 
 import { window } from '@domql/globals'
 import { exec, isFunction, isNumber, isObject, isString, merge, overwriteDeep } from '@domql/utils'
-import { applyEvent, triggerEventOn } from '@domql/event'
+import { applyEvent, triggerEventOn, triggerEventOnUpdate } from '@domql/event'
 import { isMethod } from '@domql/methods'
 import { createSnapshotId } from '@domql/key'
 import { updateProps } from '@domql/props'
 import { createState } from '@domql/state'
 
-import { METHODS_EXL } from '../utils'
+import { METHODS_EXL } from './utils'
 import create from './create'
 import { throughUpdatedDefine, throughUpdatedExec } from './iterate'
 import { registry } from './mixins'
@@ -36,8 +36,8 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
   if (preventInheritAtCurrentState && preventInheritAtCurrentState.__element === element) return
   if (!excludes) merge(options, UPDATE_DEFAULT_OPTIONS)
 
-  let __ref = element.__ref
-  if (!__ref) __ref = element.__ref = {}
+  let ref = element.__ref
+  if (!ref) ref = element.__ref = {}
 
   const [snapshotOnCallee, calleeElement, snapshotHasUpdated] = captureSnapshot(element, options)
   if (snapshotHasUpdated) return
@@ -46,21 +46,21 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     params = { text: params }
   }
 
-  const ifFails = checkIfOnUpdate(element, parent, options,)
+  const ifFails = checkIfOnUpdate(element, parent, options)
   if (ifFails) return
 
   const inheritState = inheritStateUpdates(element, options)
   if (inheritState === false) return
 
-  if (__ref.__if && !options.preventPropsUpdate) {
+  if (ref.__if && !options.preventPropsUpdate) {
     const hasParentProps = parent.props && (parent.props[key] || parent.props.childProps)
-    const hasFunctionInProps = element.__ref.__props.filter(v => isFunction(v))
+    const hasFunctionInProps = ref.__props.filter(v => isFunction(v))
     const props = params.props || hasParentProps || hasFunctionInProps.length
     if (props) updateProps(props, element, parent)
   }
 
   if (!options.preventInitUpdateListener) {
-    const initUpdateReturns = triggerEventOn('initUpdate', element, params)
+    const initUpdateReturns = triggerEventOnUpdate('initUpdate', params, element, options)
     if (initUpdateReturns === false) return element
   }
 
@@ -73,7 +73,7 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     element.__stackChanges.push(stackChanges)
   }
 
-  if (!__ref.__if) return false
+  if (!ref.__if) return false
   if (!node) {
     // return createNode(element, options)
     return
@@ -109,21 +109,21 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     }
   }
 
-  if (!options.preventUpdateListener) triggerEventOn('update', element)
+  if (!options.preventUpdateListener) triggerEventOn('update', element, options)
 }
 
 const captureSnapshot = (element, options) => {
-  const __ref = element.__ref
+  const ref = element.__ref
 
   const { currentSnapshot, calleeElement } = options
   const isCallee = calleeElement === element
   if (!calleeElement || isCallee) {
     const createdStanpshot = snapshot.snapshotId()
-    __ref.__currentSnapshot = createdStanpshot
+    ref.__currentSnapshot = createdStanpshot
     return [createdStanpshot, element]
   }
 
-  const snapshotOnCallee = calleeElement.__ref.__currentSnapshot
+  const snapshotOnCallee = ref.__currentSnapshot
   if (currentSnapshot < snapshotOnCallee) {
     return [snapshotOnCallee, calleeElement, true]
   }
@@ -162,43 +162,55 @@ const checkIfOnUpdate = (element, parent, options) => {
 }
 
 const inheritStateUpdates = (element, options) => {
-  const { __ref } = element
-  const stateKey = __ref.__state
+  const { __ref: ref } = element
+  const stateKey = ref.__state
   const { parent, state } = element
 
-  if (options.preventUpdateTriggerStateUpdate) return
+  if (options.preventpdateTriggerStateUpdate) return
 
-  if (!stateKey && !__ref.__hasRootState) {
+  if (!stateKey && !ref.__hasRootState) {
     element.state = (parent && parent.state) || {}
     return
   }
 
-  if (options.forceStateFunction && isFunction(stateKey)) {
+  const { isHoisted, execStateFunction, stateFunctionOverwrite } = options
+  const shouldForceStateUpdate = isFunction(stateKey) && (!isHoisted && execStateFunction && stateFunctionOverwrite)
+  if (shouldForceStateUpdate) {
     const execState = exec(stateKey, element)
-    state.update(execState, {
+    state.set(execState, {
       ...options,
-      skipOverwrite: options.stateFunctionOverwrite,
-      preventUpdateTriggerStateUpdate: true
+      preventUpdate: true
     })
-    return false
+    return
   }
 
   const parentState = (parent && parent.state) || {}
   const keyInParentState = parentState[stateKey]
 
-  if (!keyInParentState) return
+  if (!keyInParentState || options.preventInheritedStateUpdate) return
 
-  if (!options.preventInitStateUpdateListener && !options.updateByState) {
-    const initStateReturns = triggerEventOn('initStateUpdated', element, keyInParentState)
+  if (!options.preventInitStateUpdateListener) {
+    const initStateReturns = triggerEventOnUpdate('initStateUpdated', keyInParentState, element, options)
     if (initStateReturns === false) return element
   }
 
+  const newState = createStateUpdate(element, parent, options)
+
+  if (!options.preventStateUpdateListener) {
+    triggerEventOnUpdate('stateUpdated', newState.parse(), element, options)
+  }
+}
+
+const createStateUpdate = (element, parent, options) => {
+  const __stateChildren = element.state.__children
   const newState = createState(element, parent)
   element.state = newState
-
-  if (!options.preventStateUpdateListener && !options.updateByState) {
-    triggerEventOn('stateUpdated', element, newState.parse())
+  for (const child in __stateChildren) {
+    // check this for inherited states
+    if (newState[child]) newState.__children[child] = __stateChildren[child]
+    __stateChildren[child].parent = newState
   }
+  return newState
 }
 
 export default update

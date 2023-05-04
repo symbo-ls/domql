@@ -12,7 +12,7 @@ export default (param, element, node, options) => {
       // const parsedContent = element.content.parseDeep(['class', 'on', 'tag'])
       // console.log(parsedContent)
       // if (!element.content.__ref) element.content.__ref = {}
-      element.content.update()
+      element.content.update({}, options)
     } else {
       // if (element.$setCollection || element.$setStateCollection || element.$setPropsCollection) return
       set.call(element, param, options)

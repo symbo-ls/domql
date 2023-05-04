@@ -25,7 +25,7 @@ import {
   applyComponentFromContext,
   applyKeyComponentAsExtend,
   checkIfKeyIsComponent
-} from '../utils/component'
+} from './utils/component'
 import { removeContentElement } from './remove'
 
 const ENV = process.env.NODE_ENV
@@ -126,11 +126,11 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
   if (__ref.__if) createProps(element, parent)
 
   // run `on.init`
-  const initReturns = triggerEventOn('init', element)
+  const initReturns = triggerEventOn('init', element, options)
   if (initReturns === false) return element
 
   // run `on.beforeClassAssign`
-  triggerEventOn('beforeClassAssign', element)
+  triggerEventOn('beforeClassAssign', element, options)
 
   // generate a CLASS name
   assignClass(element)
@@ -144,10 +144,10 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
   assignNode(element, parent, key)
 
   // run `on.renderRouter`
-  triggerEventOn('renderRouter', element)
+  triggerEventOn('renderRouter', element, options)
 
   // run `on.render`
-  triggerEventOn('render', element)
+  triggerEventOn('render', element, options)
 
   if (parent.__ref && parent.__ref.__children) parent.__ref.__children.push(element.key)
 
