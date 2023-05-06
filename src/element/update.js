@@ -135,7 +135,7 @@ const checkIfOnUpdate = (element, parent, options) => {
   if (!isFunction(element.if)) return
 
   const ref = element.__ref
-  const ifPassed = element.if(element, element.state)
+  const ifPassed = element.if(element, element.state, element.context)
   const itWasFalse = ref.__if !== true
 
   if (ifPassed) {

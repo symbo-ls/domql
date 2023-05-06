@@ -193,17 +193,17 @@ const applyContext = (element, parent, options) => {
 }
 
 const checkIf = (element, parent) => {
-  const { __ref } = element
+  const { __ref: ref } = element
 
   if (isFunction(element.if)) {
     // TODO: move as fragment
     const ifPassed = element.if(element, element.state)
     if (!ifPassed) {
       const ifFragment = cacheNode({ tag: 'fragment' })
-      __ref.__ifFragment = appendNode(ifFragment, parent.node)
-      delete __ref.__if
-    } else __ref.__if = true
-  } else __ref.__if = true
+      ref.__ifFragment = appendNode(ifFragment, parent.node)
+      delete ref.__if
+    } else ref.__if = true
+  } else ref.__if = true
 }
 
 const addCaching = (element, parent) => {

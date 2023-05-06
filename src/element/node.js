@@ -19,14 +19,14 @@ const ENV = process.env.NODE_ENV
 
 export const createNode = (element, options) => {
   // create and assign a node
-  let { node, tag, __ref } = element
+  let { node, tag, __ref: ref } = element
 
   let isNewNode
 
   if (!node) {
     isNewNode = true
 
-    if (!__ref.__if) return element
+    if (!ref.__if) return element
 
     if (tag === 'shadow') {
       node = element.node = element.parent.node.attachShadow({ mode: 'open' })
@@ -43,7 +43,7 @@ export const createNode = (element, options) => {
     if (isFunction(node.setAttribute)) node.setAttribute('key', element.key)
   }
 
-  if (!__ref.__if) return element
+  if (!ref.__if) return element
 
   // iterate through all given params
   if (element.tag !== 'string' || element.tag !== 'fragment') {
