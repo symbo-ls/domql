@@ -114,6 +114,7 @@ const applyElementUpdate = (state, obj, options) => {
   } else if (options.preventUpdate === 'recursive') {
     element.update({}, {
       ...options,
+      isHoisted: false,
       updateByState: true,
       preventUpdate: true
     })
