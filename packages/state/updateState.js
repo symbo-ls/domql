@@ -10,8 +10,9 @@ const STATE_UPDATE_OPTIONS = {
   overwrite: true,
   preventHoistElementUpdate: false,
   updateByState: true,
-  execStateFunction: false,
-  stateFunctionOverwrite: 'replace'
+  execStateFunction: true,
+  isHoisted: true,
+  stateFunctionOverwrite: true
 }
 
 export const updateState = function (obj, options = STATE_UPDATE_OPTIONS) {
