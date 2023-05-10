@@ -38,7 +38,7 @@
     "@domql/state": "latest",
     "@domql/event": "latest",
     "@domql/report": "latest",
-    "@domql/emotion": "latest",
+    "@domql/emotion": "2.3.82",
     "@domql/utils": "latest",
     "@domql/classlist": "latest"
   },
