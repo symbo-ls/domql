@@ -100,7 +100,8 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
   element.key = assignedKey
 
   // Only resolve extends, skip everything else
-  if (options.onlyResolveExtends) return resolveExtends(element, parent, options)
+  if (options.onlyResolveExtends)
+    return resolveExtends(element, parent, options)
 
   if (Object.keys(options).length) {
     registry.defaultOptions = options
@@ -258,7 +259,7 @@ const resolveExtends = (element, parent, options) => {
   element = createProps(element, parent)
   createState(element, parent, { skip: true })
 
-  throughInitialExec(element)
+  throughInitialExec(element, options.propsExcludedFromExec)
 
   for (const param in element) {
     const prop = element[param]

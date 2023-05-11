@@ -4,9 +4,10 @@ import { isObject, exec, isFunction, isNumber, isString } from '@domql/utils'
 import { METHODS_EXL, overwrite } from './utils'
 import { isMethod } from '@domql/methods'
 
-export const throughInitialExec = element => {
+export const throughInitialExec = (element, exclude = {}) => {
   const { __ref: ref } = element
   for (const param in element) {
+    if (exclude[param]) continue
     const prop = element[param]
     if (isFunction(prop) && !isMethod(param)) {
       ref.__exec[param] = prop
