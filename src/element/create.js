@@ -100,8 +100,7 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
   element.key = assignedKey
 
   // Only resolve extends, skip everything else
-  if (options.onlyResolveExtends)
-    return resolveExtends(element, parent, options)
+  if (options.onlyResolveExtends) { return resolveExtends(element, parent, options) }
 
   if (Object.keys(options).length) {
     registry.defaultOptions = options
