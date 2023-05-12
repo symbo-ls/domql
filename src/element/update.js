@@ -64,6 +64,8 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     if (initUpdateReturns === false) return element
   }
 
+  triggerEventOn('beforeClassAssign', element, options)
+
   const overwriteChanges = overwriteDeep(element, params, METHODS_EXL)
   const execChanges = throughUpdatedExec(element, { ignore: UPDATE_DEFAULT_OPTIONS })
   const definedChanges = throughUpdatedDefine(element)
