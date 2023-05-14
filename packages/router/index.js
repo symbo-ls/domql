@@ -14,7 +14,7 @@ const defaultOptions = {
   pushState: true,
   scrollToTop: true,
   scrollToNode: false,
-  scrollNode: document.documentElement,
+  scrollNode: document?.documentElement,
   scrollBody: false,
   scrollDocument: true,
   useFragment: false,
