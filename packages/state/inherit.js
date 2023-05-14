@@ -58,7 +58,7 @@ export const createInheritedState = (element, parent) => {
     return { value: inheritedState }
   }
 
-  console.warn(stateKey, 'is not present. Replacing with', {})
+  console.warn(ref.__state, 'is not present. Replacing with', {})
 }
 
 export const checkIfInherits = (element) => {
@@ -76,14 +76,14 @@ export const isState = function (state) {
 
 export const createChangesByKey = (path, value) => {
   if (!path) {
-    return value || {};
+    return value || {}
   }
-  const keys = path.split('/');
-  let obj = {};
-  let ref = obj;
+  const keys = path.split('/')
+  const obj = {}
+  let ref = obj
   keys.forEach((key, index) => {
-    ref[key] = index === keys.length - 1 ? value || {} : {};
-    ref = ref[key];
-  });
-  return obj;
+    ref[key] = index === keys.length - 1 ? value || {} : {}
+    ref = ref[key]
+  })
+  return obj
 }
