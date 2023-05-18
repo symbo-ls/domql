@@ -1,6 +1,6 @@
 'use strict'
 
-import { exec, isFunction, isString } from '@domql/utils'
+import { exec, isArray, isFunction, isString } from '@domql/utils'
 const ENV = process.env.NODE_ENV
 
 export const checkIfKeyIsComponent = (key) => {
@@ -11,8 +11,8 @@ export const checkIfKeyIsComponent = (key) => {
 }
 
 export const extendizeByKey = (element, parent, key) => {
-  const { extend, props, state, childExtend, childProps } = element
-  const hasComponentAttrs = extend || childExtend || props || state || element.on
+  const { extend, props, state, childExtend, childProps, on } = element
+  const hasComponentAttrs = extend || childExtend || props || state || on
   const componentKey = key.split('_')[0]
 
   if (!hasComponentAttrs || childProps) {
@@ -24,6 +24,12 @@ export const extendizeByKey = (element, parent, key) => {
     return {
       ...element,
       extend: componentKey || key
+    }
+  } else if (extend) {
+    const preserveExtend = isArray(extend) ? extend : [extend]
+    return {
+      ...element,
+      extend: [componentKey || key].concat(preserveExtend)
     }
   } else if (isFunction(element)) {
     return {
