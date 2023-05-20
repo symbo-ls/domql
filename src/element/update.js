@@ -1,14 +1,14 @@
 'use strict'
 
 import { window } from '@domql/globals'
-import { exec, isFunction, isNumber, isObject, isString, merge, overwriteDeep } from '@domql/utils'
+import { exec, isFunction, isNumber, isObject, isString, isUndefined, merge, overwriteDeep } from '@domql/utils'
 import { applyEvent, triggerEventOn, triggerEventOnUpdate } from '@domql/event'
 import { isMethod } from '@domql/methods'
 import { createSnapshotId } from '@domql/key'
 import { updateProps } from '@domql/props'
 import { createState } from '@domql/state'
 
-import { METHODS_EXL } from './utils'
+import { METHODS_EXL, isVariant } from './utils'
 import create from './create'
 import { throughUpdatedDefine, throughUpdatedExec } from './iterate'
 import { registry } from './mixins'
@@ -85,11 +85,12 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     const prop = element[param]
 
     if (
+      isUndefined(prop) ||
       options.preventDefineUpdate === true ||
       options.preventDefineUpdate === param ||
       (options.preventContentUpdate && param === 'content') ||
       (options.preventStateUpdate && param) === 'state' ||
-      isMethod(param) || isObject(registry[param]) || prop === undefined
+      isMethod(param) || isObject(registry[param]) || isVariant(param)
     ) continue
     if (options.preventStateUpdate === 'once') options.preventStateUpdate = false
 

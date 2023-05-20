@@ -1,6 +1,6 @@
 'use strict'
 
-import { exec, isArray, isFunction, isString } from '@domql/utils'
+import { exec, isArray, isFunction, isObject, isString, overwriteDeep } from '@domql/utils'
 const ENV = process.env.NODE_ENV
 
 export const checkIfKeyIsComponent = (key) => {
@@ -14,27 +14,29 @@ export const extendizeByKey = (element, parent, key) => {
   const { extend, props, state, childExtend, childProps, on } = element
   const hasComponentAttrs = extend || childExtend || props || state || on
   const componentKey = key.split('_')[0]
+  const extendKey = componentKey || key
 
   if (!hasComponentAttrs || childProps) {
     return {
-      extend: componentKey || key,
+      extend: extendKey,
       props: { ...element }
     }
   } else if (!extend || extend === true) {
     return {
       ...element,
-      extend: componentKey || key
+      extend: extendKey
     }
   } else if (extend) {
+    const { extend } = element
     const preserveExtend = isArray(extend) ? extend : [extend]
     return {
       ...element,
-      extend: [componentKey || key].concat(preserveExtend)
+      extend: [extendKey].concat(preserveExtend)
     }
   } else if (isFunction(element)) {
     return {
-      extend: componentKey || key,
-      props: { ...element }
+      extend: extendKey,
+      props: { ...exec(element, parent) }
     }
   }
 }
@@ -58,4 +60,26 @@ export const applyComponentFromContext = (element, parent, options) => {
       element.extend = {}
     }
   }
+}
+
+export const isVariant = (param) => {
+  if (!isString(param)) return
+  const firstCharKey = param.slice(0, 1)
+  // return (firstCharKey === '.' || firstCharKey === '$')
+  return (firstCharKey === '.')
+}
+
+export const hasVariant = (element) => {
+  const { props } = element
+  if (isObject(props) || isString(props.variant)) return true
+}
+
+export const applyVariant = (element) => {
+  if (!hasVariant(element)) return element
+  const { variant } = element.props
+  const extendVariant = element[`.${variant}`] || element[`$${variant}`]
+  if (extendVariant) {
+    return overwriteDeep(element, extendVariant)
+  }
+  return element
 }

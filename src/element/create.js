@@ -1,6 +1,6 @@
 'use strict'
 
-import { isObject, isFunction, isString, exec, is, isNode } from '@domql/utils'
+import { isObject, isFunction, isString, exec, is, isNode, isUndefined } from '@domql/utils'
 import { ROOT } from '@domql/tree'
 import { createKey } from '@domql/key'
 import { TAGS } from '@domql/registry'
@@ -24,7 +24,9 @@ import OPTIONS from './options'
 import {
   applyComponentFromContext,
   applyKeyComponentAsExtend,
-  checkIfKeyIsComponent
+  applyVariant,
+  checkIfKeyIsComponent,
+  isVariant
 } from './utils/component'
 import { removeContentElement } from './remove'
 
@@ -77,8 +79,8 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
     element = applyKeyComponentAsExtend(element, parent, assignedKey)
   }
 
+  // TODO: move as define plugins
   // Responsive rendering
-  // TODO: move as define plugin
   if (checkIfMedia(assignedKey)) {
     element = applyMediaProps(element, parent, assignedKey)
   }
@@ -91,7 +93,9 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
   applyContext(element, parent, options)
   const { context } = element
 
-  if (context && context.components) applyComponentFromContext(element, parent, options)
+  if (context && context.components) {
+    applyComponentFromContext(element, parent, options)
+  }
 
   // create EXTEND inheritance
   applyExtend(element, parent, options)
@@ -100,7 +104,9 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
   element.key = assignedKey
 
   // Only resolve extends, skip everything else
-  if (options.onlyResolveExtends) { return resolveExtends(element, parent, options) }
+  if (options.onlyResolveExtends) {
+    return resolveExtends(element, parent, options)
+  }
 
   if (Object.keys(options).length) {
     registry.defaultOptions = options
@@ -124,6 +130,9 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
 
   // apply props settings
   if (__ref.__if) createProps(element, parent)
+
+  // apply variants
+  applyVariant(element, parent)
 
   // run `on.init`
   const initReturns = triggerEventOn('init', element, options)
@@ -257,12 +266,18 @@ const resolveExtends = (element, parent, options) => {
 
   element = createProps(element, parent)
   createState(element, parent, { skip: true })
+  applyVariant(element, parent)
 
   throughInitialExec(element, options.propsExcludedFromExec)
 
   for (const param in element) {
     const prop = element[param]
-    if (isMethod(param) || isObject(registry[param]) || prop === undefined) continue
+    if (
+      isUndefined(prop) ||
+      isMethod(param) ||
+      isObject(registry[param]) ||
+      isVariant(param)
+    ) continue
 
     const hasDefined = element.define && element.define[param]
     const ourParam = registry[param]

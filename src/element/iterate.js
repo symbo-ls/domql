@@ -1,7 +1,7 @@
 'use strict'
 
 import { isObject, exec, isFunction, isNumber, isString } from '@domql/utils'
-import { METHODS_EXL, overwrite } from './utils'
+import { METHODS_EXL, isVariant, overwrite } from './utils'
 import { isMethod } from '@domql/methods'
 
 export const throughInitialExec = (element, exclude = {}) => {
@@ -9,7 +9,7 @@ export const throughInitialExec = (element, exclude = {}) => {
   for (const param in element) {
     if (exclude[param]) continue
     const prop = element[param]
-    if (isFunction(prop) && !isMethod(param)) {
+    if (isFunction(prop) && !isMethod(param) && !isVariant(param)) {
       ref.__exec[param] = prop
       element[param] = prop(element, element.state)
     }
@@ -50,7 +50,7 @@ export const throughInitialDefine = (element) => {
   for (const param in defineObj) {
     let elementProp = element[param]
 
-    if (isFunction(elementProp) && !isMethod(param)) {
+    if (isFunction(elementProp) && !isMethod(param) && !isVariant(param)) {
       ref.__exec[param] = elementProp
       const execParam = elementProp = exec(elementProp, element)
 

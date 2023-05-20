@@ -1,6 +1,6 @@
 'use strict'
 
-import { exec, isFunction, isObject } from '@domql/utils'
+import { exec, isFunction, isObject, isUndefined } from '@domql/utils'
 import { applyEventsOnNode, triggerEventOn } from '@domql/event'
 import { isMethod } from '@domql/methods'
 import { cacheNode } from '@domql/node'
@@ -13,6 +13,7 @@ import {
 } from './iterate'
 import { registry } from './mixins'
 import { applyParam } from './applyParam'
+import { isVariant } from './utils'
 // import { defineSetter } from './methods'
 
 const ENV = process.env.NODE_ENV
@@ -59,7 +60,12 @@ export const createNode = (element, options) => {
     for (const param in element) {
       const prop = element[param]
 
-      if (isMethod(param) || isObject(registry[param]) || prop === undefined) continue
+      if (
+        isUndefined(prop) ||
+        isMethod(param) ||
+        isVariant(param) ||
+        isObject(registry[param])
+      ) continue
 
       const isElement = applyParam(param, element, options)
       if (isElement) {
