@@ -15,7 +15,14 @@ export const applyExtend = (element, parent, options = {}) => {
   let { extend, props, context, __ref } = element
 
   const COMPONENTS = (context && context.components) || options.components
-  if (isString(extend) && COMPONENTS) extend = COMPONENTS[extend]
+  if (isString(extend)) {
+    if (COMPONENTS && COMPONENTS[extend]) extend = COMPONENTS[extend]
+    else {
+      if (ENV !== 'test' || ENV !== 'development') {
+        console.warn('Extend is string but component was not found:', extend)
+      } extend = {}
+    }
+  }
 
   const extendStack = getExtendStack(extend)
 
@@ -55,7 +62,7 @@ export const applyExtend = (element, parent, options = {}) => {
     stack = [].concat(stack, defaultOptionsExtend)
   }
 
-  __ref.__extend = stack
+  if (__ref) __ref.__extend = stack
   const findAndReplaceStrings = replaceStringsWithComponents(stack, COMPONENTS)
   let mergedExtend = cloneAndMergeArrayExtend(findAndReplaceStrings)
 

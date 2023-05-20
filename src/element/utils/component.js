@@ -1,6 +1,7 @@
 'use strict'
 
 import { exec, isArray, isFunction, isObject, isString, overwriteDeep } from '@domql/utils'
+import { applyExtend } from '../extend'
 const ENV = process.env.NODE_ENV
 
 export const checkIfKeyIsComponent = (key) => {
@@ -8,6 +9,15 @@ export const checkIfKeyIsComponent = (key) => {
   if (!isFirstKeyString) return
   const firstCharKey = key.slice(0, 1)
   return /^[A-Z]*$/.test(firstCharKey)
+}
+
+export const addAdditionalExtend = (newExtend, element) => {
+  const { extend } = element
+  const preserveExtend = isArray(extend) ? extend : [extend]
+  return {
+    ...element,
+    extend: [newExtend].concat(preserveExtend)
+  }
 }
 
 export const extendizeByKey = (element, parent, key) => {
@@ -27,12 +37,7 @@ export const extendizeByKey = (element, parent, key) => {
       extend: extendKey
     }
   } else if (extend) {
-    const { extend } = element
-    const preserveExtend = isArray(extend) ? extend : [extend]
-    return {
-      ...element,
-      extend: [extendKey].concat(preserveExtend)
-    }
+    addAdditionalExtend(extendKey, element)
   } else if (isFunction(element)) {
     return {
       extend: extendKey,
@@ -74,12 +79,32 @@ export const hasVariantProp = (element) => {
   if (isObject(props) || isString(props.variant)) return true
 }
 
-export const applyVariant = (element) => {
-  if (!hasVariantProp(element)) return element
-  const { variant } = element.props
-  const extendVariant = element[`.${variant}`] || element[`$${variant}`]
-  if (extendVariant) {
-    return overwriteDeep(element, extendVariant)
+export const overwriteVariant = (element, variant, variantProps) => {
+  let variantElement = element[variant]
+  if (!variantElement) return
+  const props = isObject(variantProps) ? variantProps : {}
+  if (isString(variantElement)) {
+    variantElement = {
+      extend: [{ props }, variantElement]
+    }
+  } else if (variantElement.extend) {
+    variantElement = addAdditionalExtend({ props }, variantElement)
   }
+  return overwriteDeep(element, applyExtend(variantElement)) // TODO: check why string is not working
+}
+
+export const applyVariant = (element) => {
+  const { props } = element
+  if (!hasVariantProp(element)) return element
+  const { variant } = props
+  overwriteVariant(element, `.${variant}`)
+
+  const elKeys = Object.keys(element).filter((key) => isVariant(key))
+  elKeys.forEach((variant) => {
+    const slicedVariantElementKey = variant.slice(1)
+    const variantElementProps = props[slicedVariantElementKey]
+    if (variantElementProps) overwriteVariant(element, variant, variantElementProps)
+  })
+
   return element
 }
