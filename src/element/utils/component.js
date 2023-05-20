@@ -69,13 +69,13 @@ export const isVariant = (param) => {
   return (firstCharKey === '.')
 }
 
-export const hasVariant = (element) => {
+export const hasVariantProp = (element) => {
   const { props } = element
   if (isObject(props) || isString(props.variant)) return true
 }
 
 export const applyVariant = (element) => {
-  if (!hasVariant(element)) return element
+  if (!hasVariantProp(element)) return element
   const { variant } = element.props
   const extendVariant = element[`.${variant}`] || element[`$${variant}`]
   if (extendVariant) {
