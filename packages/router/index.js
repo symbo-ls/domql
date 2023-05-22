@@ -7,11 +7,13 @@ export const getActiveRoute = (
   route = window.location.pathname, level
 ) => `/${route.split('/')[level + 1]}`
 
+export let lastPathname
 export let lastLevel = 0
 
 const defaultOptions = {
   level: lastLevel,
   pushState: true,
+  initialRender: false,
   scrollToTop: true,
   scrollToNode: false,
   scrollNode: document && document.documentElement,
@@ -33,35 +35,44 @@ export const router = (
   lastLevel = options.lastLevel
 
   const [pathname, hash] = path.split('#')
-
-  const route = getActiveRoute(pathname, options.level)
-  const content = element.routes[route] || element.routes['/*']
-
-  if (!content) return
-  if (options.pushState) window.history.pushState(state, null, pathname + (hash ? `#${hash}` : ''))
-
-  element.set({ tag: options.useFragment && 'fragment', extend: content })
-  if (options.updateState) {
-    element.state.update({ route, hash }, {
-      preventContentUpdate: !options.stateContentUpdate
-    })
-  }
+  console.warn(pathname, path, hash)
 
   const rootNode = element.node
-  const scrollNode = options.scrollNode
-  if (options.scrollToTop) {
-    scrollNode.scrollTo({
-      ...(options.scrollToOptions || {}), top: 0, left: 0
-    })
-  }
-  if (options.scrollToNode) {
-    content.content.node.scrollIntoView(
-      options.scrollToOptions
-    )
+  const route = getActiveRoute(pathname, options.level)
+  const content = element.routes[route] || element.routes['/*']
+  const scrollNode = options.scrollDocument ? document.documentElement : rootNode
+  const hashChanged = hash && hash !== window.location.hash.slice(1)
+  const pathChanged = pathname !== lastPathname
+  lastPathname = pathname
+
+  if (content) {
+    if (options.pushState) window.history.pushState(state, null, route + (hash ? `#${hash}` : ''))
+
+    if (pathChanged || !hashChanged) {
+      element.set({ tag: options.useFragment && 'fragment', extend: content })
+      if (options.updateState) {
+        element.state.update({ route, hash }, {
+          preventContentUpdate: !options.stateContentUpdate
+        })
+      }
+    }
+
+    if (options.scrollToTop) {
+      scrollNode.scrollTo({
+        ...(options.scrollToOptions || {}), top: 0, left: 0
+      })
+    }
+    if (options.scrollToNode) {
+      content.content.node.scrollTo({
+        ...(options.scrollToOptions || {}), top: 0, left: 0
+      })
+    }
   }
 
+  console.log('HASH', hash)
   if (hash) {
     const activeNode = document.getElementById(hash)
+    console.log(hash, activeNode)
     if (activeNode) {
       const top = activeNode.getBoundingClientRect().top + rootNode.scrollTop - options.scrollToOffset || 0
       scrollNode.scrollTo({
