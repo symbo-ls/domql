@@ -35,7 +35,6 @@ export const router = (
   lastLevel = options.lastLevel
 
   const [pathname, hash] = path.split('#')
-  console.warn(pathname, path, hash)
 
   const rootNode = element.node
   const route = getActiveRoute(pathname, options.level)
@@ -69,7 +68,6 @@ export const router = (
     }
   }
 
-  console.log('HASH', hash)
   if (hash) {
     const activeNode = document.getElementById(hash)
     console.log(hash, activeNode)
