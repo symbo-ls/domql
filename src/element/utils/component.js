@@ -76,7 +76,7 @@ export const isVariant = (param) => {
 
 export const hasVariantProp = (element) => {
   const { props } = element
-  if (isObject(props) || isString(props.variant)) return true
+  if (isObject(props) && isString(props.variant)) return true
 }
 
 export const overwriteVariant = (element, variant, variantProps) => {
