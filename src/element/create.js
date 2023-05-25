@@ -299,8 +299,7 @@ const resolveExtends = (element, parent, options) => {
   // added by createState
   delete element.state.__element
   delete element.state.__element
-  delete element.__hasRootState // TODO: check with @Nikaoto and remove
-  delete element.__ref
+  if (!options.keepRef) delete element.__ref
 
   return element
 }
