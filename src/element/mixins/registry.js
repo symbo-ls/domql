@@ -38,6 +38,7 @@ export default {
   update: {},
   setProps: {},
   remove: {},
+  updateContent: {},
   removeContent: {},
   lookup: {},
   spotByPath: {},

@@ -2,6 +2,13 @@
 
 import { isFunction } from '@domql/utils'
 
+export const updateContentElement = function (params, options) {
+  const element = this
+
+  if (!element.content) return
+  if (element.content.update) element.content.update(params, options)
+}
+
 export const removeContentElement = function (el) {
   const element = el || this
   const { __ref } = element

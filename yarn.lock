@@ -22,7 +22,7 @@
   resolved "https://registry.yarnpkg.com/@babel/compat-data/-/compat-data-7.22.3.tgz#cd502a6a0b6e37d7ad72ce7e71a7160a3ae36f7e"
   integrity sha512-aNtko9OPOwVESUFp3MZfD8Uzxl7JzSeJpd7npIoxCasU37PFbAQRpKglkaKwlHOyeJdrREpo8TW8ldrkYWwvIQ==
 
-"@babel/core@^7.11.6", "@babel/core@^7.12.3", "@babel/core@^7.20.12":
+"@babel/core@^7.11.6", "@babel/core@^7.12.0", "@babel/core@^7.12.3":
   version "7.22.1"
   resolved "https://registry.yarnpkg.com/@babel/core/-/core-7.22.1.tgz#5de51c5206f4c6f5533562838337a603c1033cfd"
   integrity sha512-Hkqu7J4ynysSXxmAahpN1jjRwVJ+NdpraFLIWflgjpVob3KNyK3/tIUc7Q7szed8WMp0JNa7Qtd1E9Oo22F9gA==
@@ -1685,7 +1685,7 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@parcel/babel-preset-env@^2.8.3":
+"@parcel/babel-preset-env@^2.9.1":
   version "2.9.1"
   resolved "https://registry.yarnpkg.com/@parcel/babel-preset-env/-/babel-preset-env-2.9.1.tgz#135be710cda8330d3ed592ed9d2db3db2f1ca65b"
   integrity sha512-4fm7BVNRKkLCVJKQj/j/eukLW25ZXJN11pVPFAKh1f/oq0hLr8popT0bnuJ+A+Wl4PZ5/D36unQVv8yur/24zA==

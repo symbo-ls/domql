@@ -28,7 +28,7 @@ import {
   checkIfKeyIsComponent,
   isVariant
 } from './utils/component'
-import { removeContentElement } from './remove'
+import { removeContentElement, updateContentElement } from './remove'
 
 const ENV = process.env.NODE_ENV
 
@@ -182,6 +182,7 @@ const addMethods = (element, parent) => {
   element.set = set
   element.update = update
   element.remove = remove
+  element.updateContent = updateContentElement
   element.removeContent = removeContentElement
   element.setProps = setProps
   element.lookup = lookup
