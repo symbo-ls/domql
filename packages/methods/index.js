@@ -119,6 +119,7 @@ export const METHODS = [
   'set',
   'update',
   'remove',
+  'updateContent',
   'removeContent',
   'lookup',
   'spotByPath',
