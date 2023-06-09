@@ -1,7 +1,7 @@
 'use strict'
 
 import { window } from '@domql/globals'
-import { exec, isFunction, isNumber, isObject, isString, isUndefined, merge, overwriteDeep } from '@domql/utils'
+import { exec, isArray, isFunction, isNumber, isObject, isString, isUndefined, merge, overwriteDeep } from '@domql/utils'
 import { applyEvent, triggerEventOn, triggerEventOnUpdate } from '@domql/event'
 import { isMethod } from '@domql/methods'
 import { createSnapshotId } from '@domql/key'
@@ -83,9 +83,15 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
 
   for (const param in element) {
     const prop = element[param]
+    const hasOnlyUpdateFalsy = options.onlyUpdate && (options.onlyUpdate !== param || !element.lookup(options.onlyUpdate))
+    const isInPreventUpdate = isArray(options.preventUpdate) && options.preventUpdate.includes(param)
+    const isInPreventDefineUpdate = isArray(options.preventDefineUpdate) && options.preventDefineUpdate.includes(param)
 
     if (
       isUndefined(prop) ||
+      hasOnlyUpdateFalsy ||
+      isInPreventUpdate ||
+      isInPreventDefineUpdate ||
       options.preventDefineUpdate === true ||
       options.preventDefineUpdate === param ||
       (options.preventContentUpdate && param === 'content') ||
@@ -153,7 +159,7 @@ const checkIfOnUpdate = (element, parent, options) => {
         element.state = ref.__state
       }
       const created = create(element, parent, element.key, OPTIONS.create)
-      if (!options.preventUpdate && element.on && isFunction(element.on.update)) {
+      if (options.preventUpdate !== true && element.on && isFunction(element.on.update)) {
         applyEvent(element.on.update, created, created.state)
       }
       return created
