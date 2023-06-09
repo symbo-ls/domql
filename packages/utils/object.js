@@ -141,14 +141,26 @@ export const objectToString = (obj, indent = 0) => {
   let str = '{\n'
 
   for (const [key, value] of Object.entries(obj)) {
-    const keyAllowdChars = stringIncludesAny(key, ['-', ':'])
+    const keyAllowdChars = stringIncludesAny(key, ['-', ':', '@', '.', '!'])
     const stringedKey = keyAllowdChars ? `'${key}'` : key
     str += `${spaces}  ${stringedKey}: `
 
-    if (typeof value === 'object' && value !== null) {
+    if (isArray(value)) {
+      str += '[\n'
+      for (const element of value) {
+        if (isObject(element) && element !== null) {
+          str += `${spaces}    ${objectToString(element, indent + 2)},\n`
+        } else if (isString(element)) {
+          str += `${spaces}    '${element}',\n`
+        } else {
+          str += `${spaces}    ${element},\n`
+        }
+      }
+      str += `${spaces}  ]`
+    } else if (isObject(value)) {
       str += objectToString(value, indent + 1)
-    } else if (typeof value === 'string') {
-      str += `'${value}'`
+    } else if (isString(value)) {
+      str += stringIncludesAny(value, ['\n', '\'']) ? `\`${value}\`` : `'${value}'`
     } else {
       str += value
     }
