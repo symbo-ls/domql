@@ -3,6 +3,7 @@
 import { window } from '@domql/globals'
 import { isFunction, isObjectLike, isObject, isArray, isString, is } from './types.js'
 import { mergeAndCloneIfArray, mergeArray } from './array.js'
+import { stringIncludesAny } from './string.js'
 
 export const exec = (param, element, state, context) => {
   if (isFunction(param)) {
@@ -135,6 +136,30 @@ export const deepStringify = (obj, stringified = {}) => {
   return stringified
 }
 
+export const objectToString = (obj, indent = 0) => {
+  const spaces = '  '.repeat(indent)
+  let str = '{\n'
+
+  for (const [key, value] of Object.entries(obj)) {
+    const keyAllowdChars = stringIncludesAny(key, ['-', ':'])
+    const stringedKey = keyAllowdChars ? `'${key}'` : key
+    str += `${spaces}  ${stringedKey}: `
+
+    if (typeof value === 'object' && value !== null) {
+      str += objectToString(value, indent + 1)
+    } else if (typeof value === 'string') {
+      str += `'${value}'`
+    } else {
+      str += value
+    }
+
+    str += ',\n'
+  }
+
+  str += `${spaces}}`
+  return str
+}
+
 /**
  * Stringify object
  */
@@ -203,6 +228,15 @@ export const deepDestringify = (obj, stringified = {}) => {
     }
   }
   return stringified
+}
+
+export const stringToObject = (str) => {
+  let obj
+  try {
+    obj = window.eval('(' + str + ')') // eslint-disable-line
+  } catch (e) { console.warn(e) }
+
+  if (obj) return obj
 }
 
 export const diffObjects = (original, objToDiff, cache) => {

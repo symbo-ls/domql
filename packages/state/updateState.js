@@ -18,6 +18,7 @@ const STATE_UPDATE_OPTIONS = {
 export const updateState = function (obj, options = STATE_UPDATE_OPTIONS) {
   const state = this
   const element = state.__element
+  console.log(options)
 
   if (!options.updateByState) merge(options, STATE_UPDATE_OPTIONS)
 
@@ -32,7 +33,6 @@ export const updateState = function (obj, options = STATE_UPDATE_OPTIONS) {
   }
 
   applyOverwrite(state, obj, options)
-
   const updateIsHoisted = hoistStateUpdate(state, obj, options)
   if (updateIsHoisted) return state
 
@@ -90,7 +90,7 @@ const hoistStateUpdate = (state, obj, options) => {
     preventUpdate: options.preventHoistElementUpdate,
     overwrite: !options.replace
   })
-  const hasNotUpdated = !options.preventUpdate || !options.preventHoistElementUpdate
+  const hasNotUpdated = options.preventUpdate !== true || !options.preventHoistElementUpdate
   if (!options.preventStateUpdateListener && hasNotUpdated) {
     triggerEventOnUpdate('stateUpdated', obj, element, options)
   }
@@ -107,7 +107,8 @@ const updateDependentState = (state, obj, options) => {
 
 const applyElementUpdate = (state, obj, options) => {
   const element = state.__element
-  if (!options.preventUpdate) {
+  console.log('update', element.key)
+  if (options.preventUpdate !== true) {
     element.update({}, {
       ...options,
       updateByState: true
