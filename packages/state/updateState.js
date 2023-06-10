@@ -18,7 +18,6 @@ const STATE_UPDATE_OPTIONS = {
 export const updateState = function (obj, options = STATE_UPDATE_OPTIONS) {
   const state = this
   const element = state.__element
-  console.log(options)
 
   if (!options.updateByState) merge(options, STATE_UPDATE_OPTIONS)
 
@@ -107,7 +106,6 @@ const updateDependentState = (state, obj, options) => {
 
 const applyElementUpdate = (state, obj, options) => {
   const element = state.__element
-  console.log('update', element.key)
   if (options.preventUpdate !== true) {
     element.update({}, {
       ...options,
