@@ -30,6 +30,7 @@ export const applyExtend = (element, parent, options = {}) => {
 
   let childExtendStack = []
   if (parent) {
+    element.parent = parent
     // Assign parent attr to the element
     if (!options.ignoreChildExtend) {
       if (props && props.ignoreChildExtend) return
