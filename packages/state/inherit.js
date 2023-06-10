@@ -14,7 +14,7 @@ export const getParentStateInKey = (stateKey, parentState) => {
   return parentState
 }
 
-export const getChildStateInKey = (stateKey, parentState, options) => {
+export const getChildStateInKey = (stateKey, parentState, options = {}) => {
   const arr = stateKey.split('/')
   const arrLength = arr.length - 1
   for (let i = 0; i < arrLength; i++) {
