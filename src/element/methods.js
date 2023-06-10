@@ -72,7 +72,6 @@ export const nextElement = function () {
 
   const currentIndex = __children.indexOf(key)
   const nextChild = __children[currentIndex + 1]
-  console.log(nextChild)
 
   return parent[nextChild]
 }
