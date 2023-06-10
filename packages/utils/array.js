@@ -43,3 +43,39 @@ export const mergeArray = (arr, excludeFrom = []) => {
 export const mergeAndCloneIfArray = obj => {
   return isArray(obj) ? mergeArray(obj) : deepClone(obj)
 }
+
+export const cutArrayBeforeValue = (arr, value) => {
+  const index = arr.indexOf(value);
+  if (index !== -1) {
+    return arr.slice(0, index);
+  }
+  return arr;
+}
+
+export const cutArrayAfterValue = (arr, value) => {
+  const index = arr.indexOf(value);
+  if (index !== -1) {
+    return arr.slice(index + 1);
+  }
+  return arr;
+}
+
+export const createNestedObject = (arr, lastValue) => {
+  let nestedObject = {};
+
+  if (arr.length === 0) {
+    return lastValue;
+  }
+
+  arr.reduce((obj, value, index) => {
+    if (!obj[value]) {
+      obj[value] = {};
+    }
+    if (index === arr.length - 1 && lastValue) {
+      obj[value] = lastValue;
+    }
+    return obj[value];
+  }, nestedObject);
+
+  return nestedObject;
+}
