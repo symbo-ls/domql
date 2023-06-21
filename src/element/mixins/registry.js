@@ -48,7 +48,10 @@ export default {
   parseDeep: {},
   on: {},
   component: {},
-  context: {}
+  context: {},
+  '$setStateCollection': {},
+  '$setCollection': {},
+  '$setPropsCollection': {},
 }
 
 // List of keys for .parse() and .parseDeep() to include in the result.
