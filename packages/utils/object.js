@@ -24,7 +24,7 @@ export const map = (obj, extention, element) => {
 
 export const merge = (element, obj, excludeFrom = []) => {
   for (const e in obj) {
-    if (excludeFrom.includes(e) || e.includes('__')) continue
+    if (excludeFrom.includes(e) || e.startsWith('__')) continue
     const elementProp = element[e]
     const objProp = obj[e]
     if (elementProp === undefined) {
@@ -36,7 +36,7 @@ export const merge = (element, obj, excludeFrom = []) => {
 
 export const deepMerge = (element, extend, excludeFrom = []) => {
   for (const e in extend) {
-    if (excludeFrom.includes(e) || e.includes('__')) continue
+    if (excludeFrom.includes(e) || e.startsWith('__')) continue
     const elementProp = element[e]
     const extendProp = extend[e]
     if (isObjectLike(elementProp) && isObjectLike(extendProp)) {
@@ -51,7 +51,7 @@ export const deepMerge = (element, extend, excludeFrom = []) => {
 export const clone = (obj, excludeFrom = []) => {
   const o = {}
   for (const prop in obj) {
-    if (excludeFrom.includes(prop) || prop.includes('__')) continue
+    if (excludeFrom.includes(prop) || prop.startsWith('__')) continue
     o[prop] = obj[prop]
   }
   return o
@@ -65,7 +65,7 @@ export const deepCloneExclude = (obj, excludeFrom = []) => {
 
   const o = {}
   for (const k in obj) {
-    if (excludeFrom.includes(k) || k.includes('__')) continue
+    if (excludeFrom.includes(k) || k.startsWith('__')) continue
 
     let v = obj[k]
 
@@ -94,7 +94,7 @@ export const mergeArrayExclude = (arr, excl = []) => {
 export const deepClone = (obj, excludeFrom = []) => {
   const o = isArray(obj) ? [] : {}
   for (const prop in obj) {
-    if (excludeFrom.includes(prop) || prop.includes('__')) continue
+    if (excludeFrom.includes(prop) || prop.startsWith('__')) continue
     let objProp = obj[prop]
     if (prop === 'extend' && isArray(objProp)) {
       objProp = mergeArray(objProp)
@@ -305,7 +305,7 @@ export const overwrite = (element, params, excludeFrom = []) => {
   const changes = {}
 
   for (const e in params) {
-    if (excludeFrom.includes(e) || e.includes('__')) continue
+    if (excludeFrom.includes(e) || e.startsWith('__')) continue
 
     const elementProp = element[e]
     const paramsProp = params[e]
@@ -321,7 +321,7 @@ export const overwrite = (element, params, excludeFrom = []) => {
 
 export const overwriteShallow = (obj, params, excludeFrom = []) => {
   for (const e in params) {
-    if (excludeFrom.includes(e) || e.includes('__')) continue
+    if (excludeFrom.includes(e) || e.startsWith('__')) continue
     obj[e] = params[e]
   }
   return obj
@@ -332,9 +332,10 @@ export const overwriteShallow = (obj, params, excludeFrom = []) => {
  */
 export const overwriteDeep = (obj, params, excludeFrom = []) => {
   for (const e in params) {
-    if (excludeFrom.includes(e) || e.includes('__')) continue
+    if (excludeFrom.includes(e) || e.startsWith('__')) continue
     const objProp = obj[e]
     const paramsProp = params[e]
+    if (!obj.hasOwnProperty(e) || e === '__proto__' || e === 'constructor') continue
     if (isObjectLike(objProp) && isObjectLike(paramsProp)) {
       overwriteDeep(objProp, paramsProp)
     } else if (paramsProp !== undefined) {
