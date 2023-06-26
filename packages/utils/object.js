@@ -83,7 +83,7 @@ export const deepCloneExclude = (obj, excludeFrom = []) => {
   return o
 }
 
-// Merge array, but exclude keys listed in 'excl'
+// Merge array, but exclude keys listed in 'excl'z
 export const mergeArrayExclude = (arr, excl = []) => {
   return arr.reduce((acc, curr) => deepMerge(acc, deepCloneExclude(curr, excl)), {})
 }
@@ -335,7 +335,6 @@ export const overwriteDeep = (obj, params, excludeFrom = []) => {
     if (excludeFrom.includes(e) || e.startsWith('__')) continue
     const objProp = obj[e]
     const paramsProp = params[e]
-    if (!obj.hasOwnProperty(e) || e === '__proto__' || e === 'constructor') continue
     if (isObjectLike(objProp) && isObjectLike(paramsProp)) {
       overwriteDeep(objProp, paramsProp)
     } else if (paramsProp !== undefined) {
