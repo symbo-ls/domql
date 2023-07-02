@@ -60,7 +60,7 @@ export const throughInitialDefine = (element) => {
       }
     }
 
-    const execParam = defineObj[param](elementProp, element, element.state)
+    const execParam = defineObj[param](elementProp, element, element.state, element.context)
     if (execParam) element[param] = execParam
   }
   return element
@@ -76,9 +76,9 @@ export const throughUpdatedDefine = (element) => {
 
   for (const param in obj) {
     const execParam = ref.__exec[param]
-    if (execParam) ref.__defineCache[param] = execParam(element, element.state)
+    if (execParam) ref.__defineCache[param] = execParam(element, element.state, element.context)
     const cached = exec(ref.__defineCache[param], element)
-    const newExecParam = obj[param](cached, element, element.state)
+    const newExecParam = obj[param](cached, element, element.state, element.context)
     if (newExecParam) element[param] = newExecParam
   }
   return changes
