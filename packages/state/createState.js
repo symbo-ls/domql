@@ -8,7 +8,7 @@ import { updateState } from './updateState'
 import { checkIfInherits, createInheritedState } from './inherit'
 
 export const createState = function (element, parent, options) {
-  const skip = (options && options.skip) ? options.skip : false
+  const skipApplyMethods = Boolean(options?.skipApplyMethods)
 
   const objectizeState = checkForTypes(element)
   if (objectizeState === false) return parent.state || {}
@@ -26,7 +26,10 @@ export const createState = function (element, parent, options) {
   if (dependentState) element.state = dependentState
 
   // NOTE: Only true when 'onlyResolveExtends' option is set to true
-  if (skip) return element.state
+  if (skipApplyMethods) {
+    state.parent = element.parent.state
+    return element.state
+  }
 
   applyMethods(element)
 
