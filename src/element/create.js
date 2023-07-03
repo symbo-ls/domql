@@ -266,7 +266,7 @@ const resolveExtends = (element, parent, options) => {
   if (!element.state) element.state = {}
 
   element = createProps(element, parent)
-  createState(element, parent, { skip: true })
+  createState(element, parent, { skipApplyMethods: true })
   applyVariant(element, parent)
 
   throughInitialExec(element, options.propsExcludedFromExec)
