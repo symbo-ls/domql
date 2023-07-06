@@ -26,7 +26,7 @@ export const throughUpdatedExec = (element, options = { excludes: METHODS_EXL })
     const isDefinedParam = ref.__defineCache[param]
     if (isDefinedParam) continue
 
-    const newExec = ref.__exec[param](element, element.state)
+    const newExec = ref.__exec[param](element, element.state, element.context)
     const execReturnsString = isString(newExec) || isNumber(newExec)
     if (prop && prop.node && execReturnsString) {
       overwrite(prop, { text: newExec }, options)
