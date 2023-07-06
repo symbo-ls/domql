@@ -35,7 +35,7 @@ const ENV = process.env.NODE_ENV
 /**
  * Creating a domQL element using passed parameters
  */
-const create = (element, parent, key, options = OPTIONS.create || {}) => {
+export const create = (element, parent, key, options = OPTIONS.create || {}) => {
   if (options && !OPTIONS.create) {
     OPTIONS.create = options
     OPTIONS.create.context = element.context || options.context
