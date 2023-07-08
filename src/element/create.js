@@ -35,7 +35,7 @@ const ENV = process.env.NODE_ENV
 /**
  * Creating a domQL element using passed parameters
  */
-export const create = (element, parent, key, options = OPTIONS.create || {}) => {
+const create = (element, parent, key, options = OPTIONS.create || {}) => {
   if (options && !OPTIONS.create) {
     OPTIONS.create = options
     OPTIONS.create.context = element.context || options.context
@@ -179,22 +179,25 @@ const applyValueAsText = (element, parent, key) => {
 
 const addMethods = (element, parent) => {
   // assign METHODS
-  element.set = set
-  element.update = update
-  element.remove = remove
-  element.updateContent = updateContentElement
-  element.removeContent = removeContentElement
-  element.setProps = setProps
-  element.lookup = lookup
-  element.spotByPath = spotByPath
-  element.parse = parse
-  element.parseDeep = parseDeep
-  element.keys = keys
-  element.nextElement = nextElement
-  element.previousElement = previousElement
-  if (ENV === 'test' || ENV === 'development') {
-    element.log = log
+  const proto = {
+    set: set.bind(element),
+    update: update.bind(element),
+    remove: remove.bind(element),
+    updateContent: updateContentElement.bind(element),
+    removeContent: removeContentElement.bind(element),
+    setProps: setProps.bind(element),
+    lookup: lookup.bind(element),
+    spotByPath: spotByPath.bind(element),
+    parse: parse.bind(element),
+    parseDeep: parseDeep.bind(element),
+    keys: keys.bind(element),
+    nextElement: nextElement.bind(element),
+    previousElement: previousElement.bind(element)
   }
+  if (ENV === 'test' || ENV === 'development') {
+    proto.log = log
+  }
+  Object.setPrototypeOf(element, proto)
 }
 
 const applyContext = (element, parent, options) => {

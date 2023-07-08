@@ -9,8 +9,8 @@ if (isTest() || isDevelopment()) window.tree = TREE
 
 export default {
   TREE,
-  create,
-  parse,
-  set,
-  define
+  create: create.default || create,
+  parse: parse.default || parse,
+  set: set.default || set,
+  define: define.default || define
 }
