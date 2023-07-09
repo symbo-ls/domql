@@ -1,3 +1,4 @@
+'use strict'
 
 import { exec, is, isArray, isObject, isString, deepClone, deepMerge } from '@domql/utils'
 import { IGNORE_PROPS_PARAMS } from './ignore'
