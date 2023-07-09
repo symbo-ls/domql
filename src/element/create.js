@@ -178,7 +178,6 @@ const applyValueAsText = (element, parent, key) => {
 }
 
 const addMethods = (element, parent) => {
-  // assign METHODS
   const proto = {
     set: set.bind(element),
     update: update.bind(element),
@@ -194,9 +193,7 @@ const addMethods = (element, parent) => {
     nextElement: nextElement.bind(element),
     previousElement: previousElement.bind(element)
   }
-  if (ENV === 'test' || ENV === 'development') {
-    proto.log = log
-  }
+  if (ENV === 'test' || ENV === 'development') proto.log = log.bind(element)
   Object.setPrototypeOf(element, proto)
 }
 

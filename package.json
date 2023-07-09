@@ -47,11 +47,11 @@
     "@domql/utils": "latest"
   },
   "devDependencies": {
-    "@babel/core": "^7.22.5",
+    "@babel/core": "^7.12.0",
     "@babel/eslint-parser": "^7.16.3",
     "@babel/preset-env": "^7.16.4",
     "@emotion/css": "^11.10.0",
-    "@parcel/babel-preset-env": "^2.9.2",
+    "@parcel/babel-preset-env": "^2.9.3",
     "babel-jest": "^29.3.1",
     "coveralls": "^3.1.1",
     "esbuild": "^0.15.5",
