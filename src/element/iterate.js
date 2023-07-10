@@ -1,7 +1,7 @@
 'use strict'
 
 import { isObject, exec, isFunction, isNumber, isString } from '@domql/utils'
-import { METHODS_EXL, isVariant, overwrite } from './utils'
+import { METHODS_EXL, checkIfKeyIsComponent, extendizeByKey, isVariant, overwrite } from './utils'
 import { isMethod } from '@domql/methods'
 
 export const throughInitialExec = (element, exclude = {}) => {
@@ -12,6 +12,7 @@ export const throughInitialExec = (element, exclude = {}) => {
     if (isFunction(prop) && !isMethod(param) && !isVariant(param)) {
       ref.__exec[param] = prop
       element[param] = prop(element, element.state)
+      // if (isComponent)
     }
   }
 }
@@ -28,9 +29,14 @@ export const throughUpdatedExec = (element, options = { excludes: METHODS_EXL })
 
     const newExec = ref.__exec[param](element, element.state, element.context)
     const execReturnsString = isString(newExec) || isNumber(newExec)
-    if (prop && prop.node && execReturnsString) {
-      overwrite(prop, { text: newExec }, options)
-    } else if (newExec !== prop) {
+    if (prop && prop.node) {
+      if (execReturnsString) {
+        overwrite(prop, { text: newExec }, options)
+      } else if (checkIfKeyIsComponent(param)) {
+        const { extend, ...newElem } = extendizeByKey(newExec)
+        overwrite(prop, newElem, options)
+      }
+    } else if (!execReturnsString && newExec !== prop) {
       ref.__cached[param] = changes[param] = prop
       element[param] = newExec
     }
