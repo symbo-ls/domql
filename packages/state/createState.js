@@ -8,7 +8,7 @@ import { updateState } from './updateState'
 import { checkIfInherits, createInheritedState } from './inherit'
 
 export const createState = function (element, parent, options) {
-  const skipApplyMethods = Boolean(options?.skipApplyMethods)
+  const skipApplyMethods = Boolean(options && options.skipApplyMethods)
 
   const objectizeState = checkForTypes(element)
   if (objectizeState === false) return parent.state || {}
