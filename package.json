@@ -34,7 +34,7 @@
     "jest-environment-jsdom": "^29.5.0",
     "jsdom": "^22.0.0",
     "lerna": "^6.6.2",
-    "nodemon": "^2.0.6",
+    "nodemon": "^3.0.1",
     "rimraf": "^5.0.0",
     "standard": "^17.0.0"
   },
