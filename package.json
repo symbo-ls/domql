@@ -8,8 +8,8 @@
   },
   "type": "module",
   "module": "dist/esm/index.js",
-  "main": "dist/cjs/index.js",
   "exports": "./dist/cjs/index.js",
+  "main": "src/index.js",
   "source": "src/index.js",
   "files": [
     "dist",

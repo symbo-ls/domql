@@ -1,7 +1,13 @@
 'use strict'
 
 import { isFunction, exec, isString } from '@domql/utils'
-import { getExtendStack, jointStacks, cloneAndMergeArrayExtend, deepMergeExtend, replaceStringsWithComponents } from './utils'
+import {
+  getExtendStack,
+  jointStacks,
+  cloneAndMergeArrayExtend,
+  deepMergeExtend,
+  replaceStringsWithComponents
+} from './utils'
 
 const ENV = process.env.NODE_ENV
 
