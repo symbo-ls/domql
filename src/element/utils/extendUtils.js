@@ -14,6 +14,7 @@ export const getHashedExtend = extend => {
 
 export const setHashedExtend = (extend, stack) => {
   const hash = generateHash()
+  if (isString(extend)) return
   extend.__hash = hash
   extendStackRegistry[hash] = stack
   return stack
