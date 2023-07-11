@@ -34,7 +34,10 @@ export const throughUpdatedExec = (element, options = { excludes: METHODS_EXL })
         overwrite(prop, { text: newExec }, options)
       } else if (checkIfKeyIsComponent(param)) {
         const { extend, ...newElem } = extendizeByKey(newExec, element, param)
+        console.log(newElem)
         overwrite(prop, newElem, options)
+      } else {
+        overwrite(prop, newExec, options)
       }
     } else if (!execReturnsString && newExec !== prop) {
       ref.__cached[param] = changes[param] = prop
