@@ -1,6 +1,6 @@
 'use strict'
 
-import { isObject, exec, isFunction, isNumber, isString, isObjectLike } from '@domql/utils'
+import { isObject, exec, isFunction, isNumber, isString } from '@domql/utils'
 import { METHODS_EXL, checkIfKeyIsComponent, extendizeByKey, isVariant, overwrite } from './utils'
 import { isMethod } from '@domql/methods'
 
