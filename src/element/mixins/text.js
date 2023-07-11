@@ -1,7 +1,11 @@
 'use strict'
 
 import { create } from '..'
-import { exec } from '@domql/utils'
+import {
+  exec,
+  isString,
+  replaceLiteralsWithObjectFields
+} from '@domql/utils'
 
 /**
  * Creates a text node and appends into
@@ -20,7 +24,10 @@ export const asd = (param, element, node) => {
 }
 
 export default (param, element, node) => {
-  const prop = exec(param, element)
+  let prop = exec(param, element)
+  if (isString(prop) && prop.includes('{{')) {
+    prop = replaceLiteralsWithObjectFields(prop, element.state)
+  }
   if (element.tag === 'string') {
     if (element.text === prop) return
     node.nodeValue = prop
