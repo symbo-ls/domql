@@ -33,7 +33,7 @@ export const throughUpdatedExec = (element, options = { excludes: METHODS_EXL })
       if (execReturnsString) {
         overwrite(prop, { text: newExec }, options)
       } else if (checkIfKeyIsComponent(param)) {
-        const { extend, ...newElem } = extendizeByKey(newExec)
+        const { extend, ...newElem } = extendizeByKey(newExec, element, param)
         overwrite(prop, newElem, options)
       }
     } else if (!execReturnsString && newExec !== prop) {
