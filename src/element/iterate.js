@@ -29,6 +29,7 @@ export const throughUpdatedExec = (element, options = { excludes: METHODS_EXL })
 
     const newExec = ref.__exec[param](element, element.state, element.context)
     const execReturnsString = isString(newExec) || isNumber(newExec)
+    // if (prop && prop.node && execReturnsString) {
     if (prop && prop.node) {
       if (execReturnsString) {
         overwrite(prop, { text: newExec }, options)
@@ -38,7 +39,7 @@ export const throughUpdatedExec = (element, options = { excludes: METHODS_EXL })
       } else {
         overwrite(prop, newExec, options)
       }
-    } else if (!execReturnsString && newExec !== prop) {
+    } else if (newExec !== prop) {
       ref.__cached[param] = changes[param] = prop
       element[param] = newExec
     }
