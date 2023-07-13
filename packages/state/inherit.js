@@ -20,11 +20,13 @@ export const getChildStateInKey = (stateKey, parentState, options = {}) => {
   for (let i = 0; i < arrLength; i++) {
     const childKey = arr[i]
     const grandChildKey = arr[i + 1]
-    const childInParent = parentState[childKey]
-    if (childInParent && childInParent[grandChildKey]) {
-      stateKey = grandChildKey
-      parentState = childInParent
-    } else return
+
+    let childInParent = parentState[childKey]
+    if (!childInParent) childInParent = parentState[childKey] = {}
+    if (!childInParent[grandChildKey]) childInParent[grandChildKey] = {}
+
+    stateKey = grandChildKey
+    parentState = childInParent
   }
   if (options.returnParent) return parentState
   return parentState[stateKey]
