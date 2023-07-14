@@ -7,7 +7,7 @@ import { isDevelopment, isTest } from '@domql/env'
 
 if (isTest() || isDevelopment()) window.tree = TREE
 
-export default {
+export {
   TREE,
   create,
   parse,
