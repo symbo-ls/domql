@@ -10,6 +10,7 @@ export const stringIncludesAny = (str, characters) => {
 }
 
 export const replaceLiteralsWithObjectFields = (str, state) => {
+  if (!str.includes('{{')) return str
   return str.replace(/\{\{\s*((?:\.\.\/)+)?([^}\s]+)\s*\}\}/g, (_, parentPath, variable) => {
     if (parentPath) {
       const parentLevels = parentPath.match(/\.\.\//g).length
