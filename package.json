@@ -1,7 +1,7 @@
 {
   "name": "domql",
   "description": "DOM rendering Javascript framework at early stage.",
-  "version": "1.6.69",
+  "version": "1.6.70",
   "repository": "https://github.com/domql/domql",
   "publishConfig": {
     "registry": "https://registry.npmjs.org"
@@ -9,7 +9,7 @@
   "type": "module",
   "module": "dist/esm/index.js",
   "exports": {
-    "." : {
+    ".": {
       "kalduna": "./src/index.js",
       "default": "./dist/cjs/index.js"
     }
