@@ -24,6 +24,7 @@ export const map = (obj, extention, element) => {
 
 export const merge = (element, obj, excludeFrom = []) => {
   for (const e in obj) {
+    if (e === '__proto__') continue
     if (excludeFrom.includes(e) || e.startsWith('__')) continue
     const elementProp = element[e]
     const objProp = obj[e]
@@ -95,6 +96,7 @@ export const mergeArrayExclude = (arr, excl = []) => {
 export const deepClone = (obj, excludeFrom = []) => {
   const o = isArray(obj) ? [] : {}
   for (const prop in obj) {
+    if (prop === '__proto__') continue
     if (excludeFrom.includes(prop) || prop.startsWith('__')) continue
     let objProp = obj[prop]
     if (prop === 'extend' && isArray(objProp)) {

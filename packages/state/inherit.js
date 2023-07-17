@@ -21,6 +21,8 @@ export const getChildStateInKey = (stateKey, parentState, options = {}) => {
     const childKey = arr[i]
     const grandChildKey = arr[i + 1]
 
+    if (childKey === '__proto__' || grandChildKey === '__proto__') return
+
     let childInParent = parentState[childKey]
     if (!childInParent) childInParent = parentState[childKey] = {} // check for array
     if (!childInParent[grandChildKey]) childInParent[grandChildKey] = {} // check for array
