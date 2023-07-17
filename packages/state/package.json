@@ -8,7 +8,7 @@
   "jsdelivr": "dist/iife/index.js",
   "main": "dist/esm/index.js",
   "exports": {
-    "." : {
+    ".": {
       "kalduna": "./index.js",
       "default": "./dist/cjs/index.js"
     }
