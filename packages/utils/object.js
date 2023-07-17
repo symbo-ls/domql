@@ -36,6 +36,7 @@ export const merge = (element, obj, excludeFrom = []) => {
 
 export const deepMerge = (element, extend, excludeFrom = []) => {
   for (const e in extend) {
+    if (e === '__proto__') continue
     if (excludeFrom.includes(e) || e.startsWith('__')) continue
     const elementProp = element[e]
     const extendProp = extend[e]
@@ -205,6 +206,7 @@ export const detachFunctionsFromObject = (obj, detached = {}) => {
  */
 export const deepDestringify = (obj, stringified = {}) => {
   for (const prop in obj) {
+    if (prop === '__proto__') continue
     const objProp = obj[prop]
     if (isString(objProp)) {
       if (objProp.includes('=>') || objProp.includes('function') || objProp.startsWith('(')) {
@@ -332,6 +334,7 @@ export const overwriteShallow = (obj, params, excludeFrom = []) => {
  */
 export const overwriteDeep = (obj, params, excludeFrom = []) => {
   for (const e in params) {
+    if (e === '__proto__') continue
     if (excludeFrom.includes(e) || e.startsWith('__')) continue
     const objProp = obj[e]
     const paramsProp = params[e]

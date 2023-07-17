@@ -22,8 +22,8 @@ export const getChildStateInKey = (stateKey, parentState, options = {}) => {
     const grandChildKey = arr[i + 1]
 
     let childInParent = parentState[childKey]
-    if (!childInParent) childInParent = parentState[childKey] = {}
-    if (!childInParent[grandChildKey]) childInParent[grandChildKey] = {}
+    if (!childInParent) childInParent = parentState[childKey] = {} // check for array
+    if (!childInParent[grandChildKey]) childInParent[grandChildKey] = {} // check for array
 
     stateKey = grandChildKey
     parentState = childInParent
