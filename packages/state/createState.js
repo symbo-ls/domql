@@ -27,9 +27,10 @@ export const createState = function (element, parent, options) {
 
   // NOTE: Only true when 'onlyResolveExtends' option is set to true
   if (skipApplyMethods) {
-    if (element.parent && element.parent.state) {
+    if (element.parent && element.parent.state)
       element.state.parent = element.parent.state
-    } else { element.state.parent = element.state } // self loop
+    else
+      element.state.parent = {}
     return element.state
   }
 
