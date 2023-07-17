@@ -8,7 +8,13 @@ export const stringIncludesAny = (str, characters) => {
   }
   return false
 }
-
+/**
+ * Replaces placeholders in a string with corresponding {{ }} values from an object.
+ *
+ * @param {string} str - The string containing placeholders to replace.
+ * @param {object} state - The object containing the values to substitute.
+ * @returns {string} The modified string with placeholders replaced by values from the object.
+ */
 export const replaceLiteralsWithObjectFields = (str, state) => {
   if (!str.includes('{{')) return str
   return str.replace(/\{\{\s*((?:\.\.\/)+)?([^}\s]+)\s*\}\}/g, (_, parentPath, variable) => {
