@@ -1,7 +1,7 @@
 'use strict'
 
 import { triggerEventOn } from '@domql/event'
-import { deepClone, exec, is, isFunction, isObject } from '@domql/utils'
+import { deepClone, exec, is, isArray, isFunction, isObject } from '@domql/utils'
 import { IGNORE_STATE_PARAMS } from './ignore'
 import { add, apply, clean, destroy, parentUpdate, parse, remove, rootUpdate, set, toggle } from './methods'
 import { updateState } from './updateState'
@@ -72,6 +72,17 @@ const checkForTypes = (element) => {
   return false
 }
 
+const addProtoToArray = (state, proto) => {
+  for (const key in proto) {
+    Object.defineProperty(state, key, {
+      value: proto[key],
+      enumerable: false, // Set this to true if you want the method to appear in for...in loops
+      configurable: true, // Set this to true if you want to allow redefining/removing the property later
+      writable: true // Set this to true if you want to allow changing the function later
+    })
+  }
+}
+
 const applyMethods = (element) => {
   const state = element.state
   const ref = element.__ref
@@ -95,7 +106,11 @@ const applyMethods = (element) => {
     __root: ref.__root ? ref.__root.state : state
   }
 
-  Object.setPrototypeOf(state, proto)
+  if (isArray(state)) {
+    addProtoToArray(state, proto)
+  } else {
+    Object.setPrototypeOf(state, proto)
+  }
 
   if (state.parent) state.parent.__children[element.key] = state
 }

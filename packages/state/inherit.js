@@ -1,6 +1,6 @@
 'use strict'
 
-import { arrayContainsOtherArray, deepClone, is, isNot, isObjectLike } from '@domql/utils'
+import { deepClone, is, isNot, isObjectLike } from '@domql/utils'
 import { IGNORE_STATE_PARAMS } from './ignore'
 
 export const getParentStateInKey = (stateKey, parentState) => {
@@ -74,8 +74,20 @@ export const checkIfInherits = (element) => {
 
 export const isState = function (state) {
   if (!isObjectLike(state)) return false
-  const keys = Object.keys(state)
-  return arrayContainsOtherArray(keys, ['update', 'parse', 'clean', 'create', 'parent', 'rootUpdate'])
+  return state.update &&
+    state.parse &&
+    state.clean &&
+    state.create &&
+    state.parent &&
+    state.destroy &&
+    state.rootUpdate &&
+    state.parentUpdate &&
+    state.toggle &&
+    state.add &&
+    state.apply &&
+    state.__element &&
+    state.__children
+  // return arrayContainsOtherArray(keys, ['update', 'parse', 'clean', 'create', 'parent', 'rootUpdate'])
 }
 
 export const createChangesByKey = (path, value) => {

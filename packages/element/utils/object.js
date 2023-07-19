@@ -59,7 +59,6 @@ export const deepClone = (obj, exclude = METHODS_EXL) => {
 export const overwrite = (element, params, options) => {
   const changes = {}
   const { __ref } = element
-  console.log(element)
   const { __exec, __cached } = __ref
 
   for (const e in params) {

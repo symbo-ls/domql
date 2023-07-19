@@ -37,7 +37,6 @@ export const removeContent = function (el) {
 export const setContent = (param, element, node, options) => {
   if (param && element) {
     if (element.content.update) {
-      console.log(element.content)
       element.content.update({}, options)
     } else {
       set.call(element, param, options)
