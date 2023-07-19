@@ -7,6 +7,9 @@ export const applyParam = (param, element, options) => {
   const { node, context } = element
   const prop = element[param]
 
+  console.log(element)
+  console.log(param)
+
   const DOMQLProperty = registry[param]
   const DOMQLPropertyFromContext = context && context.registry && context.registry[param]
   const isGlobalTransformer = DOMQLPropertyFromContext || DOMQLProperty
