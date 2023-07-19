@@ -21,6 +21,7 @@
   "dependencies": {
     "@domql/event": "latest",
     "@domql/node": "^2.3.125",
+    "@domql/render": "^2.3.117",
     "@domql/state": "latest",
     "@domql/utils": "latest"
   },
