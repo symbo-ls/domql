@@ -1,6 +1,6 @@
 'use strict'
 
-import { TREE } from '@domql/tree'
+import { TREE } from './tree'
 import create from './create'
 import createNode from './node'
 import define from './define'

@@ -1,23 +1,28 @@
 {
   "name": "domql",
   "version": "2.3.46",
-  "main": "dist/main.js",
   "license": "MIT",
-  "source": "dist/main.js",
-  "module": "dist/module.bundle.cjs.js",
+  "type": "module",
+  "module": "index.js",
+  "main": "index.js",
+  "exports": "./dist/cjs/index.js",
+  "source": "index.js",
+  "files": [
+    "*.js",
+    "dist"
+  ],
+  "scripts": {
+    "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
+    "build:esm": "npx esbuild *.js --target=es2019 --format=esm --outdir=dist/esm",
+    "build:cjs": "npx esbuild *.js --target=node16 --format=cjs --outdir=dist/cjs",
+    "build": "yarn build:cjs",
+    "prepublish": "rimraf -I dist && yarn build && yarn copy:package:cjs"
+  },
   "dependencies": {
-    "@domql/cache": "latest",
-    "@domql/create": "latest",
-    "@domql/define": "latest",
+    "@domql/element": "latest",
     "@domql/event": "latest",
-    "@domql/extends": "latest",
-    "@domql/key": "latest",
-    "@domql/props": "latest",
-    "@domql/registry": "latest",
-    "@domql/report": "latest",
     "@domql/state": "latest",
-    "@domql/tree": "latest",
-    "@domql/update": "latest",
+    "@domql/render": "latest",
     "@domql/utils": "latest"
   },
   "gitHead": "66641a0ee9c94ecbe631b7b92e2018ad18af387b"

@@ -3,12 +3,6 @@
 import { isDefined, isFunction, isObjectLike } from '@domql/utils'
 import { parseFilters, registry } from './mixins'
 
-export const set = function () {
-}
-
-export const update = function () {
-}
-
 export const defineSetter = (element, key, get, set) =>
   Object.defineProperty(element, key, { get, set })
 

@@ -10,7 +10,8 @@ import { isMethod, lookup, setProps, remove, spotByPath } from '@domql/methods'
 import { assignClass } from '@domql/classlist'
 import { cacheNode, detectTag } from '@domql/node'
 import { createState } from '@domql/state'
-import { createProps } from '@domql/props'
+
+import { createProps } from './props'
 
 import createNode from './node'
 import { applyExtend } from './extend'
