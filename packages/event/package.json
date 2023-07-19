@@ -7,7 +7,12 @@
   "unpkg": "dist/iife/index.js",
   "jsdelivr": "dist/iife/index.js",
   "main": "dist/esm/index.js",
-  "exports": "./dist/cjs/index.js",
+  "exports": {
+    ".": {
+      "kalduna": "./index.js",
+      "default": "./dist/cjs/index.js"
+    }
+  },
   "source": "index.js",
   "files": [
     "*.js",
