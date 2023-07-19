@@ -2,7 +2,7 @@
 
 import { isFunction } from '@domql/utils'
 
-export const removeContentElement = function (el) {
+export const removeContent = function (el) {
   const element = el || this
   const { __ref } = element
 

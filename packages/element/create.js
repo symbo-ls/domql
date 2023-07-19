@@ -1,26 +1,23 @@
 'use strict'
 
-import { isObject, isFunction, isString, exec, is, isNode, isUndefined } from '@domql/utils'
-import { ROOT } from '@domql/tree'
-import { createKey } from '@domql/key'
+import { isObject, isFunction, isString, exec, is, isNode, isUndefined, createKey } from '@domql/utils'
+import { ROOT } from './tree'
 import { TAGS } from '@domql/registry'
 import { triggerEventOn } from '@domql/event'
 import { appendNode, assignNode } from '@domql/render'
-import { isMethod, lookup, setProps, remove, spotByPath } from '@domql/methods'
 import { assignClass } from '@domql/classlist'
 import { cacheNode, detectTag } from '@domql/node'
 import { createState } from '@domql/state'
+
+import { isMethod } from './methods'
 
 import { createProps } from './props'
 
 import createNode from './node'
 import { applyExtend } from './extend'
-import set from './set'
-import update from './update'
-import { log, keys, parse, parseDeep, nextElement, previousElement } from './methods'
 import { registry } from './mixins'
 import { throughInitialExec } from './iterate'
-import OPTIONS from './options'
+import OPTIONS from './cache/options'
 
 import {
   applyComponentFromContext,
@@ -29,7 +26,7 @@ import {
   checkIfKeyIsComponent,
   isVariant
 } from './utils/component'
-import { removeContentElement, updateContentElement } from './remove'
+import { addMethods } from './methods/set'
 
 const ENV = process.env.NODE_ENV
 
@@ -145,10 +142,22 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
   // generate a CLASS name
   assignClass(element)
 
+  renderElement(element, parent, options)
+
+  if (parent.__ref && parent.__ref.__children) parent.__ref.__children.push(element.key)
+
+  triggerEventOn('complete', element, options)
+
+  return element
+}
+
+const renderElement = (element, parent, options) => {
+  const { __ref: ref, key } = element
+
   // CREATE a real NODE
   createNode(element, options)
 
-  if (!__ref.__if) return element
+  if (!ref.__if) return element
 
   // assign NODE
   assignNode(element, parent, key)
@@ -158,10 +167,6 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
 
   // run `on.render`
   triggerEventOn('render', element, options)
-
-  if (parent.__ref && parent.__ref.__children) parent.__ref.__children.push(element.key)
-
-  return element
 }
 
 const checkIfPrimitive = (element) => {
@@ -176,26 +181,6 @@ const applyValueAsText = (element, parent, key) => {
     text: element,
     tag: extendTag || childExtendTag || isKeyValidHTMLTag || 'string'
   }
-}
-
-const addMethods = (element, parent) => {
-  const proto = {
-    set: set.bind(element),
-    update: update.bind(element),
-    remove: remove.bind(element),
-    updateContent: updateContentElement.bind(element),
-    removeContent: removeContentElement.bind(element),
-    setProps: setProps.bind(element),
-    lookup: lookup.bind(element),
-    spotByPath: spotByPath.bind(element),
-    parse: parse.bind(element),
-    parseDeep: parseDeep.bind(element),
-    keys: keys.bind(element),
-    nextElement: nextElement.bind(element),
-    previousElement: previousElement.bind(element)
-  }
-  if (ENV === 'test' || ENV === 'development') proto.log = log.bind(element)
-  Object.setPrototypeOf(element, proto)
 }
 
 const applyContext = (element, parent, options) => {

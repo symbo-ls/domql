@@ -1,7 +1,7 @@
 'use strict'
 
 import { isDefined, isFunction, isObjectLike } from '@domql/utils'
-import { parseFilters, registry } from './mixins'
+import { parseFilters, registry } from '../mixins'
 
 export const defineSetter = (element, key, get, set) =>
   Object.defineProperty(element, key, { get, set })

@@ -13,7 +13,7 @@ import create from './create'
 import { throughUpdatedDefine, throughUpdatedExec } from './iterate'
 import { registry } from './mixins'
 import { applyParam } from './applyParam'
-import OPTIONS from './options'
+import OPTIONS from './cache/options'
 
 const snapshot = {
   snapshotId: createSnapshotId
