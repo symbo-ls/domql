@@ -3,11 +3,13 @@
 import { exec, is, isString } from '@domql/utils'
 
 const objectizeStringProperty = propValue => {
-  if (is(propValue)('string', 'number')) return { inheritedString: propValue }
+  if (is(propValue)('string', 'number')) {
+    return { inheritedString: propValue }
+  }
   return propValue
 }
 
-const inheritParentProps = (element, parent) => {
+export const inheritParentProps = (element, parent) => {
   let propsStack = []
   const parentProps = exec(parent, parent.state).props
 

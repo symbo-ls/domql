@@ -1,10 +1,23 @@
 'use strict'
 
 import { isDevelopment } from '@domql/utils'
-import { lookup, setProps, remove, spotByPath, log, keys, parse, parseDeep, nextElement, previousElement } from './methods'
 
 import set from '../set'
 import update from '../update'
+
+import {
+  lookup,
+  setProps,
+  remove,
+  spotByPath,
+  log,
+  keys,
+  parse,
+  parseDeep,
+  nextElement,
+  previousElement
+} from './'
+
 import { removeContent, updateContent } from '../mixins/content'
 
 export const addMethods = (element, parent) => {

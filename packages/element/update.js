@@ -1,11 +1,9 @@
 'use strict'
 
-import { window } from '@domql/globals'
-import { exec, isArray, isFunction, isNumber, isObject, isString, isUndefined, merge, overwriteDeep } from '@domql/utils'
+import { window, exec, isArray, isFunction, isNumber, isObject, isString, isUndefined, merge, overwriteDeep, createSnapshotId } from '@domql/utils'
 import { applyEvent, triggerEventOn, triggerEventOnUpdate } from '@domql/event'
-import { isMethod } from '@domql/methods'
-import { createSnapshotId } from '@domql/key'
-import { updateProps } from '@domql/props'
+import { isMethod } from './methods'
+import { updateProps } from './props'
 import { createState } from '@domql/state'
 
 import { METHODS_EXL, isVariant } from './utils'
@@ -111,7 +109,7 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
       const childUpdateCall = () => update.call(prop, params[prop], {
         ...options,
         currentSnapshot: snapshotOnCallee,
-        calleeElement: calleeElement
+        calleeElement
       })
 
       if ((element.props && element.props.lazyLoad) || options.lazyLoad) {

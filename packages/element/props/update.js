@@ -1,5 +1,8 @@
 'use strict'
 
+import { syncProps } from './create'
+import { inheritParentProps } from './inherit'
+
 export const updateProps = (newProps, element, parent) => {
   const { __ref } = element
   let propsStack = __ref.__props
@@ -11,9 +14,4 @@ export const updateProps = (newProps, element, parent) => {
   if (propsStack) syncProps(propsStack, element)
 
   return element
-}
-
-function update (props, options) {
-  const element = this.__element
-  element.update({ props }, options)
 }

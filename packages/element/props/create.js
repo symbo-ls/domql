@@ -3,6 +3,8 @@
 import { exec, isArray, isObject, deepClone, deepMerge } from '@domql/utils'
 import { IGNORE_PROPS_PARAMS } from './ignore'
 
+import { inheritParentProps } from './inherit'
+
 const createPropsStack = (element, parent) => {
   const { props, __ref } = element
   const propsStack = __ref.__props = inheritParentProps(element, parent)
@@ -50,4 +52,9 @@ export const createProps = function (element, parent, cached) {
   }
 
   return element
+}
+
+function update (props, options) {
+  const element = this.__element
+  element.update({ props }, options)
 }

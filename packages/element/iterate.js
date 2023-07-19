@@ -2,7 +2,7 @@
 
 import { isObject, exec, isFunction, isNumber, isString } from '@domql/utils'
 import { METHODS_EXL, checkIfKeyIsComponent, extendizeByKey, isVariant, overwrite } from './utils'
-import { isMethod } from '@domql/methods'
+import { isMethod } from './methods'
 
 export const throughInitialExec = (element, exclude = {}) => {
   const { __ref: ref } = element
