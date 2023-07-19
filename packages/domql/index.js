@@ -1,6 +1,6 @@
 'use strict'
 
-import { TREE, create, define, update } from '@domql/create'
+import { TREE, create, define, update } from '@domql/element'
 
 export default {
   TREE,
