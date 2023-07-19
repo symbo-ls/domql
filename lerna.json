@@ -1,16 +1,9 @@
 {
   "packages": [
-<<<<<<< HEAD
     "packages/*",
     "packages/*/*",
     "plugins/*"
   ],
   "npmClient": "yarn",
   "version": "2.3.124"
-=======
-    "packages/*"
-  ],
-  "npmClient": "yarn",
-  "version": "2.3.154"
->>>>>>> feature/v2
 }

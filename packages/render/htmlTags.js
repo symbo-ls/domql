@@ -1,10 +1,6 @@
 'use strict'
 
-<<<<<<<< HEAD:packages/render/htmlTags.js
 export const HTML_TAGS = {
-========
-export const TAGS = {
->>>>>>>> feature/v2:packages/registry/tags.js
   root: [
     'body',
     'html'

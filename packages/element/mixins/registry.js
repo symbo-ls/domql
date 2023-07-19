@@ -6,7 +6,7 @@ import {
   text
 } from '.'
 
-export const defaultMethods = {
+export default {
   attr,
   style,
   text,

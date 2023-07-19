@@ -32,7 +32,6 @@ export const classList = (params, element) => {
   if (isObject(params)) params = classify(params, element)
   // TODO: fails on string
   const className = params.replace(/\s+/g, ' ').trim()
-<<<<<<<< HEAD:packages/render/methods/classList.js
   if (element.ref) element.ref.class = className // TODO: this check is NOT needed in new DOMQL
   return className
 }
@@ -41,8 +40,5 @@ export const classList = (params, element) => {
 export const applyClassListOnNode = (params, element, node) => {
   const className = classList(params, element)
   node.classList = className
-========
-  element.ref.class = className
->>>>>>>> feature/v2:packages/mixins/classList.js
   return className
 }

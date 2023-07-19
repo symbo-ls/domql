@@ -16,16 +16,12 @@ export const setHashedExtend = (extend, stack) => {
   const hash = generateHash()
   if (!isString(extend)) { extend.__hash = hash }
   extendStackRegistry[hash] = stack
-  return extendStackRegistry[hash]
+  return stack
 }
 
 export const getExtendStackRegistry = (extend, stack) => {
-  if (extend.__hash) {
-    return stack.concat(getHashedExtend(extend))
-  } else {
-    setHashedExtend(extend, stack)
-  }
-  return stack // .concat(hashedExtend)
+  if (extend.__hash) { return stack.concat(getHashedExtend(extend)) }
+  return setHashedExtend(extend, stack) // stack .concat(hashedExtend)
 }
 
 // stacking
@@ -35,7 +31,7 @@ export const extractArrayExtend = (extend, stack) => {
 }
 
 export const deepExtend = (extend, stack) => {
-  const extendOflattenExtend = extend.extends
+  const extendOflattenExtend = extend.extend
   if (extendOflattenExtend) {
     flattenExtend(extendOflattenExtend, stack)
   }
@@ -46,7 +42,7 @@ export const flattenExtend = (extend, stack) => {
   if (!extend) return stack
   if (isArray(extend)) return extractArrayExtend(extend, stack)
   stack.push(extend)
-  if (extend.extends) deepExtend(extend, stack)
+  if (extend.extend) deepExtend(extend, stack)
   return stack
 }
 
@@ -54,7 +50,7 @@ export const flattenExtend = (extend, stack) => {
 export const deepCloneExtend = obj => {
   const o = {}
   for (const prop in obj) {
-    if (['ref'].indexOf(prop) > -1) continue
+    if (['parent', 'node', '__element'].indexOf(prop) > -1) continue
     const objProp = obj[prop]
     if (isObject(objProp)) {
       o[prop] = deepCloneExtend(objProp)
@@ -67,7 +63,7 @@ export const deepCloneExtend = obj => {
 
 export const deepMergeExtend = (element, extend) => {
   for (const e in extend) {
-    if (e === 'ref') continue
+    if (['parent', 'node', '__element'].indexOf(e) > -1) continue
     const elementProp = element[e]
     const extendProp = extend[e]
     if (elementProp === undefined) {
@@ -111,7 +107,7 @@ export const jointStacks = (extendStack, childExtendStack) => {
 // init
 export const getExtendStack = extend => {
   if (!extend) return []
-  if (extend.__hash) return getHashedExtend(extend)
+  if (extend.__hash) return getHashedExtend(extend) || []
   const stack = flattenExtend(extend, [])
   return getExtendStackRegistry(extend, stack)
 }

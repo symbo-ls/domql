@@ -6,7 +6,7 @@ import { exec } from '@domql/utils'
  * Appends raw HTML as content
  * an original one as a child
  */
-export const html = (param, element, node) => {
+export default (param, element, node) => {
   const prop = exec(param, element)
   const { __ref } = element
   if (prop !== __ref.__html) {

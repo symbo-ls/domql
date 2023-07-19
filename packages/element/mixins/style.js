@@ -6,7 +6,7 @@ import { report } from '@domql/report'
 /**
  * Recursively add styles to a DOM node
  */
-export const style = (params, element, node) => {
+export default (params, element, node) => {
   if (params) {
     if (isObject(params)) map(node.style, params, element)
     else report('HTMLInvalidStyles', params)
