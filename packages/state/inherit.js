@@ -14,17 +14,21 @@ export const getParentStateInKey = (stateKey, parentState) => {
   return parentState
 }
 
-export const getChildStateInKey = (stateKey, parentState, options) => {
+export const getChildStateInKey = (stateKey, parentState, options = {}) => {
   const arr = stateKey.split('/')
   const arrLength = arr.length - 1
   for (let i = 0; i < arrLength; i++) {
     const childKey = arr[i]
     const grandChildKey = arr[i + 1]
-    const childInParent = parentState[childKey]
-    if (childInParent && childInParent[grandChildKey]) {
-      stateKey = grandChildKey
-      parentState = childInParent
-    } else return
+
+    if (childKey === '__proto__' || grandChildKey === '__proto__') return
+
+    let childInParent = parentState[childKey]
+    if (!childInParent) childInParent = parentState[childKey] = {} // check for array
+    if (!childInParent[grandChildKey]) childInParent[grandChildKey] = {} // check for array
+
+    stateKey = grandChildKey
+    parentState = childInParent
   }
   if (options.returnParent) return parentState
   return parentState[stateKey]
@@ -58,7 +62,7 @@ export const createInheritedState = (element, parent) => {
     return { value: inheritedState }
   }
 
-  console.warn(stateKey, 'is not present. Replacing with', {})
+  console.warn(ref.__state, 'is not present. Replacing with', {})
 }
 
 export const checkIfInherits = (element) => {
@@ -76,14 +80,14 @@ export const isState = function (state) {
 
 export const createChangesByKey = (path, value) => {
   if (!path) {
-    return value || {};
+    return value || {}
   }
-  const keys = path.split('/');
-  let obj = {};
-  let ref = obj;
+  const keys = path.split('/')
+  const obj = {}
+  let ref = obj
   keys.forEach((key, index) => {
-    ref[key] = index === keys.length - 1 ? value || {} : {};
-    ref = ref[key];
-  });
-  return obj;
+    ref[key] = index === keys.length - 1 ? value || {} : {}
+    ref = ref[key]
+  })
+  return obj
 }

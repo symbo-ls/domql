@@ -3,6 +3,7 @@
 import { window } from '@domql/globals'
 import { isFunction, isObjectLike, isObject, isArray, isString, is } from './types.js'
 import { mergeAndCloneIfArray, mergeArray } from './array.js'
+import { stringIncludesAny } from './string.js'
 
 export const exec = (param, element, state, context) => {
   if (isFunction(param)) {
@@ -23,7 +24,8 @@ export const map = (obj, extention, element) => {
 
 export const merge = (element, obj, excludeFrom = []) => {
   for (const e in obj) {
-    if (excludeFrom.includes(e) || e.includes('__')) continue
+    if (e === '__proto__') continue
+    if (excludeFrom.includes(e) || e.startsWith('__')) continue
     const elementProp = element[e]
     const objProp = obj[e]
     if (elementProp === undefined) {
@@ -35,7 +37,8 @@ export const merge = (element, obj, excludeFrom = []) => {
 
 export const deepMerge = (element, extend, excludeFrom = []) => {
   for (const e in extend) {
-    if (excludeFrom.includes(e) || e.includes('__')) continue
+    if (e === '__proto__') continue
+    if (excludeFrom.includes(e) || e.startsWith('__')) continue
     const elementProp = element[e]
     const extendProp = extend[e]
     if (isObjectLike(elementProp) && isObjectLike(extendProp)) {
@@ -50,118 +53,206 @@ export const deepMerge = (element, extend, excludeFrom = []) => {
 export const clone = (obj, excludeFrom = []) => {
   const o = {}
   for (const prop in obj) {
-    if (excludeFrom.includes(prop) || prop.includes('__')) continue
+    if (excludeFrom.includes(prop) || prop.startsWith('__')) continue
     o[prop] = obj[prop]
   }
   return o
 }
 
-/**
- * Creates a deep copy of an object or array, excluding specific properties.
- * @param {Object|Array} obj - The object or array to clone.
- * @param {Array<string>} [excludeFrom=[]] - An array of property names to exclude from the clone.
- * @returns {Object|Array} The cloned object or array.
- */
-export function deepClone(obj, excludeFrom = []) {
-  if (!isObjectLike(obj)) {
-    return obj
+// Clone anything deeply but excludeFrom keys given in 'excludeFrom'
+export const deepCloneExclude = (obj, excludeFrom = []) => {
+  if (isArray(obj)) {
+    return obj.map(x => deepCloneExclude(x, excludeFrom))
   }
-  
-  if (Array.isArray(obj)) {
-    return obj.map(item => deepClone(item, excludeFrom))
+
+  const o = {}
+  for (const k in obj) {
+    if (excludeFrom.includes(k) || k.startsWith('__')) continue
+
+    let v = obj[k]
+
+    if (k === 'extend' && isArray(v)) {
+      v = mergeArrayExclude(v, excludeFrom)
+    }
+
+    if (isArray(v)) {
+      o[k] = v.map(x => deepCloneExclude(x, excludeFrom))
+    } else if (isObject(v)) {
+      o[k] = deepCloneExclude(v, excludeFrom)
+    } else o[k] = v
   }
-  
-  const clonedObj = {}
-  for (const prop in obj) {
-    if (excludeFrom.includes(prop) || prop.includes('__')) continue
-    clonedObj[prop] = deepClone(obj[prop], excludeFrom)
-  }
-  return clonedObj
+
+  return o
+}
+
+// Merge array, but exclude keys listed in 'excl'z
+export const mergeArrayExclude = (arr, excl = []) => {
+  return arr.reduce((acc, curr) => deepMerge(acc, deepCloneExclude(curr, excl)), {})
 }
 
 /**
- * Recursively stringifies an object, converting functions to strings.
- *
- * @param {object} obj - The object to stringify.
- * @param {object} [stringified={}] - The resulting stringified object.
- * @returns {object} - The stringified object.
+ * Deep cloning of object
+ */
+export const deepClone = (obj, excludeFrom = []) => {
+  const o = isArray(obj) ? [] : {}
+  for (const prop in obj) {
+    if (prop === '__proto__') continue
+    if (excludeFrom.includes(prop) || prop.startsWith('__')) continue
+    let objProp = obj[prop]
+    if (prop === 'extend' && isArray(objProp)) {
+      objProp = mergeArray(objProp)
+    }
+    if (isObjectLike(objProp)) {
+      o[prop] = deepClone(objProp, excludeFrom)
+    } else o[prop] = objProp
+  }
+  return o
+}
+
+/**
+ * Stringify object
  */
 export const deepStringify = (obj, stringified = {}) => {
   for (const prop in obj) {
-    if (!obj.hasOwnProperty(prop)) continue; // skip inherited properties
-    const objProp = obj[prop];
+    const objProp = obj[prop]
     if (isFunction(objProp)) {
-      stringified[prop] = objProp.toString();
+      stringified[prop] = objProp.toString()
     } else if (isObject(objProp)) {
-      stringified[prop] = {};
-      deepStringify(objProp, stringified[prop]);
+      stringified[prop] = {}
+      deepStringify(objProp, stringified[prop])
     } else if (isArray(objProp)) {
-      stringified[prop] = [];
+      stringified[prop] = []
       objProp.forEach((v, i) => {
         if (isObject(v)) {
-          stringified[prop][i] = {};
-          deepStringify(v, stringified[prop][i]);
+          stringified[prop][i] = {}
+          deepStringify(v, stringified[prop][i])
         } else if (isFunction(v)) {
-          stringified[prop][i] = v.toString();
+          stringified[prop][i] = v.toString()
         } else {
-          stringified[prop][i] = v;
+          stringified[prop][i] = v
         }
-      });
+      })
     } else {
-      stringified[prop] = objProp;
+      stringified[prop] = objProp
     }
   }
-  return stringified;
+  return stringified
 }
 
-/**
- * Converts a deep object containing stringified functions to their original form.
- * @param {object} obj - The object to destingify.
- * @returns {object} - The destingified object.
- */
-export const deepDestringify = (obj) => {
-  const destingified = {}
+export const objectToString = (obj, indent = 0) => {
+  const spaces = '  '.repeat(indent)
+  let str = '{\n'
+
   for (const [key, value] of Object.entries(obj)) {
-    if (isString(value)) {
-      try {
-        const evalValue = window.eval(`(${value})`) // use parentheses to convert string to function expression
-        destingified[key] = evalValue
-      } catch {
-        destingified[key] = value
+    const keyAllowdChars = stringIncludesAny(key, ['-', ':', '@', '.', '!'])
+    const stringedKey = keyAllowdChars ? `'${key}'` : key
+    str += `${spaces}  ${stringedKey}: `
+
+    if (isArray(value)) {
+      str += '[\n'
+      for (const element of value) {
+        if (isObject(element) && element !== null) {
+          str += `${spaces}    ${objectToString(element, indent + 2)},\n`
+        } else if (isString(element)) {
+          str += `${spaces}    '${element}',\n`
+        } else {
+          str += `${spaces}    ${element},\n`
+        }
       }
-    } else if (isArray(value)) {
-      destingified[key] = value.map((item) =>
-        isObject(item) ? deepDestringify(item) : item
-      )
+      str += `${spaces}  ]`
     } else if (isObject(value)) {
-      destingified[key] = deepDestringify(value)
+      str += objectToString(value, indent + 1)
+    } else if (isString(value)) {
+      str += stringIncludesAny(value, ['\n', '\'']) ? `\`${value}\`` : `'${value}'`
     } else {
-      destingified[key] = value
+      str += value
     }
+
+    str += ',\n'
   }
-  return destingified
+
+  str += `${spaces}}`
+  return str
 }
 
 /**
- * Overwrites object properties with another
+ * Stringify object
  */
-export const overwrite = (element, params, excludeFrom = []) => {
-  const { ref } = element
-  const changes = {}
-
-  for (const e in params) {
-    if (excludeFrom.includes(e) || e.includes('__')) continue
-
-    const elementProp = element[e]
-    const paramsProp = params[e]
-
-    if (paramsProp) {
-      ref.__cache[e] = changes[e] = elementProp
-      ref[e] = paramsProp
+export const detachFunctionsFromObject = (obj, detached = {}) => {
+  for (const prop in obj) {
+    const objProp = obj[prop]
+    if (isFunction(objProp)) continue
+    else if (isObject(objProp)) {
+      detached[prop] = {}
+      deepStringify(objProp, detached[prop])
+    } else if (isArray(objProp)) {
+      detached[prop] = []
+      objProp.forEach((v, i) => {
+        if (isFunction(v)) return
+        if (isObject(v)) {
+          detached[prop][i] = {}
+          detachFunctionsFromObject(v, detached[prop][i])
+        } else {
+          detached[prop][i] = v
+        }
+      })
+    } else {
+      detached[prop] = objProp
     }
   }
+  return detached
+}
 
-  return changes
+/**
+ * Detringify object
+ */
+export const deepDestringify = (obj, stringified = {}) => {
+  for (const prop in obj) {
+    if (prop === '__proto__') continue
+    const objProp = obj[prop]
+    if (isString(objProp)) {
+      if (objProp.includes('=>') || objProp.includes('function') || objProp.startsWith('(')) {
+        try {
+          const evalProp = window.eval(`(${objProp})`) // use parentheses to convert string to function expression
+          stringified[prop] = evalProp
+        } catch (e) { if (e) stringified[prop] = objProp }
+      } else {
+        stringified[prop] = objProp
+      }
+    } else if (isArray(objProp)) {
+      stringified[prop] = []
+      objProp.forEach((arrProp) => {
+        if (isString(arrProp)) {
+          if (arrProp.includes('=>') || arrProp.includes('function') || arrProp.startsWith('(')) {
+            try {
+              const evalProp = window.eval(`(${arrProp})`) // use parentheses to convert string to function expression
+              stringified[prop].push(evalProp)
+            } catch (e) { if (e) stringified[prop].push(arrProp) }
+          } else {
+            stringified[prop].push(arrProp)
+          }
+        } else if (isObject(arrProp)) {
+          stringified[prop].push(deepDestringify(arrProp))
+        } else {
+          stringified[prop].push(arrProp)
+        }
+      })
+    } else if (isObject(objProp)) {
+      stringified[prop] = deepDestringify(objProp, stringified[prop]) // recursively call deepDestringify for nested objects
+    } else {
+      stringified[prop] = objProp
+    }
+  }
+  return stringified
+}
+
+export const stringToObject = (str) => {
+  let obj
+  try {
+    obj = window.eval('(' + str + ')') // eslint-disable-line
+  } catch (e) { console.warn(e) }
+
+  if (obj) return obj
 }
 
 export const diffObjects = (original, objToDiff, cache) => {
@@ -213,15 +304,19 @@ export const diff = (original, objToDiff, cache = {}) => {
 /**
  * Overwrites object properties with another
  */
-export const overwriteObj = (params, obj) => {
+export const overwrite = (element, params, excludeFrom = []) => {
+  const { ref } = element
   const changes = {}
 
   for (const e in params) {
-    const objProp = obj[e]
+    if (excludeFrom.includes(e) || e.startsWith('__')) continue
+
+    const elementProp = element[e]
     const paramsProp = params[e]
 
     if (paramsProp) {
-      obj[e] = changes[e] = objProp
+      ref.__cache[e] = changes[e] = elementProp
+      ref[e] = paramsProp
     }
   }
 
@@ -230,7 +325,7 @@ export const overwriteObj = (params, obj) => {
 
 export const overwriteShallow = (obj, params, excludeFrom = []) => {
   for (const e in params) {
-    if (excludeFrom.includes(e) || e.includes('__')) continue
+    if (excludeFrom.includes(e) || e.startsWith('__')) continue
     obj[e] = params[e]
   }
   return obj
@@ -241,7 +336,8 @@ export const overwriteShallow = (obj, params, excludeFrom = []) => {
  */
 export const overwriteDeep = (obj, params, excludeFrom = []) => {
   for (const e in params) {
-    if (excludeFrom.includes(e) || e.includes('__')) continue
+    if (e === '__proto__') continue
+    if (excludeFrom.includes(e) || e.startsWith('__')) continue
     const objProp = obj[e]
     const paramsProp = params[e]
     if (isObjectLike(objProp) && isObjectLike(paramsProp)) {

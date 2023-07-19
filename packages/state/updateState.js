@@ -1,60 +1,65 @@
 'use strict'
 
 import { report } from '@domql/report'
-import { triggerEventOn } from '@domql/event'
+import { triggerEventOnUpdate } from '@domql/event'
 import { IGNORE_STATE_PARAMS } from './ignore'
-import { deepMerge, overwriteDeep, overwriteShallow } from '@domql/utils'
+import { deepMerge, merge, overwriteDeep, overwriteShallow } from '@domql/utils'
 import { checkIfInherits, createChangesByKey, findInheritedState, getParentStateInKey } from './inherit'
 
 const STATE_UPDATE_OPTIONS = {
+  overwrite: true,
   preventHoistElementUpdate: false,
-  updateByState: true
+  updateByState: true,
+  execStateFunction: true,
+  isHoisted: true,
+  stateFunctionOverwrite: true
 }
 
 export const updateState = function (obj, options = STATE_UPDATE_OPTIONS) {
   const state = this
   const element = state.__element
 
+  if (!options.updateByState) merge(options, STATE_UPDATE_OPTIONS)
+
   if (!state.__element) report('ElementOnStateIsNotDefined')
+  if (options.preventInheritAtCurrentState === true) {
+    options.preventInheritAtCurrentState = state
+  } else if (options.preventInheritAtCurrentState) return
 
   if (!options.preventInitStateUpdateListener) {
-    const initStateUpdateReturns = triggerEventOn('initStateUpdated', element, obj)
+    const initStateUpdateReturns = triggerEventOnUpdate('initStateUpdated', obj, element, options)
     if (initStateUpdateReturns === false) return element
   }
 
   applyOverwrite(state, obj, options)
-
-  const updateIsHousted = hoistStateUpdate(state, obj, options)
-  if (updateIsHousted) return state
+  const updateIsHoisted = hoistStateUpdate(state, obj, options)
+  if (updateIsHoisted) return state
 
   updateDependentState(state, obj, options)
 
   applyElementUpdate(state, obj, options)
 
   if (!options.preventStateUpdateListener) {
-    triggerEventOn('stateUpdated', element, obj)
+    triggerEventOnUpdate('stateUpdated', obj, element, options)
   }
 
   return state
 }
 
 const applyOverwrite = (state, obj, options) => {
-  const { skipOverwrite, shallow } = options
+  const { overwrite } = options
+  if (!overwrite) return
 
-  if (skipOverwrite === 'merge') {
+  const shallow = overwrite === 'shallow'
+  const merge = overwrite === 'merge'
+
+  if (merge) {
     deepMerge(state, obj, IGNORE_STATE_PARAMS)
     return
   }
 
-  // if (skipOverwrite === 'skipOverwrite') {
-  //   deepMerge(state, obj, IGNORE_STATE_PARAMS)
-  //   return
-  // }
-
-  if (!skipOverwrite) {
-    const overwriteFunc = shallow ? overwriteShallow : overwriteDeep
-    overwriteFunc(state, obj, IGNORE_STATE_PARAMS)
-  }
+  const overwriteFunc = shallow ? overwriteShallow : overwriteDeep
+  overwriteFunc(state, obj, IGNORE_STATE_PARAMS)
 }
 
 const hoistStateUpdate = (state, obj, options) => {
@@ -77,10 +82,17 @@ const hoistStateUpdate = (state, obj, options) => {
   const targetParent = findGrandParentState || parent.state
   if (options.replace) targetParent[stateKey] = value
   targetParent.update(changesValue, {
+    execStateFunction: false,
+    stateFunctionOverwrite: false,
+    isHoisted: true,
     ...options,
     preventUpdate: options.preventHoistElementUpdate,
-    skipOverwrite: options.replace
+    overwrite: !options.replace
   })
+  const hasNotUpdated = options.preventUpdate !== true || !options.preventHoistElementUpdate
+  if (!options.preventStateUpdateListener && hasNotUpdated) {
+    triggerEventOnUpdate('stateUpdated', obj, element, options)
+  }
   return true
 }
 
@@ -94,7 +106,7 @@ const updateDependentState = (state, obj, options) => {
 
 const applyElementUpdate = (state, obj, options) => {
   const element = state.__element
-  if (!options.preventUpdate) {
+  if (options.preventUpdate !== true) {
     element.update({}, {
       ...options,
       updateByState: true
@@ -102,6 +114,7 @@ const applyElementUpdate = (state, obj, options) => {
   } else if (options.preventUpdate === 'recursive') {
     element.update({}, {
       ...options,
+      isHoisted: false,
       updateByState: true,
       preventUpdate: true
     })

@@ -1,5 +1,6 @@
 {
   "private": true,
+  "version": "0.0.1",
   "repository": "https://github.com/domql/domql",
   "scripts": {
     "postinstall": "npx lerna link --force-local && npx lerna run build && npx lerna run copy:package:cjs",
@@ -49,7 +50,10 @@
       "jest"
     ]
   },
-  "browserslist": "> 0.25%, not dead",
-  "dependencies": {},
-  "version": "0.0.5"
+  "workspaces": [
+    "packages/*",
+    "packages/*/*",
+    "plugins/*"
+  ],
+  "browserslist": "> 0.25%, not dead"
 }

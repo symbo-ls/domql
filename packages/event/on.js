@@ -2,18 +2,25 @@
 
 import { isFunction } from '@domql/utils'
 
-export const applyEvent = (param, element, state, context, updatedObj) => {
-  if (updatedObj) return param(updatedObj, element, state || element.state, context || element.context)
-  return param(element, state || element.state, context || element.context)
+export const applyEvent = (param, element, state, context, options) => {
+  return param(element, state || element.state, context || element.context, options)
 }
 
-export const triggerEventOn = (param, element, updatedObj) => {
+export const triggerEventOn = (param, element, options) => {
   if (element.on && isFunction(element.on[param])) {
-    if (updatedObj) {
-      const { state, context } = element
-      return applyEvent(element.on[param], element, state, context, updatedObj)
-    }
-    return applyEvent(element.on[param], element)
+    const { state, context } = element
+    return applyEvent(element.on[param], element, state, context, options)
+  }
+}
+
+export const applyEventUpdate = (param, updatedObj, element, state, context, options) => {
+  return param(updatedObj, element, state || element.state, context || element.context, options)
+}
+
+export const triggerEventOnUpdate = (param, updatedObj, element, options) => {
+  if (element.on && isFunction(element.on[param])) {
+    const { state, context } = element
+    return applyEventUpdate(element.on[param], updatedObj, element, state, context, options)
   }
 }
 

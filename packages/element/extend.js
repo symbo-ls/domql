@@ -1,7 +1,13 @@
 'use strict'
 
 import { isFunction, exec, isString } from '@domql/utils'
-import { getExtendStack, jointStacks, cloneAndMergeArrayExtend, deepMergeExtend, replaceStringsWithComponents } from '../utils'
+import {
+  getExtendStack,
+  jointStacks,
+  cloneAndMergeArrayExtend,
+  deepMergeExtend,
+  replaceStringsWithComponents
+} from './utils'
 
 const ENV = process.env.NODE_ENV
 
@@ -13,26 +19,39 @@ export const applyExtend = (element, parent, options = {}) => {
   if (isFunction(element)) element = exec(element, parent)
 
   let { extend, props, context, __ref } = element
-  const COMPONENTS = (context && context.components) || options.components
 
-  if (isString(extend)) extend = COMPONENTS[extend]
+  const COMPONENTS = (context && context.components) || options.components
+  if (isString(extend)) {
+    if (COMPONENTS && COMPONENTS[extend]) extend = COMPONENTS[extend]
+    else {
+      if (ENV !== 'test' || ENV !== 'development') {
+        console.warn('Extend is string but component was not found:', extend)
+      } extend = {}
+    }
+  }
+
   const extendStack = getExtendStack(extend)
 
   if (ENV !== 'test' || ENV !== 'development') delete element.extend
 
   let childExtendStack = []
   if (parent) {
-    // Assign parent attr to the element
     element.parent = parent
+    // Assign parent attr to the element
     if (!options.ignoreChildExtend) {
       if (props && props.ignoreChildExtend) return
 
       childExtendStack = getExtendStack(parent.childExtend)
 
+      // if (parent.childExtendRecursive && (props && !props.ignoreChildExtendRecursive)) {
       if (parent.childExtendRecursive) {
-        const childExtendRecursiveStack = getExtendStack(parent.childExtendRecursive)
-        childExtendStack = childExtendStack.concat(childExtendRecursiveStack)
-        element.childExtendRecursive = parent.childExtendRecursive
+        const canExtendRecursive = !props?.ignoreChildExtendRecursive && element.key !== '__text'
+        if (canExtendRecursive) {
+          const childExtendRecursiveStack = getExtendStack(parent.childExtendRecursive)
+          // add error if childExtendRecursive contains element which goes to infinite loop
+          childExtendStack = childExtendStack.concat(childExtendRecursiveStack)
+          element.childExtendRecursive = parent.childExtendRecursive
+        }
       }
     }
   }
@@ -54,7 +73,7 @@ export const applyExtend = (element, parent, options = {}) => {
     stack = [].concat(stack, defaultOptionsExtend)
   }
 
-  __ref.__extend = stack
+  if (__ref) __ref.__extend = stack
   const findAndReplaceStrings = replaceStringsWithComponents(stack, COMPONENTS)
   let mergedExtend = cloneAndMergeArrayExtend(findAndReplaceStrings)
 

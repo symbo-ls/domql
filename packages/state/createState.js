@@ -3,18 +3,18 @@
 import { triggerEventOn } from '@domql/event'
 import { deepClone, exec, is, isFunction, isObject } from '@domql/utils'
 import { IGNORE_STATE_PARAMS } from './ignore'
-import { add, apply, clean, destroy, parse, remove, rootUpdate, set, toggle } from './methods'
-import { updateState } from './update'
+import { add, apply, clean, destroy, parentUpdate, parse, remove, rootUpdate, set, toggle } from './methods'
+import { updateState } from './updateState'
 import { checkIfInherits, createInheritedState } from './inherit'
 
-export const createState = function (element, parent, opts) {
-  const skip = (opts && opts.skip) ? opts.skip : false
+export const createState = function (element, parent, options) {
+  const skipApplyMethods = Boolean(options && options.skipApplyMethods)
 
   const objectizeState = checkForTypes(element)
   if (objectizeState === false) return parent.state || {}
   else element.state = deepClone(objectizeState, IGNORE_STATE_PARAMS)
 
-  const whatInitReturns = triggerEventOn('stateInit', element)
+  const whatInitReturns = triggerEventOn('stateInit', element, options)
   if (whatInitReturns === false) return element.state
 
   if (checkIfInherits(element)) {
@@ -26,7 +26,10 @@ export const createState = function (element, parent, opts) {
   if (dependentState) element.state = dependentState
 
   // NOTE: Only true when 'onlyResolveExtends' option is set to true
-  if (skip) return element.state
+  if (skipApplyMethods) {
+    if (element.parent && element.parent.state) { element.state.parent = element.parent.state } else { element.state.parent = {} }
+    return element.state
+  }
 
   applyMethods(element)
 
@@ -73,21 +76,26 @@ const applyMethods = (element) => {
   const state = element.state
   const ref = element.__ref
 
-  state.clean = clean
-  state.parse = parse
-  state.destroy = destroy
-  state.update = updateState
-  state.rootUpdate = rootUpdate
-  state.create = createState
-  state.add = add
-  state.toggle = toggle
-  state.remove = remove
-  state.apply = apply
-  state.parent = element.parent.state
-  state.set = set
-  state.__element = element
-  state.__children = {}
-  state.__root = ref.__root ? ref.__root.state : state
+  const proto = {
+    clean: clean.bind(state),
+    parse: parse.bind(state),
+    destroy: destroy.bind(state),
+    update: updateState.bind(state),
+    rootUpdate: rootUpdate.bind(state),
+    parentUpdate: parentUpdate.bind(state),
+    create: createState.bind(state),
+    add: add.bind(state),
+    toggle: toggle.bind(state),
+    remove: remove.bind(state),
+    apply: apply.bind(state),
+    set: set.bind(state),
+    parent: element.parent.state,
+    __element: element,
+    __children: {},
+    __root: ref.__root ? ref.__root.state : state
+  }
+
+  Object.setPrototypeOf(state, proto)
 
   if (state.parent) state.parent.__children[element.key] = state
 }

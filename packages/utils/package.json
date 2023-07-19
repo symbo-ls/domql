@@ -1,6 +1,6 @@
 {
   "name": "@domql/utils",
-  "version": "2.3.120",
+  "version": "2.3.154",
   "license": "MIT",
   "type": "module",
   "module": "index.js",
@@ -23,7 +23,7 @@
     "@domql/key": "latest",
     "@domql/tags": "latest"
   },
-  "gitHead": "82d0f23182e270fbcaf995f59346c0eded5976c3",
+  "gitHead": "86251c1d94b9e87288cc9e84fd9badb6461b2973",
   "devDependencies": {
     "@babel/core": "^7.12.0"
   }

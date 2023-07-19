@@ -1,14 +1,13 @@
 'use strict'
 
-import { DEFAULT_METHODS } from '@domql/registry'
 import { report } from '@domql/report'
+import { registry } from './mixins'
 
-export const define = (params, options = {}) => {
+export default (params, options = {}) => {
   const { overwrite } = options
   for (const param in params) {
-    if (DEFAULT_METHODS[param] && !overwrite) {
+    if (registry[param] && !overwrite) {
       report('OverwriteToBuiltin', param)
-    } else DEFAULT_METHODS[param] = params[param]
+    } else registry[param] = params[param]
   }
-  return DEFAULT_METHODS
 }
