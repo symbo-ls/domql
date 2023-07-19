@@ -24,8 +24,7 @@ export const map = (obj, extention, element) => {
 
 export const merge = (element, obj, excludeFrom = []) => {
   for (const e in obj) {
-    if (e === '__proto__') continue
-    if (excludeFrom.includes(e) || e.startsWith('__')) continue
+    if (!obj.hasOwnProperty(e) || excludeFrom.includes(e) || e.startsWith('__')) continue
     const elementProp = element[e]
     const objProp = obj[e]
     if (elementProp === undefined) {
@@ -37,8 +36,7 @@ export const merge = (element, obj, excludeFrom = []) => {
 
 export const deepMerge = (element, extend, excludeFrom = []) => {
   for (const e in extend) {
-    if (e === '__proto__') continue
-    if (excludeFrom.includes(e) || e.startsWith('__')) continue
+    if (!extend.hasOwnProperty(e) || excludeFrom.includes(e) || e.startsWith('__')) continue
     const elementProp = element[e]
     const extendProp = extend[e]
     if (isObjectLike(elementProp) && isObjectLike(extendProp)) {
@@ -53,7 +51,7 @@ export const deepMerge = (element, extend, excludeFrom = []) => {
 export const clone = (obj, excludeFrom = []) => {
   const o = {}
   for (const prop in obj) {
-    if (excludeFrom.includes(prop) || prop.startsWith('__')) continue
+    if (!obj.hasOwnProperty(e) || excludeFrom.includes(prop) || prop.startsWith('__')) continue
     o[prop] = obj[prop]
   }
   return o
@@ -67,7 +65,7 @@ export const deepCloneExclude = (obj, excludeFrom = []) => {
 
   const o = {}
   for (const k in obj) {
-    if (excludeFrom.includes(k) || k.startsWith('__')) continue
+    if (!obj.hasOwnProperty(e) || excludeFrom.includes(k) || k.startsWith('__')) continue
 
     let v = obj[k]
 
