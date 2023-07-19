@@ -19,7 +19,7 @@
     "dist"
   ],
   "scripts": {
-    "copy:package:cjs": "cp ../../.build/package-cjs.json dist/cjs/package.json",
+    "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
     "build:esm": "npx esbuild *.js --target=es2019 --format=esm --outdir=dist/esm",
     "build:cjs": "npx esbuild *.js --target=node16 --format=cjs --outdir=dist/cjs",
     "build:iife": "npx esbuild *.js --target=node16 --format=iife --outdir=dist/iife",
