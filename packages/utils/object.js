@@ -24,7 +24,8 @@ export const map = (obj, extention, element) => {
 
 export const merge = (element, obj, excludeFrom = []) => {
   for (const e in obj) {
-    if (!obj.hasOwnProperty(e) || excludeFrom.includes(e) || e.startsWith('__')) continue
+    const hasOwnProperty = Object.prototype.hasOwnProperty.call(obj, e)
+    if (!hasOwnProperty || excludeFrom.includes(e) || e.startsWith('__')) continue
     const elementProp = element[e]
     const objProp = obj[e]
     if (elementProp === undefined) {
@@ -36,7 +37,8 @@ export const merge = (element, obj, excludeFrom = []) => {
 
 export const deepMerge = (element, extend, excludeFrom = []) => {
   for (const e in extend) {
-    if (!extend.hasOwnProperty(e) || excludeFrom.includes(e) || e.startsWith('__')) continue
+    const hasOwnProperty = Object.prototype.hasOwnProperty.call(extend, e)
+    if (!hasOwnProperty || excludeFrom.includes(e) || e.startsWith('__')) continue
     const elementProp = element[e]
     const extendProp = extend[e]
     if (isObjectLike(elementProp) && isObjectLike(extendProp)) {
@@ -51,7 +53,8 @@ export const deepMerge = (element, extend, excludeFrom = []) => {
 export const clone = (obj, excludeFrom = []) => {
   const o = {}
   for (const prop in obj) {
-    if (!obj.hasOwnProperty(e) || excludeFrom.includes(prop) || prop.startsWith('__')) continue
+    const hasOwnProperty = Object.prototype.hasOwnProperty.call(obj, prop)
+    if (!hasOwnProperty || excludeFrom.includes(prop) || prop.startsWith('__')) continue
     o[prop] = obj[prop]
   }
   return o
@@ -65,7 +68,8 @@ export const deepCloneExclude = (obj, excludeFrom = []) => {
 
   const o = {}
   for (const k in obj) {
-    if (!obj.hasOwnProperty(e) || excludeFrom.includes(k) || k.startsWith('__')) continue
+    const hasOwnProperty = Object.prototype.hasOwnProperty.call(obj, k)
+    if (!hasOwnProperty || excludeFrom.includes(k) || k.startsWith('__')) continue
 
     let v = obj[k]
 
@@ -206,7 +210,8 @@ export const detachFunctionsFromObject = (obj, detached = {}) => {
  */
 export const deepDestringify = (obj, stringified = {}) => {
   for (const prop in obj) {
-    if (prop === '__proto__') continue
+    const hasOwnProperty = Object.prototype.hasOwnProperty.call(obj, prop)
+    if (!hasOwnProperty) continue
     const objProp = obj[prop]
     if (isString(objProp)) {
       if (objProp.includes('=>') || objProp.includes('function') || objProp.startsWith('(')) {
