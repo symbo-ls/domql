@@ -1,0 +1,31 @@
+{
+  "name": "@domql/methods",
+  "version": "2.3.135",
+  "license": "MIT",
+  "type": "module",
+  "module": "dist/esm/index.js",
+  "unpkg": "dist/iife/index.js",
+  "jsdelivr": "dist/iife/index.js",
+  "main": "dist/esm/index.js",
+  "exports": "./dist/cjs/index.js",
+  "source": "index.js",
+  "files": [
+    "*.js",
+    "dist"
+  ],
+  "scripts": {
+    "copy:package:cjs": "cp ../../.build/package-cjs.json dist/cjs/package.json",
+    "build:esm": "npx esbuild *.js --target=es2019 --format=esm --outdir=dist/esm",
+    "build:cjs": "npx esbuild *.js --target=node16 --format=cjs --outdir=dist/cjs",
+    "build:iife": "npx esbuild *.js --target=node16 --format=iife --outdir=dist/iife",
+    "build": "yarn build:cjs",
+    "prepublish": "rimraf -I dist && yarn build && yarn copy:package:cjs"
+  },
+  "dependencies": {
+    "@domql/env": "latest",
+    "@domql/registry": "latest",
+    "@domql/tree": "latest",
+    "@domql/utils": "latest"
+  },
+  "gitHead": "261d178b8a4575a11de4b4a0e5c6e97ece829d2a"
+}

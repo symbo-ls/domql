@@ -1,5 +1,6 @@
 'use strict'
 
+<<<<<<< HEAD
 import { TREE } from './tree'
 import create from './create'
 import createNode from './node'
@@ -25,3 +26,10 @@ export {
   log,
   keys
 }
+=======
+export * from '@domql/methods'
+export * from '@domql/iterate'
+export * from '@domql/update'
+export * from '@domql/create'
+export * from '@domql/set'
+>>>>>>> feature/v2
