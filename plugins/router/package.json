@@ -1,6 +1,6 @@
 {
   "name": "@domql/router",
-  "version": "2.3.136",
+  "version": "2.3.125",
   "license": "MIT",
   "type": "module",
   "module": "dist/esm/index.js",

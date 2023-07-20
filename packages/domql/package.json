@@ -1,6 +1,6 @@
 {
   "name": "domql",
-  "version": "2.3.46",
+  "version": "2.3.125",
   "license": "MIT",
   "type": "module",
   "module": "index.js",
@@ -26,8 +26,8 @@
   "dependencies": {
     "@domql/element": "latest",
     "@domql/event": "latest",
-    "@domql/state": "latest",
     "@domql/render": "latest",
+    "@domql/state": "latest",
     "@domql/utils": "latest"
   },
   "gitHead": "66641a0ee9c94ecbe631b7b92e2018ad18af387b"
