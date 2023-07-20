@@ -5,5 +5,5 @@
     "plugins/*"
   ],
   "npmClient": "yarn",
-  "version": "2.3.125"
+  "version": "2.3.126"
 }

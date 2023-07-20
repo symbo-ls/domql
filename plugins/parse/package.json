@@ -1,6 +1,6 @@
 {
   "name": "@domql/parse",
-  "version": "2.3.125",
+  "version": "2.3.126",
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
