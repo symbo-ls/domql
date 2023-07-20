@@ -1,111 +1,59 @@
 {
-  "name": "domql",
-  "description": "DOM rendering Javascript framework at early stage.",
-  "version": "1.6.71",
+  "private": true,
+  "version": "0.0.1",
   "repository": "https://github.com/domql/domql",
-  "publishConfig": {
-    "registry": "https://registry.npmjs.org"
-  },
-  "type": "module",
-  "module": "dist/esm/index.js",
-  "exports": {
-    ".": {
-      "kalduna": "./src/index.js",
-      "default": "./dist/cjs/index.js"
-    }
-  },
-  "main": "dist/esm/index.js",
-  "source": "src/index.js",
-  "files": [
-    "dist",
-    "src",
-    "packages"
-  ],
   "scripts": {
-    "copy:package:cjs": "cp ./.build/package-cjs.json dist/cjs/package.json",
-    "build:esm": "npx esbuild src/index.js src/index.js --target=es2019 --format=esm --outdir=dist/esm --bundle",
-    "build:cjs": "npx esbuild src/index.cjs src/**/*.js src/**/**/*.js --target=node16 --format=cjs --outdir=dist/cjs",
-    "build:iife": "npx esbuild src/index.js --target=node16 --format=iife --outdir=dist/iife --bundle",
-    "build": "yarn build:esm && yarn build:cjs && yarn build:iife",
-    "prepublish": "rimraf -I dist && yarn test:lint && yarn build && yarn copy:package:cjs",
-    "p": "npm version patch && npm publish && git push origin --tags --force && git push",
-    "start": "parcel examples/index.html --no-cache",
-    "test:lint": "npx standard \"src/**/*.js\"",
-    "test": "yarn test:lint; jest --coverage --coverageReporters=text-lcov | coveralls",
-    "test:watch": "jest --watch"
-  },
-  "dependencies": {
-    "@domql/classlist": "latest",
-    "@domql/emotion": "latest",
-    "@domql/env": "latest",
-    "@domql/event": "latest",
-    "@domql/globals": "latest",
-    "@domql/key": "latest",
-    "@domql/methods": "latest",
-    "@domql/mixins": "latest",
-    "@domql/node": "latest",
-    "@domql/registry": "latest",
-    "@domql/render": "latest",
-    "@domql/report": "latest",
-    "@domql/state": "latest",
-    "@domql/tree": "latest",
-    "@domql/utils": "latest"
+    "postinstall": "npx lerna link --force-local && npx lerna run build && npx lerna run copy:package:cjs",
+    "build": "yarn build:packages",
+    "build:watch": "nodemon --exec \"yarn build:cjs\" --ignore 'dist/*'",
+    "build:packages": "lerna run build",
+    "test:watch": "jest --watch --env=jsdom",
+    "test:unit": "jest --env=jsdom",
+    "test:lint": "npx standard \"packages/**/*.js\"",
+    "test:coverage": "yarn jest --coverage --coverageReporters=text-lcov | coveralls",
+    "test": "yarn test:unit && yarn test:lint",
+    "publish:all": "npx lerna publish --force-publish",
+    "publish:packages": "yarn test && npx lerna publish",
+    "clean": "rm -rf dist .cache **/dist **/.cache",
+    "clean:modules": "rm -rf node_modules yarn.lock package-lock.json lerna-debug.log yarn-error.log",
+    "clean:packages": "lerna exec -- rm -rf dist node_modules yarn.lock yarn-error.log package-lock.json",
+    "clean:all": "yarn clean && yarn clean:modules && yarn clean:packages",
+    "reinstall": "yarn clean:all && yarn"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.0",
+    "@babel/core": "^7.21.5",
     "@babel/eslint-parser": "^7.16.3",
     "@babel/preset-env": "^7.16.4",
-    "@emotion/css": "^11.10.0",
-    "@parcel/babel-preset-env": "^2.9.3",
-    "babel-jest": "^29.3.1",
-    "coveralls": "^3.1.1",
-    "esbuild": "^0.15.5",
+    "babel-jest": "^29.2.1",
+    "esbuild": "^0.17.11",
     "eslint": "^8.4.0",
     "eslint-config-standard": "^17.0.0",
     "eslint-plugin-import": "^2.25.3",
-    "eslint-plugin-jest": "^26.8.2",
+    "eslint-plugin-jest": "^27.1.3",
     "eslint-plugin-node": "^11.1.0",
-    "jest": "^29.0.0",
-    "jest-environment-jsdom": "^29.3.1",
-    "jsdom": "^19.0.0",
+    "jest": "^29.5.0",
+    "jest-environment-jsdom": "^29.5.0",
+    "jsdom": "^21.0.0",
+    "lerna": "^6.6.1",
     "nodemon": "^2.0.6",
-    "parcel": "^2.0.1",
-    "rimraf": "^4.4.0",
-    "standard": "^16.0.1"
-  },
-  "babel": {
-    "presets": [
-      [
-        "@parcel/babel-preset-env",
-        {
-          "targets": {
-            "node": "current"
-          }
-        }
-      ]
-    ]
-  },
-  "jest": {
-    "testEnvironment": "jsdom",
-    "transformIgnorePatterns": [
-      "node_modules/(?!(@domql.*)/)"
-    ],
-    "collectCoverageFrom": [
-      "src/**/*.js"
-    ]
+    "rimraf": "^5.0.0",
+    "standard": "^17.0.0"
   },
   "standard": {
-    "env": [
-      "jest"
-    ],
+    "parser": "@babel/eslint-parser",
     "ignore": [
       "examples/*.js",
-      "test/**/*.js",
+      "**/test/*.js",
       "*.jsx"
+    ],
+    "env": [
+      "jest"
     ]
   },
-  "browserslist": [
-    "> 1%",
-    "ie >= 9"
-  ]
+  "workspaces": [
+    "packages/*",
+    "packages/*/*",
+    "plugins/*"
+  ],
+  "browserslist": "> 0.25%, not dead"
 }

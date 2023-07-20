@@ -1,0 +1,37 @@
+{
+  "name": "@domql/element",
+  "version": "2.3.154",
+  "license": "MIT",
+  "type": "module",
+  "module": "index.js",
+  "main": "index.js",
+  "exports": {
+    ".": {
+      "kalduna": "./index.js",
+      "default": "./dist/cjs/index.js"
+    }
+  },
+  "source": "index.js",
+  "files": [
+    "*.js",
+    "dist"
+  ],
+  "scripts": {
+    "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
+    "build:esm": "npx esbuild *.js --target=es2019 --format=esm --outdir=dist/esm",
+    "build:cjs": "npx esbuild *.js --target=node16 --format=cjs --outdir=dist/cjs",
+    "build": "yarn build:cjs",
+    "prepublish": "rimraf -I dist && yarn build && yarn copy:package:cjs"
+  },
+  "dependencies": {
+    "@domql/event": "latest",
+    "@domql/node": "^2.3.125",
+    "@domql/render": "^2.3.117",
+    "@domql/state": "latest",
+    "@domql/utils": "latest"
+  },
+  "gitHead": "86251c1d94b9e87288cc9e84fd9badb6461b2973",
+  "devDependencies": {
+    "@babel/core": "^7.12.0"
+  }
+}

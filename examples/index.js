@@ -5,6 +5,7 @@ import DOM from '../src'
 import header from './header'
 import footer from './footer'
 import Icon from './icon'
+// import { transformReact } from '../packages/transform-react'
 
 const icon = {
   extend: Icon,
@@ -53,7 +54,9 @@ const root = {
   footer
 }
 
-DOM.create(root)
+DOM.create(root, null, null, {
+  // transform: { react: transformReact }
+})
 
 const later = performance.now()
 console.log(later - now)
