@@ -66,7 +66,7 @@ export const createNode = (element, options) => {
         isVariant(param) ||
         isObject(registry[param])
       ) continue
-      
+
       const isElement = applyParam(param, element, options)
       if (isElement) {
         const { hasDefine, hasContextDefine } = isElement
