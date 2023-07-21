@@ -1,22 +1,23 @@
 'use strict'
 
+import createNode from './node'
+
 import { isObject, isFunction, isString, exec, is, isNode, isUndefined, createKey } from '@domql/utils'
 import { ROOT } from './tree'
 import { TAGS } from '@domql/registry'
 import { triggerEventOn } from '@domql/event'
 import { appendNode, assignNode } from '@domql/render'
-import { assignClass } from '@domql/classlist'
 import { cacheNode, detectTag } from '@domql/node'
 import { createState } from '@domql/state'
 
 import { isMethod } from './methods'
-
 import { createProps } from './props'
-
-import createNode from './node'
 import { applyExtend } from './extend'
 import { registry } from './mixins'
+import { addMethods } from './methods/set'
+import { assignClass } from './mixins/classList'
 import { throughInitialExec } from './iterate'
+
 import OPTIONS from './cache/options'
 
 import {
@@ -26,7 +27,6 @@ import {
   checkIfKeyIsComponent,
   isVariant
 } from './utils/component'
-import { addMethods } from './methods/set'
 
 const ENV = process.env.NODE_ENV
 

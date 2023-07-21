@@ -1,6 +1,6 @@
 'use strict'
 
-import { create } from '../../src/element'
+import { create } from '../'
 
 const element = create({})
 
