@@ -11,7 +11,9 @@ const set = function (params, options = {}, el) {
   const element = el || this
   const __contentRef = element.content && element.content.__ref
 
-  if (__contentRef && __contentRef.__cached && isEqualDeep(params, element.content)) return element
+  if (__contentRef && __contentRef.__cached && isEqualDeep(params, element.content)) {
+    return element
+  }
   removeContent(element)
 
   if (params) {

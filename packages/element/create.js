@@ -71,7 +71,7 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
   }
 
   // define KEY
-  const assignedKey = (element.key || key || createKey()).toString()
+  const assignedKey = (key || element.key || createKey()).toString()
 
   if (checkIfKeyIsComponent(assignedKey)) {
     element = applyKeyComponentAsExtend(element, parent, assignedKey)
