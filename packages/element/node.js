@@ -2,8 +2,8 @@
 
 import { exec, isFunction, isObject, isUndefined } from '@domql/utils'
 import { applyEventsOnNode, triggerEventOn } from '@domql/event'
+import { cacheNode } from '@domql/render'
 import { isMethod } from './methods'
-import { cacheNode } from '@domql/node'
 
 import create from './create'
 

@@ -1,6 +1,6 @@
 'use strict'
 
-import { window } from '@domql/globals'
+import { window } from '@domql/utils'
 
 const OPTIONS = {
   logLevel: 4

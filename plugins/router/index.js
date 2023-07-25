@@ -1,6 +1,6 @@
 'use strict'
 
-import { document, window } from '@domql/globals'
+import { document, window } from '@domql/utils'
 
 export const getActiveRoute = (level = 0, route = window.location.pathname) => {
   const routeArray = route.split('/')

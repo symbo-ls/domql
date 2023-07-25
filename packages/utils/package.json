@@ -23,11 +23,6 @@
     "build": "yarn build:cjs",
     "prepublish": "rimraf -I dist && yarn build && yarn copy:package:cjs"
   },
-  "dependencies": {
-    "@domql/globals": "latest",
-    "@domql/key": "latest",
-    "@domql/tags": "^2.3.117"
-  },
   "gitHead": "86251c1d94b9e87288cc9e84fd9badb6461b2973",
   "devDependencies": {
     "@babel/core": "^7.12.0"

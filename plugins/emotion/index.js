@@ -1,8 +1,7 @@
 'use strict'
 
 // import DOM from '../../src'
-import { isObjectLike, exec, isObject, isEqualDeep } from '@domql/utils'
-import { isProduction } from '@domql/env'
+import { isObjectLike, exec, isObject, isEqualDeep, isProduction } from '@domql/utils'
 import { applyClassListOnNode } from '@domql/classlist'
 import createEmotion from '@emotion/css/create-instance'
 

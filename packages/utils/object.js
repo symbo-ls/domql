@@ -1,6 +1,6 @@
 'use strict'
 
-import { window } from '@domql/globals'
+import { window } from './globals.js'
 import { isFunction, isObjectLike, isObject, isArray, isString, is } from './types.js'
 import { mergeAndCloneIfArray, mergeArray } from './array.js'
 import { stringIncludesAny } from './string.js'

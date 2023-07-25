@@ -1,6 +1,6 @@
 'use strict'
 
-import { window } from '@domql/globals'
+import { window } from './globals'
 
 export const isNode = (obj) => {
   return (

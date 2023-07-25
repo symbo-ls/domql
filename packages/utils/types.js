@@ -1,9 +1,6 @@
 'use strict'
 
-import { HTML_TAGS } from '@domql/tags'
 import { isHtmlElement, isNode } from './node'
-
-export const isValidHtmlTag = arg => HTML_TAGS.body.includes(arg)
 
 export const isObject = arg => {
   if (arg === null) return false
