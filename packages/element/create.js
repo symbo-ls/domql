@@ -266,11 +266,14 @@ const resolveExtends = (element, parent, options) => {
       isVariant(param)
     ) continue
 
-    const hasDefined = element.define && element.define[param]
-    const ourParam = registry[param]
-    const hasOptionsDefine = options.define && options.define[param]
-    if (ourParam && !hasOptionsDefine) continue
-    else if (element[param] && !hasDefined && !hasOptionsDefine) {
+    const hasDefine = element.define && element.define[param]
+    const contextHasDefine = element.context && element.context.define
+          && element.context.define[param]
+    const optionsHasDefine = options.define && options.define[param]
+
+    if (registry[param] && !optionsHasDefine) {
+      continue
+    } else if (element[param] && !hasDefine && !optionsHasDefine && !contextHasDefine) {
       create(exec(prop, element), element, param, options)
     }
   }
