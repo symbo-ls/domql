@@ -103,7 +103,7 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
 
   // Only resolve extends, skip everything else
   if (options.onlyResolveExtends) {
-    return resolveExtends(element, parent, options)
+    return onlyResolveExtends(element, parent, options)
   }
 
   if (Object.keys(options).length) {
@@ -241,7 +241,7 @@ const addCaching = (element, parent) => {
   }
 }
 
-const resolveExtends = (element, parent, options) => {
+const onlyResolveExtends = (element, parent, options) => {
   const { __ref } = element
   element.tag = detectTag(element)
 
