@@ -44,9 +44,9 @@ export const applyExtend = (element, parent, options = {}) => {
       childExtendStack = getExtendStack(parent.childExtend)
 
       // if (parent.childExtendRecursive && (props && !props.ignoreChildExtendRecursive)) {
-      if (parent.childExtendRecursive || (props && props.ignoreChildExtendRecursive)) {
-        const propsChildExtendRecursive = props && !props.ignoreChildExtendRecursive
-        const canExtendRecursive = propsChildExtendRecursive && element.key !== '__text'
+      const ignoreChildExtendRecursive = props && props.ignoreChildExtendRecursive
+      if (parent.childExtendRecursive && !ignoreChildExtendRecursive) {
+        const canExtendRecursive = element.key !== '__text'
         if (canExtendRecursive) {
           const childExtendRecursiveStack = getExtendStack(parent.childExtendRecursive)
           // add error if childExtendRecursive contains element which goes to infinite loop
