@@ -31,7 +31,7 @@
     "@domql/state": "latest",
     "@domql/utils": "latest"
   },
-  "gitHead": "86251c1d94b9e87288cc9e84fd9badb6461b2973",
+  "gitHead": "e2cff62766d895cf6852ffa8379825c264971f0d",
   "devDependencies": {
     "@babel/core": "^7.12.0"
   }
