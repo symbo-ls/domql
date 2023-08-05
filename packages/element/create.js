@@ -267,8 +267,8 @@ const onlyResolveExtends = (element, parent, options) => {
     ) continue
 
     const hasDefine = element.define && element.define[param]
-    const contextHasDefine = element.context && element.context.define
-          && element.context.define[param]
+    const contextHasDefine = element.context && element.context.define &&
+          element.context.define[param]
     const optionsHasDefine = options.define && options.define[param]
 
     if (registry[param] && !optionsHasDefine) {
