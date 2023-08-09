@@ -44,8 +44,6 @@ export const createNode = (element, options) => {
     if (isFunction(node.setAttribute)) node.setAttribute('key', element.key)
   }
 
-  if (!ref.__if) return element
-
   // iterate through all given params
   if (element.tag !== 'string' || element.tag !== 'fragment') {
     // iterate through define

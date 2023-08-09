@@ -4,7 +4,7 @@ import { isFunction } from '@domql/utils'
 import { registry } from './mixins'
 
 export const applyParam = (param, element, options) => {
-  const { node, context } = element
+  const { node, context, __ref: ref } = element
   const prop = element[param]
 
   const DOMQLProperty = registry[param]
@@ -13,6 +13,8 @@ export const applyParam = (param, element, options) => {
 
   const hasDefine = element.define && element.define[param]
   const hasContextDefine = context && context.define && context.define[param]
+
+  if (!ref.__if) return
 
   if (isGlobalTransformer && !hasContextDefine) {
     if (isFunction(isGlobalTransformer)) {
