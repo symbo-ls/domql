@@ -8,6 +8,10 @@ import { updateState } from './updateState'
 import { checkIfInherits, createInheritedState } from './inherit'
 
 export const createState = function (element, parent, options) {
+  element.state = applyInitialState(element, parent, options)
+}
+
+export const applyInitialState = function (element, parent, options) {
   const skipApplyMethods = Boolean(options && options.skipApplyMethods)
 
   const objectizeState = checkForTypes(element)

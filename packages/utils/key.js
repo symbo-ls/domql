@@ -1,6 +1,6 @@
 'use strict'
 
-export const createKey = (function () {
+export const generateKey = (function () {
   let index = 0
 
   function newId () {
@@ -11,4 +11,4 @@ export const createKey = (function () {
   return newId
 })()
 
-export const createSnapshotId = createKey
+export const createSnapshotId = generateKey

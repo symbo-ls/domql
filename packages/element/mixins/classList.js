@@ -2,7 +2,7 @@
 
 import { exec, isObject, isString } from '@domql/utils'
 
-export const assignClass = (element) => {
+export const assignKeyAsClassname = (element) => {
   const { key } = element
   if (element.class === true) element.class = key
   else if (!element.class && typeof key === 'string' && key.charAt(0) === '_' && key.charAt(1) !== '_') {

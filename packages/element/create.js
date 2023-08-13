@@ -1,8 +1,6 @@
 'use strict'
 
 import createNode from './node'
-
-import { isObject, isFunction, isString, exec, is, isNode, isUndefined, createKey } from '@domql/utils'
 import { ROOT } from './tree'
 import { TAGS } from '@domql/registry'
 import { triggerEventOn } from '@domql/event'
@@ -15,8 +13,19 @@ import { createProps } from './props'
 import { applyExtend } from './extend'
 import { registry } from './mixins'
 import { addMethods } from './methods/set'
-import { assignClass } from './mixins/classList'
+import { assignKeyAsClassname } from './mixins/classList'
 import { throughInitialExec } from './iterate'
+
+import {
+  isObject,
+  isFunction,
+  isString,
+  exec,
+  is,
+  isNode,
+  isUndefined,
+  generateKey
+} from '@domql/utils'
 
 import OPTIONS from './cache/options'
 
@@ -34,17 +43,80 @@ const ENV = process.env.NODE_ENV
  * Creating a domQL element using passed parameters
  */
 const create = (element, parent, key, options = OPTIONS.create || {}) => {
-  if (options && !OPTIONS.create) {
-    OPTIONS.create = options
-    OPTIONS.create.context = element.context || options.context
+  cacheOptions(element, options)
+
+  // if element is STRING
+  if (checkIfPrimitive(element)) {
+    return applyValueAsText(element, parent, key)
   }
 
+  element = redefineElement(element, parent, key, options)
+  parent = redefineParent(element, parent, key)
+  key = createKey(element, parent, key)
+
+  const ref = addRef(element, parent, key)
+
+  // assign context
+  applyContext(element, parent, options)
+
+  applyComponentFromContext(element, parent, options)
+
+  // create EXTEND inheritance
+  applyExtend(element, parent, options)
+
+  // create and assign a KEY
+  element.key = key
+
+  // Only resolve extends, skip everything else
+  if (options.onlyResolveExtends) {
+    return onlyResolveExtends(element, parent, options)
+  }
+
+  replaceOptions(element, parent, options)
+
+  addCaching(element, parent)
+
+  addMethods(element, parent)
+
+  createState(element, parent)
+
+  createIfConditionFlag(element, parent)
+
+  // if it already HAS a NODE
+  if (element.node && ref.__if) {
+    return assignNode(element, parent, key)
+  }
+
+  // apply props settings
+  createProps(element, parent)
+
+  // apply variants
+  applyVariant(element, parent)
+
+  const onInit = triggerEventOn('init', element, options)
+  if (onInit === false) return element
+
+  triggerEventOn('beforeClassAssign', element, options)
+
+  // generate a CLASS name
+  assignKeyAsClassname(element)
+
+  renderElement(element, parent, options)
+
+  addElementIntoParentChildren(element, parent)
+
+  triggerEventOn('complete', element, options)
+
+  return element
+}
+
+const createBasedOnType = (element, parent, key, options) => {
   // if ELEMENT is not given
   if (element === undefined) {
     if (ENV === 'test' || ENV === 'development') {
       console.warn(key, 'element is undefined in', parent && parent.__ref && parent.__ref.path)
     }
-    element = {}
+    return {}
   }
   if (isString(key) && key.slice(0, 2 === '__')) {
     if (ENV === 'test' || ENV === 'development') {
@@ -52,103 +124,72 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
     }
   }
   if (element === null) return
-  if (element === true) element = { text: true }
+  if (element === true) return { text: true }
 
   // if element is extend
   if (element.__hash) {
-    element = { extend: element }
+    return { extend: element }
   }
 
-  // if PARENT is not given
-  if (!parent) parent = ROOT
-  if (isNode(parent)) {
-    parent = ROOT[`${key}_parent`] = { key: ':root', node: parent }
-  }
+  return element
+}
 
-  // if element is STRING
-  if (checkIfPrimitive(element)) {
-    element = applyValueAsText(element, parent, key)
-  }
+const redefineElement = (element, parent, key, options) => {
+  const elementWrapper = createBasedOnType(element, parent, key, options)
 
-  // define KEY
-  const assignedKey = (key || element.key || createKey()).toString()
-
-  if (checkIfKeyIsComponent(assignedKey)) {
-    element = applyKeyComponentAsExtend(element, parent, assignedKey)
+  if (checkIfKeyIsComponent(key)) {
+    return applyKeyComponentAsExtend(elementWrapper, parent, key)
   }
 
   // TODO: move as define plugins
   // Responsive rendering
-  if (checkIfMedia(assignedKey)) {
-    element = applyMediaProps(element, parent, assignedKey)
+  if (checkIfMedia(key)) {
+    return applyMediaProps(elementWrapper, parent, key)
   }
 
+  return elementWrapper
+}
+
+const redefineParent = (element, parent, key, options) => {
+  if (!parent) return ROOT
+  if (isNode(parent)) {
+    const parentNodeWrapper = { key: ':root', node: parent }
+    ROOT[`${key}_parent`] = parentNodeWrapper
+    return parentNodeWrapper
+  }
+  return parent
+}
+
+const cacheOptions = (element, options) => {
+  if (options && !OPTIONS.create) {
+    OPTIONS.create = options
+    OPTIONS.create.context = element.context || options.context
+  }
+}
+
+const createKey = (element, parent, key) => {
+  return (
+    key ||
+    element.key ||
+    generateKey()
+  ).toString()
+}
+
+const addRef = (element, parent) => {
   if (element.__ref) element.__ref.origin = element
-  else element.__ref = { origin: element } // eslint-disable-line 
-  const __ref = element.__ref
+  else element.__ref = { origin: element }
+  return element.__ref
+}
 
-  // assign context
-  applyContext(element, parent, options)
-  const { context } = element
-
-  if (context && context.components) {
-    applyComponentFromContext(element, parent, options)
-  }
-
-  // create EXTEND inheritance
-  applyExtend(element, parent, options)
-
-  // create and assign a KEY
-  element.key = assignedKey
-
-  // Only resolve extends, skip everything else
-  if (options.onlyResolveExtends) {
-    return onlyResolveExtends(element, parent, options)
-  }
-
+const replaceOptions = (element, parent, options) => {
   if (Object.keys(options).length) {
     registry.defaultOptions = options
     if (options.ignoreChildExtend) delete options.ignoreChildExtend
   }
+}
 
-  addCaching(element, parent)
-
-  addMethods(element, parent)
-
-  // enable STATE
-  element.state = createState(element, parent)
-
-  // don't render IF in condition
-  checkIf(element, parent)
-
-  // if it already HAS a NODE
-  if (element.node && __ref.__if) { // TODO: check on if
-    return assignNode(element, parent, assignedKey)
-  }
-
-  // apply props settings
-  if (__ref.__if) createProps(element, parent)
-
-  // apply variants
-  applyVariant(element, parent)
-
-  // run `on.init`
-  const initReturns = triggerEventOn('init', element, options)
-  if (initReturns === false) return element
-
-  // run `on.beforeClassAssign`
-  triggerEventOn('beforeClassAssign', element, options)
-
-  // generate a CLASS name
-  assignClass(element)
-
-  renderElement(element, parent, options)
-
+const addElementIntoParentChildren = (element, parent) => {
   if (parent.__ref && parent.__ref.__children) parent.__ref.__children.push(element.key)
-
-  triggerEventOn('complete', element, options)
-
-  return element
 }
 
 const renderElement = (element, parent, options) => {
@@ -188,7 +229,7 @@ const applyContext = (element, parent, options) => {
   if (!element.context) element.context = parent.context || options.context || ROOT.context
 }
 
-const checkIf = (element, parent) => {
+const createIfConditionFlag = (element, parent) => {
   const { __ref: ref } = element
 
   if (isFunction(element.if)) {

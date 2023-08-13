@@ -54,6 +54,9 @@ export const applyKeyComponentAsExtend = (element, parent, key) => {
 
 export const applyComponentFromContext = (element, parent, options) => {
   const { context } = element
+
+  if (!context || !context.components) return
+
   const { components } = context
   const { extend } = element
   const execExtend = exec(extend, element)

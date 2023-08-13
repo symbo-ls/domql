@@ -43,10 +43,12 @@ export const syncProps = (props, element) => {
 
 export const createProps = function (element, parent, cached) {
   const propsStack = cached || createPropsStack(element, parent)
-  const { __ref } = element
+  const { __ref: ref } = element
+
+  if (!ref.__if) return
 
   if (propsStack.length) {
-    __ref.__props = propsStack
+    ref.__props = propsStack
     syncProps(propsStack, element)
     element.props.update = update
   }

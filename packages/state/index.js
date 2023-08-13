@@ -1,7 +1,7 @@
 'use strict'
 
 export * from './ignore'
-export * from './createState'
+export * from './create'
 export * from './updateState'
 export * from './methods'
 export * from './inherit'
