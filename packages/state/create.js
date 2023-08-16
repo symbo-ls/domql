@@ -12,8 +12,6 @@ export const createState = function (element, parent, options) {
 }
 
 export const applyInitialState = function (element, parent, options) {
-  const skipApplyMethods = Boolean(options && options.skipApplyMethods)
-
   const objectizeState = checkForTypes(element)
   if (objectizeState === false) return parent.state || {}
   else element.state = deepClone(objectizeState, IGNORE_STATE_PARAMS)
@@ -28,14 +26,6 @@ export const applyInitialState = function (element, parent, options) {
 
   const dependentState = applyDependentState(element, element.state)
   if (dependentState) element.state = dependentState
-
-  // NOTE: Only true when 'onlyResolveExtends' option is set to true
-  if (skipApplyMethods) {
-    element.state.parent = element.parent.state ?? {}
-    element.state.parse = parse.bind(element.state)
-
-    return element.state
-  }
 
   applyMethods(element)
 
