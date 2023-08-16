@@ -290,7 +290,6 @@ const onlyResolveExtends = (element, parent, options) => {
   if (!__ref.__attr) __ref.__attr = {}
 
   if (!element.props) element.props = {}
-  if (!element.state) element.state = element.parent.state || {}
 
   createState(element, parent, { skipApplyMethods: true, ...options })
   createProps(element, parent)
