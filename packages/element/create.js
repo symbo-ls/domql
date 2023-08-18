@@ -318,7 +318,6 @@ const onlyResolveExtends = (element, parent, options) => {
     }
   }
 
-  delete element.parent
   delete element.update
   delete element.__element
 
@@ -327,8 +326,6 @@ const onlyResolveExtends = (element, parent, options) => {
   delete element.props.__element
 
   // added by createState
-  delete element.state.__element
-  delete element.state.__element
   if (!options.keepRef) delete element.__ref
 
   return element

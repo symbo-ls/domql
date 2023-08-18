@@ -108,5 +108,6 @@ const applyMethods = (element) => {
     Object.setPrototypeOf(state, proto)
   }
 
-  if (state.parent) state.parent.__children[element.key] = state
+  if (state.parent && state.parent.__children)
+    state.parent.__children[element.key] = state
 }
