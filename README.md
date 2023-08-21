@@ -102,7 +102,8 @@ const Increment = {
 ```
 
 Imagine being able to describe the entire front-end of your website with all of
-its logic, styles and markup with a single javascript object. DOMQL can do that.
+its logic, styles and markup using only a single javascript object. DOMQL can do
+that.
 
 ## API
 
