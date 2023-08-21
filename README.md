@@ -1,5 +1,5 @@
 # DOMQL
-DOM rendering Javascript framework.
+Front-end javascript framework.
 
 - Minimalistic
 - No dependencies
@@ -7,26 +7,34 @@ DOM rendering Javascript framework.
 - No transpilations, simple ES6 code
 - One-time import and subtrees
 
-You can start with [starter-kit](https://github.com/domql/starter-kit) as a boilerplate, or jump into the [playground](https://domql.com/playground/).
+You can start with [starter-kit](https://github.com/domql/starter-kit) as a
+boilerplate, or jump into the [playground](https://domql.com/playground/).
 
 [![npm version](https://badge.fury.io/js/domql.svg)](https://badge.fury.io/js/domql)
+
+
+## Intuitive
+
+Using is as simple as:
 
 ```javascript
 import DOM from 'domql'
 
-DOM.create({ text: 'Rendered' })
-```
-```javascript
-var link = {
+const link = {
   tag: 'a',
   class: 'menu link',
   attr: {
     href: '#'
   }
 }
+
+DOM.create(link, document.body)
 ```
+
+Anyone with some basic front-end knowledge can understand DOMQL code right away:
+
 ```javascript
-var img = {
+const img = {
   tag: 'img',
   class: 'avatar',
   attr: {
@@ -34,12 +42,16 @@ var img = {
   }
 }
 ```
+
+A single javascript object holds all of the logic, markup and styles of a
+component.
+
 ```javascript
-var Link = {
+const Link = {
   tag: 'a'
 }
 
-var ListItem = {
+const ListItem = {
   extend: Link,
   class: 'ui link',
   attr: {
@@ -47,40 +59,50 @@ var ListItem = {
   }
 }
 
-var menu = {
+const menu = {
   childExtend: ListItem,
   home: 'Home',
   text: 'About'
 }
 
-var header = {
+const header = {
   logo: {},
   menu
 }
 ```
-```javascript
-var navItems = ['Home', 'About', 'FAQ', 'Contact']
 
-var menu = {
+No need for fancy syntax, build steps and transpilers - it's just javascript.
+
+```javascript
+const navItems = ['Home', 'About', 'FAQ', 'Contact']
+
+const menu = {
   extend: ListItem,
   ...navItems
 }
 ```
-```javascript
-var val = {
-  text: 0
-}
 
-var Increment = {
+All logic is contained in callback functions.
+
+```javascript
+const Increment = {
   tag: 'button',
-  text: 'Increment',
+  text: 'Click me!',
+  state: { value: 0 },
   on: {
-    click: (e) => {
-      val.update({ text: val.text++ })
+    click: (el) => {
+      el.state.update({ value: el.state.value++ })
+      el.set({ text: el.state.value.toString() })
     }
+    render: () => {...},
+    focus: () => {...},
+    ...
   }
 }
 ```
+
+Imagine being able to describe the entire front-end of your website with all of
+its logic, styles and markup with a single javascript object. DOMQL can do that.
 
 ## API
 
@@ -100,14 +122,14 @@ var Increment = {
 To specify your own property per Element, set the function inside `define` property like:
 
 ```javascript
-var User = {
+const User = {
   define: {
     username: param => param.toUpperCase()
   },
   text: element => element.username
 }
 
-var Contact = {
+const Contact = {
   extend: User,
   username: 'nikoloza'
 }
@@ -122,8 +144,6 @@ var Contact = {
 
 ### Events
 All native DOM events are supported and can be specified inside `on` parameter. Additionally, `init` and `render` can be also invoked. All events except these two receive `event` object as a first parameter, following the `element` object itself.
-
-
 
 ### Reserved keywords
 
@@ -146,7 +166,7 @@ define
 Anything except these keywords will create a new nested child element. The easier method to specify HTML tag is to use related nodeName as a key, for example:
 
 ```javascript
-var layout = { // this will be <div>
+const layout = { // this will be <div>
   header: {}, // will create <header>
   aside: {}, // will create <aside>
   main: { // will create <main>
