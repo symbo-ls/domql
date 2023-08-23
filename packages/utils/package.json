@@ -23,7 +23,7 @@
     "build": "yarn build:cjs",
     "prepublish": "rimraf -I dist && yarn build && yarn copy:package:cjs"
   },
-  "gitHead": "86251c1d94b9e87288cc9e84fd9badb6461b2973",
+  "gitHead": "e5952db705e332f062e2e78113d620bd48ba16d9",
   "devDependencies": {
     "@babel/core": "^7.12.0"
   }
