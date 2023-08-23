@@ -26,8 +26,7 @@
   },
   "dependencies": {
     "@domql/event": "latest",
-    "@domql/node": "^2.3.125",
-    "@domql/render": "^2.4.7",
+    "@domql/render": "latest",
     "@domql/state": "latest",
     "@domql/utils": "latest"
   },
