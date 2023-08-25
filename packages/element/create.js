@@ -55,6 +55,9 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
 
   const ref = addRef(element, parent, key)
 
+  // assign initial props
+  ref.__initialProps = deepClone(element.props, [])
+
   // assign context
   applyContext(element, parent, options)
 
@@ -68,7 +71,7 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
 
   // Only resolve extends, skip everything else
   if (options.onlyResolveExtends) {
-    return onlyResolveExtends(element, parent, options)
+    return onlyResolveExtends(element, parent, key, options)
   }
 
   replaceOptions(element, parent, options)
@@ -281,7 +284,7 @@ const addCaching = (element, parent) => {
   }
 }
 
-const onlyResolveExtends = (element, parent, options) => {
+const onlyResolveExtends = (element, parent, key, options) => {
   const { __ref } = element
   element.tag = detectTag(element)
 
@@ -316,6 +319,8 @@ const onlyResolveExtends = (element, parent, options) => {
       create(exec(prop, element), element, param, options)
     }
   }
+
+  parent[key || element.key] = element
 
   delete element.update
   delete element.__element

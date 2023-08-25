@@ -22,11 +22,13 @@ export const applyExtend = (element, parent, options = {}) => {
 
   const COMPONENTS = (context && context.components) || options.components
   if (isString(extend)) {
-    if (COMPONENTS && COMPONENTS[extend]) extend = COMPONENTS[extend]
-    else {
+    if (COMPONENTS && COMPONENTS[extend]) {
+      extend = COMPONENTS[extend]
+    } else {
       if (ENV !== 'test' || ENV !== 'development') {
         console.warn('Extend is string but component was not found:', extend)
-      } extend = {}
+      }
+      extend = {}
     }
   }
 
