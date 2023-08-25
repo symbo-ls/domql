@@ -23,7 +23,8 @@ import {
   is,
   isNode,
   isUndefined,
-  generateKey
+  generateKey,
+  deepClone
 } from '@domql/utils'
 
 import OPTIONS from './cache/options'
