@@ -9,6 +9,7 @@ import { checkIfInherits, createInheritedState } from './inherit'
 
 export const createState = function (element, parent, options) {
   element.state = applyInitialState(element, parent, options)
+  return element.state
 }
 
 export const applyInitialState = function (element, parent, options) {
@@ -108,6 +109,5 @@ const applyMethods = (element) => {
     Object.setPrototypeOf(state, proto)
   }
 
-  if (state.parent && state.parent.__children)
-    state.parent.__children[element.key] = state
+  if (state.parent && state.parent.__children) { state.parent.__children[element.key] = state }
 }
