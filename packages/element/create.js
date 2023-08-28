@@ -47,7 +47,7 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
 
   // if element is STRING
   if (checkIfPrimitive(element)) {
-    return applyValueAsText(element, parent, key)
+    element = applyValueAsText(element, parent, key)
   }
 
   element = redefineElement(element, parent, key, options)
