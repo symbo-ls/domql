@@ -24,8 +24,10 @@ export const createNode = (element, options) => {
 
   let isNewNode
 
-  if (!node && !ref.__if) {
+  if (!node) {
     isNewNode = true
+
+    if (!ref.__if) return element
 
     if (tag === 'shadow') {
       node = element.node = element.parent.node.attachShadow({ mode: 'open' })

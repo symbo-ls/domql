@@ -14,6 +14,8 @@ export const applyParam = (param, element, options) => {
   const hasDefine = element.define && element.define[param]
   const hasContextDefine = context && context.define && context.define[param]
 
+  if (!ref.__if) return
+
   if (isGlobalTransformer && !hasContextDefine) {
     if (isFunction(isGlobalTransformer)) {
       isGlobalTransformer(prop, element, node, options)
