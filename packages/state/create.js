@@ -53,20 +53,18 @@ const checkForTypes = (element) => {
   if (isFunction(state)) {
     ref.__state = state
     return exec(state, element)
-  }
-  if (is(state)('string', 'number')) {
+  } else if (is(state)('string', 'number')) {
     ref.__state = state
     return {}
-  }
-  if (state === true) {
+  } else if (state === true) {
     ref.__state = element.key
     return {}
-  }
-  if (state) {
+  } else if (state) {
     ref.__hasRootState = true
     return state
+  } else  {
+    return false
   }
-  return false
 }
 
 const addProtoToArray = (state, proto) => {

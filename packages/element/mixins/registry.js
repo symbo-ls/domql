@@ -24,6 +24,7 @@ export default {
   if: {},
   define: {},
   transform: {},
+  __name: {},
   __ref: {},
   __hash: {},
   __text: {},

@@ -294,30 +294,45 @@ const onlyResolveExtends = (element, parent, key, options) => {
 
   if (!element.props) element.props = {}
 
-  createState(element, parent, { skipApplyMethods: true, ...options })
+  createState(element, parent)
+
+  // Borrowed from createIfConditionFlag()
+  const ref = __ref
+  if (isFunction(element.if)) {
+    const ifPassed = element.if(element, element.state)
+    if (!ifPassed) {
+      // const ifFragment = cacheNode({ tag: 'fragment' })
+      // ref.__ifFragment = appendNode(ifFragment, parent.node)
+      delete ref.__if
+    } else ref.__if = true
+  } else ref.__if = true
+  //////
+
   createProps(element, parent)
   applyVariant(element, parent)
 
-  throughInitialExec(element, options.propsExcludedFromExec)
+  if (element.tag !== 'string' || element.tag !== 'fragment') {
+    throughInitialExec(element, options.propsExcludedFromExec)
 
-  for (const param in element) {
-    const prop = element[param]
-    if (
-      isUndefined(prop) ||
-      isMethod(param) ||
-      isObject(registry[param]) ||
-      isVariant(param)
-    ) continue
+    for (const param in element) {
+      const prop = element[param]
+      if (
+        isUndefined(prop) ||
+          isMethod(param) ||
+          isObject(registry[param]) ||
+          isVariant(param)
+      ) continue
 
-    const hasDefine = element.define && element.define[param]
-    const contextHasDefine = element.context && element.context.define &&
-          element.context.define[param]
-    const optionsHasDefine = options.define && options.define[param]
+      const hasDefine = element.define && element.define[param]
+      const contextHasDefine = element.context && element.context.define &&
+            element.context.define[param]
+      const optionsHasDefine = options.define && options.define[param]
 
-    if (registry[param] && !optionsHasDefine) {
-      continue
-    } else if (element[param] && !hasDefine && !optionsHasDefine && !contextHasDefine) {
-      create(exec(prop, element), element, param, options)
+      if (registry[param] && !optionsHasDefine) {
+        continue
+      } else if (element[param] && !hasDefine && !optionsHasDefine && !contextHasDefine) {
+        create(exec(prop, element), element, param, options)
+      }
     }
   }
 

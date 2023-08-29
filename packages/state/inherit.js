@@ -68,6 +68,7 @@ export const createInheritedState = (element, parent) => {
 export const checkIfInherits = (element) => {
   const ref = element.__ref
   const stateKey = ref.__state
+
   if (!stateKey || isNot(stateKey)('number', 'string')) return false
   return true
 }
