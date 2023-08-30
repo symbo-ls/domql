@@ -13,7 +13,7 @@ import { applyExtend } from './extend'
 import { registry } from './mixins'
 import { addMethods } from './methods/set'
 import { assignKeyAsClassname } from './mixins/classList'
-import { throughInitialExec } from './iterate'
+import { throughInitialExec, throughInitialDefine } from './iterate'
 
 import {
   isObject,
@@ -289,10 +289,43 @@ const onlyResolveExtends = (element, parent, key, options) => {
   const { __ref } = element
   element.tag = detectTag(element)
 
-  if (!__ref.__exec) __ref.__exec = {}
-  if (!__ref.__attr) __ref.__attr = {}
+  //if (!element.props) element.props = {}
 
-  if (!element.props) element.props = {}
+  // Copy-paste of addCaching()
+  {
+    const { __ref: ref } = element
+    let { __ref: parentRef } = parent
+
+    // enable TRANSFORM in data
+    // TODO: do we need this at all?
+    //if (!element.transform) element.transform = {}
+
+    // enable CACHING
+    if (!ref.__cached) ref.__cached = {}
+    if (!ref.__defineCache) ref.__defineCache = {}
+
+    // enable EXEC
+    if (!ref.__exec) ref.__exec = {}
+
+    // enable CLASS CACHING
+    if (!ref.__class) ref.__class = {}
+    if (!ref.__classNames) ref.__classNames = {}
+
+    // enable CLASS CACHING
+    if (!ref.__attr) ref.__attr = {}
+
+    // enable CHANGES storing
+    if (!ref.__changes) ref.__changes = []
+
+    // enable CHANGES storing
+    if (!ref.__children) ref.__children = []
+
+    // Add __root element property
+    // const hasRoot = parent && parent.key === ':root'
+    // if (!ref.__root) ref.__root = hasRoot ? element : parentRef.__root
+  }
+
+  addMethods(element, parent)
 
   createState(element, parent)
 
@@ -308,19 +341,23 @@ const onlyResolveExtends = (element, parent, key, options) => {
   } else ref.__if = true
   //////
 
+  if (element.node && ref.__if)
+    parent[key || element.key] = element // Borrowed from assignNode()
+
   createProps(element, parent)
   applyVariant(element, parent)
 
-  if (element.tag !== 'string' || element.tag !== 'fragment') {
-    throughInitialExec(element, options.propsExcludedFromExec)
+  if (element.tag !== 'string' && element.tag !== 'fragment') {
+    throughInitialDefine(element)
+    throughInitialExec(element)
 
     for (const param in element) {
       const prop = element[param]
       if (
         isUndefined(prop) ||
-          isMethod(param) ||
-          isObject(registry[param]) ||
-          isVariant(param)
+        isMethod(param) ||
+        isObject(registry[param]) ||
+        isVariant(param)
       ) continue
 
       const hasDefine = element.define && element.define[param]
@@ -336,14 +373,16 @@ const onlyResolveExtends = (element, parent, key, options) => {
     }
   }
 
-  parent[key || element.key] = element
+  parent[key || element.key] = element // Borrowed from assignNode()
 
   delete element.update
   delete element.__element
 
   // added by createProps
-  delete element.props.update
-  delete element.props.__element
+  if (element.props) {
+    delete element.props.update
+    delete element.props.__element
+  }
 
   // added by createState
   if (!options.keepRef) delete element.__ref
