@@ -289,8 +289,6 @@ const onlyResolveExtends = (element, parent, key, options) => {
   const { __ref } = element
   element.tag = detectTag(element)
 
-  //if (!element.props) element.props = {}
-
   // Copy-paste of addCaching()
   {
     const { __ref: ref } = element
@@ -342,6 +340,7 @@ const onlyResolveExtends = (element, parent, key, options) => {
   //////
 
   createProps(element, parent)
+  if (!element.props) element.props = {}
   applyVariant(element, parent)
 
   if (element.tag !== 'string' && element.tag !== 'fragment') {
@@ -379,9 +378,6 @@ const onlyResolveExtends = (element, parent, key, options) => {
     delete element.props.update
     delete element.props.__element
   }
-
-  // added by createState
-  if (!options.keepRef) delete element.__ref
 
   return element
 }
