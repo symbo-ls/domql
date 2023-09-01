@@ -341,9 +341,6 @@ const onlyResolveExtends = (element, parent, key, options) => {
   } else ref.__if = true
   //////
 
-  if (element.node && ref.__if)
-    parent[key || element.key] = element // Borrowed from assignNode()
-
   createProps(element, parent)
   applyVariant(element, parent)
 
@@ -351,24 +348,23 @@ const onlyResolveExtends = (element, parent, key, options) => {
     throughInitialDefine(element)
     throughInitialExec(element)
 
-    for (const param in element) {
-      const prop = element[param]
+    for (const k in element) {
       if (
-        isUndefined(prop) ||
-        isMethod(param) ||
-        isObject(registry[param]) ||
-        isVariant(param)
+        isUndefined(element[k]) ||
+        isMethod(k) ||
+        isObject(registry[k]) ||
+        isVariant(k)
       ) continue
 
-      const hasDefine = element.define && element.define[param]
+      const hasDefine = element.define && element.define[k]
       const contextHasDefine = element.context && element.context.define &&
-            element.context.define[param]
-      const optionsHasDefine = options.define && options.define[param]
+            element.context.define[k]
+      const optionsHasDefine = options.define && options.define[k]
 
-      if (registry[param] && !optionsHasDefine) {
+      if (registry[k] && !optionsHasDefine) {
         continue
-      } else if (element[param] && !hasDefine && !optionsHasDefine && !contextHasDefine) {
-        create(exec(prop, element), element, param, options)
+      } else if (element[k] && !hasDefine && !optionsHasDefine && !contextHasDefine) {
+        create(exec(element[k], element), element, k, options)
       }
     }
   }
