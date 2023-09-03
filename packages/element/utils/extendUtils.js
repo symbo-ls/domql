@@ -131,12 +131,8 @@ export const getExtendMerged = extend => {
 export const replaceStringsWithComponents = (stack, context, options) => {
   const COMPONENTS = (context && context.components) || options.components
   return stack.map(v => {
-    // if (v === 'StatePage') debugger
     if (isString(v)) {
       const component = COMPONENTS[v]
-      console.warn('v', v)
-      console.log(COMPONENTS[v])
-      console.warn('component', component)
       return component
     }
     if (isString(v.extend)) {
