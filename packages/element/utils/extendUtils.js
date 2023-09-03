@@ -1,6 +1,7 @@
 'use strict'
 
 import { isArray, isFunction, isObject, isString } from '@domql/utils'
+const ENV = process.env.NODE_ENV
 
 export const generateHash = () => Math.random().toString(36).substring(2)
 
@@ -88,10 +89,27 @@ export const cloneAndMergeArrayExtend = stack => {
   }, {})
 }
 
-export const replaceStringsWithComponents = (stack, components) => {
+export const fallbackStringExtend = (extend, context, options) => {
+  const COMPONENTS = (context && context.components) || options.components
+  if (isString(extend)) {
+    if (COMPONENTS && COMPONENTS[extend]) {
+      return COMPONENTS[extend]
+    } else {
+      if (ENV !== 'test' || ENV !== 'development') {
+        console.warn('Extend is string but component was not found:', extend)
+      }
+      return {}
+    }
+  }
+  return extend
+}
+
+export const replaceStringsWithComponents = (stack, context, options) => {
+  const COMPONENTS = (context && context.components) || options.components
   return stack.map(v => {
-    if (isString(v)) return components[v]
-    else return v
+    if (isString(v)) {
+      return COMPONENTS[v]
+    } else return v
   })
 }
 

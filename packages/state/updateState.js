@@ -10,8 +10,8 @@ const STATE_UPDATE_OPTIONS = {
   overwrite: true,
   preventHoistElementUpdate: false,
   updateByState: true,
-  execStateFunction: true,
   isHoisted: true,
+  execStateFunction: true,
   stateFunctionOverwrite: true
 }
 

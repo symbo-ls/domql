@@ -1,12 +1,13 @@
 'use strict'
 
-import { isFunction, exec, isString } from '@domql/utils'
+import { isFunction, exec } from '@domql/utils'
 import {
   getExtendStack,
   jointStacks,
   cloneAndMergeArrayExtend,
   deepMergeExtend,
-  replaceStringsWithComponents
+  replaceStringsWithComponents,
+  fallbackStringExtend
 } from './utils'
 
 const ENV = process.env.NODE_ENV
@@ -20,17 +21,7 @@ export const applyExtend = (element, parent, options = {}) => {
 
   let { extend, props, context, __ref } = element
 
-  const COMPONENTS = (context && context.components) || options.components
-  if (isString(extend)) {
-    if (COMPONENTS && COMPONENTS[extend]) {
-      extend = COMPONENTS[extend]
-    } else {
-      if (ENV !== 'test' || ENV !== 'development') {
-        console.warn('Extend is string but component was not found:', extend)
-      }
-      extend = {}
-    }
-  }
+  extend = fallbackStringExtend(extend, context, options)
 
   const extendStack = getExtendStack(extend)
 
@@ -77,14 +68,14 @@ export const applyExtend = (element, parent, options = {}) => {
   }
 
   if (__ref) __ref.__extend = stack
-  const findAndReplaceStrings = replaceStringsWithComponents(stack, COMPONENTS)
-  let mergedExtend = cloneAndMergeArrayExtend(findAndReplaceStrings)
+  const findAndReplaceStrings = replaceStringsWithComponents(stack, context, options)
+  const mergedExtend = cloneAndMergeArrayExtend(findAndReplaceStrings)
 
-  const component = exec(element.component || mergedExtend.component, element)
-  if (component && COMPONENTS && COMPONENTS[component]) {
-    const componentExtend = cloneAndMergeArrayExtend(getExtendStack(COMPONENTS[component]))
-    mergedExtend = deepMergeExtend(componentExtend, mergedExtend)
-  }
+  // const component = exec(element.component || mergedExtend.component, element)
+  // if (component && COMPONENTS && COMPONENTS[component]) {
+  //   const componentExtend = cloneAndMergeArrayExtend(getExtendStack(COMPONENTS[component]))
+  //   mergedExtend = deepMergeExtend(componentExtend, mergedExtend)
+  // }
 
   return deepMergeExtend(element, mergedExtend)
 }

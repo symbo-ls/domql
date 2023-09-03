@@ -289,14 +289,16 @@ const onlyResolveExtends = (element, parent, key, options) => {
   const { __ref } = element
   element.tag = detectTag(element)
 
+  // if (!element.props) element.props = {}
+
   // Copy-paste of addCaching()
   {
     const { __ref: ref } = element
-    let { __ref: parentRef } = parent
+    const { __ref: parentRef } = parent // eslint-disable-line
 
     // enable TRANSFORM in data
     // TODO: do we need this at all?
-    //if (!element.transform) element.transform = {}
+    // if (!element.transform) element.transform = {}
 
     // enable CACHING
     if (!ref.__cached) ref.__cached = {}
@@ -337,7 +339,9 @@ const onlyResolveExtends = (element, parent, key, options) => {
       delete ref.__if
     } else ref.__if = true
   } else ref.__if = true
-  //////
+  /// ///
+
+  if (element.node && ref.__if) { parent[key || element.key] = element } // Borrowed from assignNode()
 
   createProps(element, parent)
   if (!element.props) element.props = {}
