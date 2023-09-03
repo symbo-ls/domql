@@ -92,6 +92,8 @@ export const cloneAndMergeArrayExtend = stack => {
 export const fallbackStringExtend = (extend, context, options) => {
   const COMPONENTS = (context && context.components) || options.components
   if (isString(extend)) {
+    console.log('extend', extend)
+    console.log(COMPONENTS[extend])
     if (COMPONENTS && COMPONENTS[extend]) {
       return COMPONENTS[extend]
     } else {
@@ -102,15 +104,6 @@ export const fallbackStringExtend = (extend, context, options) => {
     }
   }
   return extend
-}
-
-export const replaceStringsWithComponents = (stack, context, options) => {
-  const COMPONENTS = (context && context.components) || options.components
-  return stack.map(v => {
-    if (isString(v)) {
-      return COMPONENTS[v]
-    } else return v
-  })
 }
 
 // joint stacks
@@ -133,4 +126,23 @@ export const getExtendStack = extend => {
 export const getExtendMerged = extend => {
   const stack = getExtendStack(extend)
   return cloneAndMergeArrayExtend(stack)
+}
+
+export const replaceStringsWithComponents = (stack, context, options) => {
+  const COMPONENTS = (context && context.components) || options.components
+  return stack.map(v => {
+    // if (v === 'StatePage') debugger
+    if (isString(v)) {
+      const component = COMPONENTS[v]
+      console.warn('v', v)
+      console.log(COMPONENTS[v])
+      console.warn('component', component)
+      return component
+    }
+    if (isString(v.extend)) {
+      v.extend = COMPONENTS[v.extend]
+      return { ...getExtendMerged(v.extend), ...v }
+    }
+    return v
+  })
 }
