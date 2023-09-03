@@ -16,6 +16,8 @@ export default {
   class: classList,
   state,
 
+  deps: (param, el) => param || el.parent.deps,
+
   extend: {},
   childExtend: {},
   childExtendRecursive: {},
