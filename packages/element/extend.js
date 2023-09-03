@@ -69,13 +69,14 @@ export const applyExtend = (element, parent, options = {}) => {
 
   if (__ref) __ref.__extend = stack
   const findAndReplaceStrings = replaceStringsWithComponents(stack, context, options)
-  const mergedExtend = cloneAndMergeArrayExtend(findAndReplaceStrings)
+  let mergedExtend = cloneAndMergeArrayExtend(findAndReplaceStrings)
 
-  // const component = exec(element.component || mergedExtend.component, element)
-  // if (component && COMPONENTS && COMPONENTS[component]) {
-  //   const componentExtend = cloneAndMergeArrayExtend(getExtendStack(COMPONENTS[component]))
-  //   mergedExtend = deepMergeExtend(componentExtend, mergedExtend)
-  // }
+  const COMPONENTS = (context && context.components) || options.components
+  const component = exec(element.component || mergedExtend.component, element)
+  if (component && COMPONENTS && COMPONENTS[component]) {
+    const componentExtend = cloneAndMergeArrayExtend(getExtendStack(COMPONENTS[component]))
+    mergedExtend = deepMergeExtend(componentExtend, mergedExtend)
+  }
 
   return deepMergeExtend(element, mergedExtend)
 }
