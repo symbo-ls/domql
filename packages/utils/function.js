@@ -21,3 +21,11 @@ export const memoize = (fn) => {
     }
   }
 }
+
+export const isStringFunction = inputString => {
+  // Regular expression to match both regular and arrow function declarations
+  const functionRegex = /^((function\s*\([^)]*\)\s*\{[^}]*\})|(\([^)]*\)\s*=>))/
+
+  // Use the regex to test if the inputString matches the function pattern
+  return functionRegex.test(inputString)
+}

@@ -69,7 +69,11 @@ export const createNode = (element, options) => {
       if (isElement) {
         const { hasDefine, hasContextDefine } = isElement
         if (element[param] && !hasDefine && !hasContextDefine) {
-          create(exec(prop, element), element, param, options)
+          const createAsync = () => create(exec(prop, element), element, param, options)
+
+          if ((element.props && element.props.lazyLoad) || options.lazyLoad) {
+            window.requestAnimationFrame(() => createAsync())
+          } else createAsync()
         }
       }
     }

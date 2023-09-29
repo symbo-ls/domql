@@ -12,7 +12,7 @@ export const transformEmotionStyle = (emotion) => {
       if (isObjectLike(element.class)) element.class.elementStyle = execParams
       else element.class = { elementStyle: execParams }
     }
-    transformEmotionClass(emotion)(element.class, element, state, true)
+    transformEmotionClass(emotion)(element.class, element, element.state, true)
   }
 }
 

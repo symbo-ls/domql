@@ -375,20 +375,77 @@ export const flattenRecursive = (param, prop, stack = []) => {
   return stack
 }
 
-export const isEqualDeep = (param, element) => {
-  if (param === element) return true
-  if (!param || !element) return false
-  for (const prop in param) {
-    const paramProp = param[prop]
-    const elementProp = element[prop]
-    if (isObjectLike(paramProp)) {
-      const isEqual = isEqualDeep(paramProp, elementProp)
-      if (!isEqual) return false
-    } else {
-      const isEqual = paramProp === elementProp
-      if (!isEqual) return false
+/**
+ * Recursively compares two values to determine if they are deeply equal.
+ *
+ * This function checks for deep equality between two values, including
+ * objects, arrays, and nested structures. It handles circular references to
+ * prevent infinite loops.
+ *
+ * @param {*} param - The first value to compare.
+ * @param {*} element - The second value to compare.
+ * @param {Set} [visited] - (Optional) A set to track visited objects during recursion
+ *   to handle circular references. You can omit this parameter when calling
+ *   the function; it is used internally for tracking visited objects.
+ *
+ * @returns {boolean} Returns `true` if the values are deeply equal, `false` otherwise.
+ *
+ * @example
+ * // Comparing primitive values
+ * isEqualDeep(42, 42); // true
+ * isEqualDeep('hello', 'hello'); // true
+ * isEqualDeep(true, true); // true
+ * isEqualDeep(42, '42'); // false
+ *
+ * // Comparing simple objects
+ * const obj1 = { a: 1, b: { c: 2 } };
+ * const obj2 = { a: 1, b: { c: 2 } };
+ * isEqualDeep(obj1, obj2); // true
+ *
+ * // Handling circular references
+ * const circularObj = { prop: null };
+ * circularObj.prop = circularObj;
+ * const anotherObj = { prop: null };
+ * anotherObj.prop = anotherObj;
+ * isEqualDeep(circularObj, anotherObj); // true
+ */
+export const isEqualDeep = (param, element, visited = new Set()) => {
+  // Check if both values are non-null objects
+  if (typeof param !== 'object' || typeof element !== 'object' || param === null || element === null) {
+    return param === element // Compare non-object values directly
+  }
+
+  // Check for circular references
+  if (visited.has(param) || visited.has(element)) {
+    return true // Assume equality to break the circular reference
+  }
+
+  visited.add(param)
+  visited.add(element)
+
+  const keysParam = Object.keys(param)
+  const keysElement = Object.keys(element)
+
+  // Check if both objects have the same number of properties
+  if (keysParam.length !== keysElement.length) {
+    return false
+  }
+
+  // Check if all properties in param also exist in element
+  for (const key of keysParam) {
+    if (!keysElement.includes(key)) {
+      return false
+    }
+
+    const paramProp = param[key]
+    const elementProp = element[key]
+
+    // Recursively check property values
+    if (!isEqualDeep(paramProp, elementProp, visited)) {
+      return false
     }
   }
+
   return true
 }
 

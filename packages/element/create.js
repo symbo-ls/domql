@@ -172,6 +172,7 @@ const cacheOptions = (element, options) => {
 
 const createKey = (element, parent, key) => {
   return (
+    exec(key, element) ||
     key ||
     element.key ||
     generateKey()
