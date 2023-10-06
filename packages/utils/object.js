@@ -449,6 +449,36 @@ export const isEqualDeep = (param, element, visited = new Set()) => {
   return true
 }
 
+export const deepContains = (obj1, obj2) => {
+  if (typeof obj1 !== typeof obj2) {
+    return false
+  }
+
+  if (isObjectLike(obj1)) {
+    if (Array.isArray(obj1) && Array.isArray(obj2)) {
+      if (obj1.length !== obj2.length) {
+        return false
+      }
+      for (let i = 0; i < obj1.length; i++) {
+        if (!deepContains(obj1[i], obj2[i])) {
+          return false
+        }
+      }
+    } else if (isObjectLike(obj1) && obj2 !== null) {
+      for (const key in obj1) {
+        const hasOwnProperty = Object.prototype.hasOwnProperty.call(obj2, key)
+        if (!hasOwnProperty || !deepContains(obj1[key], obj2[key])) {
+          return false
+        }
+      }
+    }
+  } else {
+    return obj2 === obj1
+  }
+
+  return true
+}
+
 export const removeFromObject = (obj, props) => {
   if (props === undefined || props === null) return obj
   if (is(props)('string', 'number')) {

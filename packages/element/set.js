@@ -1,6 +1,6 @@
 'use strict'
 
-import { isEqualDeep } from '@domql/utils'
+import { deepContains } from '@domql/utils'
 
 import create from './create'
 import OPTIONS from './cache/options'
@@ -11,7 +11,13 @@ const set = function (params, options = {}, el) {
   const element = el || this
   const __contentRef = element.content && element.content.__ref
 
-  if (__contentRef && __contentRef.__cached && isEqualDeep(params, element.content)) {
+  // console.error(1)
+  console.log('====')
+  console.error(__contentRef?.__cached)
+  console.error(params, element.content)
+  console.error(deepContains(params, element.content))
+  if (__contentRef && __contentRef.__cached && deepContains(params, element.content)) {
+    console.log('is content equal')
     return element
   }
   removeContent(element)
