@@ -13,8 +13,9 @@ const set = function (params, options = {}, el) {
 
   if (__contentRef && __contentRef.__cached && deepContains(params, element.content)) {
     console.log('is content equal')
-    return element
+    return element.content.update()
   }
+
   removeContent(element)
 
   if (params) {

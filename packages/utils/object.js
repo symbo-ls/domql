@@ -146,8 +146,8 @@ export const objectToString = (obj, indent = 0) => {
   let str = '{\n'
 
   for (const [key, value] of Object.entries(obj)) {
-    const keyAllowdChars = stringIncludesAny(key, ['-', ':', '@', '.', '!'])
-    const stringedKey = keyAllowdChars ? `'${key}'` : key
+    const keyNotAllowdChars = stringIncludesAny(key, ['-', ':', '@', '.', '!', '/'])
+    const stringedKey = keyNotAllowdChars ? `'${key}'` : key
     str += `${spaces}  ${stringedKey}: `
 
     if (isArray(value)) {

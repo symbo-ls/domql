@@ -159,6 +159,7 @@ const checkIfOnUpdate = (element, parent, options) => {
         element.state = ref.__state
       }
       const created = create(element, parent, element.key, OPTIONS.create)
+      // check preventUpdate for an array (Line: 87)
       if (options.preventUpdate !== true && element.on && isFunction(element.on.update)) {
         applyEvent(element.on.update, created, created.state)
       }

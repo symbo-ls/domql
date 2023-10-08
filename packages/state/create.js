@@ -1,7 +1,7 @@
 'use strict'
 
 import { triggerEventOn } from '@domql/event'
-import { deepClone, exec, is, isArray, isFunction, isObject } from '@domql/utils'
+import { deepClone, exec, is, isArray, isFunction, isObject, isUndefined } from '@domql/utils'
 import { IGNORE_STATE_PARAMS } from './ignore'
 import { add, apply, clean, destroy, parentUpdate, parse, remove, rootUpdate, set, toggle } from './methods'
 import { updateState } from './updateState'
@@ -22,7 +22,7 @@ export const applyInitialState = function (element, parent, options) {
 
   if (checkIfInherits(element)) {
     const inheritedState = createInheritedState(element, parent)
-    element.state = inheritedState || {}
+    element.state = isUndefined(inheritedState) ? {} : inheritedState
   }
 
   const dependentState = applyDependentState(element, element.state)
@@ -62,7 +62,7 @@ const checkForTypes = (element) => {
   } else if (state) {
     ref.__hasRootState = true
     return state
-  } else  {
+  } else {
     return false
   }
 }

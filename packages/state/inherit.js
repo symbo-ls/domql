@@ -1,6 +1,6 @@
 'use strict'
 
-import { deepClone, is, isNot, isObjectLike } from '@domql/utils'
+import { deepClone, is, isObjectLike, isUndefined } from '@domql/utils'
 import { IGNORE_STATE_PARAMS } from './ignore'
 
 export const getParentStateInKey = (stateKey, parentState) => {
@@ -53,12 +53,12 @@ export const findInheritedState = (element, parent, options = {}) => {
 export const createInheritedState = (element, parent) => {
   const ref = element.__ref
   const inheritedState = findInheritedState(element, parent)
-  if (!inheritedState) return element.state
+  if (isUndefined(inheritedState)) return element.state
 
   if (is(inheritedState)('object', 'array')) {
     return deepClone(inheritedState, IGNORE_STATE_PARAMS)
-  } else if (is(inheritedState)('string', 'number')) {
-    ref.__stateType = 'string'
+  } else if (is(inheritedState)('string', 'number', 'boolean')) {
+    ref.__stateType = typeof inheritedState
     return { value: inheritedState }
   }
 
@@ -69,8 +69,8 @@ export const checkIfInherits = (element) => {
   const ref = element.__ref
   const stateKey = ref.__state
 
-  if (!stateKey || isNot(stateKey)('number', 'string')) return false
-  return true
+  if (stateKey && is(stateKey)('number', 'string', 'boolean')) return true
+  return false
 }
 
 export const isState = function (state) {

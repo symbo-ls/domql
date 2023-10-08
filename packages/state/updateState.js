@@ -66,6 +66,7 @@ const hoistStateUpdate = (state, obj, options) => {
   const element = state.__element
   const { parent, __ref: ref } = element
   const stateKey = ref.__state
+  const stateType = ref.__stateType
   if (!stateKey) return
 
   const asksForInherit = checkIfInherits(element)
@@ -73,7 +74,7 @@ const hoistStateUpdate = (state, obj, options) => {
   const shouldPropagateState = asksForInherit && inheritedState && !options.stopStatePropagation
   if (!shouldPropagateState) return
 
-  const isStringState = (ref.__stateType === 'string')
+  const isStringState = (stateType === 'string' || stateType === 'number' || stateType === 'boolean')
   const value = isStringState ? state.value : state.parse()
   const passedValue = isStringState ? state.value : obj
 
