@@ -1,6 +1,48 @@
 'use strict'
 
-export const debounce = (element, func, timeout = 300) => {
+/**
+ * Debounces a function, ensuring that it is only executed after a specified timeout
+ * period has elapsed since the last invocation.
+ *
+ * @param {function} func - The function to be debounced.
+ * @param {number} [timeout=300] - The time (in milliseconds) to wait after the last call to
+ *     `debounce` before executing the `func`.
+ * @returns {function} - A debounced version of the input function `func`.
+ * @example
+ * // Usage example:
+ * const debouncedFunction = debounce(this, myFunction, 500);
+ * window.addEventListener('resize', debouncedFunction);
+ */
+export function debounce (func, wait, immediate) {
+  let timeout
+  return function () {
+    const context = this; const args = arguments
+    const later = function () {
+      timeout = null
+      if (!immediate) func.apply(context, args)
+    }
+    const callNow = immediate && !timeout
+    clearTimeout(timeout)
+    timeout = setTimeout(later, wait)
+    if (callNow) func.apply(context, args)
+  }
+}
+
+/**
+ * Debounces a function, ensuring that it is only executed after a specified timeout
+ * period has elapsed since the last invocation.
+ *
+ * @param {Object} element - The context (this) to which the debounced function will be applied.
+ * @param {function} func - The function to be debounced.
+ * @param {number} [timeout=300] - The time (in milliseconds) to wait after the last call to
+ *     `debounce` before executing the `func`.
+ * @returns {function} - A debounced version of the input function `func`.
+ * @example
+ * // Usage example:
+ * const debouncedFunction = debounce(this, myFunction, 500);
+ * window.addEventListener('resize', debouncedFunction);
+ */
+export const debounceOnContext = (element, func, timeout = 300) => {
   let timer
   return (...args) => {
     clearTimeout(timer)

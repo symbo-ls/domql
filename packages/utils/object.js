@@ -146,7 +146,7 @@ export const objectToString = (obj, indent = 0) => {
   let str = '{\n'
 
   for (const [key, value] of Object.entries(obj)) {
-    const keyNotAllowdChars = stringIncludesAny(key, ['-', ':', '@', '.', '!', '/'])
+    const keyNotAllowdChars = stringIncludesAny(key, ['-', ':', '@', '.', '/', '!'])
     const stringedKey = keyNotAllowdChars ? `'${key}'` : key
     str += `${spaces}  ${stringedKey}: `
 
@@ -208,7 +208,7 @@ export const detachFunctionsFromObject = (obj, detached = {}) => {
 /**
  * Detringify object
  */
-export const deepDestringify = (obj, stringified = {}) => {
+export const deepDestringify = (obj, destringified = {}) => {
   for (const prop in obj) {
     const hasOwnProperty = Object.prototype.hasOwnProperty.call(obj, prop)
     if (!hasOwnProperty) continue
@@ -217,45 +217,42 @@ export const deepDestringify = (obj, stringified = {}) => {
       if (objProp.includes('=>') || objProp.includes('function') || objProp.startsWith('(')) {
         try {
           const evalProp = window.eval(`(${objProp})`) // use parentheses to convert string to function expression
-          stringified[prop] = evalProp
-        } catch (e) { if (e) stringified[prop] = objProp }
+          destringified[prop] = evalProp
+        } catch (e) { if (e) destringified[prop] = objProp }
       } else {
-        stringified[prop] = objProp
+        destringified[prop] = objProp
       }
     } else if (isArray(objProp)) {
-      stringified[prop] = []
+      destringified[prop] = []
       objProp.forEach((arrProp) => {
         if (isString(arrProp)) {
           if (arrProp.includes('=>') || arrProp.includes('function') || arrProp.startsWith('(')) {
             try {
               const evalProp = window.eval(`(${arrProp})`) // use parentheses to convert string to function expression
-              stringified[prop].push(evalProp)
-            } catch (e) { if (e) stringified[prop].push(arrProp) }
+              destringified[prop].push(evalProp)
+            } catch (e) { if (e) destringified[prop].push(arrProp) }
           } else {
-            stringified[prop].push(arrProp)
+            destringified[prop].push(arrProp)
           }
         } else if (isObject(arrProp)) {
-          stringified[prop].push(deepDestringify(arrProp))
+          destringified[prop].push(deepDestringify(arrProp))
         } else {
-          stringified[prop].push(arrProp)
+          destringified[prop].push(arrProp)
         }
       })
     } else if (isObject(objProp)) {
-      stringified[prop] = deepDestringify(objProp, stringified[prop]) // recursively call deepDestringify for nested objects
+      destringified[prop] = deepDestringify(objProp, destringified[prop]) // recursively call deepDestringify for nested objects
     } else {
-      stringified[prop] = objProp
+      destringified[prop] = objProp
     }
   }
-  return stringified
+  return destringified
 }
 
-export const stringToObject = (str) => {
-  let obj
+export const stringToObject = (str, verbose) => {
   try {
-    obj = window.eval('(' + str + ')') // eslint-disable-line
-  } catch (e) { console.warn(e) }
-
-  if (obj) return obj
+    return window.eval('(' + str + ')') // eslint-disable-line
+  } catch (e) { if (verbose) console.warn(e) }
 }
 
 export const diffObjects = (original, objToDiff, cache) => {
