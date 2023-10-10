@@ -2,7 +2,7 @@
 
 import { report } from '@domql/report'
 import { canRender } from '@domql/event'
-import { exec, isString, isValidHtmlTag } from '@domql/utils'
+import { exec, isObject, isString, isValidHtmlTag } from '@domql/utils'
 
 const cache = {}
 
@@ -21,10 +21,15 @@ export const createHTMLNode = (element) => {
 }
 
 export const detectTag = element => {
-  let { tag, key } = element
+  let { tag, key, props } = element
   tag = exec(tag, element)
 
   if (tag === true) tag = key
+
+  if (isObject(props) && isString(props.tag)) {
+    const tagExists = isValidHtmlTag(props.tag)
+    if (tagExists) return props.tag
+  }
 
   if (isString(tag)) {
     const tagExists = isValidHtmlTag(tag)
