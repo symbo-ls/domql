@@ -92,8 +92,6 @@ export const cloneAndMergeArrayExtend = stack => {
 export const fallbackStringExtend = (extend, context, options) => {
   const COMPONENTS = (context && context.components) || options.components
   if (isString(extend)) {
-    console.log('extend', extend)
-    console.log(COMPONENTS[extend])
     if (COMPONENTS && COMPONENTS[extend]) {
       return COMPONENTS[extend]
     } else {

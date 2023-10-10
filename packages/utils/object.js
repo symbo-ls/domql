@@ -42,7 +42,7 @@ export const deepMerge = (element, extend, excludeFrom = []) => {
     const elementProp = element[e]
     const extendProp = extend[e]
     if (isObjectLike(elementProp) && isObjectLike(extendProp)) {
-      deepMerge(elementProp, extendProp)
+      deepMerge(elementProp, extendProp, excludeFrom)
     } else if (elementProp === undefined) {
       element[e] = extendProp
     }

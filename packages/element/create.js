@@ -64,8 +64,10 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
 
   applyComponentFromContext(element, parent, options)
 
-  // create EXTEND inheritance
-  applyExtend(element, parent, options)
+  if (!ref.__skipCreate) {
+    // create EXTEND inheritance
+    applyExtend(element, parent, options)
+  }
 
   // create and assign a KEY
   element.key = key
@@ -287,20 +289,13 @@ const addCaching = (element, parent) => {
 }
 
 const onlyResolveExtends = (element, parent, key, options) => {
-  const { __ref } = element
-  element.tag = detectTag(element)
+  const { __ref: ref } = element
+  if (!ref.__skipCreate) {
+    element.tag = detectTag(element)
 
-  // if (!element.props) element.props = {}
+    // if (!element.props) element.props = {}
 
-  // Copy-paste of addCaching()
-  {
-    const { __ref: ref } = element
-    const { __ref: parentRef } = parent // eslint-disable-line
-
-    // enable TRANSFORM in data
-    // TODO: do we need this at all?
-    // if (!element.transform) element.transform = {}
-
+    // Copy-paste of addCaching()
     // enable CACHING
     if (!ref.__cached) ref.__cached = {}
     if (!ref.__defineCache) ref.__defineCache = {}
@@ -324,29 +319,28 @@ const onlyResolveExtends = (element, parent, key, options) => {
     // Add __root element property
     // const hasRoot = parent && parent.key === ':root'
     // if (!ref.__root) ref.__root = hasRoot ? element : parentRef.__root
-  }
 
-  addMethods(element, parent)
+    addMethods(element, parent)
 
-  createState(element, parent)
+    createState(element, parent)
 
-  // Borrowed from createIfConditionFlag()
-  const ref = __ref
-  if (isFunction(element.if)) {
-    const ifPassed = element.if(element, element.state)
-    if (!ifPassed) {
-      // const ifFragment = cacheNode({ tag: 'fragment' })
-      // ref.__ifFragment = appendNode(ifFragment, parent.node)
-      delete ref.__if
+    // Borrowed from createIfConditionFlag()
+    if (isFunction(element.if)) {
+      const ifPassed = element.if(element, element.state)
+      if (!ifPassed) {
+        // const ifFragment = cacheNode({ tag: 'fragment' })
+        // ref.__ifFragment = appendNode(ifFragment, parent.node)
+        delete ref.__if
+      } else ref.__if = true
     } else ref.__if = true
-  } else ref.__if = true
-  /// ///
+    /// ///
 
-  if (element.node && ref.__if) { parent[key || element.key] = element } // Borrowed from assignNode()
+    if (element.node && ref.__if) { parent[key || element.key] = element } // Borrowed from assignNode()
 
-  createProps(element, parent)
-  if (!element.props) element.props = {}
-  applyVariant(element, parent)
+    createProps(element, parent)
+    if (!element.props) element.props = {}
+    applyVariant(element, parent)
+  }
 
   if (element.tag !== 'string' && element.tag !== 'fragment') {
     throughInitialDefine(element)
@@ -365,7 +359,7 @@ const onlyResolveExtends = (element, parent, key, options) => {
             element.context.define[k]
       const optionsHasDefine = options.define && options.define[k]
 
-      if (registry[k] && !optionsHasDefine) {
+      if (!ref.__skipCreate && registry[k] && !optionsHasDefine) {
         continue
       } else if (element[k] && !hasDefine && !optionsHasDefine && !contextHasDefine) {
         create(exec(element[k], element), element, k, options)
