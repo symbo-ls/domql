@@ -12,6 +12,7 @@ import { throughUpdatedDefine, throughUpdatedExec } from './iterate'
 import { registry } from './mixins'
 import { applyParam } from './applyParam'
 import OPTIONS from './cache/options'
+import { findInheritedState } from '../state/inherit'
 
 const snapshot = {
   snapshotId: createSnapshotId
@@ -173,6 +174,20 @@ const checkIfOnUpdate = (element, parent, options) => {
   }
 }
 
+/**
+ * Inherit state updates for a given element based on the specified options.
+ *
+ * @param {Object} element - The element to inherit state updates for.
+ * @param {Object} options - Configuration options for state update inheritance.
+ * @param {boolean} [options.preventUpdateTriggerStateUpdate] - If true, prevent triggering state updates.
+ * @param {boolean} [options.isHoisted] - Whether the state is hoisted.
+ * @param {boolean} [options.execStateFunction] - Execute the state functions.
+ * @param {boolean} [options.stateFunctionOverwrite] - If true, overwrite (not merge) current state with what function returns.
+ * @param {boolean} [options.preventInheritedStateUpdate] - If true, prevent inheriting state updates.
+ * @param {boolean} [options.preventInitStateUpdateListener] - If true, prevent the 'initStateUpdated' event listener.
+ * @param {boolean} [options.preventStateUpdateListener] - If true, prevent the 'stateUpdated' event listener.
+ * @returns {boolean} - If returns false, it breaks the update function
+ */
 const inheritStateUpdates = (element, options) => {
   const { __ref: ref } = element
   const stateKey = ref.__state
@@ -180,14 +195,18 @@ const inheritStateUpdates = (element, options) => {
 
   if (options.preventpdateTriggerStateUpdate) return
 
+  // If does not have own state inherit from parent
   if (!stateKey && !ref.__hasRootState) {
     element.state = (parent && parent.state) || {}
     return
   }
 
+  // If state is function, decide execution and apply setting a current state
   const { isHoisted, execStateFunction, stateFunctionOverwrite } = options
-  const shouldForceStateUpdate = isFunction(stateKey) && (!isHoisted && execStateFunction && stateFunctionOverwrite)
-  if (shouldForceStateUpdate) {
+  const shouldForceFunctionState = isFunction(stateKey) && (
+    !isHoisted && execStateFunction && stateFunctionOverwrite
+  )
+  if (shouldForceFunctionState) {
     const execState = exec(stateKey, element)
     state.set(execState, {
       ...options,
@@ -196,18 +215,20 @@ const inheritStateUpdates = (element, options) => {
     return
   }
 
-  const parentState = (parent && parent.state) || {}
-  const keyInParentState = parentState[stateKey]
-
+  // If state is string, find its value in the state tree
+  const keyInParentState = findInheritedState(element, element.parent)
   if (!keyInParentState || options.preventInheritedStateUpdate) return
 
+  // Trigger on.initStateUpdated event
   if (!options.preventInitStateUpdateListener) {
     const initStateReturns = triggerEventOnUpdate('initStateUpdated', keyInParentState, element, options)
     if (initStateReturns === false) return element
   }
 
+  // Recreate the state again
   const newState = createStateUpdate(element, parent, options)
 
+  // Trigger on.stateUpdated event
   if (!options.preventStateUpdateListener) {
     triggerEventOnUpdate('stateUpdated', newState.parse(), element, options)
   }
