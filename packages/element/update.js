@@ -57,18 +57,20 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     if (props) updateProps(props, element, parent)
   }
 
-  if (!options.isForced) {
-    triggerEventOn('beforeClassAssign', element, options)
-  }
-
   if (!options.preventInitUpdateListener) {
     const initUpdateReturns = triggerEventOnUpdate('initUpdate', params, element, options)
     if (initUpdateReturns === false) return element
   }
 
+  // if (element.key === 'comp') debugger
+
   const overwriteChanges = overwriteDeep(element, params, METHODS_EXL)
   const execChanges = throughUpdatedExec(element, { ignore: UPDATE_DEFAULT_OPTIONS })
   const definedChanges = throughUpdatedDefine(element)
+
+  if (!options.isForced) {
+    triggerEventOn('beforeClassAssign', element, options)
+  }
 
   if (options.stackChanges && element.__stackChanges) {
     const stackChanges = merge(definedChanges, merge(execChanges, overwriteChanges))

@@ -87,13 +87,16 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
 
   createIfConditionFlag(element, parent)
 
+  // apply props settings
+  createProps(element, parent)
+
+  // recatch if it passess props again
+  createIfConditionFlag(element, parent)
+
   // if it already HAS a NODE
   if (element.node && ref.__if) {
     return assignNode(element, parent, key)
   }
-
-  // apply props settings
-  createProps(element, parent)
 
   // apply variants
   applyVariant(element, parent)
