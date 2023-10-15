@@ -60,8 +60,9 @@ export const destroy = function (options = {}) {
             configurable: true, // Set this to true if you want to allow redefining/removing the property later
             writable: true // Set this to true if you want to allow changing the function later
           })
+        } else {
+          Object.setPrototypeOf(child, { parent: state.parent })
         }
-        Object.setPrototypeOf(child, { parent: state.parent })
       }
     }
   }

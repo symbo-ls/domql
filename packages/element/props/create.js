@@ -26,7 +26,7 @@ const createPropsStack = (element, parent) => {
 
 export const syncProps = (props, element) => {
   element.props = {}
-  const mergedProps = { update, __element: element }
+  const mergedProps = {}
 
   props.forEach(v => {
     if (IGNORE_PROPS_PARAMS.includes(v)) return
@@ -41,6 +41,10 @@ export const syncProps = (props, element) => {
     )
   })
   element.props = mergedProps
+
+  const methods = { update: update.bind(element.props), __element: element }
+  Object.setPrototypeOf(element.props, methods)
+
   return element.props
 }
 
@@ -53,7 +57,7 @@ export const createProps = function (element, parent, cached) {
       if (propsStack.length) {
         ref.__props = propsStack
         syncProps(propsStack, element)
-      }
+      } else { element.props = {} }
     } catch (e) {
       element.props = {}
       ref.__props = cached || []
@@ -63,7 +67,8 @@ export const createProps = function (element, parent, cached) {
     ref.__props = cached || []
   }
 
-  element.props.update = update
+  const methods = { update: update.bind(element.props), __element: element }
+  Object.setPrototypeOf(element.props, methods)
 
   return element
 }

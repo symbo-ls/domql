@@ -26,24 +26,25 @@ export const getExtendStackRegistry = (extend, stack) => {
 }
 
 // stacking
-export const extractArrayExtend = (extend, stack) => {
-  extend.forEach(each => flattenExtend(each, stack))
+export const extractArrayExtend = (extend, stack, context) => {
+  extend.forEach(each => flattenExtend(each, stack, context))
   return stack
 }
 
-export const deepExtend = (extend, stack) => {
+export const deepExtend = (extend, stack, context) => {
   const extendOflattenExtend = extend.extend
   if (extendOflattenExtend) {
-    flattenExtend(extendOflattenExtend, stack)
+    flattenExtend(extendOflattenExtend, stack, context)
   }
   return stack
 }
 
-export const flattenExtend = (extend, stack) => {
+export const flattenExtend = (extend, stack, context) => {
   if (!extend) return stack
-  if (isArray(extend)) return extractArrayExtend(extend, stack)
+  if (isArray(extend)) return extractArrayExtend(extend, stack, context)
+  if (isString(extend)) extend = fallbackStringExtend(extend, context)
   stack.push(extend)
-  if (extend.extend) deepExtend(extend, stack)
+  if (extend.extend) deepExtend(extend, stack, context)
   return stack
 }
 
@@ -89,7 +90,7 @@ export const cloneAndMergeArrayExtend = stack => {
   }, {})
 }
 
-export const fallbackStringExtend = (extend, context, options) => {
+export const fallbackStringExtend = (extend, context, options = {}) => {
   const COMPONENTS = (context && context.components) || options.components
   if (isString(extend)) {
     if (COMPONENTS && COMPONENTS[extend]) {
@@ -114,10 +115,10 @@ export const jointStacks = (extendStack, childExtendStack) => {
 }
 
 // init
-export const getExtendStack = extend => {
+export const getExtendStack = (extend, context) => {
   if (!extend) return []
   if (extend.__hash) return getHashedExtend(extend) || []
-  const stack = flattenExtend(extend, [])
+  const stack = flattenExtend(extend, [], context)
   return getExtendStackRegistry(extend, stack)
 }
 
@@ -126,17 +127,16 @@ export const getExtendMerged = extend => {
   return cloneAndMergeArrayExtend(stack)
 }
 
-export const replaceStringsWithComponents = (stack, context, options) => {
-  const COMPONENTS = (context && context.components) || options.components
-  return stack.map(v => {
-    if (isString(v)) {
-      const component = COMPONENTS[v]
-      return component
-    }
-    if (isString(v.extend)) {
-      v.extend = COMPONENTS[v.extend]
-      return { ...getExtendMerged(v.extend), ...v }
-    }
-    return v
-  })
-}
+// export const replaceStringsWithComponents = (stack, context, options) => {
+//   const COMPONENTS = (context && context.components) || options.components
+//   return stack.map(v => {
+//     if (isString(v)) {
+//       const component = COMPONENTS[v]
+//       return component
+//     }
+//     if (isString(v.extend)) {
+//       v.extend = getExtendMerged(COMPONENTS[v.extend])
+//     }
+//     return v
+//   })
+// }
