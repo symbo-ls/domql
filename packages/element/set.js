@@ -10,23 +10,32 @@ import { removeContent } from './mixins/content'
 const set = function (params, options = {}, el) {
   const element = el || this
   const __contentRef = element.content && element.content.__ref
+  const lazyLoad = element.props && element.props.lazyLoad
 
   if (__contentRef && __contentRef.__cached && deepContains(params, element.content)) {
     console.log('is content equal')
     return element.content.update()
   }
 
-  removeContent(element)
+  if (options.preventContentUpdate === true) return
 
-  if (params) {
-    const { childExtend } = params
-    if (!childExtend && element.childExtend) params.childExtend = element.childExtend
+  const setAsync = () => {
+    removeContent(element)
     create(params, element, 'content', {
       ignoreChildExtend: true,
       ...registry.defaultOptions,
       ...OPTIONS.create,
       ...options
     })
+  }
+
+  if (params) {
+    const { childExtend } = params
+    if (!childExtend && element.childExtend) params.childExtend = element.childExtend
+
+    if (lazyLoad) {
+      window.requestAnimationFrame(setAsync)
+    } else setAsync()
   }
 
   return element

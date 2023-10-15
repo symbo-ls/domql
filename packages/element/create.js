@@ -83,12 +83,16 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
 
   addMethods(element, parent)
 
+  createScope(element, parent)
+
   createState(element, parent)
+  if (element.scope === 'state') element.scope = element.state
 
   createIfConditionFlag(element, parent)
 
   // apply props settings
   createProps(element, parent)
+  if (element.scope === 'props' || element.scope === true) element.scope = element.props
 
   // recatch if it passess props again
   createIfConditionFlag(element, parent)
@@ -236,6 +240,11 @@ const applyValueAsText = (element, parent, key) => {
 const applyContext = (element, parent, options) => {
   if (options.context && !ROOT.context && !element.context) ROOT.context = options.context
   if (!element.context) element.context = parent.context || options.context || ROOT.context
+}
+
+const createScope = (element, parent) => {
+  const { __ref: ref } = element
+  if (!element.scope) element.scope = parent.scope || ref.__root.scope || {}
 }
 
 const createIfConditionFlag = (element, parent) => {

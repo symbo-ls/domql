@@ -193,7 +193,9 @@ const inheritStateUpdates = (element, options) => {
   const stateKey = ref.__state
   const { parent, state } = element
 
-  if (options.preventpdateTriggerStateUpdate) return
+  // if (element.key === 'base') debugger
+
+  if (options.preventUpdateTriggerStateUpdate) return
 
   // If does not have own state inherit from parent
   if (!stateKey && !ref.__hasRootState) {
