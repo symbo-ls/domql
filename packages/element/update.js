@@ -190,8 +190,9 @@ const inheritStateUpdates = (element, options) => {
   const { __ref: ref } = element
   const stateKey = ref.__state
   const { parent, state } = element
+  const { preventUpdateTriggerStateUpdate, isHoisted, execStateFunction } = options
 
-  if (options.preventUpdateTriggerStateUpdate) return
+  if (preventUpdateTriggerStateUpdate) return
 
   // If does not have own state inherit from parent
   if (!stateKey && !ref.__hasRootState) {
@@ -200,16 +201,10 @@ const inheritStateUpdates = (element, options) => {
   }
 
   // If state is function, decide execution and apply setting a current state
-  const { isHoisted, execStateFunction, stateFunctionOverwrite } = options
-  const shouldForceFunctionState = isFunction(stateKey) && (
-    !isHoisted && execStateFunction && stateFunctionOverwrite
-  )
+  const shouldForceFunctionState = isFunction(stateKey) && !isHoisted && execStateFunction
   if (shouldForceFunctionState) {
     const execState = exec(stateKey, element)
-    state.set(execState, {
-      ...options,
-      preventUpdate: true
-    })
+    state.set(execState, { ...options, preventUpdate: true })
     return
   }
 
