@@ -15,7 +15,7 @@ const createPropsStack = (element, parent) => {
 
   if (isArray(__ref.__extend)) {
     __ref.__extend.forEach(extend => {
-      if (extend.props) propsStack.push(extend.props)
+      if (extend.props && extend.props !== props) propsStack.push(extend.props)
     })
   }
 
@@ -27,10 +27,13 @@ const createPropsStack = (element, parent) => {
 export const syncProps = (props, element) => {
   element.props = {}
   const mergedProps = { update, __element: element }
+
   props.forEach(v => {
     if (IGNORE_PROPS_PARAMS.includes(v)) return
     const execProps = exec(v, element)
-    if (isObject(execProps) && execProps.__element) return
+    // TODO: check if this failing the function props merge
+    // if (isObject(execProps) && execProps.__element) return
+    // it was causing infinite loop at early days
     element.props = deepMerge(
       mergedProps,
       deepClone(execProps, IGNORE_PROPS_PARAMS),

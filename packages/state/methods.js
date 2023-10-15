@@ -53,7 +53,15 @@ export const destroy = function (options = {}) {
     for (const key in state.__children) {
       const child = state.__children[key]
       if (child.state) {
-        child.parent = state.parent
+        if (isArray(child.state)) {
+          Object.defineProperty(child.state, 'parent', {
+            value: state.parent,
+            enumerable: false, // Set this to true if you want the method to appear in for...in loops
+            configurable: true, // Set this to true if you want to allow redefining/removing the property later
+            writable: true // Set this to true if you want to allow changing the function later
+          })
+        }
+        Object.setPrototypeOf(child, { parent: state.parent })
       }
     }
   }

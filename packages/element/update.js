@@ -63,8 +63,6 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     if (initUpdateReturns === false) return element
   }
 
-  // if (element.key === 'comp') debugger
-
   const overwriteChanges = overwriteDeep(element, params, METHODS_EXL)
   const execChanges = throughUpdatedExec(element, { ignore: UPDATE_DEFAULT_OPTIONS })
   const definedChanges = throughUpdatedDefine(element)
@@ -109,15 +107,15 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
       const canUpdate = isObject(prop) && !hasDefine && !hasContextDefine && !options.preventRecursive
       if (!canUpdate) continue
 
+      const lazyLoad = element.props.lazyLoad || options.lazyLoad
+
       const childUpdateCall = () => update.call(prop, params[prop], {
         ...options,
         currentSnapshot: snapshotOnCallee,
         calleeElement
       })
 
-      if ((element.props && element.props.lazyLoad) || options.lazyLoad) {
-        window.requestAnimationFrame(() => childUpdateCall())
-      } else childUpdateCall()
+      lazyLoad ? window.requestAnimationFrame(() => childUpdateCall()) : childUpdateCall()
     }
   }
 
@@ -192,8 +190,6 @@ const inheritStateUpdates = (element, options) => {
   const { __ref: ref } = element
   const stateKey = ref.__state
   const { parent, state } = element
-
-  // if (element.key === 'base') debugger
 
   if (options.preventUpdateTriggerStateUpdate) return
 
