@@ -45,6 +45,8 @@ const ENV = process.env.NODE_ENV
 const create = (element, parent, key, options = OPTIONS.create || {}) => {
   cacheOptions(element, options)
 
+  // if (key === 'Title') debugger
+
   // if element is STRING
   if (checkIfPrimitive(element)) {
     element = applyValueAsText(element, parent, key)

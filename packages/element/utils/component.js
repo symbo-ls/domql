@@ -21,7 +21,7 @@ export const addAdditionalExtend = (newExtend, element) => {
 }
 
 export const extendizeByKey = (element, parent, key) => {
-  const { extend, props, state, childExtend, childProps, on, if: condition } = element
+  const { tag, extend, props, state, childExtend, childProps, on, if: condition } = element
   const hasComponentAttrs = extend || childExtend || props || state || on || condition
   const componentKey = key.includes('_')
     ? key.split('_')[0]
@@ -31,18 +31,22 @@ export const extendizeByKey = (element, parent, key) => {
   if (!hasComponentAttrs || childProps) {
     return {
       extend: extendKey,
+      tag,
       props: { ...element }
     }
   } else if (!extend || extend === true) {
     return {
       ...element,
+      tag,
       extend: extendKey
     }
   } else if (extend) {
     addAdditionalExtend(extendKey, element)
   } else if (isFunction(element)) {
+    console.log(element)
     return {
       extend: extendKey,
+      tag,
       props: { ...exec(element, parent) }
     }
   }

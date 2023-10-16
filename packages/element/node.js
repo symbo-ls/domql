@@ -44,37 +44,36 @@ export const createNode = (element, options) => {
     if (isFunction(node.setAttribute)) node.setAttribute('key', element.key)
   }
 
-  // iterate through all given params
-  if (element.tag !== 'string' || element.tag !== 'fragment') {
-    // iterate through define
-    throughInitialDefine(element)
+  // iterate through define
+  throughInitialDefine(element)
 
-    // iterate through exec
-    throughInitialExec(element)
+  // iterate through exec
+  throughInitialExec(element)
 
+  if (element.tag !== 'string' && element.tag !== 'fragment') {
     // apply events
     if (isNewNode && isObject(element.on)) applyEventsOnNode(element)
+  }
 
-    for (const param in element) {
-      const prop = element[param]
+  for (const param in element) {
+    const value = element[param]
 
-      if (
-        isUndefined(prop) ||
-        isMethod(param) ||
-        isVariant(param) ||
-        isObject(registry[param])
-      ) continue
+    if (
+      isUndefined(value) ||
+      isMethod(param) ||
+      isVariant(param) ||
+      isObject(registry[param])
+    ) continue
 
-      const isElement = applyParam(param, element, options)
-      if (isElement) {
-        const { hasDefine, hasContextDefine } = isElement
-        if (element[param] && !hasDefine && !hasContextDefine) {
-          const createAsync = () => create(exec(prop, element), element, param, options)
+    const isElement = applyParam(param, element, options)
+    if (isElement) {
+      const { hasDefine, hasContextDefine } = isElement
+      if (element[param] && !hasDefine && !hasContextDefine) {
+        const createAsync = () => create(exec(value, element), element, param, options)
 
-          if ((element.props && element.props.lazyLoad) || options.lazyLoad) {
-            window.requestAnimationFrame(() => createAsync())
-          } else createAsync()
-        }
+        if ((element.props && element.props.lazyLoad) || options.lazyLoad) {
+          window.requestAnimationFrame(() => createAsync())
+        } else createAsync()
       }
     }
   }
