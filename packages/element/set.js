@@ -9,12 +9,13 @@ import { removeContent } from './mixins/content'
 
 const set = function (params, options = {}, el) {
   const element = el || this
-  const __contentRef = element.content && element.content.__ref
+  const { __ref: ref, content } = element
+  const __contentRef = content && content.__ref
   const lazyLoad = element.props && element.props.lazyLoad
 
-  if (__contentRef && __contentRef.__cached && deepContains(params, element.content)) {
+  if (ref.__noCollectionDifference || (__contentRef && __contentRef.__cached && deepContains(params, content))) {
     console.log('is content equal')
-    return element.content.update()
+    return content.update()
   }
 
   if (options.preventContentUpdate === true) return
