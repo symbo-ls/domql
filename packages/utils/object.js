@@ -1,7 +1,7 @@
 'use strict'
 
 import { window } from './globals.js'
-import { isFunction, isObjectLike, isObject, isArray, isString, is } from './types.js'
+import { isFunction, isObjectLike, isObject, isArray, isString, is, isUndefined } from './types.js'
 import { mergeAndCloneIfArray, mergeArray } from './array.js'
 import { stringIncludesAny } from './string.js'
 import { diff as deepObjectDiff } from 'deep-object-diff'
@@ -96,17 +96,18 @@ export const mergeArrayExclude = (arr, excl = []) => {
 /**
  * Deep cloning of object
  */
-export const deepClone = (obj, excludeFrom = []) => {
+export const deepClone = (obj, excludeFrom = [], cleanUndefined = false) => {
   const o = isArray(obj) ? [] : {}
   for (const prop in obj) {
     if (prop === '__proto__') continue
     if (excludeFrom.includes(prop) || prop.startsWith('__')) continue
     let objProp = obj[prop]
+    if (cleanUndefined && isUndefined(objProp)) continue
     if (prop === 'extend' && isArray(objProp)) {
       objProp = mergeArray(objProp)
     }
     if (isObjectLike(objProp)) {
-      o[prop] = deepClone(objProp, excludeFrom)
+      o[prop] = deepClone(objProp, excludeFrom, cleanUndefined)
     } else o[prop] = objProp
   }
   return o
@@ -163,7 +164,7 @@ export const objectToString = (obj, indent = 0) => {
         }
       }
       str += `${spaces}  ]`
-    } else if (isObject(value)) {
+    } else if (isObjectLike(value)) {
       str += objectToString(value, indent + 1)
     } else if (isString(value)) {
       str += stringIncludesAny(value, ['\n', '\'']) ? `\`${value}\`` : `'${value}'`

@@ -52,16 +52,11 @@ export const createProps = function (element, parent, cached) {
   const { __ref: ref } = element
 
   if (ref.__if) {
-    try {
-      const propsStack = cached || createPropsStack(element, parent)
-      if (propsStack.length) {
-        ref.__props = propsStack
-        syncProps(propsStack, element)
-      } else { element.props = {} }
-    } catch (e) {
-      element.props = {}
-      ref.__props = cached || []
-    }
+    const propsStack = cached || createPropsStack(element, parent)
+    if (propsStack.length) {
+      ref.__props = propsStack
+      syncProps(propsStack, element)
+    } else { element.props = {} }
   } else {
     element.props = {}
     ref.__props = cached || []
