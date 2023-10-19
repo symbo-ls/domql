@@ -51,15 +51,29 @@ export const syncProps = (props, element) => {
 export const createProps = function (element, parent, cached) {
   const { __ref: ref } = element
 
-  if (ref.__if) {
+  // if (element.parent.key === '0' && element.key === 'editor') {
+  //   debugger
+  // }
+
+  const applyProps = () => {
     const propsStack = cached || createPropsStack(element, parent)
     if (propsStack.length) {
       ref.__props = propsStack
       syncProps(propsStack, element)
-    } else { element.props = {} }
-  } else {
-    element.props = {}
-    ref.__props = cached || []
+    } else {
+      ref.__props = cached || []
+      element.props = {}
+    }
+  }
+
+  if (ref.__if) applyProps()
+  else {
+    try {
+      applyProps()
+    } catch {
+      element.props = {}
+      ref.__props = cached || []
+    }
   }
 
   const methods = { update: update.bind(element.props), __element: element }

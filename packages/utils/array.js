@@ -79,3 +79,17 @@ export const createNestedObject = (arr, lastValue) => {
 
   return nestedObject
 }
+
+export const removeValueFromArray = (arr, value) => {
+  const index = arr.indexOf(value)
+  if (index > -1) {
+    const newArray = [...arr]
+    newArray.splice(index, 1)
+    return newArray
+  }
+  return arr.slice()
+}
+
+export const removeValueFromArrayAll = (arr, value) => {
+  return arr.filter(item => item !== value)
+}
