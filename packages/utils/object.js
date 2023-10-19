@@ -315,7 +315,7 @@ export const makeObjectWithoutPrototype = () => Object.create(null)
 export const deepDiff = (lhs, rhs) => {
   if (lhs === rhs) return {}
 
-  if (!isObject(lhs) || !isObject(rhs)) return rhs
+  if (!isObjectLike(lhs) || !isObjectLike(rhs)) return rhs
 
   const deletedValues = Object.keys(lhs).reduce((acc, key) => {
     if (!hasOwnProperty(rhs, key)) {
