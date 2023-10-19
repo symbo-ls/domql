@@ -4,7 +4,7 @@ import { window, exec, isArray, isFunction, isNumber, isObject, isString, isUnde
 import { applyEvent, triggerEventOn, triggerEventOnUpdate } from '@domql/event'
 import { isMethod } from './methods'
 import { updateProps } from './props'
-import { createState } from '@domql/state'
+import { createState, findInheritedState } from '@domql/state'
 
 import { METHODS_EXL, isVariant } from './utils'
 import create from './create'
@@ -12,7 +12,6 @@ import { throughUpdatedDefine, throughUpdatedExec } from './iterate'
 import { registry } from './mixins'
 import { applyParam } from './applyParam'
 import OPTIONS from './cache/options'
-import { findInheritedState } from '@domql/state/inherit'
 
 const snapshot = {
   snapshotId: createSnapshotId
