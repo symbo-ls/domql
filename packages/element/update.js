@@ -12,7 +12,7 @@ import { throughUpdatedDefine, throughUpdatedExec } from './iterate'
 import { registry } from './mixins'
 import { applyParam } from './applyParam'
 import OPTIONS from './cache/options'
-import { findInheritedState } from '../state/inherit'
+import { findInheritedState } from '@domql/state/inherit'
 
 const snapshot = {
   snapshotId: createSnapshotId
