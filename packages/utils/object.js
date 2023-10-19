@@ -1,10 +1,9 @@
 'use strict'
 
 import { window } from './globals.js'
-import { isFunction, isObjectLike, isObject, isArray, isString, is, isUndefined } from './types.js'
+import { isFunction, isObjectLike, isObject, isArray, isString, is, isUndefined, isDate } from './types.js'
 import { mergeAndCloneIfArray, mergeArray } from './array.js'
 import { stringIncludesAny } from './string.js'
-import { diff as deepObjectDiff } from 'deep-object-diff'
 
 export const exec = (param, element, state, context) => {
   if (isFunction(param)) {
@@ -303,7 +302,50 @@ export const diff = (original, objToDiff, cache = {}) => {
   return cache
 }
 
-export const deepDiff = deepObjectDiff
+export const hasOwnProperty = (o, ...args) => Object.prototype.hasOwnProperty.call(o, ...args)
+
+export const isEmpty = o => Object.keys(o).length === 0
+
+export const isEmptyObject = (o) => isObject(o) && isEmpty(o)
+
+export const makeObjectWithoutPrototype = () => Object.create(null)
+
+// by mattphillips
+// https://github.com/mattphillips/deep-object-diff/blob/main/src/diff.js
+export const deepDiff = (lhs, rhs) => {
+  if (lhs === rhs) return {}
+
+  if (!isObject(lhs) || !isObject(rhs)) return rhs
+
+  const deletedValues = Object.keys(lhs).reduce((acc, key) => {
+    if (!hasOwnProperty(rhs, key)) {
+      acc[key] = undefined
+    }
+
+    return acc
+  }, makeObjectWithoutPrototype())
+
+  if (isDate(lhs) || isDate(rhs)) {
+    if (lhs.valueOf() === rhs.valueOf()) return {}
+    return rhs
+  }
+
+  return Object.keys(rhs).reduce((acc, key) => {
+    if (!hasOwnProperty(lhs, key)) {
+      acc[key] = rhs[key]
+      return acc
+    }
+
+    const difference = diff(lhs[key], rhs[key])
+
+    if (isEmptyObject(difference) && !isDate(difference) && (isEmptyObject(lhs[key]) || !isEmptyObject(rhs[key]))) {
+      return acc
+    }
+
+    acc[key] = difference
+    return acc
+  }, deletedValues)
+}
 
 /**
  * Overwrites object properties with another

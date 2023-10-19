@@ -19,6 +19,8 @@ export const isNull = arg => arg === null
 
 export const isArray = arg => Array.isArray(arg)
 
+export const isDate = d => d instanceof Date
+
 export const isObjectLike = arg => {
   if (arg === null) return false
   // if (isArray(arg)) return false
@@ -34,6 +36,7 @@ export const isDefined = arg => {
     isArray(arg) ||
     isObjectLike(arg) ||
     isBoolean(arg) ||
+    isDate(arg) ||
     isNull(arg)
 }
 
@@ -46,6 +49,7 @@ export const TYPES = {
   array: isArray,
   object: isObject,
   string: isString,
+  date: isDate,
   number: isNumber,
   null: isNull,
   function: isFunction,

@@ -26,8 +26,5 @@
   "gitHead": "e5952db705e332f062e2e78113d620bd48ba16d9",
   "devDependencies": {
     "@babel/core": "^7.12.0"
-  },
-  "dependencies": {
-    "deep-object-diff": "^1.1.9"
   }
 }
