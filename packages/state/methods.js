@@ -113,10 +113,16 @@ export const set = function (value, options = {}) {
     .update(value, { replace: true, ...options })
 }
 
+export const reset = function (options = {}) {
+  const state = this
+  const value = state.parse()
+  return state.set(value.parse(), { replace: true, ...options })
+}
+
 export const apply = function (func, options = {}) {
   const state = this
   if (isFunction(func)) {
     func(state)
-    return state.update(state, { replace: true, ...options })
+    return state.update(state.parse(), { replace: true, ...options })
   }
 }
