@@ -115,8 +115,7 @@ export const set = function (value, options = {}) {
 
 export const reset = function (options = {}) {
   const state = this
-  const value = state.parse()
-  return state.set(value.parse(), { replace: true, ...options })
+  return state.set(state.parse(), { replace: true, ...options })
 }
 
 export const apply = function (func, options = {}) {
