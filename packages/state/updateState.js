@@ -80,7 +80,8 @@ const hoistStateUpdate = (state, obj, options) => {
   const findGrandParentState = getParentStateInKey(stateKey, parent.state)
   const changesValue = createChangesByKey(stateKey, passedValue)
   const targetParent = findGrandParentState || parent.state
-  if (options.replace) targetParent[stateKey] = value
+  if (options.replace) overwriteDeep(targetParent, changesValue) // check with createChangesByKey
+  console.log(changesValue)
   targetParent.update(changesValue, {
     execStateFunction: false,
     isHoisted: true,
