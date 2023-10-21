@@ -3,7 +3,7 @@
 import { triggerEventOn } from '@domql/event'
 import { deepClone, exec, is, isArray, isFunction, isObject, isUndefined } from '@domql/utils'
 import { IGNORE_STATE_PARAMS } from './ignore'
-import { add, apply, clean, destroy, parentUpdate, parse, remove, rootUpdate, set, toggle } from './methods'
+import { add, apply, clean, destroy, parentUpdate, parse, remove, rootUpdate, set, reset, toggle } from './methods'
 import { updateState } from './updateState'
 import { checkIfInherits, createInheritedState } from './inherit'
 
@@ -95,6 +95,7 @@ const applyMethods = (element) => {
     remove: remove.bind(state),
     apply: apply.bind(state),
     set: set.bind(state),
+    reset: reset.bind(state),
     parent: element.parent.state,
     __element: element,
     __children: {},
