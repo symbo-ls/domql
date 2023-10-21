@@ -9,18 +9,28 @@ export const appendNode = (node, parentNode) => {
   return node
 }
 
-export const insertNodeAfter = (node, siblingNode) => {
-  siblingNode.parentNode.insertBefore(node, siblingNode.nextSibling)
+export const insertNodeAfter = (node, siblingNode, parentNode) => {
+  (parentNode || siblingNode.parentNode)?.insertBefore(node, siblingNode)
+}
+
+export const insertNodeBefore = (node, siblingNode, parentNode) => {
+  (parentNode || siblingNode.parentNode)?.insertBefore(node, siblingNode)
 }
 
 /**
  * Receives elements and assigns the first
  * parameter as a child of the second one
  */
-export const assignNode = (element, parent, key, insertAfter) => {
+export const assignNode = (element, parent, key, attachOptions) => {
   parent[key || element.key] = element
   if (element.tag !== 'shadow') {
-    (insertAfter ? insertNodeAfter : appendNode)(element.node, parent.node)
+    if (attachOptions && attachOptions.position) {
+      (attachOptions.position === 'before'
+        ? insertNodeBefore
+        : insertNodeAfter)(element.node, attachOptions.node, attachOptions.parentNode || parent.node)
+    } else {
+      appendNode(element.node, parent.node)
+    }
   }
   return element
 }

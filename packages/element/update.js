@@ -31,6 +31,8 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
   const { parent, node, key } = element
   const { excludes, preventInheritAtCurrentState } = options
 
+  triggerEventOnUpdate('startUpdate', params, element, options)
+
   if (preventInheritAtCurrentState && preventInheritAtCurrentState.__element === element) return
   if (!excludes) merge(options, UPDATE_DEFAULT_OPTIONS)
 
@@ -44,11 +46,11 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     params = { text: params }
   }
 
-  const ifFails = checkIfOnUpdate(element, parent, options)
-  if (ifFails) return
-
   const inheritState = inheritStateUpdates(element, options)
   if (inheritState === false) return
+
+  const ifFails = checkIfOnUpdate(element, parent, options)
+  if (ifFails) return
 
   if (ref.__if && !options.preventPropsUpdate) {
     const hasParentProps = parent.props && (parent.props[key] || parent.props.childProps)
@@ -141,7 +143,7 @@ const captureSnapshot = (element, options) => {
 }
 
 const checkIfOnUpdate = (element, parent, options) => {
-  if (!isFunction(element.if) || !element.state || !parent) return
+  if (!isFunction(element.if) || !parent) return
 
   const ref = element.__ref
   const ifPassed = element.if(element, element.state, element.context, options)
@@ -158,7 +160,20 @@ const checkIfOnUpdate = (element, parent, options) => {
       if (ref.__state) {
         element.state = ref.__state
       }
-      const created = create(element, parent, element.key, OPTIONS.create)
+
+      const previousElement = element.previousElement()
+      const nextElement = element.nextElement()
+
+      const hasPrevious = previousElement && previousElement.node
+      const hasNext = nextElement && nextElement.node
+
+      const attachOptions = {
+        position: hasPrevious ? 'after' : hasNext ? 'before' : null,
+        node: hasPrevious || hasNext,
+        parentNode: parent.node
+      }
+
+      const created = create(element, parent, element.key, OPTIONS.create, attachOptions)
       // check preventUpdate for an array (Line: 87)
       if (options.preventUpdate !== true && element.on && isFunction(element.on.update)) {
         applyEvent(element.on.update, created, created.state)

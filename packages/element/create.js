@@ -4,7 +4,7 @@ import createNode from './node'
 import { ROOT } from './tree'
 import { TAGS } from '@domql/registry'
 import { triggerEventOn } from '@domql/event'
-import { appendNode, assignNode, cacheNode, detectTag } from '@domql/render'
+import { assignNode, detectTag } from '@domql/render'
 import { createState } from '@domql/state'
 
 import { isMethod } from './methods'
@@ -42,7 +42,7 @@ const ENV = process.env.NODE_ENV
 /**
  * Creating a domQL element using passed parameters
  */
-const create = (element, parent, key, options = OPTIONS.create || {}) => {
+const create = (element, parent, key, options = OPTIONS.create || {}, attachOptions) => {
   cacheOptions(element, options)
 
   // if (key === 'Title') debugger
@@ -101,7 +101,7 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
 
   // if it already HAS a NODE
   if (element.node && ref.__if) {
-    return assignNode(element, parent, key)
+    return assignNode(element, parent, key, attachOptions)
   }
 
   // apply variants
@@ -115,7 +115,7 @@ const create = (element, parent, key, options = OPTIONS.create || {}) => {
   // generate a CLASS name
   assignKeyAsClassname(element)
 
-  renderElement(element, parent, options)
+  renderElement(element, parent, options, attachOptions)
 
   addElementIntoParentChildren(element, parent)
 
@@ -207,16 +207,19 @@ const addElementIntoParentChildren = (element, parent) => {
   if (parent.__ref && parent.__ref.__children) parent.__ref.__children.push(element.key)
 }
 
-const renderElement = (element, parent, options) => {
+const renderElement = (element, parent, options, attachOptions) => {
   const { __ref: ref, key } = element
 
   // CREATE a real NODE
   createNode(element, options)
 
-  if (!ref.__if) return element
+  if (!ref.__if) {
+    parent[key || element.key] = element
+    return element
+  }
 
   // assign NODE
-  assignNode(element, parent, key)
+  assignNode(element, parent, key, attachOptions)
 
   // run `on.renderRouter`
   triggerEventOn('renderRouter', element, options)
@@ -252,14 +255,8 @@ const createScope = (element, parent) => {
 const createIfConditionFlag = (element, parent) => {
   const { __ref: ref } = element
 
-  if (isFunction(element.if)) {
-    // TODO: move as fragment
-    const ifPassed = element.if(element, element.state)
-    if (!ifPassed) {
-      const ifFragment = cacheNode({ tag: 'fragment' })
-      ref.__ifFragment = appendNode(ifFragment, parent.node)
-      delete ref.__if
-    } else ref.__if = true
+  if (isFunction(element.if) && !element.if(element, element.state)) {
+    delete ref.__if
   } else ref.__if = true
 }
 
