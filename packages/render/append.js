@@ -32,7 +32,7 @@ export const assignNode = (element, parent, key, attachOptions) => {
     if (attachOptions && attachOptions.position) {
       (attachOptions.position === 'before'
         ? insertNodeBefore
-        : insertNodeAfter)(element.node, attachOptions.node, attachOptions.parentNode || parent.node)
+        : insertNodeAfter)(element.node, attachOptions.node || parent.node)
     } else {
       appendNode(element.node, parent.node)
     }

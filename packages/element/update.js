@@ -1,6 +1,19 @@
 'use strict'
 
-import { window, exec, isArray, isFunction, isNumber, isObject, isString, isUndefined, merge, overwriteDeep, createSnapshotId } from '@domql/utils'
+import {
+  window,
+  exec,
+  isArray,
+  isFunction,
+  isNumber,
+  isObject,
+  isString,
+  isUndefined,
+  merge,
+  overwriteDeep,
+  createSnapshotId
+} from '@domql/utils'
+
 import { applyEvent, triggerEventOn, triggerEventOnUpdate } from '@domql/event'
 import { isMethod } from './methods'
 import { updateProps } from './props'
@@ -161,19 +174,26 @@ const checkIfOnUpdate = (element, parent, options) => {
         element.state = ref.__state
       }
 
+      element.node?.remove()
+
       const previousElement = element.previousElement()
       const nextElement = element.nextElement()
 
       const hasPrevious = previousElement && previousElement.node
       const hasNext = nextElement && nextElement.node
 
-      const attachOptions = {
+      const attachOptions = (hasPrevious?.parentNode || hasNext?.parentNode) && {
         position: hasPrevious ? 'after' : hasNext ? 'before' : null,
-        node: hasPrevious || hasNext,
-        parentNode: parent.node
+        node: hasPrevious || hasNext
       }
 
+      console.log(element)
+      console.log(attachOptions)
+      console.log(previousElement)
+      console.log(nextElement)
+
       const created = create(element, parent, element.key, OPTIONS.create, attachOptions)
+      console.log(created)
       // check preventUpdate for an array (Line: 87)
       if (options.preventUpdate !== true && element.on && isFunction(element.on.update)) {
         applyEvent(element.on.update, created, created.state)
