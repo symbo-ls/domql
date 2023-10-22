@@ -14,7 +14,6 @@ const set = function (params, options = {}, el) {
   const lazyLoad = element.props && element.props.lazyLoad
 
   if (ref.__noCollectionDifference || (__contentRef && __contentRef.__cached && deepContains(params, content))) {
-    console.log('is content equal')
     return content.update()
   }
 
