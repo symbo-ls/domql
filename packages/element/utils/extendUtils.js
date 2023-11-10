@@ -93,8 +93,10 @@ export const cloneAndMergeArrayExtend = stack => {
 export const fallbackStringExtend = (extend, context, options = {}) => {
   const COMPONENTS = (context && context.components) || options.components
   if (isString(extend)) {
-    if (COMPONENTS && COMPONENTS[extend]) {
-      return COMPONENTS[extend]
+    const componentExists = COMPONENTS[extend] || COMPONENTS['smbls.' + extend]
+    console.log(extend, componentExists)
+    if (COMPONENTS && componentExists) {
+      return componentExists
     } else {
       if (ENV !== 'test' || ENV !== 'development') {
         console.warn('Extend is string but component was not found:', extend)
