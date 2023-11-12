@@ -1,7 +1,7 @@
 'use strict'
 
 import { triggerEventOn } from '@domql/event'
-import { deepClone, exec, is, isArray, isFunction, isObject, isUndefined } from '@domql/utils'
+import { deepCloneWithExtnd, exec, is, isArray, isFunction, isObject, isUndefined } from '@domql/utils'
 import { IGNORE_STATE_PARAMS } from './ignore'
 import { add, apply, clean, destroy, parentUpdate, parse, remove, rootUpdate, set, reset, toggle } from './methods'
 import { updateState } from './updateState'
@@ -15,7 +15,7 @@ export const createState = function (element, parent, options) {
 export const applyInitialState = function (element, parent, options) {
   const objectizeState = checkForTypes(element)
   if (objectizeState === false) return parent.state || {}
-  else element.state = deepClone(objectizeState, IGNORE_STATE_PARAMS)
+  else element.state = deepCloneWithExtnd(objectizeState, IGNORE_STATE_PARAMS)
 
   const whatInitReturns = triggerEventOn('stateInit', element, options)
   if (whatInitReturns === false) return element.state
@@ -39,7 +39,7 @@ export const applyInitialState = function (element, parent, options) {
 const applyDependentState = (element, state) => {
   const { __ref: ref } = state
   if (!ref) return
-  const dependentState = deepClone(ref, IGNORE_STATE_PARAMS)
+  const dependentState = deepCloneWithExtnd(ref, IGNORE_STATE_PARAMS)
   const newDepends = { [element.key]: dependentState }
   ref.__depends = isObject(ref.__depends)
     ? { ...ref.__depends, ...newDepends }

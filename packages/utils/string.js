@@ -8,6 +8,15 @@ export const stringIncludesAny = (str, characters) => {
   }
   return false
 }
+
+export const trimStringFromSymbols = (str, characters) => {
+  // Create a regular expression pattern to match the specified symbols
+  const pattern = new RegExp(`[${characters.join('\\')}]`, 'g')
+
+  // Replace matched symbols with an empty string
+  return str.replace(pattern, '')
+}
+
 /**
  * Replaces placeholders in a string with corresponding {{ }} values from an object.
  *

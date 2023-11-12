@@ -94,7 +94,6 @@ export const fallbackStringExtend = (extend, context, options = {}) => {
   const COMPONENTS = (context && context.components) || options.components
   if (isString(extend)) {
     const componentExists = COMPONENTS[extend] || COMPONENTS['smbls.' + extend]
-    console.log(extend, componentExists)
     if (COMPONENTS && componentExists) {
       return componentExists
     } else {

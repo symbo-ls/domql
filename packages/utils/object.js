@@ -111,6 +111,22 @@ export const deepClone = (obj, excludeFrom = [], cleanUndefined = false) => {
   }
   return o
 }
+/**
+ * Deep cloning of object
+ */
+export const deepCloneWithExtnd = (obj, excludeFrom = [], cleanUndefined = false) => {
+  const o = isArray(obj) ? [] : {}
+  for (const prop in obj) {
+    if (prop === '__proto__') continue
+    if (excludeFrom.includes(prop) || prop.startsWith('__')) continue
+    const objProp = obj[prop]
+    if (cleanUndefined && isUndefined(objProp)) continue
+    if (isObjectLike(objProp)) {
+      o[prop] = deepClone(objProp, excludeFrom, cleanUndefined)
+    } else o[prop] = objProp
+  }
+  return o
+}
 
 /**
  * Stringify object
@@ -147,7 +163,7 @@ export const objectToString = (obj, indent = 0) => {
   let str = '{\n'
 
   for (const [key, value] of Object.entries(obj)) {
-    const keyNotAllowdChars = stringIncludesAny(key, ['&', '*', '-', ':', '@', '.', '/', '!'])
+    const keyNotAllowdChars = stringIncludesAny(key, ['&', '*', '-', ':', '@', '.', '/', '!', ' '])
     const stringedKey = keyNotAllowdChars ? `'${key}'` : key
     str += `${spaces}  ${stringedKey}: `
 

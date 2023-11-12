@@ -65,7 +65,8 @@ export const applyComponentFromContext = (element, parent, options) => {
   const { extend } = element
   const execExtend = exec(extend, element)
   if (isString(execExtend)) {
-    if (components[execExtend]) element.extend = components[execExtend]
+    const componentExists = components[execExtend] || components['smbls.' + execExtend]
+    if (componentExists) element.extend = componentExists
     else {
       if ((ENV === 'test' || ENV === 'development') && options.verbose) {
         console.warn(execExtend, 'is not in library', components, element)
