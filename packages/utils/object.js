@@ -122,7 +122,7 @@ export const deepCloneWithExtnd = (obj, excludeFrom = [], cleanUndefined = false
     const objProp = obj[prop]
     if (cleanUndefined && isUndefined(objProp)) continue
     if (isObjectLike(objProp)) {
-      o[prop] = deepClone(objProp, excludeFrom, cleanUndefined)
+      o[prop] = deepCloneWithExtnd(objProp, excludeFrom, cleanUndefined)
     } else o[prop] = objProp
   }
   return o
