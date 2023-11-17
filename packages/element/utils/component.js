@@ -1,6 +1,6 @@
 'use strict'
 
-import { exec, isArray, isFunction, isObject, isString, overwriteDeep } from '@domql/utils'
+import { exec, isArray, isFunction, isObject, isString, joinArrays, overwriteDeep } from '@domql/utils'
 import { applyExtend } from '../extend'
 const ENV = process.env.NODE_ENV
 
@@ -12,25 +12,31 @@ export const checkIfKeyIsComponent = (key) => {
 }
 
 export const addAdditionalExtend = (newExtend, element) => {
-  const { extend } = element
-  const preserveExtend = isArray(extend) ? extend : [extend]
-  return {
-    ...element,
-    extend: [newExtend].concat(preserveExtend)
-  }
+  const { extend: elementExtend } = element
+  const originalArray = isArray(elementExtend) ? elementExtend : [elementExtend]
+  const receivedArray = isArray(newExtend) ? newExtend : [newExtend]
+  const extend = joinArrays(receivedArray, originalArray)
+  return { ...element, extend }
 }
 
 export const extendizeByKey = (element, parent, key) => {
-  const { tag, extend, props, state, childExtend, childProps, on, if: condition } = element
-  const hasComponentAttrs = extend || childExtend || props || state || on || condition
-  const componentKey = key.includes('_')
-    ? key.split('_')[0]
-    : key.includes('.') ? key.split('.')[0] : key
-  const extendKey = componentKey || key
+  const { context, tag, extend, props, attr, state, childExtend, childProps, on, if: condition } = element
+  const hasComponentAttrs = extend || childExtend || props || state || on || condition || attr
 
-  if (!hasComponentAttrs || childProps) {
+  const extendFromKey = key.includes('+')
+    ? key.split('+')
+    : key.includes('_')
+      ? key.split('_')[0]
+      : key.includes('.')
+        ? key.split('.')[0]
+        : key
+
+  const isExtendKeyComponent = context?.components[extendFromKey]
+
+  if (element === isExtendKeyComponent) return element
+  else if (!hasComponentAttrs || childProps) {
     return {
-      extend: extendKey,
+      extend: extendFromKey,
       tag,
       props: { ...element }
     }
@@ -38,14 +44,13 @@ export const extendizeByKey = (element, parent, key) => {
     return {
       ...element,
       tag,
-      extend: extendKey
+      extend: extendFromKey
     }
   } else if (extend) {
-    addAdditionalExtend(extendKey, element)
+    return addAdditionalExtend(extendFromKey, element)
   } else if (isFunction(element)) {
-    console.log(element)
     return {
-      extend: extendKey,
+      extend: extendFromKey,
       tag,
       props: { ...exec(element, parent) }
     }
