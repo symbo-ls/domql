@@ -24,7 +24,7 @@ export const triggerEventOnUpdate = (param, updatedObj, element, options) => {
   }
 }
 
-export const applyEventsOnNode = element => {
+export const applyEventsOnNode = (element, options) => {
   const { node, on } = element
   for (const param in on) {
     if (
@@ -45,7 +45,7 @@ export const applyEventsOnNode = element => {
     if (isFunction(appliedFunction)) {
       node.addEventListener(param, event => {
         const { state, context } = element
-        appliedFunction(event, element, state, context)
+        appliedFunction(event, element, state, context, options)
       })
     }
   }

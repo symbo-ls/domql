@@ -52,7 +52,7 @@ export const createNode = (element, options) => {
 
   if (element.tag !== 'string' && element.tag !== 'fragment') {
     // apply events
-    if (isNewNode && isObject(element.on)) applyEventsOnNode(element)
+    if (isNewNode && isObject(element.on)) applyEventsOnNode(element, options)
   }
 
   for (const param in element) {
