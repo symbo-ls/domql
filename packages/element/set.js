@@ -14,7 +14,7 @@ const set = function (params, options = {}, el) {
   const lazyLoad = element.props && element.props.lazyLoad
 
   if (options.preventContentUpdate === true) return
-  
+
   if (ref.__noCollectionDifference || (__contentRef && __contentRef.__cached && deepContains(params, content))) {
     return content.update()
   }
