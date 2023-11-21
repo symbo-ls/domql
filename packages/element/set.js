@@ -13,11 +13,11 @@ const set = function (params, options = {}, el) {
   const __contentRef = content && content.__ref
   const lazyLoad = element.props && element.props.lazyLoad
 
+  if (options.preventContentUpdate === true) return
+  
   if (ref.__noCollectionDifference || (__contentRef && __contentRef.__cached && deepContains(params, content))) {
     return content.update()
   }
-
-  if (options.preventContentUpdate === true) return
 
   const setAsync = () => {
     removeContent(element)

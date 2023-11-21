@@ -97,7 +97,7 @@ export const fallbackStringExtend = (extend, context, options = {}) => {
     if (COMPONENTS && componentExists) {
       return componentExists
     } else {
-      if (ENV !== 'test' || ENV !== 'development') {
+      if (options.verbose && (ENV === 'test' || ENV === 'development')) {
         console.warn('Extend is string but component was not found:', extend)
       }
       return {}

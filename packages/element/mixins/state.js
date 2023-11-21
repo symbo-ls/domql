@@ -10,7 +10,7 @@ export const state = (params, element, node) => {
     for (const param in state) {
       if (IGNORE_STATE_PARAMS.includes(param)) continue
       if (!Object.hasOwnProperty.call(state, param)) continue
-      element.state[param] = exec(state[param], element)
+      // element.state[param] = exec(state[param], element)
     }
   }
 
