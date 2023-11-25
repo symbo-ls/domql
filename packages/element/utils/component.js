@@ -29,7 +29,7 @@ export const extendizeByKey = (element, parent, key) => {
       ? key.split('_')[0]
       : key.includes('.')
         ? key.split('.')[0]
-        : key
+        : [key]
 
   const isExtendKeyComponent = context?.components[extendFromKey]
 

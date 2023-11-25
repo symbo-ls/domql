@@ -11,6 +11,8 @@ import {
 
 const ENV = process.env.NODE_ENV
 
+let mainExtend
+
 /**
  * Checks whether element has `extend` or is a part
  * of parent's `childExtend` extend
@@ -59,8 +61,12 @@ export const applyExtend = (element, parent, options = {}) => {
   } else if (!options.extend) return element
 
   if (options.extend) {
-    const defaultOptionsExtend = getExtendStack(options.extend, context)
-    stack = [].concat(stack, defaultOptionsExtend)
+    if (!mainExtend) {
+      const defaultOptionsExtend = getExtendStack(options.extend, context)
+      mainExtend = cloneAndMergeArrayExtend(defaultOptionsExtend)
+      delete mainExtend.extend
+    }
+    stack = [].concat(stack, mainExtend)
   }
 
   // check if array contains string extends
@@ -75,5 +81,6 @@ export const applyExtend = (element, parent, options = {}) => {
     mergedExtend = deepMergeExtend(componentExtend, mergedExtend)
   }
 
-  return deepMergeExtend(element, mergedExtend)
+  const merged = deepMergeExtend(element, mergedExtend)
+  return merged
 }
