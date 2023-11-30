@@ -102,9 +102,10 @@ export const toggle = function (key, options = {}) {
 
 export const remove = function (key, options = {}) {
   const state = this
+  console.log(state)
   if (isArray(state)) removeFromArray(state, key)
   if (isObject(state)) removeFromObject(state, key)
-  return state.update(state.parse(), { replace: true, ...options })
+  return state.set(state.parse(), { replace: true, ...options })
 }
 
 export const set = function (val, options = {}) {
