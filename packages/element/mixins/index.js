@@ -8,6 +8,7 @@ import html from './html'
 import style from './style'
 import text from './text'
 import state from './state'
+import scope from './scope'
 import registry from './registry'
 export {
   attr,
@@ -18,6 +19,7 @@ export {
   text,
   html,
   state,
+  scope,
   registry
 }
 export * from './registry'

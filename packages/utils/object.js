@@ -4,6 +4,7 @@ import { window } from './globals.js'
 import { isFunction, isObjectLike, isObject, isArray, isString, is } from './types.js'
 import { mergeAndCloneIfArray, mergeArray } from './array.js'
 import { stringIncludesAny } from './string.js'
+import { diff as deepObjectDiff } from 'deep-object-diff'
 
 export const exec = (param, element, state, context) => {
   if (isFunction(param)) {
@@ -300,6 +301,8 @@ export const diff = (original, objToDiff, cache = {}) => {
 
   return cache
 }
+
+export const deepDiff = deepObjectDiff
 
 /**
  * Overwrites object properties with another

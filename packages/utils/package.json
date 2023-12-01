@@ -1,6 +1,6 @@
 {
   "name": "@domql/utils",
-  "version": "2.5.17",
+  "version": "2.5.18",
   "license": "MIT",
   "type": "module",
   "module": "index.js",
@@ -26,5 +26,8 @@
   "gitHead": "e5952db705e332f062e2e78113d620bd48ba16d9",
   "devDependencies": {
     "@babel/core": "^7.12.0"
+  },
+  "dependencies": {
+    "deep-object-diff": "^1.1.9"
   }
 }

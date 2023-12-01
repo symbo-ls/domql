@@ -6,7 +6,6 @@ import {
   jointStacks,
   cloneAndMergeArrayExtend,
   deepMergeExtend,
-  replaceStringsWithComponents,
   fallbackStringExtend
 } from './utils'
 
@@ -23,7 +22,7 @@ export const applyExtend = (element, parent, options = {}) => {
 
   extend = fallbackStringExtend(extend, context, options)
 
-  const extendStack = getExtendStack(extend)
+  const extendStack = getExtendStack(extend, context)
 
   if (ENV !== 'test' || ENV !== 'development') delete element.extend
 
@@ -32,14 +31,13 @@ export const applyExtend = (element, parent, options = {}) => {
     element.parent = parent
     // Assign parent attr to the element
     if (!options.ignoreChildExtend && !(props && props.ignoreChildExtend)) {
-      childExtendStack = getExtendStack(parent.childExtend)
+      childExtendStack = getExtendStack(parent.childExtend, context)
 
-      // if (parent.childExtendRecursive && (props && !props.ignoreChildExtendRecursive)) {
       const ignoreChildExtendRecursive = props && props.ignoreChildExtendRecursive
       if (parent.childExtendRecursive && !ignoreChildExtendRecursive) {
         const canExtendRecursive = element.key !== '__text'
         if (canExtendRecursive) {
-          const childExtendRecursiveStack = getExtendStack(parent.childExtendRecursive)
+          const childExtendRecursiveStack = getExtendStack(parent.childExtendRecursive, context)
           // add error if childExtendRecursive contains element which goes to infinite loop
           childExtendStack = childExtendStack.concat(childExtendRecursiveStack)
           element.childExtendRecursive = parent.childExtendRecursive
@@ -61,14 +59,15 @@ export const applyExtend = (element, parent, options = {}) => {
   } else if (!options.extend) return element
 
   if (options.extend) {
-    const defaultOptionsExtend = getExtendStack(options.extend)
+    const defaultOptionsExtend = getExtendStack(options.extend, context)
     stack = [].concat(stack, defaultOptionsExtend)
   }
 
+  // check if array contains string extends
   if (__ref) __ref.__extend = stack
-  const findAndReplaceStrings = replaceStringsWithComponents(stack, context, options)
-  let mergedExtend = cloneAndMergeArrayExtend(findAndReplaceStrings)
+  let mergedExtend = cloneAndMergeArrayExtend(stack)
 
+  // apply `component:` property
   const COMPONENTS = (context && context.components) || options.components
   const component = exec(element.component || mergedExtend.component, element)
   if (component && COMPONENTS && COMPONENTS[component]) {

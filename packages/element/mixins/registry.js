@@ -3,7 +3,7 @@
 import {
   attr, classList, content,
   data, html, state, style,
-  text
+  text, scope
 } from '.'
 
 export default {
@@ -15,6 +15,7 @@ export default {
   data,
   class: classList,
   state,
+  scope,
 
   deps: (param, el) => param || el.parent.deps,
 

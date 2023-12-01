@@ -15,7 +15,7 @@ const createPropsStack = (element, parent) => {
 
   if (isArray(__ref.__extend)) {
     __ref.__extend.forEach(extend => {
-      if (extend.props) propsStack.push(extend.props)
+      if (extend.props && extend.props !== props) propsStack.push(extend.props)
     })
   }
 
@@ -26,11 +26,14 @@ const createPropsStack = (element, parent) => {
 
 export const syncProps = (props, element) => {
   element.props = {}
-  const mergedProps = { update, __element: element }
+  const mergedProps = {}
+
   props.forEach(v => {
     if (IGNORE_PROPS_PARAMS.includes(v)) return
     const execProps = exec(v, element)
-    if (isObject(execProps) && execProps.__element) return
+    // TODO: check if this failing the function props merge
+    // if (isObject(execProps) && execProps.__element) return
+    // it was causing infinite loop at early days
     element.props = deepMerge(
       mergedProps,
       deepClone(execProps, IGNORE_PROPS_PARAMS),
@@ -38,20 +41,34 @@ export const syncProps = (props, element) => {
     )
   })
   element.props = mergedProps
+
+  const methods = { update: update.bind(element.props), __element: element }
+  Object.setPrototypeOf(element.props, methods)
+
   return element.props
 }
 
 export const createProps = function (element, parent, cached) {
-  const propsStack = cached || createPropsStack(element, parent)
   const { __ref: ref } = element
 
-  if (!ref.__if) return
-
-  if (propsStack.length) {
-    ref.__props = propsStack
-    syncProps(propsStack, element)
-    element.props.update = update
+  if (ref.__if) {
+    try {
+      const propsStack = cached || createPropsStack(element, parent)
+      if (propsStack.length) {
+        ref.__props = propsStack
+        syncProps(propsStack, element)
+      } else { element.props = {} }
+    } catch (e) {
+      element.props = {}
+      ref.__props = cached || []
+    }
+  } else {
+    element.props = {}
+    ref.__props = cached || []
   }
+
+  const methods = { update: update.bind(element.props), __element: element }
+  Object.setPrototypeOf(element.props, methods)
 
   return element
 }

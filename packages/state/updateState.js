@@ -11,8 +11,7 @@ const STATE_UPDATE_OPTIONS = {
   preventHoistElementUpdate: false,
   updateByState: true,
   isHoisted: true,
-  execStateFunction: true,
-  stateFunctionOverwrite: true
+  execStateFunction: true
 }
 
 export const updateState = function (obj, options = STATE_UPDATE_OPTIONS) {
@@ -84,7 +83,6 @@ const hoistStateUpdate = (state, obj, options) => {
   if (options.replace) targetParent[stateKey] = value
   targetParent.update(changesValue, {
     execStateFunction: false,
-    stateFunctionOverwrite: false,
     isHoisted: true,
     ...options,
     preventUpdate: options.preventHoistElementUpdate,

@@ -8,7 +8,7 @@ export const updateProps = (newProps, element, parent) => {
   let propsStack = __ref.__props
 
   const parentProps = inheritParentProps(element, parent)
-  if (parentProps) propsStack = __ref.__props = [].concat(parentProps, propsStack)
+  if (parentProps.length) propsStack = __ref.__props = [].concat(parentProps, propsStack)
   if (newProps) propsStack = __ref.__props = [].concat(newProps, propsStack)
 
   if (propsStack) syncProps(propsStack, element)
