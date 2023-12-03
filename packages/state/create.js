@@ -3,7 +3,19 @@
 import { triggerEventOn } from '@domql/event'
 import { deepCloneWithExtnd, exec, is, isArray, isFunction, isObject, isUndefined } from '@domql/utils'
 import { IGNORE_STATE_PARAMS } from './ignore'
-import { add, apply, clean, destroy, parentUpdate, parse, remove, rootUpdate, set, reset, toggle } from './methods'
+import {
+  add,
+  apply,
+  clean,
+  destroy,
+  parentUpdate,
+  parse,
+  remove,
+  rootUpdate,
+  set,
+  reset,
+  toggle
+} from './methods'
 import { updateState } from './updateState'
 import { checkIfInherits, createInheritedState } from './inherit'
 
