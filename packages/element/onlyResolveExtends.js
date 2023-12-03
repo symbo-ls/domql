@@ -20,7 +20,7 @@ export const onlyResolveExtends = (element, parent, key, options) => {
   // Copy-paste of addCaching()
   {
     const { __ref: ref } = element
-    const { __ref: parentRef } = parent
+    // const { __ref: parentRef } = parent
 
     // enable TRANSFORM in data
     // TODO: do we need this at all?
