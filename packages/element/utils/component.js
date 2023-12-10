@@ -4,11 +4,19 @@ import { exec, isArray, isFunction, isObject, isString, joinArrays, overwriteDee
 import { applyExtend } from '../extend'
 const ENV = process.env.NODE_ENV
 
+const DOMQL_BUILTINS = ['extend', 'childExtend', 'childExtendRecursive', 'define', 'props', 'state', 'on', 'if', 'attr', 'key', 'tag']
+
 export const checkIfKeyIsComponent = (key) => {
   const isFirstKeyString = isString(key)
   if (!isFirstKeyString) return
   const firstCharKey = key.slice(0, 1)
   return /^[A-Z]*$/.test(firstCharKey)
+}
+export const checkIfKeyIsProperty = (key) => {
+  const isFirstKeyString = isString(key)
+  if (!isFirstKeyString) return
+  const firstCharKey = key.slice(0, 1)
+  return /^[a-z]*$/.test(firstCharKey)
 }
 
 export const addAdditionalExtend = (newExtend, element) => {
@@ -19,16 +27,37 @@ export const addAdditionalExtend = (newExtend, element) => {
   return { ...element, extend }
 }
 
+const replaceOnKeys = key => key.replace(/on\w+/g, match => match.substring(2))
+
+export const createValidDomqlObjectFromSugar = el => {
+  const newElem = {
+    props: {},
+    on: {}
+  }
+  for (const k in el) {
+    const prop = el[k]
+    const isEvent = prop.startsWith('on')
+    const isMethod = prop.startsWith('$')
+    if (isEvent) {
+      const onKey = replaceOnKeys(prop)
+      newElem.on[onKey] = prop
+    } else if (!isMethod && checkIfKeyIsProperty(k)) {
+      if (!DOMQL_BUILTINS.includes(k)) newElem.props[k] = prop
+    }
+  }
+  return newElem
+}
+
 export const extendizeByKey = (element, parent, key) => {
   const { context, tag, extend, props, attr, state, childExtend, childProps, on, if: condition } = element
   const hasComponentAttrs = extend || childExtend || props || state || on || condition || attr
 
   const extendFromKey = key.includes('+')
-    ? key.split('+')
+    ? key.split('+') // get array of componentKeys
     : key.includes('_')
-      ? key.split('_')[0]
+      ? key.split('_')[0] // get component key split _
       : key.includes('.')
-        ? key.split('.')[0]
+        ? key.split('.')[0] // get component key split .
         : [key]
 
   const isExtendKeyComponent = context?.components[extendFromKey]

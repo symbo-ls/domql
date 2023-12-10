@@ -38,6 +38,7 @@ export const HTML_TAGS = {
     'center',
     'cite',
     'code',
+    'search',
     'col',
     'colgroup',
     'data',

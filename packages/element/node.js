@@ -12,7 +12,7 @@ import {
   throughInitialExec
 } from './iterate'
 import { registry } from './mixins'
-import { applyParam } from './applyParam'
+import { applyParam } from './utils/applyParam'
 import { isVariant } from './utils'
 // import { defineSetter } from './methods'
 

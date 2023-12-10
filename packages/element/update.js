@@ -23,7 +23,7 @@ import { METHODS_EXL, isVariant } from './utils'
 import create from './create'
 import { throughUpdatedDefine, throughUpdatedExec } from './iterate'
 import { registry } from './mixins'
-import { applyParam } from './applyParam'
+import { applyParam } from './utils/applyParam'
 import OPTIONS from './cache/options'
 
 const snapshot = {

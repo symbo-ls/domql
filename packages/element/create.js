@@ -79,7 +79,7 @@ const create = (element, parent, key, options = OPTIONS.create || {}, attachOpti
     return onlyResolveExtends(element, parent, key, options)
   }
 
-  replaceOptions(element, parent, options)
+  switchDefaultOptions(element, parent, options)
 
   addCaching(element, parent)
 
@@ -196,7 +196,7 @@ const addRef = (element, parent) => {
   return element.__ref
 }
 
-const replaceOptions = (element, parent, options) => {
+const switchDefaultOptions = (element, parent, options) => {
   if (Object.keys(options).length) {
     registry.defaultOptions = options
     if (options.ignoreChildExtend) delete options.ignoreChildExtend
@@ -228,9 +228,7 @@ const renderElement = (element, parent, options, attachOptions) => {
   triggerEventOn('render', element, options)
 }
 
-const checkIfPrimitive = (element) => {
-  return is(element)('string', 'number')
-}
+const checkIfPrimitive = (element) => is(element)('string', 'number')
 
 const applyValueAsText = (element, parent, key) => {
   const extendTag = element.extend && element.extend.tag
@@ -243,12 +241,17 @@ const applyValueAsText = (element, parent, key) => {
 }
 
 const applyContext = (element, parent, options) => {
-  if (options.context && !ROOT.context && !element.context) ROOT.context = options.context
+  const forcedOptionsContext = options.context && !ROOT.context && !element.context
+  if (forcedOptionsContext) ROOT.context = options.context
+
+  // inherit from parent or root
   if (!element.context) element.context = parent.context || options.context || ROOT.context
 }
 
+// Create scope - shared object across the elements to the own or the nearest parent
 const createScope = (element, parent) => {
   const { __ref: ref } = element
+  // If the element doesn't have a scope, initialize it using the parent's scope or the root's scope.
   if (!element.scope) element.scope = parent.scope || ref.__root.scope || {}
 }
 
