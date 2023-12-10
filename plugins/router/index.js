@@ -31,8 +31,9 @@ export const router = (
   state = {},
   passedOptions = {}
 ) => {
-  const options = { ...defaultOptions, ...passedOptions }
+  const options = { ...defaultOptions, ...element.context.routerOptions, ...passedOptions }
   lastLevel = options.lastLevel
+  const newElementKey = options.newElementKey
 
   const [pathname, hash] = path.split('#')
 
@@ -54,10 +55,13 @@ export const router = (
       element.state.update({ route, hash }, { preventContentUpdate: true })
     }
 
+    if (newElementKey && options.removeOldElement) {
+      element[newElementKey].remove()
+    }
     element.set({
       tag: options.useFragment && 'fragment',
       extend: content
-    })
+    }, { newElementKey })
   }
 
   if (options.scrollToTop) {

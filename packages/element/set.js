@@ -21,7 +21,7 @@ const set = function (params, options = {}, el) {
 
   const setAsync = () => {
     removeContent(element)
-    create(params, element, 'content', {
+    create(params, element, options.newElementKey || 'content', {
       ignoreChildExtend: true,
       ...registry.defaultOptions,
       ...OPTIONS.create,
