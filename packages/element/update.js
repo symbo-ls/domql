@@ -232,7 +232,7 @@ const inheritStateUpdates = (element, options) => {
   const shouldForceFunctionState = isFunction(stateKey) && !isHoisted && execStateFunction
   if (shouldForceFunctionState) {
     const execState = exec(stateKey, element)
-    state.set(execState, { ...options, preventUpdate: true, updatedByStateFunction: true })
+    state.set(execState, { ...options, preventUpdate: true, preventStateUpdateListener: false, updatedByStateFunction: true })
     return
   }
 
