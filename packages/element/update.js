@@ -177,7 +177,7 @@ const checkIfOnUpdate = (element, parent, options) => {
         delete element.state
       }
 
-      element.node?.remove()
+      element.node && element.node.remove()
 
       const previousElement = element.previousElement()
       const nextElement = element.nextElement()
@@ -185,7 +185,7 @@ const checkIfOnUpdate = (element, parent, options) => {
       const hasPrevious = previousElement && previousElement.node
       const hasNext = nextElement && nextElement.node
 
-      const attachOptions = (hasPrevious?.parentNode || hasNext?.parentNode) && {
+      const attachOptions = ((hasPrevious && hasPrevious.parentNode) || (hasNext && hasNext.parentNode)) && {
         position: hasPrevious ? 'after' : hasNext ? 'before' : null,
         node: hasPrevious || hasNext
       }
