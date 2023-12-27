@@ -60,7 +60,7 @@ export const extendizeByKey = (element, parent, key) => {
         ? key.split('.')[0] // get component key split .
         : [key]
 
-  const isExtendKeyComponent = context?.components[extendFromKey]
+  const isExtendKeyComponent = context && context?.components[extendFromKey]
 
   if (element === isExtendKeyComponent) return element
   else if (!hasComponentAttrs || childProps) {

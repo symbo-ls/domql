@@ -170,8 +170,11 @@ const checkIfOnUpdate = (element, parent, options) => {
       if (!ref.__hasRootState) {
         delete element.state
       }
+
       if (ref.__state) {
         element.state = ref.__state
+      } else if (!ref.__hasRootState) {
+        delete element.state
       }
 
       element.node?.remove()
