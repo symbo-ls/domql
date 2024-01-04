@@ -14,6 +14,7 @@ import {
 import { registry } from './mixins'
 import { applyParam } from './utils/applyParam'
 import { isVariant } from './utils'
+import { propagateEventsFromProps } from './utils/propEvents'
 // import { defineSetter } from './methods'
 
 const ENV = process.env.NODE_ENV
@@ -51,6 +52,7 @@ export const createNode = (element, options) => {
   throughInitialExec(element)
 
   if (element.tag !== 'string' && element.tag !== 'fragment') {
+    propagateEventsFromProps(element)
     // apply events
     if (isNewNode && isObject(element.on)) applyEventsOnNode(element, options)
   }

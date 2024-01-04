@@ -26,7 +26,7 @@ export const updateState = function (obj, options = STATE_UPDATE_OPTIONS) {
   } else if (options.preventInheritAtCurrentState) return
 
   if (!options.preventInitStateUpdateListener) {
-    const initStateUpdateReturns = triggerEventOnUpdate('initStateUpdated', obj, element, options)
+    const initStateUpdateReturns = triggerEventOnUpdate('initStateUpdate', obj, element, options)
     if (initStateUpdateReturns === false) return element
   }
 
@@ -39,7 +39,7 @@ export const updateState = function (obj, options = STATE_UPDATE_OPTIONS) {
   applyElementUpdate(state, obj, options)
 
   if (!options.preventStateUpdateListener) {
-    triggerEventOnUpdate('stateUpdated', obj, element, options)
+    triggerEventOnUpdate('stateUpdate', obj, element, options)
   }
 
   return state
@@ -90,7 +90,7 @@ const hoistStateUpdate = (state, obj, options) => {
   })
   const hasNotUpdated = options.preventUpdate !== true || !options.preventHoistElementUpdate
   if (!options.preventStateUpdateListener && hasNotUpdated) {
-    triggerEventOnUpdate('stateUpdated', obj, element, options)
+    triggerEventOnUpdate('stateUpdate', obj, element, options)
   }
   return true
 }

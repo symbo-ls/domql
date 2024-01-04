@@ -45,3 +45,7 @@ export const replaceLiteralsWithObjectFields = (str, state) => {
     }
   })
 }
+
+export const lowercaseFirstLetter = (inputString) => {
+  return `${inputString.charAt(0).toLowerCase()}${inputString.slice(1)}`
+}

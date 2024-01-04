@@ -213,8 +213,8 @@ const checkIfOnUpdate = (element, parent, options) => {
  * @param {boolean} [options.execStateFunction] - Execute the state functions.
  * @param {boolean} [options.stateFunctionOverwrite] - If true, overwrite (not merge) current state with what function returns.
  * @param {boolean} [options.preventInheritedStateUpdate] - If true, prevent inheriting state updates.
- * @param {boolean} [options.preventInitStateUpdateListener] - If true, prevent the 'initStateUpdated' event listener.
- * @param {boolean} [options.preventStateUpdateListener] - If true, prevent the 'stateUpdated' event listener.
+ * @param {boolean} [options.preventInitStateUpdateListener] - If true, prevent the 'initStateUpdate' event listener.
+ * @param {boolean} [options.preventStateUpdateListener] - If true, prevent the 'stateUpdate' event listener.
  * @returns {boolean} - If returns false, it breaks the update function
  */
 const inheritStateUpdates = (element, options) => {
@@ -243,18 +243,18 @@ const inheritStateUpdates = (element, options) => {
   const keyInParentState = findInheritedState(element, element.parent)
   if (!keyInParentState || options.preventInheritedStateUpdate) return
 
-  // Trigger on.initStateUpdated event
+  // Trigger on.initStateUpdate event
   if (!options.preventInitStateUpdateListener) {
-    const initStateReturns = triggerEventOnUpdate('initStateUpdated', keyInParentState, element, options)
+    const initStateReturns = triggerEventOnUpdate('initStateUpdate', keyInParentState, element, options)
     if (initStateReturns === false) return element
   }
 
   // Recreate the state again
   const newState = createStateUpdate(element, parent, options)
 
-  // Trigger on.stateUpdated event
+  // Trigger on.stateUpdate event
   if (!options.preventStateUpdateListener) {
-    triggerEventOnUpdate('stateUpdated', newState.parse(), element, options)
+    triggerEventOnUpdate('stateUpdate', newState.parse(), element, options)
   }
 }
 
