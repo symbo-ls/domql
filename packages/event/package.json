@@ -1,6 +1,6 @@
 {
   "name": "@domql/event",
-  "version": "2.5.41",
+  "version": "2.5.52",
   "license": "MIT",
   "type": "module",
   "module": "dist/esm/index.js",
