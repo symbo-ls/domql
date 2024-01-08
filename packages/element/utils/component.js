@@ -4,7 +4,19 @@ import { exec, isArray, isFunction, isObject, isString, joinArrays, overwriteDee
 import { applyExtend } from '../extend'
 const ENV = process.env.NODE_ENV
 
-const DOMQL_BUILTINS = ['extend', 'childExtend', 'childExtendRecursive', 'define', 'props', 'state', 'on', 'if', 'attr', 'key', 'tag']
+const DOMQL_BUILTINS = [
+  'extend',
+  'childExtend',
+  'childExtendRecursive',
+  'define',
+  'props',
+  'state',
+  'on',
+  'if',
+  'attr',
+  'key',
+  'tag'
+]
 
 export const checkIfKeyIsComponent = (key) => {
   const isFirstKeyString = isString(key)
@@ -12,6 +24,7 @@ export const checkIfKeyIsComponent = (key) => {
   const firstCharKey = key.slice(0, 1)
   return /^[A-Z]*$/.test(firstCharKey)
 }
+
 export const checkIfKeyIsProperty = (key) => {
   const isFirstKeyString = isString(key)
   if (!isFirstKeyString) return
@@ -29,7 +42,7 @@ export const addAdditionalExtend = (newExtend, element) => {
 
 const replaceOnKeys = key => key.replace(/on\w+/g, match => match.substring(2))
 
-export const createValidDomqlObjectFromSugar = el => {
+export const createValidDomqlObjectFromSugar = (el, parent, key, options) => {
   const newElem = {
     props: {},
     on: {}
@@ -43,6 +56,10 @@ export const createValidDomqlObjectFromSugar = el => {
       newElem.on[onKey] = prop
     } else if (!isMethod && checkIfKeyIsProperty(k)) {
       if (!DOMQL_BUILTINS.includes(k)) newElem.props[k] = prop
+    } else if (checkIfKeyIsComponent(k)) {
+      newElem[k] = prop
+    } else {
+      newElem[k] = prop
     }
   }
   return newElem

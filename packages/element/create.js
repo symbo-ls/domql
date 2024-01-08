@@ -34,6 +34,7 @@ import {
   applyKeyComponentAsExtend,
   applyVariant,
   checkIfKeyIsComponent,
+  createValidDomqlObjectFromSugar,
   isVariant
 } from './utils/component'
 
@@ -151,7 +152,9 @@ const createBasedOnType = (element, parent, key, options) => {
 const redefineElement = (element, parent, key, options) => {
   const elementWrapper = createBasedOnType(element, parent, key, options)
 
-  if (checkIfKeyIsComponent(key)) {
+  if (options.syntaxv3 || element.props?.syntaxv3) {
+    return createValidDomqlObjectFromSugar(element, parent, key, options)
+  } else if (checkIfKeyIsComponent(key)) {
     return applyKeyComponentAsExtend(elementWrapper, parent, key)
   }
 

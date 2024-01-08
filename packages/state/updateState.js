@@ -81,12 +81,13 @@ const hoistStateUpdate = (state, obj, options) => {
   const changesValue = createChangesByKey(stateKey, passedValue)
   const targetParent = findGrandParentState || parent.state
   if (options.replace) overwriteDeep(targetParent, changesValue || value) // check with createChangesByKey
+  if (options.overwrite === 'shallow-once') options.overwrite = true
   targetParent.update(changesValue, {
     execStateFunction: false,
     isHoisted: true,
-    ...options,
     preventUpdate: options.preventHoistElementUpdate,
-    overwrite: !options.replace
+    overwrite: !options.replace,
+    ...options
   })
   const hasNotUpdated = options.preventUpdate !== true || !options.preventHoistElementUpdate
   if (!options.preventStateUpdateListener && hasNotUpdated) {
