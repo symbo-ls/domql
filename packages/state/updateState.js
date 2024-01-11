@@ -49,7 +49,7 @@ const applyOverwrite = (state, obj, options) => {
   const { overwrite } = options
   if (!overwrite) return
 
-  const shallow = overwrite === 'shallow'
+  const shallow = overwrite === 'shallow' || overwrite === 'shallow-once'
   const merge = overwrite === 'merge'
 
   if (merge) {
@@ -58,6 +58,7 @@ const applyOverwrite = (state, obj, options) => {
   }
 
   const overwriteFunc = shallow ? overwriteShallow : overwriteDeep
+  if (options.overwrite === 'shallow-once') options.overwrite = true
   overwriteFunc(state, obj, IGNORE_STATE_PARAMS)
 }
 
@@ -81,7 +82,6 @@ const hoistStateUpdate = (state, obj, options) => {
   const changesValue = createChangesByKey(stateKey, passedValue)
   const targetParent = findGrandParentState || parent.state
   if (options.replace) overwriteDeep(targetParent, changesValue || value) // check with createChangesByKey
-  if (options.overwrite === 'shallow-once') options.overwrite = true
   targetParent.update(changesValue, {
     execStateFunction: false,
     isHoisted: true,
