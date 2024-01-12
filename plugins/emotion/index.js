@@ -24,8 +24,6 @@ export const transformEmotionClass = (emotion) => {
 
     if (!isObjectLike(params)) return
     if (element.props.class) {
-      console.log(__classNames.class)
-      console.log(element.props.class)
       __classNames.class = element.props.class
     }
 
