@@ -23,9 +23,8 @@ export const transformEmotionClass = (emotion) => {
     const { __class, __classNames } = __ref
 
     if (!isObjectLike(params)) return
-    if (element.props.class) {
-      __classNames.class = element.props.class
-    }
+    if (element.props.class) { __classNames.classProps = element.props.class }
+    if (element.attr.class) { __classNames.class = element.attr.class }
 
     for (const key in params) {
       const prop = exec(params[key], element)
