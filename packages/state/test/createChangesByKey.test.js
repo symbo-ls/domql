@@ -1,6 +1,6 @@
-const { createChangesByKey } = require('../dist/cjs')
+const { createNestedObjectByKeyPath } = require('../dist/cjs')
 
-test('createChangesByKey should create nested object with value', () => {
+test('createNestedObjectByKeyPath should create nested object with value', () => {
   const path = 'test/2/4/6';
   const value = { foo: 'bar' };
   const expected = {
@@ -12,10 +12,10 @@ test('createChangesByKey should create nested object with value', () => {
       },
     },
   };
-  expect(createChangesByKey(path, value)).toEqual(expected);
+  expect(createNestedObjectByKeyPath(path, value)).toEqual(expected);
 });
 
-test('createChangesByKey should create nested object with empty object if value is not provided', () => {
+test('createNestedObjectByKeyPath should create nested object with empty object if value is not provided', () => {
   const path = 'test/2/4/6';
   const expected = {
     test: {
@@ -26,12 +26,12 @@ test('createChangesByKey should create nested object with empty object if value 
       },
     },
   };
-  expect(createChangesByKey(path)).toEqual(expected);
+  expect(createNestedObjectByKeyPath(path)).toEqual(expected);
 });
 
-test('createChangesByKey should return empty object if path is empty', () => {
+test('createNestedObjectByKeyPath should return empty object if path is empty', () => {
   const path = '';
   const value = { foo: 'bar' };
   const expected = { foo: 'bar' };
-  expect(createChangesByKey(path, value)).toEqual(expected);
+  expect(createNestedObjectByKeyPath(path, value)).toEqual(expected);
 });

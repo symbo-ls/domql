@@ -4,7 +4,7 @@ import { report } from '@domql/report'
 import { triggerEventOnUpdate } from '@domql/event'
 import { IGNORE_STATE_PARAMS } from './ignore'
 import { deepMerge, merge, overwriteDeep, overwriteShallow } from '@domql/utils'
-import { checkIfInherits, createChangesByKey, findInheritedState, getParentStateInKey } from './inherit'
+import { checkIfInherits, createNestedObjectByKeyPath, findInheritedState, getParentStateInKey, getRootStateInKey } from './inherit'
 
 const STATE_UPDATE_OPTIONS = {
   overwrite: true,
@@ -78,10 +78,11 @@ const hoistStateUpdate = (state, obj, options) => {
   const value = isStringState ? state.value : state.parse()
   const passedValue = isStringState ? state.value : obj
 
+  const findRootState = getRootStateInKey(stateKey, parent.state)
   const findGrandParentState = getParentStateInKey(stateKey, parent.state)
-  const changesValue = createChangesByKey(stateKey, passedValue)
-  const targetParent = findGrandParentState || parent.state
-  if (options.replace) overwriteDeep(targetParent, changesValue || value) // check with createChangesByKey
+  const changesValue = createNestedObjectByKeyPath(stateKey, passedValue)
+  const targetParent = findRootState || findGrandParentState || parent.state
+  if (options.replace) overwriteDeep(targetParent, changesValue || value) // check with createNestedObjectByKeyPath
   targetParent.update(changesValue, {
     execStateFunction: false,
     isHoisted: true,

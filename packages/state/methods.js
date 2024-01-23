@@ -88,7 +88,7 @@ export const add = function (value, options = {}) {
   const state = this
   if (isArray(state)) {
     state.push(value)
-    state.update(state.parse(), { overwrite: 'replace', ...options })
+    state.update(state.parse(), { overwrite: true, ...options })
   } else if (isObject(state)) {
     const key = Object.keys(state).length
     state.update({ [key]: value }, options)

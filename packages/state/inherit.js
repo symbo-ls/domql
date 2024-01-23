@@ -3,6 +3,12 @@
 import { deepCloneWithExtnd, is, isObjectLike, isUndefined } from '@domql/utils'
 import { IGNORE_STATE_PARAMS } from './ignore'
 
+export const getRootStateInKey = (stateKey, parentState) => {
+  if (!stateKey.includes('~/')) return
+  const arr = stateKey.split('~/')
+  if (arr.length > 1) return parentState.__root
+}
+
 export const getParentStateInKey = (stateKey, parentState) => {
   if (!stateKey.includes('../')) return
   const arr = stateKey.split('../')
@@ -39,11 +45,18 @@ export const findInheritedState = (element, parent, options = {}) => {
   let stateKey = ref.__state
   if (!checkIfInherits(element)) return
 
+  const rootState = getRootStateInKey(stateKey, parent.state)
   let parentState = parent.state
-  const findGrandParentState = getParentStateInKey(stateKey, parent.state)
-  if (findGrandParentState) {
-    parentState = findGrandParentState
-    stateKey = stateKey.replaceAll('../', '')
+
+  if (rootState) {
+    parentState = rootState
+    stateKey = stateKey.replaceAll('~/', '')
+  } else {
+    const findGrandParentState = getParentStateInKey(stateKey, parent.state)
+    if (findGrandParentState) {
+      parentState = findGrandParentState
+      stateKey = stateKey.replaceAll('../', '')
+    }
   }
 
   if (!parentState) return
@@ -91,7 +104,7 @@ export const isState = function (state) {
   // return arrayContainsOtherArray(keys, ['update', 'parse', 'clean', 'create', 'parent', 'rootUpdate'])
 }
 
-export const createChangesByKey = (path, value) => {
+export const createNestedObjectByKeyPath = (path, value) => {
   if (!path) {
     return value || {}
   }

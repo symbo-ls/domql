@@ -53,8 +53,11 @@ export default {
   on: {},
   component: {},
   context: {},
-  $setStateCollection: {},
+  $collection: {},
+  $stateCollection: {},
+  $ropsCollection: {},
   $setCollection: {},
+  $setStateCollection: {},
   $setPropsCollection: {}
 }
 
