@@ -44,7 +44,7 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
   const { parent, node, key } = element
   const { excludes, preventInheritAtCurrentState } = options
 
-  triggerEventOnUpdate('startUpdate', params, element, options)
+  if (!options.preventListeners) triggerEventOnUpdate('startUpdate', params, element, options)
 
   if (preventInheritAtCurrentState && preventInheritAtCurrentState.__element === element) return
   if (!excludes) merge(options, UPDATE_DEFAULT_OPTIONS)
@@ -72,7 +72,7 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     if (props) updateProps(props, element, parent)
   }
 
-  if (!options.preventInitUpdateListener) {
+  if (!options.preventInitUpdateListener && !options.preventListeners) {
     const initUpdateReturns = triggerEventOnUpdate('initUpdate', params, element, options)
     if (initUpdateReturns === false) return element
   }
@@ -81,7 +81,7 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
   const execChanges = throughUpdatedExec(element, { ignore: UPDATE_DEFAULT_OPTIONS })
   const definedChanges = throughUpdatedDefine(element)
 
-  if (!options.isForced) {
+  if (!options.isForced && !options.preventListeners) {
     triggerEventOn('beforeClassAssign', element, options)
   }
 
@@ -244,7 +244,7 @@ const inheritStateUpdates = (element, options) => {
   if (!keyInParentState || options.preventInheritedStateUpdate) return
 
   // Trigger on.initStateUpdate event
-  if (!options.preventInitStateUpdateListener) {
+  if (!options.preventInitStateUpdateListener && !options.preventListeners) {
     const initStateReturns = triggerEventOnUpdate('initStateUpdate', keyInParentState, element, options)
     if (initStateReturns === false) return element
   }
@@ -253,7 +253,7 @@ const inheritStateUpdates = (element, options) => {
   const newState = createStateUpdate(element, parent, options)
 
   // Trigger on.stateUpdate event
-  if (!options.preventStateUpdateListener) {
+  if (!options.preventStateUpdateListener && !options.preventListeners) {
     triggerEventOnUpdate('stateUpdate', newState.parse(), element, options)
   }
 }
