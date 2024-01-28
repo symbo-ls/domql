@@ -59,6 +59,7 @@ export const router = (
     if (newElementKey && options.removeOldElement) {
       element[newElementKey].remove()
     }
+
     element.set({
       tag: options.useFragment && 'fragment',
       extend: content

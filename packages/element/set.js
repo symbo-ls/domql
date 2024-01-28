@@ -13,7 +13,8 @@ const set = function (params, options = {}, el) {
   const __contentRef = content && content.__ref
   const lazyLoad = element.props && element.props.lazyLoad
 
-  if (options.preventContentUpdate === true) return
+  const hasCollection = element.$collection || element.$stateCollection || element.$propsCollection
+  if (options.preventContentUpdate === true && !hasCollection) return
 
   if (ref.__noCollectionDifference || (__contentRef && __contentRef.__cached && deepContains(params, content))) {
     return content.update()

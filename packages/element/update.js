@@ -79,6 +79,7 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
 
   const overwriteChanges = overwriteDeep(element, params, METHODS_EXL)
   const execChanges = throughUpdatedExec(element, { ignore: UPDATE_DEFAULT_OPTIONS })
+  if (element.key === 'Navigation') debugger
   const definedChanges = throughUpdatedDefine(element)
 
   if (!options.isForced && !options.preventListeners) {
@@ -102,6 +103,8 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     const isInPreventUpdate = isArray(options.preventUpdate) && options.preventUpdate.includes(param)
     const isInPreventDefineUpdate = isArray(options.preventDefineUpdate) && options.preventDefineUpdate.includes(param)
 
+    const hasCollection = element.$collection || element.$stateCollection || element.$propsCollection
+
     if (
       isUndefined(prop) ||
       hasOnlyUpdateFalsy ||
@@ -109,7 +112,7 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
       isInPreventDefineUpdate ||
       options.preventDefineUpdate === true ||
       options.preventDefineUpdate === param ||
-      (options.preventContentUpdate && param === 'content') ||
+      (options.preventContentUpdate && param === 'content' && !hasCollection) ||
       (options.preventStateUpdate && param) === 'state' ||
       isMethod(param) || isObject(registry[param]) || isVariant(param)
     ) continue
