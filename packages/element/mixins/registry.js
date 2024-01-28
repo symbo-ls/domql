@@ -55,7 +55,7 @@ export default {
   context: {},
   $collection: {},
   $stateCollection: {},
-  $ropsCollection: {},
+  $propsCollection: {},
   $setCollection: {},
   $setStateCollection: {},
   $setPropsCollection: {}

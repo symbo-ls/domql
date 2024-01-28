@@ -1,5 +1,6 @@
 'use strict'
 
+import { triggerEventOn } from '@domql/event'
 import { document, window } from '@domql/utils'
 
 export const getActiveRoute = (level = 0, route = window.location.pathname) => {
@@ -84,6 +85,9 @@ export const router = (
       })
     }
   }
+
+  // trigger `on.routeChanged`
+  triggerEventOn('routeChanged', element, options)
 }
 
 export default router
