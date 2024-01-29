@@ -152,7 +152,7 @@ const createBasedOnType = (element, parent, key, options) => {
 const redefineElement = (element, parent, key, options) => {
   const elementWrapper = createBasedOnType(element, parent, key, options)
 
-  if (options.syntaxv3 || element.props?.syntaxv3) {
+  if (options.syntaxv3 || (element.props && element.props.syntaxv3)) {
     return createValidDomqlObjectFromSugar(element, parent, key, options)
   } else if (checkIfKeyIsComponent(key)) {
     return applyKeyComponentAsExtend(elementWrapper, parent, key)
