@@ -1,7 +1,7 @@
 'use strict'
 
 import { report } from '@domql/report'
-import { canRender } from '@domql/event'
+import { canRenderTag } from '@domql/event'
 import { exec, isObject, isString, isValidHtmlTag } from '@domql/utils'
 
 const cache = {}
@@ -32,11 +32,12 @@ export const detectTag = element => {
   }
 
   if (isString(tag)) {
-    const tagExists = isValidHtmlTag(tag)
-    if (tagExists) return tag
+    if (isValidHtmlTag(tag)) return tag
   } else {
-    const isKeyATag = isValidHtmlTag(key)
-    if (isKeyATag) return key
+    let keyAsTag = key.toLowerCase()
+    if (keyAsTag.includes('.')) keyAsTag = keyAsTag.split('.')[0]
+    if (keyAsTag.includes('_')) keyAsTag = keyAsTag.split('_')[0]
+    if (isValidHtmlTag(keyAsTag)) return keyAsTag
   }
 
   return 'div'
@@ -45,7 +46,7 @@ export const detectTag = element => {
 export const cacheNode = (element) => {
   const tag = element.tag = detectTag(element)
 
-  if (!canRender(element)) {
+  if (!canRenderTag(tag)) {
     return report('HTMLInvalidTag', element.tag, element)
   }
 
