@@ -152,7 +152,7 @@ const createBasedOnType = (element, parent, key, options) => {
 const redefineElement = (element, parent, key, options) => {
   const elementWrapper = createBasedOnType(element, parent, key, options)
 
-  if (options.syntaxv3 || element.props?.syntaxv3 || parent.props?.syntaxv3) {
+  if (options.syntaxv3 || element.props?.syntaxv3 || parent?.props?.syntaxv3) {
     element.props.syntaxv3 = true
     return createValidDomqlObjectFromSugar(element, parent, key, options)
   } else if (checkIfKeyIsComponent(key)) {
@@ -215,7 +215,11 @@ const renderElement = (element, parent, options, attachOptions) => {
   const { __ref: ref, key } = element
 
   // CREATE a real NODE
-  createNode(element, options)
+  try {
+    createNode(element, options)
+  } catch (e) {
+    if (ENV === 'test' || ENV === 'development') console.warn(e)
+  }
 
   if (!ref.__if) {
     parent[key || element.key] = element
