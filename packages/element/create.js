@@ -152,7 +152,7 @@ const createBasedOnType = (element, parent, key, options) => {
 const redefineElement = (element, parent, key, options) => {
   const elementWrapper = createBasedOnType(element, parent, key, options)
 
-  if (options.syntaxv3 || element.props?.syntaxv3 || parent?.props?.syntaxv3) {
+  if (options.syntaxv3 || element.props?.syntaxv3 || parent?.props?.syntaxv3 /* kalduna guard */) {
     element.props.syntaxv3 = true
     return createValidDomqlObjectFromSugar(element, parent, key, options)
   } else if (checkIfKeyIsComponent(key)) {
@@ -234,6 +234,9 @@ const renderElement = (element, parent, options, attachOptions) => {
 
   // run `on.render`
   triggerEventOn('render', element, options)
+
+  // run `on.done`
+  triggerEventOn('done', element, options)
 }
 
 const checkIfPrimitive = (element) => is(element)('string', 'number')
