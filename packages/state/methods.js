@@ -1,6 +1,6 @@
 'use strict'
 
-import { isArray, deepCloneWithExtnd, isFunction, isObject, isString, removeFromArray, removeFromObject } from '@domql/utils'
+import { isArray, deepCloneWithExtend, isFunction, isObject, isString, removeFromArray, removeFromObject } from '@domql/utils'
 
 import { IGNORE_STATE_PARAMS } from './ignore'
 
@@ -109,14 +109,14 @@ export const remove = function (key, options = {}) {
 
 export const set = function (val, options = {}) {
   const state = this
-  const value = deepCloneWithExtnd(val)
+  const value = deepCloneWithExtend(val)
   return state.clean({ preventStateUpdate: true, ...options })
     .update(value, { replace: true, ...options })
 }
 
 export const reset = function (options = {}) {
   const state = this
-  const value = deepCloneWithExtnd(state.parse())
+  const value = deepCloneWithExtend(state.parse())
   return state.set(value, { replace: true, ...options })
 }
 

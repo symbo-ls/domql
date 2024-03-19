@@ -114,7 +114,7 @@ export const deepClone = (obj, excludeFrom = [], cleanUndefined = false) => {
 /**
  * Deep cloning of object
  */
-export const deepCloneWithExtnd = (obj, excludeFrom = [], cleanUndefined = false) => {
+export const deepCloneWithExtend = (obj, excludeFrom = [], cleanUndefined = false) => {
   const o = isArray(obj) ? [] : {}
   for (const prop in obj) {
     if (prop === '__proto__') continue
@@ -122,7 +122,7 @@ export const deepCloneWithExtnd = (obj, excludeFrom = [], cleanUndefined = false
     const objProp = obj[prop]
     if (cleanUndefined && isUndefined(objProp)) continue
     if (isObjectLike(objProp)) {
-      o[prop] = deepCloneWithExtnd(objProp, excludeFrom, cleanUndefined)
+      o[prop] = deepCloneWithExtend(objProp, excludeFrom, cleanUndefined)
     } else o[prop] = objProp
   }
   return o
