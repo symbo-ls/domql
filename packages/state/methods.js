@@ -80,7 +80,7 @@ export const parentUpdate = function (obj, options = {}) {
 export const rootUpdate = function (obj, options = {}) {
   const state = this
   if (!state) return
-  const rootState = (state.__element.__ref.__root).state
+  const rootState = (state.__element.__ref.root).state
   return rootState.update(obj, { isHoisted: false, ...options })
 }
 

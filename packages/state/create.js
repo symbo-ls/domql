@@ -111,7 +111,7 @@ const applyMethods = (element) => {
     parent: element.parent.state,
     __element: element,
     __children: {},
-    __root: ref.__root ? ref.__root.state : state
+    root: ref.root ? ref.root.state : state
   }
 
   if (isArray(state)) {

@@ -263,7 +263,7 @@ const applyContext = (element, parent, options) => {
 const createScope = (element, parent) => {
   const { __ref: ref } = element
   // If the element doesn't have a scope, initialize it using the parent's scope or the root's scope.
-  if (!element.scope) element.scope = parent.scope || ref.__root.scope || {}
+  if (!element.scope) element.scope = parent.scope || ref.root.scope || {}
 }
 
 const createIfConditionFlag = (element, parent) => {
@@ -303,7 +303,7 @@ const addCaching = (element, parent) => {
 
   // Add _root element property
   const hasRoot = parent && parent.key === ':root'
-  if (!ref.__root) ref.__root = hasRoot ? element : parentRef.__root
+  if (!ref.root) ref.root = hasRoot ? element : parentRef.root
 
   // set the PATH array
   if (ENV === 'test' || ENV === 'development') {
@@ -341,9 +341,9 @@ const onlyResolveExtends = (element, parent, key, options) => {
     // enable CHANGES storing
     if (!ref.__children) ref.__children = []
 
-    // Add __root element property
+    // Add root element property
     // const hasRoot = parent && parent.key === ':root'
-    // if (!ref.__root) ref.__root = hasRoot ? element : parentRef.__root
+    // if (!ref.root) ref.root = hasRoot ? element : parentRef.root
 
     addMethods(element, parent)
 

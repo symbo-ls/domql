@@ -6,7 +6,7 @@ import { IGNORE_STATE_PARAMS } from './ignore'
 export const getRootStateInKey = (stateKey, parentState) => {
   if (!stateKey.includes('~/')) return
   const arr = stateKey.split('~/')
-  if (arr.length > 1) return parentState.__root
+  if (arr.length > 1) return parentState.root
 }
 
 export const getParentStateInKey = (stateKey, parentState) => {

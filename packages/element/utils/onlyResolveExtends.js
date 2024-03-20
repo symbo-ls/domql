@@ -46,9 +46,9 @@ export const onlyResolveExtends = (element, parent, key, options) => {
     // enable CHANGES storing
     if (!ref.__children) ref.__children = []
 
-    // Add __root element property
+    // Add root element property
     // const hasRoot = parent && parent.key === ':root'
-    // if (!ref.__root) ref.__root = hasRoot ? element : parentRef.__root
+    // if (!ref.root) ref.root = hasRoot ? element : parentRef.root
   }
 
   addMethods(element, parent)
