@@ -97,11 +97,23 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     return
   }
 
+  const {
+    onlyUpdate, preventUpdate, preventDefineUpdate, preventContentUpdate, preventStateUpdate,
+    preventRecursive, preventUpdateListener, preventUpdateAfter, preventUpdateAfterCount
+  } = options
+
+  if (preventUpdateAfter) {
+    if (isNumber(preventUpdateAfterCount) && preventUpdateAfter <= preventUpdateAfterCount) return
+    else if (options.preventUpdateAfterCount === undefined) options.preventUpdateAfterCount = 1
+    else options.preventUpdateAfterCount++
+  }
+
   for (const param in element) {
     const prop = element[param]
-    const hasOnlyUpdateFalsy = options.onlyUpdate && (options.onlyUpdate !== param || !element.lookup(options.onlyUpdate))
-    const isInPreventUpdate = isArray(options.preventUpdate) && options.preventUpdate.includes(param)
-    const isInPreventDefineUpdate = isArray(options.preventDefineUpdate) && options.preventDefineUpdate.includes(param)
+
+    const hasOnlyUpdateFalsy = onlyUpdate && (onlyUpdate !== param || !element.lookup(onlyUpdate))
+    const isInPreventUpdate = isArray(preventUpdate) && preventUpdate.includes(param)
+    const isInPreventDefineUpdate = isArray(preventDefineUpdate) && preventDefineUpdate.includes(param)
 
     const hasCollection = element.$collection || element.$stateCollection || element.$propsCollection
 
@@ -110,18 +122,18 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
       hasOnlyUpdateFalsy ||
       isInPreventUpdate ||
       isInPreventDefineUpdate ||
-      options.preventDefineUpdate === true ||
-      options.preventDefineUpdate === param ||
-      (options.preventContentUpdate && param === 'content' && !hasCollection) ||
-      (options.preventStateUpdate && param) === 'state' ||
+      preventDefineUpdate === true ||
+      preventDefineUpdate === param ||
+      (preventContentUpdate && param === 'content' && !hasCollection) ||
+      (preventStateUpdate && param) === 'state' ||
       isMethod(param) || isObject(registry[param]) || isVariant(param)
     ) continue
-    if (options.preventStateUpdate === 'once') options.preventStateUpdate = false
+    if (preventStateUpdate === 'once') options.preventStateUpdate = false
 
     const isElement = applyParam(param, element, options)
     if (isElement) {
       const { hasDefine, hasContextDefine } = isElement
-      const canUpdate = isObject(prop) && !hasDefine && !hasContextDefine && !options.preventRecursive
+      const canUpdate = isObject(prop) && !hasDefine && !hasContextDefine && !preventRecursive
       if (!canUpdate) continue
 
       const lazyLoad = element.props.lazyLoad || options.lazyLoad
@@ -136,7 +148,7 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
     }
   }
 
-  if (!options.preventUpdateListener) triggerEventOn('update', element, options)
+  if (!preventUpdateListener) triggerEventOn('update', element, options)
 }
 
 const captureSnapshot = (element, options) => {
