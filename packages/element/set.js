@@ -17,8 +17,8 @@ const set = function (params, options = {}, el) {
   if (options.preventContentUpdate === true && !hasCollection) return
 
   if (ref.__noCollectionDifference || (__contentRef && __contentRef.__cached && deepContains(params, content))) {
-    return
-    // return content.update()
+    return content.update()
+    // return
   }
 
   const setAsync = () => {
