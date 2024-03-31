@@ -7,6 +7,19 @@ import OPTIONS from './cache/options'
 import { registry } from './mixins'
 import { removeContent } from './mixins/content'
 
+export const resetElement = (params, element, options) => {
+  const perf = performance.now()
+  if (!options.preventRemove) removeContent(element, options)
+  create(params, element, options.contentElementKey || 'content', {
+    ignoreChildExtend: true,
+    ...registry.defaultOptions,
+    ...OPTIONS.create,
+    ...options
+  })
+
+  if (element.key === 'Grid') console.log(element.key, performance.now() - perf)
+}
+
 const set = function (params, options = {}, el) {
   const element = el || this
   const { __ref: ref, content } = element
@@ -17,18 +30,8 @@ const set = function (params, options = {}, el) {
   if (options.preventContentUpdate === true && !hasCollection) return
 
   if (ref.__noCollectionDifference || (__contentRef && __contentRef.__cached && deepContains(params, content))) {
-    return content.update()
+    return content?.update()
     // return
-  }
-
-  const setAsync = () => {
-    removeContent(element)
-    create(params, element, options.newElementKey || 'content', {
-      ignoreChildExtend: true,
-      ...registry.defaultOptions,
-      ...OPTIONS.create,
-      ...options
-    })
   }
 
   if (params) {
@@ -36,8 +39,8 @@ const set = function (params, options = {}, el) {
     if (!childExtend && element.childExtend) params.childExtend = element.childExtend
 
     if (lazyLoad) {
-      window.requestAnimationFrame(setAsync)
-    } else setAsync()
+      window.requestAnimationFrame(() => resetElement(params, element, options))
+    } else resetElement(params, element, options)
   }
 
   return element
