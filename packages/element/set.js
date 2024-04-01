@@ -30,8 +30,8 @@ const set = function (params, options = {}, el) {
   if (options.preventContentUpdate === true && !hasCollection) return
 
   if (ref.__noCollectionDifference || (__contentRef && __contentRef.__cached && deepContains(params, content))) {
-    return content?.update()
-    // return
+    if (content?.update) content.update()
+    return
   }
 
   if (params) {
