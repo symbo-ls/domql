@@ -218,7 +218,7 @@ const renderElement = (element, parent, options, attachOptions) => {
   try {
     createNode(element, options)
   } catch (e) {
-    if (ENV === 'test' || ENV === 'development') console.warn(e)
+    if (ENV === 'test' || ENV === 'development') console.warn(element, e)
   }
 
   if (!ref.__if) {
@@ -315,54 +315,25 @@ const addCaching = (element, parent) => {
 
 const onlyResolveExtends = (element, parent, key, options) => {
   const { __ref: ref } = element
+  const { __ref: parentRef } = parent
   if (!ref.__skipCreate) {
-    element.tag = detectTag(element)
-
-    // if (!element.props) element.props = {}
-
-    // Copy-paste of addCaching()
-    // enable CACHING
-    if (!ref.__cached) ref.__cached = {}
-    if (!ref.__defineCache) ref.__defineCache = {}
-
-    // enable EXEC
-    if (!ref.__exec) ref.__exec = {}
-
-    // enable CLASS CACHING
-    if (!ref.__class) ref.__class = {}
-    if (!ref.__classNames) ref.__classNames = {}
-
-    // enable CLASS CACHING
-    if (!ref.__attr) ref.__attr = {}
-
-    // enable CHANGES storing
-    if (!ref.__changes) ref.__changes = []
-
-    // enable CHANGES storing
-    if (!ref.__children) ref.__children = []
-
-    // Add root element property
-    // const hasRoot = parent && parent.key === ':root'
-    // if (!ref.root) ref.root = hasRoot ? element : parentRef.root
+    addCaching(element, parent)
 
     addMethods(element, parent)
 
-    createState(element, parent)
+    createScope(element, parent)
 
-    // Borrowed from createIfConditionFlag()
-    if (isFunction(element.if)) {
-      const ifPassed = element.if(element, element.state)
-      if (!ifPassed) {
-        // const ifFragment = cacheNode({ tag: 'fragment' })
-        // ref.__ifFragment = appendNode(ifFragment, parent.node)
-        delete ref.__if
-      } else ref.__if = true
-    } else ref.__if = true
-    /// ///
+    createState(element, parent)
+    if (element.scope === 'state') element.scope = element.state
+
+    createIfConditionFlag(element, parent)
+
+    // apply props settings
+    createProps(element, parent)
+    if (element.scope === 'props' || element.scope === true) element.scope = element.props
 
     if (element.node && ref.__if) { parent[key || element.key] = element } // Borrowed from assignNode()
 
-    createProps(element, parent)
     if (!element.props) element.props = {}
     applyVariant(element, parent)
   }

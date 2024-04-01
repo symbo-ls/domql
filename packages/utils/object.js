@@ -1,7 +1,7 @@
 'use strict'
 
 import { window } from './globals.js'
-import { isFunction, isObjectLike, isObject, isArray, isString, is, isUndefined, isDate } from './types.js'
+import { isFunction, isObjectLike, isObject, isArray, isString, is, isUndefined, isDate, isNull } from './types.js'
 import { mergeAndCloneIfArray, mergeArray } from './array.js'
 import { stringIncludesAny } from './string.js'
 
@@ -114,15 +114,31 @@ export const deepClone = (obj, excludeFrom = [], cleanUndefined = false) => {
 /**
  * Deep cloning of object
  */
-export const deepCloneWithExtend = (obj, excludeFrom = [], cleanUndefined = false) => {
+export const deepCloneEntrance = (...params) => {
+  // console.groupCollapsed('deepCloneEntrance')
+  // console.warn(params)
+  let extended
+  try {
+    extended = deepCloneWithExtend(...params)
+  } catch {
+    console.log('HERE', extended)
+  }
+  // console.groupEnd('deepCloneEntrance')
+  return extended
+}
+
+export const deepCloneWithExtend = (obj, excludeFrom = ['node'], options = {}) => {
   const o = isArray(obj) ? [] : {}
   for (const prop in obj) {
-    if (prop === '__proto__') continue
-    if (excludeFrom.includes(prop) || prop.startsWith('__')) continue
+    const hasOwnProperty = Object.prototype.hasOwnProperty.call(obj, prop)
     const objProp = obj[prop]
-    if (cleanUndefined && isUndefined(objProp)) continue
+    if (
+      !hasOwnProperty || excludeFrom.includes(prop) || prop.startsWith('__') ||
+      (options.cleanUndefined && isUndefined(objProp)) ||
+      (options.cleanNull && isNull(objProp))
+    ) continue
     if (isObjectLike(objProp)) {
-      o[prop] = deepCloneWithExtend(objProp, excludeFrom, cleanUndefined)
+      o[prop] = deepCloneWithExtend(objProp, excludeFrom, options)
     } else o[prop] = objProp
   }
   return o
