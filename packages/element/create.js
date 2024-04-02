@@ -4,7 +4,7 @@ import createNode from './node'
 import { ROOT } from './tree'
 import { TAGS } from '@domql/registry'
 import { triggerEventOn } from '@domql/event'
-import { assignNode, detectTag } from '@domql/render'
+import { assignNode } from '@domql/render'
 import { createState } from '@domql/state'
 
 import { isMethod } from './methods'
@@ -315,7 +315,6 @@ const addCaching = (element, parent) => {
 
 const onlyResolveExtends = (element, parent, key, options) => {
   const { __ref: ref } = element
-  const { __ref: parentRef } = parent
   if (!ref.__skipCreate) {
     addCaching(element, parent)
 

@@ -16,8 +16,6 @@ export const resetElement = (params, element, options) => {
     ...OPTIONS.create,
     ...options
   })
-
-  if (element.key === 'Grid') console.log(element.key, performance.now() - perf)
 }
 
 const set = function (params, options = {}, el) {
