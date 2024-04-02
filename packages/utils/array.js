@@ -53,6 +53,7 @@ export const cutArrayBeforeValue = (arr, value) => {
 }
 
 export const cutArrayAfterValue = (arr, value) => {
+  if (!isArray(arr)) return
   const index = arr.indexOf(value)
   if (index !== -1) {
     return arr.slice(index + 1)
