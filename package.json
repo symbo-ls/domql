@@ -18,6 +18,7 @@
     "clean:modules": "rm -rf node_modules yarn.lock package-lock.json lerna-debug.log yarn-error.log",
     "clean:dist": "lerna exec -- rm -rf dist",
     "clean:packages": "lerna exec -- rm -rf dist node_modules yarn.lock yarn-error.log package-lock.json",
+    "clean:package-modules": "lerna exec -- rm -rf node_modules yarn.lock yarn-error.log package-lock.json",
     "clean:all": "yarn clean && yarn clean:modules && yarn clean:packages",
     "reinstall": "yarn clean:all && yarn",
     "link:all": "npx lerna exec -- yarn unlink; npx lerna exec -- yarn link",
