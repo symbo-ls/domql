@@ -60,6 +60,8 @@ export const createNode = (element, options) => {
   for (const param in element) {
     const value = element[param]
 
+    if (!Object.hasOwnProperty.call(element, param)) continue
+
     if (
       isUndefined(value) ||
       isMethod(param) ||

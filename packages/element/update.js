@@ -111,6 +111,8 @@ const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
   for (const param in element) {
     const prop = element[param]
 
+    if (!Object.hasOwnProperty.call(element, param)) continue
+
     const hasOnlyUpdateFalsy = onlyUpdate && (onlyUpdate !== param || !element.lookup(onlyUpdate))
     const isInPreventUpdate = isArray(preventUpdate) && preventUpdate.includes(param)
     const isInPreventDefineUpdate = isArray(preventDefineUpdate) && preventDefineUpdate.includes(param)
