@@ -49,8 +49,8 @@ export const createValidDomqlObjectFromSugar = (el, parent, key, options) => {
   }
   for (const k in el) {
     const prop = el[k]
-    const isEvent = prop.startsWith('on')
-    const isMethod = prop.startsWith('$')
+    const isEvent = k.startsWith('on')
+    const isMethod = k.startsWith('$')
     if (isEvent) {
       const onKey = replaceOnKeys(prop)
       newElem.on[onKey] = prop
