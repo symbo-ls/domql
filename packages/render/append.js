@@ -13,8 +13,10 @@ export const insertNodeAfter = (node, siblingNode, parentNode) => {
   const parent = (parentNode || siblingNode.parentNode)
   if (siblingNode.nextSibling) {
     parent && parent.insertBefore(node, siblingNode.nextSibling)
+  } else if (siblingNode?.insertAdjacentElement) {
+    siblingNode.insertAdjacentElement('afterend', node)
   } else {
-    siblingNode && siblingNode.insertAdjacentElement('afterend', node)
+    parent.insertBefore(node, siblingNode)
   }
 }
 
