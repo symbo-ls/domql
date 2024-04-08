@@ -26,14 +26,15 @@ export const trimStringFromSymbols = (str, characters) => {
  */
 const brackRegex = {
   2: /\{\{\s*((?:\.\.\/)+)?([^}\s]+)\s*\}\}/g,
-  3: /\{\{\s*((?:\.\.\.\/)+)?([^}\s]+)\s*\}\}/g
+  3: /\{\{\{\s*((?:\.\.\/)+)?([^}\s]+)\s*\}\}\}/g
 }
 
-export const replaceLiteralsWithObjectFields = (str, state, opts = {}) => {
-  if (!str.includes(opts.bracketsLength === 3 ? '{{{' : '{{')) return str
-  return str.replace(brackRegex[opts.bracketsLength || 2], (_, parentPath, variable) => {
+export const replaceLiteralsWithObjectFields = (str, state, options = {}) => {
+  if (!str.includes(options.bracketsLength === 3 ? '{{{' : '{{')) return str
+  const reg = brackRegex[options.bracketsLength || 2]
+  return str.replace(reg, (_, parentPath, variable) => {
     if (parentPath) {
-      const parentLevels = parentPath.match(opts.bracketsLength === 3 ? /\.\.\.\//g : /\.\.\//g).length
+      const parentLevels = parentPath.match(options.bracketsLength === 3 ? /\.\.\.\//g : /\.\.\//g).length
       let parentState = state
       for (let i = 0; i < parentLevels; i++) {
         parentState = parentState.parent
