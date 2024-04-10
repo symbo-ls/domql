@@ -1,6 +1,6 @@
 'use strict'
 
-import { isArray, isFunction, isObject, isString } from '@domql/utils'
+import { isArray, isFunction, isObject, isString, deepCloneWithExtend } from '@domql/utils'
 const ENV = process.env.NODE_ENV
 
 export const generateHash = () => Math.random().toString(36).substring(2)
@@ -48,21 +48,6 @@ export const flattenExtend = (extend, stack, context) => {
   return stack
 }
 
-// merging
-export const deepCloneExtend = obj => {
-  const o = {}
-  for (const prop in obj) {
-    if (['parent', 'node', '__element'].indexOf(prop) > -1) continue
-    const objProp = obj[prop]
-    if (isObject(objProp)) {
-      o[prop] = deepCloneExtend(objProp)
-    } else if (isArray(objProp)) {
-      o[prop] = objProp.map(x => x)
-    } else o[prop] = objProp
-  }
-  return o
-}
-
 export const deepMergeExtend = (element, extend) => {
   for (const e in extend) {
     if (['parent', 'node', '__element'].indexOf(e) > -1) continue
@@ -86,7 +71,7 @@ export const deepMergeExtend = (element, extend) => {
 
 export const cloneAndMergeArrayExtend = stack => {
   return stack.reduce((a, c) => {
-    return deepMergeExtend(a, deepCloneExtend(c))
+    return deepMergeExtend(a, deepCloneWithExtend(c))
   }, {})
 }
 

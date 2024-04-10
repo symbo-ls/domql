@@ -15,7 +15,7 @@ export const removeContent = function (el) {
   const { __ref } = element
 
   if (element.content) {
-    if (element.content.node) {
+    if (element.content.node && element.node) {
       if (element.content.tag === 'fragment') element.node.innerHTML = ''
       else element.node.removeChild(element.content.node)
     }

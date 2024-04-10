@@ -66,8 +66,12 @@ export default {
 export const parseFilters = {
   elementKeys: [
     'tag', 'text', 'style', 'attr', 'class', 'state', 'props',
-    'data', 'content', 'html', 'on', 'key'
+    'data', 'content', 'html', 'on', 'key', 'extend', 'childExtend',
+    'childExtendRecursive', 'scope', 'query',
+    '$collection', '$stateCollection', '$propsCollection'
   ],
   propsKeys: ['__element', 'update'],
   stateKeys: []
 }
+
+export const collectionFilters = ['$collection', '$stateCollection', '$propsCollection']

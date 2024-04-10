@@ -83,10 +83,14 @@ export const parse = function (excl = []) {
   const keyList = keys.call(element)
   keyList.forEach(v => {
     if (excl.includes(v)) return
-    let val = element[v]
+    const val = element[v]
     if (v === 'state') {
-      if (element.__ref && element.__ref.__hasRootState) return
-      if (isFunction(val && val.parse)) val = val.parse()
+      if (element.__ref && !element.__ref.__hasRootState) return
+      const parsedVal = isFunction(val && val.parse) ? val.parse() : val
+      obj[v] = isFunction(parsedVal) ? parsedVal : JSON.parse(JSON.stringify(parsedVal || {}))
+    } else if (v === 'scope') {
+      if (element.__ref && !element.__ref.__hasRootScope) return
+      obj[v] = JSON.parse(JSON.stringify(val || {}))
     } else if (v === 'props') {
       const { __element, update, ...props } = element[v]
       obj[v] = props

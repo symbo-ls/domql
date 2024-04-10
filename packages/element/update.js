@@ -183,6 +183,7 @@ const checkIfOnUpdate = (element, parent, options) => {
     ref.__if = true
     if (itWasFalse) {
       delete element.__hash
+      delete element.__text
       delete element.extend
       if (!ref.__hasRootState) {
         delete element.state
@@ -194,19 +195,31 @@ const checkIfOnUpdate = (element, parent, options) => {
         delete element.state
       }
 
-      element.node && element.node.remove()
-
-      const previousElement = element.previousElement()
-      const nextElement = element.nextElement()
-
-      const hasPrevious = previousElement && previousElement.node
-      const hasNext = nextElement && nextElement.node
-
-      const attachOptions = ((hasPrevious && hasPrevious.parentNode) || (hasNext && hasNext.parentNode)) && {
-        position: hasPrevious ? 'after' : hasNext ? 'before' : null,
-        node: hasPrevious || hasNext
+      if (element.node) {
+        element.node.remove()
+        delete element.node
       }
 
+      if (element.$collection || element.$stateCollection || element.$propsCollection) {
+        element.removeContent()
+      } else if (element.content?.parseDeep) element.content = element.content.parseDeep()
+
+      const previousElement = element.previousElement()
+      const previousNode = previousElement?.node // document.body.contains(previousElement.node)
+      const hasPrevious = previousNode?.parentNode // document.body.contains(previousElement.node)
+
+      const nextElement = element.nextElement()
+      const nextNode = nextElement?.node // document.body.contains(previousElement.node)
+      const hasNext = nextNode?.parentNode // && document.body.contains(nextElement.node)
+      // const hasNext = nextElement && document.body.contains(nextElement.node)
+
+      const attachOptions = (hasPrevious || hasNext) && {
+        position: hasPrevious ? 'after' : hasNext ? 'before' : null,
+        node: (hasPrevious && previousNode) || (hasNext && nextNode)
+      }
+
+      delete element.__ref
+      delete element.parent
       const created = create(element, parent, element.key, OPTIONS.create, attachOptions)
       // check preventUpdate for an array (Line: 87)
       if (options.preventUpdate !== true && element.on && isFunction(element.on.update)) {
