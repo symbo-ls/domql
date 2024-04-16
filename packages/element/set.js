@@ -8,7 +8,6 @@ import { registry } from './mixins'
 import { removeContent } from './mixins/content'
 
 export const resetElement = (params, element, options) => {
-  const perf = performance.now()
   if (!options.preventRemove) removeContent(element, options)
   create(params, element, options.contentElementKey || 'content', {
     ignoreChildExtend: true,

@@ -19,7 +19,7 @@ import { isMethod } from './methods'
 import { updateProps } from './props'
 import { createState, findInheritedState } from '@domql/state'
 
-import { METHODS_EXL, isVariant } from './utils'
+import { METHODS_EXL, deepClone, isVariant, deepMerge } from './utils'
 import create from './create'
 import { throughUpdatedDefine, throughUpdatedExec } from './iterate'
 import { registry } from './mixins'
@@ -39,7 +39,8 @@ const UPDATE_DEFAULT_OPTIONS = {
   excludes: METHODS_EXL
 }
 
-const update = function (params = {}, options = UPDATE_DEFAULT_OPTIONS) {
+const update = function (params = {}, opts = UPDATE_DEFAULT_OPTIONS) {
+  const options = deepClone(deepMerge(opts, UPDATE_DEFAULT_OPTIONS))
   const element = this
   const { parent, node, key } = element
   const { excludes, preventInheritAtCurrentState } = options
