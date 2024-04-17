@@ -6,7 +6,7 @@ import { IGNORE_PROPS_PARAMS } from '../props'
 import { METHODS } from '../methods'
 
 export const METHODS_EXL = joinArrays(
-  ['node', 'state', 'context', 'extend'],
+  ['node', 'state', 'context', 'extend', '__element'],
   METHODS,
   IGNORE_STATE_PARAMS,
   IGNORE_PROPS_PARAMS

@@ -40,7 +40,9 @@ const UPDATE_DEFAULT_OPTIONS = {
 }
 
 const update = function (params = {}, opts = UPDATE_DEFAULT_OPTIONS) {
-  const options = deepClone(deepMerge(opts, UPDATE_DEFAULT_OPTIONS))
+  const calleeElementCache = opts.calleeElement
+  const options = deepClone(deepMerge(opts, UPDATE_DEFAULT_OPTIONS), ['calleeElement'])
+  options.calleeElement = calleeElementCache
   const element = this
   const { parent, node, key } = element
   const { excludes, preventInheritAtCurrentState } = options
