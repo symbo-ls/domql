@@ -99,10 +99,10 @@ export const deepClone = (obj, excludeFrom = [], cleanUndefined = false) => {
   const o = isArray(obj) ? [] : {}
   for (const prop in obj) {
     if (!Object.prototype.hasOwnProperty.call(obj, prop)) continue
-    if (prop === 'node' || prop === 'parent' || prop === 'root' || prop === '__element') {
-      console.warn('recursive clonning is called', obj)
-      continue
-    }
+    // if (prop === 'node' || prop === 'parent' || prop === 'root' || prop === '__element') {
+    //   console.warn('recursive clonning is called', obj)
+    //   continue
+    // }
     if (prop === '__proto__') continue
     if (excludeFrom.includes(prop) || prop.startsWith('__')) continue
     let objProp = obj[prop]
@@ -126,10 +126,10 @@ export const deepCloneWithExtend = (obj, excludeFrom = ['node'], options = {}) =
   const o = isArray(obj) ? [] : {}
   for (const prop in obj) {
     if (!Object.prototype.hasOwnProperty.call(obj, prop)) continue
-    if (prop === 'node' || prop === 'parent' || prop === 'root' || prop === '__element') {
-      console.warn('recursive clonning is called', obj)
-      continue
-    }
+    // if (prop === 'node' || prop === 'parent' || prop === 'root' || prop === '__element') {
+    //   console.warn('recursive clonning is called', obj)
+    //   continue
+    // }
     const objProp = obj[prop]
     if (
       excludeFrom.includes(prop) || prop.startsWith('__') ||
