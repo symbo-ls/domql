@@ -98,6 +98,11 @@ export const mergeArrayExclude = (arr, excl = []) => {
 export const deepClone = (obj, excludeFrom = [], cleanUndefined = false) => {
   const o = isArray(obj) ? [] : {}
   for (const prop in obj) {
+    if (!Object.prototype.hasOwnProperty.call(obj, prop)) continue
+    if (prop === 'node' || prop === 'parent' || prop === 'root' || prop === '__element') {
+      console.warn('recursive clonning is called', obj)
+      continue
+    }
     if (prop === '__proto__') continue
     if (excludeFrom.includes(prop) || prop.startsWith('__')) continue
     let objProp = obj[prop]
@@ -106,39 +111,35 @@ export const deepClone = (obj, excludeFrom = [], cleanUndefined = false) => {
       objProp = mergeArray(objProp)
     }
     if (isObjectLike(objProp)) {
+      // queueMicrotask(() => {
       o[prop] = deepClone(objProp, excludeFrom, cleanUndefined)
+      // })
     } else o[prop] = objProp
   }
   return o
 }
+
 /**
  * Deep cloning of object
  */
-export const deepCloneEntrance = (...params) => {
-  // console.groupCollapsed('deepCloneEntrance')
-  // console.warn(params)
-  let extended
-  try {
-    extended = deepCloneWithExtend(...params)
-  } catch {
-    console.log('HERE', extended)
-  }
-  // console.groupEnd('deepCloneEntrance')
-  return extended
-}
-
 export const deepCloneWithExtend = (obj, excludeFrom = ['node'], options = {}) => {
   const o = isArray(obj) ? [] : {}
   for (const prop in obj) {
-    const hasOwnProperty = Object.prototype.hasOwnProperty.call(obj, prop)
+    if (!Object.prototype.hasOwnProperty.call(obj, prop)) continue
+    if (prop === 'node' || prop === 'parent' || prop === 'root' || prop === '__element') {
+      console.warn('recursive clonning is called', obj)
+      continue
+    }
     const objProp = obj[prop]
     if (
-      !hasOwnProperty || excludeFrom.includes(prop) || prop.startsWith('__') ||
+      excludeFrom.includes(prop) || prop.startsWith('__') ||
       (options.cleanUndefined && isUndefined(objProp)) ||
       (options.cleanNull && isNull(objProp))
     ) continue
     if (isObjectLike(objProp)) {
+      // queueMicrotask(() => {
       o[prop] = deepCloneWithExtend(objProp, excludeFrom, options)
+      // })
     } else o[prop] = objProp
   }
   return o
