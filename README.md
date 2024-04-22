@@ -1,5 +1,5 @@
 # DOMQL
-Front-end javascript framework.
+DOMQL is new framework made by Symbols team to simplify app development process with full potential of reusability and customization. The aim to create this framework was to build one of the most reusable components library, and together with a design system library, it creates strong foundation for any frontend development.
 
 - Minimalistic
 - No dependencies
