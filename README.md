@@ -3,8 +3,6 @@ DOMQL is new framework made by Symbols team to simplify app development process 
 
 DOMQL recursively creates elements from your tree, runs transformations based on reserved properties, applies state and events, and through this virtual tree, renders a DOM tree. The rendering part is separated from the schema part, which makes it easy to use other Javascript DOM render transformers such as Mikado, React or Vue.
 
-DOMQL uses Javascript syntax and runs both on Node and Browser without transpirations required. In DOMQL you write your own virtual tree that represents actual website DOM tree after running it in browser. 
-
 - Minimalistic
 - No dependencies
 - Extendable
@@ -19,7 +17,7 @@ boilerplate, or jump into the [playground](https://domql.com/playground/).
 
 ## Using
 
-Using is as simple as:
+DOMQL uses Javascript syntax and runs both on Node and Browser without transpirations required. In DOMQL you write your own virtual tree that represents actual website DOM tree after running it in browser. Using it is simple:
 
 ```javascript
 import DOM from 'domql'
