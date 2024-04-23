@@ -1,11 +1,15 @@
 # DOMQL
 DOMQL is new framework made by Symbols team to simplify app development process with full potential of reusability and customization. The aim to create this framework was to build one of the most reusable components library, and together with a design system library, it creates strong foundation for any frontend development.
 
+DOMQL recursively creates elements from your tree, runs transformations based on reserved properties, applies state and events, and through this virtual tree, renders a DOM tree. The rendering part is separated from the schema part, which makes it easy to use other Javascript DOM render transformers such as Mikado, React or Vue.
+
+DOMQL uses Javascript syntax and runs both on Node and Browser without transpirations required. In DOMQL you write your own virtual tree that represents actual website DOM tree after running it in browser. 
+
 - Minimalistic
 - No dependencies
 - Extendable
 - No transpilations, simple ES6 code
-- One-time import and subtrees
+- Single import
 
 You can start with [starter-kit](https://github.com/domql/starter-kit) as a
 boilerplate, or jump into the [playground](https://domql.com/playground/).
@@ -13,7 +17,7 @@ boilerplate, or jump into the [playground](https://domql.com/playground/).
 [![npm version](https://badge.fury.io/js/domql.svg)](https://badge.fury.io/js/domql)
 
 
-## Intuitive
+## Using
 
 Using is as simple as:
 
@@ -31,7 +35,7 @@ const link = {
 DOM.create(link, document.body)
 ```
 
-Anyone with some basic front-end knowledge can understand DOMQL code right away:
+DOMQL is simple representation of HTML, Javascript and CSS altogether:
 
 ```javascript
 const img = {
@@ -39,12 +43,14 @@ const img = {
   class: 'avatar',
   attr: {
     src: '...'
+  },
+  style: {
+    padding: '10px'
   }
 }
 ```
 
-A single javascript object holds all of the logic, markup and styles of a
-component.
+A single javascript object to manage markup, styles and functionality.
 
 ```javascript
 const Link = {
@@ -71,7 +77,7 @@ const header = {
 }
 ```
 
-No need for fancy syntax, build steps and transpilers - it's just javascript.
+As flexible as Javascript.
 
 ```javascript
 const navItems = ['Home', 'About', 'FAQ', 'Contact']
@@ -82,7 +88,7 @@ const menu = {
 }
 ```
 
-All logic is contained in callback functions.
+Runs function.
 
 ```javascript
 const Increment = {
@@ -90,20 +96,15 @@ const Increment = {
   text: 'Click me!',
   state: { value: 0 },
   on: {
-    click: (el) => {
-      el.state.update({ value: el.state.value++ })
-      el.set({ text: el.state.value.toString() })
+    click: (event, element, state) => {
+      state.update({ value: state.value++ })
     }
-    render: () => {...},
     focus: () => {...},
+    render: () => {...},
     ...
   }
 }
 ```
-
-Imagine being able to describe the entire front-end of your website with all of
-its logic, styles and markup using only a single javascript object. DOMQL can do
-that.
 
 ## API
 
