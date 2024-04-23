@@ -36,7 +36,7 @@ const link = {
 DOM.create(link, document.body)
 ```
 
-DOMQL is simple representation of HTML, Javascript and CSS altogether:
+DOMQL is simple representation of HTML, Javascript and CSS altogether. The idea is that we can create JSON like structure for the HTML, CSS and events, so it can generate schema and can be passed to any rendering framework through its transforms:
 
 ```javascript
 const img = {
