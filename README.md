@@ -20,7 +20,7 @@ DOMQL is designed to work perfectly with Symbols design system and components. T
 
 ## Using
 
-DOMQL uses Javascript syntax and runs both on Node and Browser without transpirations required. In DOMQL you write your own virtual tree that represents actual website DOM tree after running it in browser. Using it is simple:
+DOMQL uses Javascript syntax and runs both on Node and Browser without transpirations required. In DOMQL you write your own virtual tree that represents actual DOM tree after running it in the browser:
 
 ```javascript
 import DOM from 'domql'
