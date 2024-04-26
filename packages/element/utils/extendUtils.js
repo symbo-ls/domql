@@ -77,11 +77,13 @@ export const cloneAndMergeArrayExtend = stack => {
 
 export const fallbackStringExtend = (extend, context, options = {}) => {
   const COMPONENTS = (context && context.components) || options.components
+  const PAGES = (context && context.pages) || options.pages
   if (isString(extend)) {
-    const componentExists = COMPONENTS[extend] || COMPONENTS['smbls.' + extend]
-    if (COMPONENTS && componentExists) {
-      return componentExists
-    } else {
+    const componentExists = COMPONENTS && (COMPONENTS[extend] || COMPONENTS['smbls.' + extend])
+    const pageExists = PAGES && extend.startsWith('/') && PAGES[extend]
+    if (componentExists) return componentExists
+    else if (pageExists) return pageExists
+    else {
       if (options.verbose && (ENV === 'test' || ENV === 'development')) {
         console.warn('Extend is string but component was not found:', extend)
       }

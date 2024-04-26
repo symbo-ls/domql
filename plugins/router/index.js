@@ -46,14 +46,14 @@ export const router = (
   const pathChanged = pathname !== lastPathname
   lastPathname = pathname
 
-  if (!content) return
+  if (!content || element.state.root.debugging) return
   if (options.pushState) {
     window.history.pushState(state, null, pathname + (hash ? `#${hash}` : ''))
   }
 
   if (pathChanged || !hashChanged) {
     if (options.updateState) {
-      element.state.update({ route, hash }, { preventContentUpdate: true })
+      element.state.update({ route, hash, debugging: false }, { preventContentUpdate: true })
     }
 
     if (contentElementKey && options.removeOldElement) {

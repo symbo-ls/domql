@@ -276,7 +276,7 @@ const createIfConditionFlag = (element, parent) => {
 }
 
 const addCaching = (element, parent) => {
-  const { __ref: ref } = element
+  const { __ref: ref, key } = element
   let { __ref: parentRef } = parent
 
   // enable TRANSFORM in data
@@ -301,6 +301,8 @@ const addCaching = (element, parent) => {
 
   // enable CHANGES storing
   if (!ref.__children) ref.__children = []
+
+  if (checkIfKeyIsComponent(key)) ref.__componentKey = key.split('_')[0].split('.')[0].split('+')[0]
 
   // Add _root element property
   const hasRoot = parent && parent.key === ':root'
