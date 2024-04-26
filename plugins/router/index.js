@@ -46,7 +46,10 @@ export const router = (
   const pathChanged = pathname !== lastPathname
   lastPathname = pathname
 
-  if (!content || element.state.root.debugging) return
+  if (!content || element.state.root.debugging) {
+    element.state.root.debugging = false
+    return
+  }
   if (options.pushState) {
     window.history.pushState(state, null, pathname + (hash ? `#${hash}` : ''))
   }
