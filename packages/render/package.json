@@ -1,6 +1,6 @@
 {
   "name": "@domql/render",
-  "version": "2.5.75",
+  "version": "2.5.82",
   "license": "MIT",
   "type": "module",
   "module": "index.js",

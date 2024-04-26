@@ -1,6 +1,6 @@
 {
   "name": "@domql/report",
-  "version": "2.5.35",
+  "version": "2.5.82",
   "license": "MIT",
   "type": "module",
   "module": "dist/esm/index.js",
