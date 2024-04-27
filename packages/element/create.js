@@ -216,11 +216,11 @@ const renderElement = (element, parent, options, attachOptions) => {
   const { __ref: ref, key } = element
 
   // CREATE a real NODE
-  // try {
+  try {
     createNode(element, options)
-  // } catch (e) {
-  //   if (ENV === 'test' || ENV === 'development') console.warn(element, e)
-  // }
+  } catch (e) {
+    if (ENV === 'test' || ENV === 'development') console.warn(element, e)
+  }
 
   if (!ref.__if) {
     parent[key || element.key] = element
