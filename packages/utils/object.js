@@ -283,10 +283,10 @@ export const deepDestringify = (obj, destringified = {}) => {
   return destringified
 }
 
-export const stringToObject = (str, verbose) => {
+export const stringToObject = (str, opts = { verbose: true }) => {
   try {
     return window.eval('(' + str + ')') // eslint-disable-line
-  } catch (e) { if (verbose) console.warn(e) }
+  } catch (e) { if (opts.verbose) console.warn(e) }
 }
 
 export const diffObjects = (original, objToDiff, cache) => {

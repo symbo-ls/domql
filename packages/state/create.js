@@ -14,7 +14,10 @@ import {
   rootUpdate,
   set,
   reset,
-  toggle
+  toggle,
+  replace,
+  quietUpdate,
+  quietReplace
 } from './methods'
 import { updateState } from './updateState'
 import { checkIfInherits, createInheritedState } from './inherit'
@@ -107,6 +110,9 @@ const applyMethods = (element) => {
     remove: remove.bind(state),
     apply: apply.bind(state),
     set: set.bind(state),
+    quietUpdate: quietUpdate.bind(state),
+    replace: replace.bind(state),
+    quietReplace: quietReplace.bind(state),
     reset: reset.bind(state),
     parent: element.parent.state,
     __element: element,

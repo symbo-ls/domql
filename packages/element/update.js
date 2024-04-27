@@ -75,9 +75,9 @@ const update = function (params = {}, opts = UPDATE_DEFAULT_OPTIONS) {
     if (props) updateProps(props, element, parent)
   }
 
-  if (!options.preventInitUpdateListener && !options.preventListeners) {
-    const initUpdateReturns = triggerEventOnUpdate('initUpdate', params, element, options)
-    if (initUpdateReturns === false) return element
+  if (!options.preventBeforeUpdateListener && !options.preventListeners) {
+    const beforeUpdateReturns = triggerEventOnUpdate('beforeUpdate', params, element, options)
+    if (beforeUpdateReturns === false) return element
   }
 
   const overwriteChanges = overwriteDeep(element, params, METHODS_EXL)
@@ -246,7 +246,7 @@ const checkIfOnUpdate = (element, parent, options) => {
  * @param {boolean} [options.execStateFunction] - Execute the state functions.
  * @param {boolean} [options.stateFunctionOverwrite] - If true, overwrite (not merge) current state with what function returns.
  * @param {boolean} [options.preventInheritedStateUpdate] - If true, prevent inheriting state updates.
- * @param {boolean} [options.preventInitStateUpdateListener] - If true, prevent the 'initStateUpdate' event listener.
+ * @param {boolean} [options.preventBeforeStateUpdateListener] - If true, prevent the 'beforeStateUpdate' event listener.
  * @param {boolean} [options.preventStateUpdateListener] - If true, prevent the 'stateUpdate' event listener.
  * @returns {boolean} - If returns false, it breaks the update function
  */
@@ -276,9 +276,9 @@ const inheritStateUpdates = (element, options) => {
   const keyInParentState = findInheritedState(element, element.parent)
   if (!keyInParentState || options.preventInheritedStateUpdate) return
 
-  // Trigger on.initStateUpdate event
-  if (!options.preventInitStateUpdateListener && !options.preventListeners) {
-    const initStateReturns = triggerEventOnUpdate('initStateUpdate', keyInParentState, element, options)
+  // Trigger on.beforeStateUpdate event
+  if (!options.preventBeforeStateUpdateListener && !options.preventListeners) {
+    const initStateReturns = triggerEventOnUpdate('beforeStateUpdate', keyInParentState, element, options)
     if (initStateReturns === false) return element
   }
 

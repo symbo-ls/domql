@@ -128,3 +128,23 @@ export const apply = function (func, options = {}) {
     return state.update(state.parse(), { replace: true, ...options })
   }
 }
+
+export const quietUpdate = function (obj, options = {}) {
+  const state = this
+  return state.update(obj, { preventUpdate: true, options })
+}
+
+export const replace = function (obj, options = {}) {
+  const state = this
+
+  for (const param in obj) {
+    state[param] = obj[param]
+  }
+
+  return state.update(obj, options)
+}
+
+export const quietReplace = function (obj, options = {}) {
+  const state = this
+  return state.replace(obj, { preventUpdate: true, options })
+}

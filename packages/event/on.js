@@ -35,9 +35,9 @@ export const applyEventsOnNode = (element, options) => {
       param === 'attachNode' ||
       param === 'stateInit' ||
       param === 'stateCreated' ||
-      param === 'initStateUpdate' ||
+      param === 'beforeStateUpdate' ||
       param === 'stateUpdate' ||
-      param === 'initUpdate' ||
+      param === 'beforeUpdate' ||
       param === 'update'
     ) continue
 

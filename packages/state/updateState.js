@@ -25,9 +25,9 @@ export const updateState = function (obj, options = STATE_UPDATE_OPTIONS) {
     options.preventInheritAtCurrentState = state
   } else if (options.preventInheritAtCurrentState) return
 
-  if (!options.preventInitStateUpdateListener) {
-    const initStateUpdateReturns = triggerEventOnUpdate('initStateUpdate', obj, element, options)
-    if (initStateUpdateReturns === false) return element
+  if (!options.preventBeforeStateUpdateListener) {
+    const beforeStateUpdateReturns = triggerEventOnUpdate('beforeStateUpdate', obj, element, options)
+    if (beforeStateUpdateReturns === false) return element
   }
 
   applyOverwrite(state, obj, options)
