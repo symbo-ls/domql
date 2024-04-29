@@ -190,8 +190,8 @@ export const objectToString = (obj, indent = 0) => {
         if (isObject(element) && element !== null) {
           str += `${spaces}    ${objectToString(element, indent + 2)},\n`
         } else if (isString(element)) {
-          if (element.includes('\n')) str += spaces + '    ' + '`' + element + '`,\n'
-          else str += `${spaces}    '${element}',\n`
+          // if (element.includes('\n')) str += spaces + '    ' + '`' + element + '`,\n'
+          str += `${spaces}    '${element}',\n`
         } else {
           str += `${spaces}    ${element},\n`
         }
@@ -249,9 +249,9 @@ export const deepDestringify = (obj, destringified = {}) => {
     if (!hasOwnProperty) continue
     const objProp = obj[prop]
     if (isString(objProp)) {
-      if (objProp.includes('=>') || objProp.includes('function') || objProp.startsWith('(')) {
+      if ((objProp.includes('=>') || objProp.startsWith('function') || objProp.startsWith('(')) && !objProp.startsWith('{') && !objProp.startsWith('[')) {
         try {
-          const evalProp = window.eval(`(${objProp})`) // use parentheses to convert string to function expression
+          const evalProp = window.eval(`(${objProp})`)
           destringified[prop] = evalProp
         } catch (e) { if (e) destringified[prop] = objProp }
       } else {
@@ -276,7 +276,7 @@ export const deepDestringify = (obj, destringified = {}) => {
         }
       })
     } else if (isObject(objProp)) {
-      destringified[prop] = deepDestringify(objProp, destringified[prop]) // recursively call deepDestringify for nested objects
+      destringified[prop] = deepDestringify(objProp, destringified[prop])
     } else {
       destringified[prop] = objProp
     }
