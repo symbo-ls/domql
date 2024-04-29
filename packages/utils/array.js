@@ -7,6 +7,12 @@ export const arrayContainsOtherArray = (arr1, arr2) => {
   return arr2.every(val => arr1.includes(val))
 }
 
+export const getFrequencyInArray = (arr, value) => {
+  return arr.reduce((count, currentValue) => {
+    return currentValue === value ? count + 1 : count
+  }, 0)
+}
+
 export const removeFromArray = (arr, index) => {
   if (isString(index)) index = parseInt(index)
   if (isNumber(index)) {
@@ -88,7 +94,7 @@ export const removeValueFromArray = (arr, value) => {
     newArray.splice(index, 1)
     return newArray
   }
-  return arr.slice()
+  return arr
 }
 
 export const removeValueFromArrayAll = (arr, value) => {

@@ -114,7 +114,7 @@ const applyMethods = (element) => {
     replace: replace.bind(state),
     quietReplace: quietReplace.bind(state),
     reset: reset.bind(state),
-    parent: element.parent.state,
+    parent: element.parent.state || state,
     __element: element,
     __children: {},
     root: ref.root ? ref.root.state : state

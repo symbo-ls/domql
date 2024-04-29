@@ -190,7 +190,8 @@ export const objectToString = (obj, indent = 0) => {
         if (isObject(element) && element !== null) {
           str += `${spaces}    ${objectToString(element, indent + 2)},\n`
         } else if (isString(element)) {
-          str += `${spaces}    '${element}',\n`
+          if (element.includes('\n')) str += spaces + '    ' + '`' + element + '`,\n'
+          else str += `${spaces}    '${element}',\n`
         } else {
           str += `${spaces}    ${element},\n`
         }
