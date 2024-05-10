@@ -175,7 +175,7 @@ export const deepStringify = (obj, stringified = {}) => {
   return stringified
 }
 
-export const objectToString = (obj, indent = 0) => {
+export const objectToString = (obj = {}, indent = 0) => {
   const spaces = '  '.repeat(indent)
   let str = '{\n'
 
