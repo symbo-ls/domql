@@ -11,7 +11,7 @@ export const throughInitialExec = (element, exclude = {}) => {
     const prop = element[param]
     if (isFunction(prop) && !isMethod(param) && !isVariant(param)) {
       ref.__exec[param] = prop
-      element[param] = prop(element, element.state)
+      element[param] = prop(element, element.state, element.context)
       // if (isComponent)
     }
   }
