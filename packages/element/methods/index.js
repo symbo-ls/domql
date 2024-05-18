@@ -36,7 +36,7 @@ export const lookup = function (key) {
   return parent
 }
 
-export const remove = function (params) {
+export const remove = function () {
   const element = this
   if (isFunction(element.node.remove)) element.node.remove()
   else if (!isProduction()) {

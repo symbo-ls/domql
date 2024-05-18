@@ -100,3 +100,21 @@ export const removeValueFromArray = (arr, value) => {
 export const removeValueFromArrayAll = (arr, value) => {
   return arr.filter(item => item !== value)
 }
+
+export const addItemAfterEveryElement = (array, item) => {
+  // Create a new array to hold the result
+  const result = []
+
+  // Loop through the input array
+  for (let i = 0; i < array.length; i++) {
+    // Add the current element to the result array
+    result.push(array[i])
+
+    // If it's not the last element, add the item
+    if (i < array.length - 1) {
+      result.push(item)
+    }
+  }
+
+  return result
+}
