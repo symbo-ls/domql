@@ -124,6 +124,22 @@ export const reset = function (options = {}) {
 export const apply = function (func, options = {}) {
   const state = this
   if (isFunction(func)) {
+    const value = func(state)
+    return state.update(value, { replace: true, ...options })
+  }
+}
+
+export const applyReplace = function (func, options = {}) {
+  const state = this
+  if (isFunction(func)) {
+    const value = func(state)
+    return state.replace(value, options)
+  }
+}
+
+export const applyFunction = function (func, options = {}) {
+  const state = this
+  if (isFunction(func)) {
     func(state)
     return state.update(state.parse(), { replace: true, ...options })
   }

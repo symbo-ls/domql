@@ -102,6 +102,8 @@ export const isState = function (state) {
     state.quietReplace &&
     state.add &&
     state.apply &&
+    state.applyReplace &&
+    state.applyFunction &&
     state.__element &&
     state.__children
   // return arrayContainsOtherArray(keys, ['update', 'parse', 'clean', 'create', 'parent', 'rootUpdate'])

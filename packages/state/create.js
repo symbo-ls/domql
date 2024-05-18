@@ -6,6 +6,7 @@ import { IGNORE_STATE_PARAMS } from './ignore'
 import {
   add,
   apply,
+  applyFunction,
   clean,
   destroy,
   parentUpdate,
@@ -17,7 +18,8 @@ import {
   toggle,
   replace,
   quietUpdate,
-  quietReplace
+  quietReplace,
+  applyReplace
 } from './methods'
 import { updateState } from './updateState'
 import { checkIfInherits, createInheritedState } from './inherit'
@@ -109,6 +111,8 @@ const applyMethods = (element) => {
     toggle: toggle.bind(state),
     remove: remove.bind(state),
     apply: apply.bind(state),
+    applyReplace: applyReplace.bind(state),
+    applyFunction: applyFunction.bind(state),
     set: set.bind(state),
     quietUpdate: quietUpdate.bind(state),
     replace: replace.bind(state),
