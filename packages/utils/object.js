@@ -249,7 +249,17 @@ export const deepDestringify = (obj, destringified = {}) => {
     if (!hasOwnProperty) continue
     const objProp = obj[prop]
     if (isString(objProp)) {
-      if ((objProp.includes('=>') || objProp.startsWith('function') || objProp.startsWith('(')) && !objProp.startsWith('{') && !objProp.startsWith('[')) {
+      if ((
+        objProp.includes('(){') ||
+        objProp.includes('() {') ||
+        objProp.includes('=>') ||
+        objProp.startsWith('()') ||
+        objProp.startsWith('async') ||
+        objProp.startsWith('function') ||
+        objProp.startsWith('(')
+      ) &&
+        !objProp.startsWith('{') && !objProp.startsWith('[')
+      ) {
         try {
           const evalProp = window.eval(`(${objProp})`)
           destringified[prop] = evalProp
