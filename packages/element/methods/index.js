@@ -23,12 +23,18 @@ export const spotByPath = function (path) {
 }
 
 // TODO: update these files
-export const lookup = function (key) {
-  const element = this
-  let { parent } = element
+export const lookup = function (param) {
+  const el = this
+  let { parent } = el
 
-  while (parent.key !== key) {
-    if (parent[key]) return parent[key]
+  if (isFunction(param)) {
+    if (parent.state && param(parent, parent.state, parent.context)) return parent
+    else if (parent.parent) return parent.lookup(param)
+    else return
+  }
+
+  while (parent.param !== param) {
+    if (parent[param]) return parent[param]
     parent = parent.parent
     if (!parent) return
   }

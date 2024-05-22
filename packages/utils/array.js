@@ -118,3 +118,15 @@ export const addItemAfterEveryElement = (array, item) => {
 
   return result
 }
+
+export const reorderArrayByValues = (array, valueToMove, insertBeforeValue) => {
+  const newArray = [...array] // Create a copy of the original array
+  const indexToMove = newArray.indexOf(valueToMove) // Find the index of the value to move
+  const indexToInsertBefore = newArray.indexOf(insertBeforeValue) // Find the index to insert before
+  if (indexToMove !== -1 && indexToInsertBefore !== -1) {
+    const removedItem = newArray.splice(indexToMove, 1)[0] // Remove the item to move
+    const insertIndex = indexToInsertBefore < indexToMove ? indexToInsertBefore : indexToInsertBefore + 1 // Adjust insert index
+    newArray.splice(insertIndex, 0, removedItem) // Insert the removed item before the specified value
+  }
+  return newArray
+}

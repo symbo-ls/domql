@@ -8,11 +8,12 @@ export const propagateEventsFromProps = (element) => {
   eventKeysFromProps.forEach(v => {
     const eventName = lowercaseFirstLetter(v.split('on')[1])
     const origEvent = on[eventName]
+    const funcFromProps = props[v]
     if (isFunction(origEvent)) {
       on[eventName] = (...args) => {
         const originalEventRetunrs = origEvent(...args)
-        if (originalEventRetunrs !== false) props[v](...args)
+        if (originalEventRetunrs !== false) funcFromProps(...args)
       }
-    } else on[eventName] = props[v]
+    } else on[eventName] = funcFromProps
   })
 }

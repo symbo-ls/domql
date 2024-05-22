@@ -18,6 +18,8 @@ export const updateState = function (obj, options = STATE_UPDATE_OPTIONS) {
   const state = this
   const element = state.__element
 
+  if (options.onEach) options.onEach(element, state, element.context, options)
+
   if (!options.updateByState) merge(options, STATE_UPDATE_OPTIONS)
 
   if (!state.__element) report('ElementOnStateIsNotDefined')

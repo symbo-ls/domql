@@ -73,7 +73,7 @@ export const extendizeByKey = (element, parent, key) => {
     ? key.split('+') // get array of componentKeys
     : key.includes('_')
       ? key.split('_')[0] // get component key split _
-      : key.includes('.')
+      : key.includes('.') // TODO: add only Component.camelCase cases - avoud Component.Variant
         ? key.split('.')[0] // get component key split .
         : [key]
 
