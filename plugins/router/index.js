@@ -32,6 +32,8 @@ export const router = (
   state = {},
   passedOptions = {}
 ) => {
+  const win = element.context.window || window
+  const doc = element.context.document || document
   const options = { ...defaultOptions, ...element.context.routerOptions, ...passedOptions }
   lastLevel = options.lastLevel
   const contentElementKey = options.contentElementKey
@@ -42,7 +44,7 @@ export const router = (
   const route = getActiveRoute(options.level, pathname)
   const content = element.routes[route || '/'] || element.routes['/*']
   const scrollNode = options.scrollToNode ? rootNode : options.scrollNode
-  const hashChanged = hash && hash !== window.location.hash.slice(1)
+  const hashChanged = hash && hash !== win.location.hash.slice(1)
   const pathChanged = pathname !== lastPathname
   lastPathname = pathname
 
@@ -51,7 +53,7 @@ export const router = (
     return
   }
   if (options.pushState) {
-    window.history.pushState(state, null, pathname + (hash ? `#${hash}` : ''))
+    win.history.pushState(state, null, pathname + (hash ? `#${hash}` : ''))
   }
 
   if (pathChanged || !hashChanged) {
@@ -81,7 +83,7 @@ export const router = (
   }
 
   if (hash) {
-    const activeNode = document.getElementById(hash)
+    const activeNode = doc.getElementById(hash)
     if (activeNode) {
       const top = activeNode.getBoundingClientRect().top + rootNode.scrollTop - options.scrollToOffset || 0
       scrollNode.scrollTo({

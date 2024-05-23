@@ -3,8 +3,7 @@
 import { isFunction } from '@domql/utils'
 
 export const applyEvent = (param, element, state, context, options) => {
-  const binded = param.bind(context?.window)
-  return binded.call(context?.window || window, element, state || element.state, context || element.context, options)
+  return param.call(context?.window || window, element, state || element.state, context || element.context, options)
 }
 
 export const triggerEventOn = (param, element, options) => {

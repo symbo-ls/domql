@@ -2,21 +2,20 @@
 
 import { report } from '@domql/report'
 import { canRenderTag } from '@domql/event'
-import { exec, isObject, isString, isValidHtmlTag } from '@domql/utils'
-
-const cache = {}
+import { exec, isObject, isString, isValidHtmlTag, document } from '@domql/utils'
 
 export const createHTMLNode = (element) => {
-  const { tag } = element
+  const { tag, context } = element
+  const doc = context.document || document
   if (tag) {
-    if (tag === 'string') return document.createTextNode(element.text)
+    if (tag === 'string') return doc.createTextNode(element.text)
     else if (tag === 'fragment') {
-      return document.createDocumentFragment()
+      return doc.createDocumentFragment()
     } else if (tag === 'svg' || tag === 'path') { // TODO: change that
-      return document.createElementNS('http://www.w3.org/2000/svg', tag)
-    } else return document.createElement(tag) // TODO: allow strict mode to check validity
+      return doc.createElementNS('http://www.w3.org/2000/svg', tag)
+    } else return doc.createElement(tag) // TODO: allow strict mode to check validity
   } else {
-    return document.createElement('div')
+    return doc.createElement('div')
   }
 }
 
@@ -44,14 +43,17 @@ export const detectTag = element => {
 }
 
 export const cacheNode = (element) => {
+  const { context } = element
+  const win = context.window || window
   const tag = element.tag = detectTag(element)
 
   if (!canRenderTag(tag)) {
     return report('HTMLInvalidTag', element.tag, element)
   }
 
-  let cachedTag = cache[tag]
-  if (!cachedTag) cachedTag = cache[tag] = createHTMLNode(element)
+  if (!win.nodeCaches) win.nodeCaches = {}
+  let cachedTag = win.nodeCaches[tag]
+  if (!cachedTag) cachedTag = win.nodeCaches[tag] = createHTMLNode(element)
 
   const clonedNode = cachedTag.cloneNode(true)
   if (tag === 'string') clonedNode.nodeValue = element.text

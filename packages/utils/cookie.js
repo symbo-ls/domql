@@ -1,6 +1,7 @@
 'use strict'
 
 import { isUndefined } from './types'
+import { document } from '@domql/utils'
 
 export const isMobile = (() => typeof navigator === 'undefined'
   ? false
