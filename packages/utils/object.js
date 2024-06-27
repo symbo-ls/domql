@@ -577,3 +577,19 @@ export const removeFromObject = (obj, props) => {
   }
   return obj
 }
+
+export const createObjectWithoutPrototype = (obj) => {
+  if (obj === null || typeof obj !== 'object') {
+    return obj // Return the value if obj is not an object
+  }
+
+  const newObj = Object.create(null) // Create an object without prototype
+
+  for (const key in obj) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
+      newObj[key] = createObjectWithoutPrototype(obj[key]) // Recursively copy each property
+    }
+  }
+
+  return newObj
+}
