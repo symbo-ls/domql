@@ -20,7 +20,8 @@ let mainExtend
 export const applyExtend = (element, parent, options = {}) => {
   if (isFunction(element)) element = exec(element, parent)
 
-  let { extend, props, context, __ref } = element
+  let { extend, props, __ref } = element
+  const context = element.context || parent.context
 
   extend = fallbackStringExtend(extend, context, options)
 

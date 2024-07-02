@@ -66,17 +66,21 @@ export const createValidDomqlObjectFromSugar = (el, parent, key, options) => {
 }
 
 export const extendizeByKey = (element, parent, key) => {
-  const { context, tag, extend, props, attr, state, childExtend, childProps, on, if: condition, data } = element
+  const { context } = parent
+  const { tag, extend, props, attr, state, childExtend, childProps, on, if: condition, data } = element
   const hasComponentAttrs = extend || childExtend || props || state || on || condition || attr || data
 
   const extendFromKey = key.includes('+')
     ? key.split('+') // get array of componentKeys
     : key.includes('_')
-      ? key.split('_')[0] // get component key split _
+      ? [key.split('_')[0]] // get component key split _
       : key.includes('.') && !checkIfKeyIsComponent(key.split('.')[1])
-        ? key.split('.')[0] // get component key split .
+        ? [key.split('.')[0]] // get component key split .
         : [key]
 
+  // console.log(extendFromKey)
+  // console.log(context, context?.components)
+  // console.log(element)
   const isExtendKeyComponent = context && context.components[extendFromKey]
 
   if (element === isExtendKeyComponent) return element
