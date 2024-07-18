@@ -309,11 +309,11 @@ const addCaching = (element, parent) => {
   if (!ref.root) ref.root = hasRoot ? element : parentRef.root
 
   // set the PATH array
-  if (ENV === 'test' || ENV === 'development') {
-    if (!parentRef) parentRef = parent.ref = {}
-    if (!parentRef.__path) parentRef.__path = []
-    ref.__path = parentRef.__path.concat(element.key)
-  }
+  // if (ENV === 'test' || ENV === 'development') {
+  if (!parentRef) parentRef = parent.ref = {}
+  if (!parentRef.__path) parentRef.__path = []
+  ref.__path = parentRef.__path.concat(element.key)
+  // }
 }
 
 const onlyResolveExtends = (element, parent, key, options) => {
