@@ -155,7 +155,10 @@ export const overwriteVariant = (element, variant, variantProps) => {
   } else if (variantElement.extend) {
     variantElement = addAdditionalExtend({ props }, variantElement)
   }
-  return overwriteDeep(element, applyExtend(variantElement)) // TODO: check why string is not working
+  const extendedVariant = applyExtend(variantElement, element.parent)
+  const { parent, ...rest } = extendedVariant
+  return overwriteDeep(element, rest) // TODO: check why string is not working
+  // return overwriteDeep(element, applyExtend(variantElement, element.parent)) // TODO: check why string is not working
 }
 
 export const applyVariant = (element) => {

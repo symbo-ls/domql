@@ -42,6 +42,29 @@ export const lookup = function (param) {
   return parent
 }
 
+export const lookdown = function (param) {
+  const el = this
+  const { __ref: ref } = el
+  const children = ref.__children
+
+  for (let i = 0; i < children.length; i++) {
+    const v = children[i]
+    const childElem = el[v]
+
+    if (v === param) return childElem
+    else if (isFunction(param)) {
+      const exec = param(childElem, childElem.state, childElem.context)
+      if (childElem.state && exec) {
+        return childElem
+      }
+    }
+    const lookdown = childElem.lookdown(param)
+    if (lookdown) return lookdown
+  }
+
+  return null
+}
+
 export const remove = function () {
   const element = this
   if (isFunction(element.node.remove)) element.node.remove()
@@ -159,6 +182,7 @@ export const METHODS = [
   'updateContent',
   'removeContent',
   'lookup',
+  'lookdown',
   'spotByPath',
   'keys',
   'parse',
