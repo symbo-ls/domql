@@ -58,7 +58,7 @@ export const lookdown = function (param) {
         return childElem
       }
     }
-    const lookdown = childElem.lookdown(param)
+    const lookdown = childElem?.lookdown(param)
     if (lookdown) return lookdown
   }
 

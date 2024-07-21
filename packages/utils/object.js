@@ -593,3 +593,43 @@ export const createObjectWithoutPrototype = (obj) => {
 
   return newObj
 }
+
+export const checkIfKeyIsComponent = (key) => {
+  const isFirstKeyString = isString(key)
+  if (!isFirstKeyString) return
+  const firstCharKey = key.slice(0, 1)
+  return /^[A-Z]*$/.test(firstCharKey)
+}
+
+export const findExtendsInElement = (obj) => {
+  let result = []
+
+  function traverse (o) {
+    for (const key in o) {
+      if (Object.hasOwnProperty.call(o, key)) {
+        // Check if the key starts with a capital letter and exclude keys like @mobileL, $propsCollection
+        if (checkIfKeyIsComponent(key)) {
+          result.push(key)
+        }
+
+        // Check if the key is "extend" and it's either a string or an array
+        if (key === 'extend') {
+          // Add the value of the extend key to the result array
+          if (typeof o[key] === 'string') {
+            result.push(o[key])
+          } else if (Array.isArray(o[key])) {
+            result = result.concat(o[key])
+          }
+        }
+
+        // If the property is an object, traverse it
+        if (typeof o[key] === 'object' && o[key] !== null) {
+          traverse(o[key])
+        }
+      }
+    }
+  }
+
+  traverse(obj)
+  return result
+}

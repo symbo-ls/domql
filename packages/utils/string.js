@@ -124,3 +124,16 @@ export const replaceOctalEscapeSequences = (str) => {
     return char
   })
 }
+
+export const customEncodeURIComponent = (str) => {
+  return str.split('').map(char => {
+    if (/[^a-zA-Z0-9\s]/.test(char)) {
+      return '%' + char.charCodeAt(0).toString(16).toUpperCase()
+    }
+    return char
+  }).join('')
+}
+
+export const customDecodeURIComponent = (encodedStr) => {
+  return encodedStr.replace(/%[0-9A-Fa-f]{2}/g, match => String.fromCharCode(parseInt(match.slice(1), 16)))
+}
