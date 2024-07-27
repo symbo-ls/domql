@@ -8,6 +8,7 @@ import update from '../update'
 import {
   lookup,
   lookdown,
+  lookdownAll,
   setProps,
   remove,
   spotByPath,
@@ -31,6 +32,7 @@ export const addMethods = (element, parent) => {
     setProps: setProps.bind(element),
     lookup: lookup.bind(element),
     lookdown: lookdown.bind(element),
+    lookdownAll: lookdownAll.bind(element),
     spotByPath: spotByPath.bind(element),
     parse: parse.bind(element),
     parseDeep: parseDeep.bind(element),

@@ -601,7 +601,21 @@ export const checkIfKeyIsComponent = (key) => {
   return /^[A-Z]*$/.test(firstCharKey)
 }
 
-export const findExtendsInElement = (obj) => {
+export const getChildrenComponentsByKey = (key, el) => {
+  if (key === el.key || el.__ref.__componentKey === key) {
+    return el
+  }
+
+  // Check if the prop is "extend" and it's either a string or an array
+  if (el.extend) {
+    // Add the value of the extend key to the result array
+    const foundString = isString(el.extend) && el.extend === key
+    const foundInArray = isArray(el.extend) && el.extend.filter(v => v === key).length
+    if (foundString || foundInArray) return el
+  }
+}
+
+export const getExtendsInElement = (obj) => {
   let result = []
 
   function traverse (o) {

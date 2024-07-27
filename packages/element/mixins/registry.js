@@ -46,6 +46,7 @@ export default {
   removeContent: {},
   lookup: {},
   lookdown: {},
+  lookdownAll: {},
   spotByPath: {},
   keys: {},
   log: {},

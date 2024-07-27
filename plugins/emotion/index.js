@@ -1,7 +1,7 @@
 'use strict'
 
 // import DOM from '../../src'
-import { isObjectLike, exec, isObject, isEqualDeep, isProduction } from '@domql/utils'
+import { isObjectLike, isString, isNumber, isBoolean, exec, isObject, isEqualDeep, isProduction } from '@domql/utils'
 import { applyClassListOnNode } from '@domql/classlist'
 import createEmotion from '@emotion/css/create-instance'
 
@@ -38,11 +38,15 @@ export const transformEmotionClass = (emotion) => {
       const isEqual = isEqualDeep(__class[key], prop)
       if (!isEqual) {
         if (!isProduction() && isObject(prop)) prop.label = key || element.key
-        const CSSed = emotion.css(prop)
+        let className
+        if (isString(prop) || isNumber(prop)) className = prop
+        else if (isBoolean(prop)) className = element.key
+        else className = emotion.css(prop)
         __class[key] = prop
-        __classNames[key] = CSSed
+        __classNames[key] = className
       }
     }
+
     applyClassListOnNode(__classNames, element, element.node)
     // return element.class
   }
