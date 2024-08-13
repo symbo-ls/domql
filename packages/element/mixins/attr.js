@@ -1,6 +1,6 @@
 'use strict'
 
-import { exec, isNot } from '@domql/utils'
+import { exec, isNot, isDefined } from '@domql/utils'
 import { report } from '@domql/report'
 
 /**
@@ -14,7 +14,7 @@ export default (params, element, node) => {
     for (const attr in params) {
       const val = exec(params[attr], element)
       // if (__attr[attr] === val) return
-      if (val && node.setAttribute) node.setAttribute(attr, val)
+      if (isDefined(val) && node.setAttribute) node.setAttribute(attr, val)
       else if (node.removeAttribute) node.removeAttribute(attr)
       __attr[attr] = val
     }
