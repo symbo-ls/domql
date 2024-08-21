@@ -47,6 +47,7 @@ export default {
   lookup: {},
   lookdown: {},
   lookdownAll: {},
+  setNodeStyles: {},
   spotByPath: {},
   keys: {},
   log: {},

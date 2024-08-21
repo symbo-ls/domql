@@ -85,6 +85,18 @@ export const lookdownAll = function (param, results = []) {
   return results.length ? results : null
 }
 
+export const setNodeStyles = function (params = {}) {
+  const el = this
+  const style = el.node?.style
+  if (!style) return
+
+  for (const param in params) {
+    style[param] = params[param]
+  }
+
+  return style
+}
+
 export const remove = function () {
   const element = this
   if (isFunction(element.node.remove)) element.node.remove()
@@ -204,6 +216,7 @@ export const METHODS = [
   'lookup',
   'lookdown',
   'lookdownAll',
+  'setNodeStyles',
   'spotByPath',
   'keys',
   'parse',
