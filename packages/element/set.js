@@ -17,6 +17,17 @@ export const resetElement = (params, element, options) => {
   })
 }
 
+export const reset = (params = {}, options) => {
+  const element = this
+  if (!options.preventRemove) removeContent(element, options)
+  create(params, element, options.contentElementKey || 'content', {
+    ignoreChildExtend: true,
+    ...registry.defaultOptions,
+    ...OPTIONS.create,
+    ...options
+  })
+}
+
 const set = function (params, options = {}, el) {
   const element = el || this
   const { __ref: ref, content } = element

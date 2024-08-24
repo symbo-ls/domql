@@ -39,6 +39,7 @@ export default {
   parent: {},
   node: {},
   set: {},
+  reset: {},
   update: {},
   setProps: {},
   remove: {},

@@ -2,7 +2,7 @@
 
 import { isDevelopment } from '@domql/utils'
 
-import set from '../set'
+import set, { reset } from '../set'
 import update from '../update'
 
 import {
@@ -26,6 +26,7 @@ import { removeContent, updateContent } from '../mixins/content'
 export const addMethods = (element, parent) => {
   const proto = {
     set: set.bind(element),
+    reset: reset.bind(element),
     update: update.bind(element),
     remove: remove.bind(element),
     updateContent: updateContent.bind(element),

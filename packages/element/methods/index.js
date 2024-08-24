@@ -209,6 +209,7 @@ export const previousElement = function (el) {
 
 export const METHODS = [
   'set',
+  'reset',
   'update',
   'remove',
   'updateContent',
