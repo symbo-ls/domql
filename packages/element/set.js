@@ -17,10 +17,9 @@ export const resetElement = (params, element, options) => {
   })
 }
 
-export const reset = (params = {}, options) => {
+export const reset = (options) => {
   const element = this
-  if (!options.preventRemove) removeContent(element, options)
-  create(params, element, options.contentElementKey || 'content', {
+  create(element, element.parent, undefined, {
     ignoreChildExtend: true,
     ...registry.defaultOptions,
     ...OPTIONS.create,

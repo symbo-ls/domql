@@ -58,7 +58,7 @@ export const lookdown = function (param) {
         return childElem
       }
     }
-    const lookdown = childElem?.lookdown(param)
+    const lookdown = childElem?.lookdown?.(param)
     if (lookdown) return lookdown
   }
 
@@ -79,7 +79,7 @@ export const lookdownAll = function (param, results = []) {
       const exec = param(childElem, childElem.state, childElem.context)
       if (childElem.state && exec) results.push(childElem)
     }
-    childElem?.lookdownAll(param, results)
+    childElem?.lookdownAll?.(param, results)
   }
 
   return results.length ? results : null

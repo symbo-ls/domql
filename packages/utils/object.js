@@ -613,6 +613,13 @@ export const getChildrenComponentsByKey = (key, el) => {
     const foundInArray = isArray(el.extend) && el.extend.filter(v => v === key).length
     if (foundString || foundInArray) return el
   }
+
+  if (el.parent && el.parent.childExtend) {
+    // Add the value of the extend key to the result array
+    const foundString = isString(el.parent.childExtend) && el.parent.childExtend === key
+    const foundInArray = isArray(el.parent.childExtend) && el.parent.childExtend.filter(v => v === key).length
+    if (foundString || foundInArray) return el
+  }
 }
 
 export const getExtendsInElement = (obj) => {
