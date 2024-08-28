@@ -7,7 +7,7 @@ import { exec } from '@domql/utils'
  * an original one as a child
  */
 export default (param, element, node) => {
-  const prop = exec(param, element)
+  const prop = exec(param, element) || exec(element?.props?.html, element)
   const { __ref } = element
   if (prop !== __ref.__html) {
     // const parser = new window.DOMParser()

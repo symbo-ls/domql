@@ -123,7 +123,9 @@ export const deepClone = (obj, excludeFrom = [], cleanUndefined = false) => {
  * Deep cloning of object
  */
 export const deepCloneWithExtend = (obj, excludeFrom = ['node'], options = {}) => {
-  const o = isArray(obj) ? [] : {}
+  const o = options.window
+    ? isArray(obj) ? new options.window.Array([]) : new options.window.Object({})
+    : isArray(obj) ? [] : {}
   for (const prop in obj) {
     if (!Object.prototype.hasOwnProperty.call(obj, prop)) continue
     // if (prop === 'node' || prop === 'parent' || prop === 'root' || prop === '__element') {
