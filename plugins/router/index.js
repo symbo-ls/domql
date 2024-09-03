@@ -38,7 +38,8 @@ export const router = (
   lastLevel = options.lastLevel
   const contentElementKey = options.contentElementKey
 
-  const [pathname, hash] = path.split('#')
+  const urlObj = new win.URL(win.location.origin + path)
+  const { pathname, search, hash } = urlObj
 
   const rootNode = element.node
   const route = getActiveRoute(options.level, pathname)
@@ -53,7 +54,7 @@ export const router = (
     return
   }
   if (options.pushState) {
-    win.history.pushState(state, null, pathname + (hash ? `#${hash}` : ''))
+    win.history.pushState(state, null, pathname + (search || '') + (hash || ''))
   }
 
   if (pathChanged || !hashChanged) {

@@ -87,14 +87,13 @@ export const lookdownAll = function (param, results = []) {
 
 export const setNodeStyles = function (params = {}) {
   const el = this
-  const style = el.node?.style
-  if (!style) return
+  if (!el.node?.style) return
 
   for (const param in params) {
-    style[param] = params[param]
+    el.node.style[param] = params[param]
   }
 
-  return style
+  return el
 }
 
 export const remove = function () {
