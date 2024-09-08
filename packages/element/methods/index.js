@@ -1,6 +1,6 @@
 'use strict'
 
-import { isDefined, isFunction, isObjectLike, isProduction } from '@domql/utils'
+import { isDefined, isObject, isFunction, isObjectLike, isProduction } from '@domql/utils'
 import { TREE } from '../tree'
 import { parseFilters, registry } from '../mixins'
 
@@ -90,7 +90,10 @@ export const setNodeStyles = function (params = {}) {
   if (!el.node?.style) return
 
   for (const param in params) {
-    el.node.style[param] = params[param]
+    const value = params[param]
+    const childElem = el[param]
+    if (isObject(value) && childElem) setNodeStyles.call(childElem, value)
+    else el.node.style[param] = value
   }
 
   return el
