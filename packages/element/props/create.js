@@ -1,6 +1,6 @@
 'use strict'
 
-import { exec, isArray, isObject, deepClone, deepMerge } from '@domql/utils'
+import { exec, isArray, isObject, deepCloneWithExtend, deepMerge } from '@domql/utils'
 import { IGNORE_PROPS_PARAMS } from './ignore'
 
 import { inheritParentProps } from './inherit'
@@ -36,7 +36,7 @@ export const syncProps = (props, element) => {
     // it was causing infinite loop at early days
     element.props = deepMerge(
       mergedProps,
-      deepClone(execProps, IGNORE_PROPS_PARAMS),
+      deepCloneWithExtend(execProps, IGNORE_PROPS_PARAMS),
       IGNORE_PROPS_PARAMS
     )
   })

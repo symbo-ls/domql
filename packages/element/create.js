@@ -24,7 +24,7 @@ import {
   isNode,
   isUndefined,
   generateKey,
-  deepClone
+  deepCloneWithExtend
 } from '@domql/utils'
 
 import OPTIONS from './cache/options'
@@ -60,7 +60,7 @@ const create = (element, parent, key, options = OPTIONS.create || {}, attachOpti
   const ref = addRef(element, parent, key)
 
   // assign initial props
-  ref.__initialProps = deepClone(element.props, [])
+  ref.__initialProps = deepCloneWithExtend(element.props, [])
 
   // assign context
   applyContext(element, parent, options)

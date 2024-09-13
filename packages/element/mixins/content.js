@@ -10,20 +10,21 @@ export const updateContent = function (params, options) {
   if (element.content.update) element.content.update(params, options)
 }
 
-export const removeContent = function (el) {
+export const removeContent = function (el, opts = {}) {
   const element = el || this
   const { __ref } = element
+  const contentElementKey = opts.contentElementKey || 'content'
 
-  if (element.content) {
-    if (element.content.node && element.node) {
-      if (element.content.tag === 'fragment') element.node.innerHTML = ''
-      else element.node.removeChild(element.content.node)
+  if (element[contentElementKey]) {
+    if (element[contentElementKey].node && element.node) {
+      if (element[contentElementKey].tag === 'fragment') element.node.innerHTML = ''
+      else element.node.removeChild(element[contentElementKey].node)
     }
 
     const { __cached } = __ref
-    if (__cached && __cached.content) {
-      if (__cached.content.tag === 'fragment') __cached.content.parent.node.innerHTML = ''
-      else if (__cached.content && isFunction(__cached.content.remove)) __cached.content.remove()
+    if (__cached && __cached[contentElementKey]) {
+      if (__cached[contentElementKey].tag === 'fragment') __cached[contentElementKey].parent.node.innerHTML = ''
+      else if (__cached[contentElementKey] && isFunction(__cached[contentElementKey].remove)) __cached[contentElementKey].remove()
     }
 
     delete element.content

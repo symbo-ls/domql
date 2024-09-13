@@ -1,6 +1,6 @@
 'use strict'
 
-import { isArray, isObject, isObjectLike, joinArrays } from '@domql/utils'
+import { isArray, isObject, isObjectLike, joinArrays, deepCloneWithExtend } from '@domql/utils'
 import { IGNORE_STATE_PARAMS } from '@domql/state'
 import { IGNORE_PROPS_PARAMS } from '../props'
 import { METHODS } from '../methods'
@@ -115,14 +115,14 @@ export const mergeIfExisted = (a, b) => {
  * Merges array extends
  */
 export const mergeArray = (arr, exclude = ['parent', 'node', '__element', 'state', 'context', '__ref']) => {
-  return arr.reduce((a, c) => deepMerge(a, deepClone(c, exclude)), {})
+  return arr.reduce((a, c) => deepMerge(a, deepCloneWithExtend(c, exclude)), {})
 }
 
 /**
  * Merges array extends
  */
 export const mergeAndCloneIfArray = obj => {
-  return isArray(obj) ? mergeArray(obj) : deepClone(obj)
+  return isArray(obj) ? mergeArray(obj) : deepCloneWithExtend(obj)
 }
 
 /**

@@ -428,7 +428,7 @@ export const overwriteShallow = (obj, params, excludeFrom = []) => {
  */
 export const overwriteDeep = (obj, params, excludeFrom = []) => {
   for (const e in params) {
-    if (e === '__proto__') continue
+    if (e === '__ref') continue
     if (excludeFrom.includes(e) || e.startsWith('__')) continue
     const objProp = obj[e]
     const paramsProp = params[e]
