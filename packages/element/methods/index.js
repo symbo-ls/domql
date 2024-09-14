@@ -107,7 +107,7 @@ export const remove = function () {
     element.log()
   }
   delete element.parent[element.key]
-  element.parent.__ref.__children = removeValueFromArray(element.parent.__ref.__children, element.key)
+  if (element.parent.__ref) element.parent.__ref.__children = removeValueFromArray(element.parent.__ref.__children, element.key)
 }
 
 export const get = function (param) {

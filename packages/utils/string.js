@@ -125,6 +125,14 @@ export const replaceOctalEscapeSequences = (str) => {
   })
 }
 
+export const encodeNewlines = (str) => {
+  return str.split('\n').join('/////n').split('`').join('/////tilde').split('$').join('/////dlrsgn')
+}
+
+export const decodeNewlines = (encodedStr) => {
+  return encodedStr.split('/////n').join('\n').split('/////tilde').join('`').split('/////dlrsgn').join('$')
+}
+
 export const customEncodeURIComponent = (str) => {
   return str.split('').map(char => {
     if (/[^a-zA-Z0-9\s]/.test(char)) {
