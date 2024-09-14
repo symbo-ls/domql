@@ -18,7 +18,10 @@ export const removeContent = function (el, opts = {}) {
   if (element[contentElementKey]) {
     if (element[contentElementKey].node && element.node) {
       if (element[contentElementKey].tag === 'fragment') element.node.innerHTML = ''
-      else element.node.removeChild(element[contentElementKey].node)
+      else {
+        const contentNode = element[contentElementKey].node
+        if (contentNode.parentNode === element.node) element.node.removeChild(element[contentElementKey].node)
+      }
     }
 
     const { __cached } = __ref

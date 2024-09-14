@@ -1,6 +1,6 @@
 'use strict'
 
-import { isDefined, isObject, isFunction, isObjectLike, isProduction } from '@domql/utils'
+import { isDefined, isObject, isFunction, isObjectLike, isProduction, removeValueFromArray } from '@domql/utils'
 import { TREE } from '../tree'
 import { parseFilters, registry } from '../mixins'
 
@@ -107,6 +107,7 @@ export const remove = function () {
     element.log()
   }
   delete element.parent[element.key]
+  element.parent.__ref.__children = removeValueFromArray(element.parent.__ref.__children, element.key)
 }
 
 export const get = function (param) {
