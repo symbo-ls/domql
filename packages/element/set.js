@@ -37,6 +37,7 @@ const set = function (params, options = {}, el) {
   if (options.preventContentUpdate === true && !hasCollection) return
 
   if (ref.__noCollectionDifference || (__contentRef && __contentRef.__cached && deepContains(params, content))) {
+    console.log(deepContains(params, content))
     if (content?.update) content.update()
     return
   }

@@ -539,30 +539,38 @@ export const isEqualDeep = (param, element, visited = new Set()) => {
 }
 
 export const deepContains = (obj1, obj2) => {
-  if (typeof obj1 !== typeof obj2) {
-    return false
-  }
+  const stack = [{ obj1, obj2 }]
 
-  if (isObjectLike(obj1)) {
-    if (Array.isArray(obj1) && Array.isArray(obj2)) {
-      if (obj1.length !== obj2.length) {
+  while (stack.length) {
+    const { obj1, obj2 } = stack.pop()
+
+    if (typeof obj1 !== typeof obj2) {
+      return false
+    }
+
+    if (isObjectLike(obj1)) {
+      if (Array.isArray(obj1) && Array.isArray(obj2)) {
+        if (obj1.length !== obj2.length) {
+          return false
+        }
+        for (let i = 0; i < obj1.length; i++) {
+          stack.push({ obj1: obj1[i], obj2: obj2[i] })
+        }
+      } else if (isObjectLike(obj1) && obj2 !== null) {
+        for (const key in obj1) {
+          if (Object.prototype.hasOwnProperty.call(obj1, key)) {
+            if (!Object.prototype.hasOwnProperty.call(obj2, key)) {
+              return false
+            }
+            stack.push({ obj1: obj1[key], obj2: obj2[key] })
+          }
+        }
+      }
+    } else {
+      if (obj1 !== obj2) {
         return false
       }
-      for (let i = 0; i < obj1.length; i++) {
-        if (!deepContains(obj1[i], obj2[i])) {
-          return false
-        }
-      }
-    } else if (isObjectLike(obj1) && obj2 !== null) {
-      for (const key in obj1) {
-        const hasOwnProperty = Object.prototype.hasOwnProperty.call(obj2, key)
-        if (!hasOwnProperty || !deepContains(obj1[key], obj2[key])) {
-          return false
-        }
-      }
     }
-  } else {
-    return obj2 === obj1
   }
 
   return true
