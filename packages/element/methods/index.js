@@ -1,6 +1,6 @@
 'use strict'
 
-import { isDefined, isObject, isFunction, isObjectLike, isProduction, removeValueFromArray } from '@domql/utils'
+import { isDefined, isObject, isFunction, isObjectLike, isProduction, removeValueFromArray, deepClone } from '@domql/utils'
 import { TREE } from '../tree'
 import { parseFilters, registry } from '../mixins'
 
@@ -210,6 +210,37 @@ export const previousElement = function (el) {
   return parent[__children[currentIndex - 1]]
 }
 
+export const variables = function (obj = {}) {
+  const element = this
+  if (!element.data) element.data = {}
+  if (!element.data.varCaches) element.data.varCaches = {}
+  const varCaches = element.data.varCaches
+  const changes = {}
+  let changed
+  for (const key in obj) {
+    if (obj[key] !== varCaches[key]) {
+      changed = true
+      changes[key] = obj[key]
+    }
+  }
+  return {
+    changed: (cb) => {
+      if (!changed) return
+      cb(changes, deepClone(varCaches))
+      for (const key in changes) {
+        varCaches[key] = changes[key]
+      }
+    },
+    timeout: (cb, timeout) => {
+      if (!changed) return
+      const t = setTimeout(() => {
+        cb(changes)
+        clearTimeout(t)
+      }, timeout)
+    }
+  }
+}
+
 export const METHODS = [
   'set',
   'reset',
@@ -226,6 +257,7 @@ export const METHODS = [
   'parse',
   'setProps',
   'parseDeep',
+  'variables',
   'if',
   'log',
   'nextElement',

@@ -45,6 +45,7 @@ export default {
   remove: {},
   updateContent: {},
   removeContent: {},
+  variables: {},
   lookup: {},
   lookdown: {},
   lookdownAll: {},
