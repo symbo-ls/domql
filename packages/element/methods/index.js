@@ -226,10 +226,11 @@ export const variables = function (obj = {}) {
   return {
     changed: (cb) => {
       if (!changed) return
-      cb(changes, deepClone(varCaches))
+      const returns = cb(changes, deepClone(varCaches))
       for (const key in changes) {
         varCaches[key] = changes[key]
       }
+      return returns
     },
     timeout: (cb, timeout) => {
       if (!changed) return
