@@ -38,20 +38,59 @@ export const clone = (obj, exclude = METHODS_EXL) => {
 /**
  * Deep cloning of object
  */
-export const deepClone = (obj, exclude = METHODS_EXL) => {
-  const o = isArray(obj) ? [] : {}
-  for (const e in obj) {
-    if (exclude.includes(e)) continue
-    let objProp = obj[e]
-    if (e === 'extend' && isArray(objProp)) {
-      objProp = mergeArray(objProp, exclude)
-    }
-    if (isObjectLike(objProp)) {
-      o[e] = deepClone(objProp, exclude)
-    } else o[e] = objProp
+export const deepClone = (obj, exclude = METHODS_EXL, seen = new WeakMap()) => {
+  // Check for null or undefined
+  if (obj === null || typeof obj !== 'object') {
+    return obj
   }
+
+  // Check for DOM nodes, Window, or Document
+  if (obj instanceof Node || obj === window || obj instanceof Document) {
+    return obj
+  }
+
+  // Check for circular references
+  if (seen.has(obj)) {
+    return seen.get(obj)
+  }
+
+  // Create a new object or array
+  const o = Array.isArray(obj) ? [] : {}
+
+  // Store this object in our circular reference map
+  seen.set(obj, o)
+
+  for (const key in obj) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
+      if (exclude.includes(key)) continue
+
+      let value = obj[key]
+
+      if (key === 'extend' && Array.isArray(value)) {
+        value = mergeArray(value, exclude)
+      }
+
+      o[key] = deepClone(value, exclude, seen)
+    }
+  }
+
   return o
 }
+
+// export const deepClone = (obj, exclude = METHODS_EXL) => {
+//   const o = isArray(obj) ? [] : {}
+//   for (const e in obj) {
+//     if (exclude.includes(e)) continue
+//     let objProp = obj[e]
+//     if (e === 'extend' && isArray(objProp)) {
+//       objProp = mergeArray(objProp, exclude)
+//     }
+//     if (isObjectLike(objProp)) {
+//       o[e] = deepClone(objProp, exclude)
+//     } else o[e] = objProp
+//   }
+//   return o
+// }
 
 /**
  * Overwrites object properties with another

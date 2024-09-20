@@ -18,3 +18,12 @@ export const isHtmlElement = obj => {
       : obj && typeof obj === 'object' && obj !== null && obj.nodeType === 1 && typeof obj.nodeName === 'string'
   ) || false
 }
+
+export const isDOMNode = (obj) => {
+  return typeof window !== 'undefined' && (
+    obj instanceof window.Node ||
+    obj instanceof window.Window ||
+    obj === window ||
+    obj === document
+  )
+}

@@ -4,6 +4,7 @@ import { window } from './globals.js'
 import { isFunction, isObjectLike, isObject, isArray, isString, is, isUndefined, isDate, isNull } from './types.js'
 import { mergeAndCloneIfArray, mergeArray } from './array.js'
 import { stringIncludesAny } from './string.js'
+import { isDOMNode } from './node.js'
 
 export const exec = (param, element, state, context) => {
   if (isFunction(param)) {
@@ -95,29 +96,62 @@ export const mergeArrayExclude = (arr, excl = []) => {
 /**
  * Deep cloning of object
  */
-export const deepClone = (obj, excludeFrom = [], cleanUndefined = false) => {
-  const o = isArray(obj) ? [] : {}
-  for (const prop in obj) {
-    if (!Object.prototype.hasOwnProperty.call(obj, prop)) continue
-    // if (prop === 'node' || prop === 'parent' || prop === 'root' || prop === '__element') {
-    //   console.warn('recursive clonning is called', obj)
-    //   continue
-    // }
-    if (prop === '__proto__') continue
-    if (excludeFrom.includes(prop) || prop.startsWith('__')) continue
-    let objProp = obj[prop]
-    if (cleanUndefined && isUndefined(objProp)) continue
-    if (prop === 'extend' && isArray(objProp)) {
-      objProp = mergeArray(objProp)
+export const deepClone = (obj, exclude = [], cleanUndefined = false, visited = new WeakMap()) => {
+  // Handle non-object types, null, and ignored types
+  if (!isObjectLike(obj) || isDOMNode(obj)) return obj
+
+  // Check for circular references
+  if (visited.has(obj)) return visited.get(obj)
+
+  // Create a new object or array
+  const clone = isArray(obj) ? [] : {}
+
+  // Store the clone in the WeakMap to handle circular references
+  visited.set(obj, clone)
+
+  // Iterate over the properties of the object
+  for (const key in obj) {
+    if (Object.prototype.hasOwnProperty.call(obj, key) && !exclude.includes(key)) {
+      const value = obj[key]
+
+      if (isDOMNode(value)) {
+        // Skip cloning for DOM nodes
+        clone[key] = value
+      } else if (key === 'extend' && isArray(value)) {
+        clone[key] = mergeArray(value, exclude)
+      } else if (isObjectLike(value)) {
+        clone[key] = deepClone(value, exclude, cleanUndefined, visited)
+      } else {
+        clone[key] = value
+      }
     }
-    if (isObjectLike(objProp)) {
-      // queueMicrotask(() => {
-      o[prop] = deepClone(objProp, excludeFrom, cleanUndefined)
-      // })
-    } else o[prop] = objProp
   }
-  return o
+
+  return clone
 }
+// export const deepClone = (obj, excludeFrom = [], cleanUndefined = false) => {
+//   const o = isArray(obj) ? [] : {}
+//   for (const prop in obj) {
+//     if (!Object.prototype.hasOwnProperty.call(obj, prop)) continue
+//     // if (prop === 'node' || prop === 'parent' || prop === 'root' || prop === '__element') {
+//     //   console.warn('recursive clonning is called', obj)
+//     //   continue
+//     // }
+//     if (prop === '__proto__') continue
+//     if (excludeFrom.includes(prop) || prop.startsWith('__')) continue
+//     let objProp = obj[prop]
+//     if (cleanUndefined && isUndefined(objProp)) continue
+//     if (prop === 'extend' && isArray(objProp)) {
+//       objProp = mergeArray(objProp)
+//     }
+//     if (isObjectLike(objProp)) {
+//       // queueMicrotask(() => {
+//       o[prop] = deepClone(objProp, excludeFrom, cleanUndefined)
+//       // })
+//     } else o[prop] = objProp
+//   }
+//   return o
+// }
 
 /**
  * Deep cloning of object
@@ -541,6 +575,7 @@ export const isEqualDeep = (param, element, visited = new Set()) => {
 export const deepContains = (obj1, obj2, ignoredKeys = ['node', '__ref']) => {
   if (obj1 === obj2) return true
   if (!isObjectLike(obj1) || !isObjectLike(obj2)) return false
+  if (isDOMNode(obj1) || isDOMNode(obj2)) return obj1 === obj2
 
   const stack = [[obj1, obj2]]
   const visited = new WeakSet()
@@ -562,7 +597,9 @@ export const deepContains = (obj1, obj2, ignoredKeys = ['node', '__ref']) => {
       const value1 = current1[key]
       const value2 = current2[key]
 
-      if (isObjectLike(value1) && isObjectLike(value2)) {
+      if (isDOMNode(value1) || isDOMNode(value2)) {
+        if (value1 !== value2) return false
+      } else if (isObjectLike(value1) && isObjectLike(value2)) {
         if (value1 !== value2) {
           stack.push([value1, value2])
         }
@@ -573,7 +610,7 @@ export const deepContains = (obj1, obj2, ignoredKeys = ['node', '__ref']) => {
   }
 
   return true
-};
+}
 
 export const removeFromObject = (obj, props) => {
   if (props === undefined || props === null) return obj
