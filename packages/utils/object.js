@@ -538,43 +538,42 @@ export const isEqualDeep = (param, element, visited = new Set()) => {
   return true
 }
 
-export const deepContains = (obj1, obj2) => {
-  const stack = [{ obj1, obj2 }]
+export const deepContains = (obj1, obj2, ignoredKeys = ['node', '__ref']) => {
+  if (obj1 === obj2) return true
+  if (!isObjectLike(obj1) || !isObjectLike(obj2)) return false
 
-  while (stack.length) {
-    const { obj1, obj2 } = stack.pop()
+  const stack = [[obj1, obj2]]
+  const visited = new WeakSet()
 
-    if (typeof obj1 !== typeof obj2) {
-      return false
-    }
+  while (stack.length > 0) {
+    const [current1, current2] = stack.pop()
 
-    if (isObjectLike(obj1)) {
-      if (Array.isArray(obj1) && Array.isArray(obj2)) {
-        if (obj1.length !== obj2.length) {
-          return false
+    if (visited.has(current1)) continue
+    visited.add(current1)
+
+    const keys1 = Object.keys(current1).filter(key => !ignoredKeys.includes(key))
+    const keys2 = Object.keys(current2).filter(key => !ignoredKeys.includes(key))
+
+    if (keys1.length !== keys2.length) return false
+
+    for (const key of keys1) {
+      if (!Object.prototype.hasOwnProperty.call(current2, key)) return false
+
+      const value1 = current1[key]
+      const value2 = current2[key]
+
+      if (isObjectLike(value1) && isObjectLike(value2)) {
+        if (value1 !== value2) {
+          stack.push([value1, value2])
         }
-        for (let i = 0; i < obj1.length; i++) {
-          stack.push({ obj1: obj1[i], obj2: obj2[i] })
-        }
-      } else if (isObjectLike(obj1) && obj2 !== null) {
-        for (const key in obj1) {
-          if (Object.prototype.hasOwnProperty.call(obj1, key)) {
-            if (!Object.prototype.hasOwnProperty.call(obj2, key)) {
-              return false
-            }
-            stack.push({ obj1: obj1[key], obj2: obj2[key] })
-          }
-        }
-      }
-    } else {
-      if (obj1 !== obj2) {
+      } else if (value1 !== value2) {
         return false
       }
     }
   }
 
   return true
-}
+};
 
 export const removeFromObject = (obj, props) => {
   if (props === undefined || props === null) return obj
