@@ -2,21 +2,8 @@
 
 import { exec, isArray, isFunction, isObject, isString, joinArrays, overwriteDeep } from '@domql/utils'
 import { applyExtend } from '../extend'
+import { registry } from '../mixins'
 const ENV = process.env.NODE_ENV
-
-const DOMQL_BUILTINS = [
-  'extend',
-  'childExtend',
-  'childExtendRecursive',
-  'define',
-  'props',
-  'state',
-  'on',
-  'if',
-  'attr',
-  'key',
-  'tag'
-]
 
 export const checkIfKeyIsComponent = (key) => {
   const isFirstKeyString = isString(key)
@@ -50,16 +37,18 @@ export const createValidDomqlObjectFromSugar = (el, parent, key, options) => {
   for (const k in el) {
     const prop = el[k]
     const isEvent = k.startsWith('on')
-    const isMethod = k.startsWith('$')
     if (isEvent) {
       const onKey = replaceOnKeys(prop)
       newElem.on[onKey] = prop
-    } else if (!isMethod && checkIfKeyIsProperty(k)) {
-      if (!DOMQL_BUILTINS.includes(k)) newElem.props[k] = prop
-    } else if (checkIfKeyIsComponent(k)) {
+    // } else if (!isMethod && checkIfKeyIsProperty(k)) {
+    }
+
+    const isComponent = checkIfKeyIsComponent(k)
+    const isRegistry = registry[k]
+    if (isComponent || isRegistry) {
       newElem[k] = prop
     } else {
-      newElem[k] = prop
+      newElem.props[k] = prop
     }
   }
   return newElem

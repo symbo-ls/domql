@@ -45,7 +45,7 @@ export const deepClone = (obj, exclude = METHODS_EXL, seen = new WeakMap()) => {
   }
 
   // Check for DOM nodes, Window, or Document
-  if (obj instanceof Node || obj === window || obj instanceof Document) {
+  if (obj instanceof window.Node || obj === window || obj instanceof window.Document) {
     return obj
   }
 
