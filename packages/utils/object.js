@@ -460,18 +460,32 @@ export const overwriteShallow = (obj, params, excludeFrom = []) => {
 /**
  * Overwrites DEEPLY object properties with another
  */
-export const overwriteDeep = (obj, params, excludeFrom = []) => {
+export const overwriteDeep = (obj, params, excludeFrom = [], visited = new WeakMap()) => {
+  if (!isObjectLike(obj) || !isObjectLike(params) || isDOMNode(obj) || isDOMNode(params)) {
+    return params
+  }
+
+  if (visited.has(obj)) {
+    return visited.get(obj)
+  }
+
+  visited.set(obj, obj)
+
   for (const e in params) {
-    if (e === '__ref') continue
-    if (excludeFrom.includes(e) || e.startsWith('__')) continue
+    if (e === '__ref' || excludeFrom.includes(e) || e.startsWith('__')) continue
+
     const objProp = obj[e]
     const paramsProp = params[e]
-    if (isObjectLike(objProp) && isObjectLike(paramsProp)) {
-      overwriteDeep(objProp, paramsProp)
+
+    if (isDOMNode(paramsProp)) {
+      obj[e] = paramsProp
+    } else if (isObjectLike(objProp) && isObjectLike(paramsProp)) {
+      obj[e] = overwriteDeep(objProp, paramsProp, excludeFrom, visited)
     } else if (paramsProp !== undefined) {
       obj[e] = paramsProp
     }
   }
+
   return obj
 }
 
@@ -699,4 +713,44 @@ export const getExtendsInElement = (obj) => {
 
   traverse(obj)
   return result
+}
+
+export const createNestedObject = (arr, lastValue) => {
+  const nestedObject = {}
+
+  if (arr.length === 0) {
+    return lastValue
+  }
+
+  arr.reduce((obj, value, index) => {
+    if (!obj[value]) {
+      obj[value] = {}
+    }
+    if (index === arr.length - 1 && lastValue) {
+      obj[value] = lastValue
+    }
+    return obj[value]
+  }, nestedObject)
+
+  return nestedObject
+}
+
+export const removeNestedKeyByPath = (obj, path) => {
+  if (!Array.isArray(path)) {
+    throw new Error('Path must be an array.')
+  }
+
+  let current = obj
+
+  for (let i = 0; i < path.length - 1; i++) {
+    if (current[path[i]] === undefined) {
+      return // Path does not exist, so nothing to remove.
+    }
+    current = current[path[i]]
+  }
+
+  const lastKey = path[path.length - 1]
+  if (current && Object.hasOwnProperty.call(current, lastKey)) {
+    delete current[lastKey]
+  }
 }

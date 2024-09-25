@@ -67,26 +67,6 @@ export const cutArrayAfterValue = (arr, value) => {
   return arr
 }
 
-export const createNestedObject = (arr, lastValue) => {
-  const nestedObject = {}
-
-  if (arr.length === 0) {
-    return lastValue
-  }
-
-  arr.reduce((obj, value, index) => {
-    if (!obj[value]) {
-      obj[value] = {}
-    }
-    if (index === arr.length - 1 && lastValue) {
-      obj[value] = lastValue
-    }
-    return obj[value]
-  }, nestedObject)
-
-  return nestedObject
-}
-
 export const removeValueFromArray = (arr, value) => {
   const index = arr.indexOf(value)
   if (index > -1) {
