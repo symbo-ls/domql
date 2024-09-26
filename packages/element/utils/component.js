@@ -166,28 +166,30 @@ export const applyVariant = (element) => {
   return element
 }
 
-export const detectInfiniteLoop = (actions) => {
+export const detectInfiniteLoop = arr => {
   const maxRepeats = 10 // Maximum allowed repetitions
   let pattern = []
   let repeatCount = 0
 
-  for (let i = 0; i < actions.length; i++) {
+  for (let i = 0; i < arr.length; i++) {
     if (pattern.length < 2) {
       // Build the initial pattern with two consecutive elements
-      pattern.push(actions[i])
+      pattern.push(arr[i])
     } else {
       // Check if the current element follows the repeating pattern
-      if (actions[i] === pattern[i % 2]) {
+      if (arr[i] === pattern[i % 2]) {
         repeatCount++
       } else {
         // If there's a mismatch, reset the pattern and repeat counter
-        pattern = [actions[i]]
-        repeatCount = 0
+        pattern = [arr[i - 1], arr[i]]
+        repeatCount = 1 // Reset to 1 because we start a new potential pattern
       }
 
-      // If the pattern has repeated more than `maxRepeats` times, throw a warning
-      if (repeatCount > maxRepeats * 2) { // *2 because it increments for both "Hgroup" and "content"
-        console.warn('Warning: Potential infinite loop detected due to repeated sequence:', pattern)
+      // If the pattern repeats more than `maxRepeats`, throw a warning
+      if (repeatCount >= maxRepeats * 2) {
+        if (ENV === 'test' || ENV === 'development') {
+          console.warn('Warning: Potential infinite loop detected due to repeated sequence:', pattern)
+        }
         return true
       }
     }

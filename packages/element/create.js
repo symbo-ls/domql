@@ -214,8 +214,7 @@ const addElementIntoParentChildren = (element, parent) => {
 const visitedElements = new WeakMap()
 const renderElement = (element, parent, options, attachOptions) => {
   if (visitedElements.has(element)) {
-    console.warn('Cyclic rendering detected:', element)
-    return
+    if (ENV === 'test' || ENV === 'development') console.warn('Cyclic rendering detected:', element.__ref.__path)
   }
 
   visitedElements.set(element, true)
@@ -224,8 +223,8 @@ const renderElement = (element, parent, options, attachOptions) => {
 
   // CREATE a real NODE
   try {
-    const isInfiniteLoop = detectInfiniteLoop(ref.__path)
-    if (ref.__uniqId || isInfiniteLoop) return
+    const isInfiniteLoopDetected = detectInfiniteLoop(ref.__path)
+    if (ref.__uniqId || isInfiniteLoopDetected) return
     createNode(element, options)
     ref.__uniqId = Math.random()
   } catch (e) {
