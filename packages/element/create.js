@@ -35,6 +35,7 @@ import {
   applyVariant,
   checkIfKeyIsComponent,
   createValidDomqlObjectFromSugar,
+  detectInfiniteLoop,
   isVariant
 } from './utils/component'
 
@@ -45,8 +46,6 @@ const ENV = process.env.NODE_ENV
  */
 const create = (element, parent, key, options = OPTIONS.create || {}, attachOptions) => {
   cacheOptions(element, options)
-
-  // if (key === 'Title') debugger
 
   // if element is STRING
   if (checkIfPrimitive(element)) {
@@ -212,12 +211,23 @@ const addElementIntoParentChildren = (element, parent) => {
   if (parent.__ref && parent.__ref.__children) parent.__ref.__children.push(element.key)
 }
 
+const visitedElements = new WeakMap()
 const renderElement = (element, parent, options, attachOptions) => {
+  if (visitedElements.has(element)) {
+    console.warn('Cyclic rendering detected:', element)
+    return
+  }
+
+  visitedElements.set(element, true)
+
   const { __ref: ref, key } = element
 
   // CREATE a real NODE
   try {
+    const isInfiniteLoop = detectInfiniteLoop(ref.__path)
+    if (ref.__uniqId || isInfiniteLoop) return
     createNode(element, options)
+    ref.__uniqId = Math.random()
   } catch (e) {
     if (ENV === 'test' || ENV === 'development') console.warn(element, e)
   }

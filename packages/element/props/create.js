@@ -51,10 +51,6 @@ export const syncProps = (props, element) => {
 export const createProps = function (element, parent, cached) {
   const { __ref: ref } = element
 
-  // if (element.parent.key === '0' && element.key === 'editor') {
-  //   debugger
-  // }
-
   const applyProps = () => {
     const propsStack = cached || createPropsStack(element, parent)
     if (propsStack.length) {

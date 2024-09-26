@@ -82,7 +82,6 @@ const update = function (params = {}, opts = UPDATE_DEFAULT_OPTIONS) {
 
   const overwriteChanges = overwriteDeep(element, params, METHODS_EXL)
   const execChanges = throughUpdatedExec(element, { ignore: UPDATE_DEFAULT_OPTIONS })
-  // if (element.key === 'Navigation') debugger
   const definedChanges = throughUpdatedDefine(element)
 
   if (!options.isForced && !options.preventListeners) {
