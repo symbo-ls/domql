@@ -39,24 +39,23 @@ const UPDATE_DEFAULT_OPTIONS = {
   excludes: METHODS_EXL
 }
 
-const update = function (params = {}, opts = UPDATE_DEFAULT_OPTIONS) {
-  const calleeElementCache = opts.calleeElement
-  const options = deepClone(deepMerge(opts, UPDATE_DEFAULT_OPTIONS), ['calleeElement'])
+const update = function (params = {}, opts) {
+  const calleeElementCache = opts?.calleeElement
+  const options = deepClone(isObject(opts) ? deepMerge(opts, UPDATE_DEFAULT_OPTIONS) : UPDATE_DEFAULT_OPTIONS, ['calleeElement'])
   options.calleeElement = calleeElementCache
   const element = this
   const { parent, node, key } = element
   const { excludes, preventInheritAtCurrentState } = options
 
+  let ref = element.__ref
+  if (!ref) ref = element.__ref = {}
+  const [snapshotOnCallee, calleeElement, snapshotHasUpdated] = captureSnapshot(element, options)
+  if (snapshotHasUpdated) return
+
   if (!options.preventListeners) triggerEventOnUpdate('startUpdate', params, element, options)
 
   if (preventInheritAtCurrentState && preventInheritAtCurrentState.__element === element) return
   if (!excludes) merge(options, UPDATE_DEFAULT_OPTIONS)
-
-  let ref = element.__ref
-  if (!ref) ref = element.__ref = {}
-
-  const [snapshotOnCallee, calleeElement, snapshotHasUpdated] = captureSnapshot(element, options)
-  if (snapshotHasUpdated) return
 
   if (isString(params) || isNumber(params)) {
     params = { text: params }
@@ -113,6 +112,10 @@ const update = function (params = {}, opts = UPDATE_DEFAULT_OPTIONS) {
   for (const param in element) {
     const prop = element[param]
 
+    if (element.Iframe && element.Overlay && element.ComponentFrameCanvas && param === 'Iframe') {
+      console.log('isframe')
+    }
+
     if (!Object.hasOwnProperty.call(element, param)) continue
 
     const hasOnlyUpdateFalsy = onlyUpdate && (onlyUpdate !== param || !element.lookup(onlyUpdate))
@@ -166,7 +169,8 @@ const captureSnapshot = (element, options) => {
     return [createdStanpshot, element]
   }
 
-  const snapshotOnCallee = ref.__currentSnapshot
+  const snapshotOnCallee = calleeElement.__ref.__currentSnapshot
+
   if (currentSnapshot < snapshotOnCallee) {
     return [snapshotOnCallee, calleeElement, true]
   }
@@ -297,7 +301,8 @@ const createStateUpdate = (element, parent, options) => {
   for (const child in __stateChildren) {
     // check this for inherited states
     if (newState[child]) newState.__children[child] = __stateChildren[child]
-    __stateChildren[child].parent = newState
+    // __stateChildren[child].parent = newState
+    Object.getPrototypeOf(__stateChildren[child]).parent = newState
   }
   return newState
 }

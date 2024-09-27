@@ -22,7 +22,7 @@ export const parse = function () {
 export const clean = function (options = {}) {
   const state = this
   for (const param in state) {
-    if (!IGNORE_STATE_PARAMS.includes(param)) {
+    if (!IGNORE_STATE_PARAMS.includes(param) && Object.hasOwnProperty.call(state, param)) {
       delete state[param]
     }
   }
@@ -147,7 +147,7 @@ export const applyFunction = function (func, options = {}) {
 
 export const quietUpdate = function (obj, options = {}) {
   const state = this
-  return state.update(obj, { preventUpdate: true, options })
+  return state.update(obj, { preventUpdate: true, ...options })
 }
 
 export const replace = function (obj, options = {}) {
@@ -162,5 +162,5 @@ export const replace = function (obj, options = {}) {
 
 export const quietReplace = function (obj, options = {}) {
   const state = this
-  return state.replace(obj, { preventUpdate: true, options })
+  return state.replace(obj, { preventUpdate: true, ...options })
 }
