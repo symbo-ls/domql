@@ -24,7 +24,8 @@ import {
   isNode,
   isUndefined,
   generateKey,
-  deepCloneWithExtend
+  deepCloneWithExtend,
+  detectInfiniteLoop
 } from '@domql/utils'
 
 import OPTIONS from './cache/options'
@@ -35,7 +36,6 @@ import {
   applyVariant,
   checkIfKeyIsComponent,
   createValidDomqlObjectFromSugar,
-  detectInfiniteLoop,
   isVariant
 } from './utils/component'
 

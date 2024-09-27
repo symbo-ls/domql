@@ -19,12 +19,12 @@ import { isMethod } from './methods'
 import { updateProps } from './props'
 import { createState, findInheritedState } from '@domql/state'
 
-import { METHODS_EXL, deepClone, isVariant, deepMerge } from './utils'
 import create from './create'
 import { throughUpdatedDefine, throughUpdatedExec } from './iterate'
 import { registry } from './mixins'
 import { applyParam } from './utils/applyParam'
 import OPTIONS from './cache/options'
+import { METHODS_EXL, deepClone, isVariant, deepMerge } from './utils'
 
 const snapshot = {
   snapshotId: createSnapshotId
@@ -80,6 +80,7 @@ const update = function (params = {}, opts) {
   }
 
   const overwriteChanges = overwriteDeep(element, params, METHODS_EXL)
+  // const overwriteChanges = overwriteDeep(element, params)
   const execChanges = throughUpdatedExec(element, { ignore: UPDATE_DEFAULT_OPTIONS })
   const definedChanges = throughUpdatedDefine(element)
 

@@ -1,11 +1,23 @@
 'use strict'
 
 import { window } from './globals.js'
-import { isFunction, isObjectLike, isObject, isArray, isString, is, isUndefined, isDate, isNull } from './types.js'
+import {
+  isFunction,
+  isObjectLike,
+  isObject,
+  isArray,
+  isString,
+  is,
+  isUndefined,
+  isDate,
+  isNull
+} from './types.js'
 import { mergeAndCloneIfArray, mergeArray } from './array.js'
 import { stringIncludesAny } from './string.js'
 import { isDOMNode } from './node.js'
 import { cloneFunction } from './function.js'
+
+const ENV = process.env.NODE_ENV
 
 export const exec = (param, element, state, context) => {
   if (isFunction(param)) {
@@ -755,5 +767,35 @@ export const removeNestedKeyByPath = (obj, path) => {
   const lastKey = path[path.length - 1]
   if (current && Object.hasOwnProperty.call(current, lastKey)) {
     delete current[lastKey]
+  }
+}
+
+export const detectInfiniteLoop = arr => {
+  const maxRepeats = 10 // Maximum allowed repetitions
+  let pattern = []
+  let repeatCount = 0
+
+  for (let i = 0; i < arr.length; i++) {
+    if (pattern.length < 2) {
+      // Build the initial pattern with two consecutive elements
+      pattern.push(arr[i])
+    } else {
+      // Check if the current element follows the repeating pattern
+      if (arr[i] === pattern[i % 2]) {
+        repeatCount++
+      } else {
+        // If there's a mismatch, reset the pattern and repeat counter
+        pattern = [arr[i - 1], arr[i]]
+        repeatCount = 1 // Reset to 1 because we start a new potential pattern
+      }
+
+      // If the pattern repeats more than `maxRepeats`, throw a warning
+      if (repeatCount >= maxRepeats * 2) {
+        if (ENV === 'test' || ENV === 'development') {
+          console.warn('Warning: Potential infinite loop detected due to repeated sequence:', pattern)
+        }
+        return true
+      }
+    }
   }
 }

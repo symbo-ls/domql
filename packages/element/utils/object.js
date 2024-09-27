@@ -1,9 +1,40 @@
 'use strict'
 
 import { isArray, isObject, isObjectLike, joinArrays, deepCloneWithExtend } from '@domql/utils'
-import { IGNORE_STATE_PARAMS } from '@domql/state'
 import { IGNORE_PROPS_PARAMS } from '../props'
-import { METHODS } from '../methods'
+
+// breaks server build
+// import { IGNORE_STATE_PARAMS } from '@domql/state'
+// import { METHODS } from '../methods'
+
+const IGNORE_STATE_PARAMS = [
+  'update', 'parse', 'clean', 'create', 'destroy', 'add', 'toggle', 'remove', 'apply', 'set', 'reset',
+  'replace', 'quietReplace', 'quietUpdate', 'applyReplace', 'applyFunction',
+  'rootUpdate', 'parentUpdate', 'parent', '__element', '__depends', '__ref', '__children', 'root'
+]
+
+export const METHODS = [
+  'set',
+  'reset',
+  'update',
+  'remove',
+  'updateContent',
+  'removeContent',
+  'lookup',
+  'lookdown',
+  'lookdownAll',
+  'setNodeStyles',
+  'spotByPath',
+  'keys',
+  'parse',
+  'setProps',
+  'parseDeep',
+  'variables',
+  'if',
+  'log',
+  'nextElement',
+  'previousElement'
+]
 
 export const METHODS_EXL = joinArrays(
   ['node', 'state', 'context', 'extend', '__element'],
