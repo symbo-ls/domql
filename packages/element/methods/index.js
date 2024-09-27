@@ -33,6 +33,8 @@ export const lookup = function (param) {
     else return
   }
 
+  if (el[param]) return el[param]
+
   while (parent.param !== param) {
     if (parent[param]) return parent[param]
     parent = parent.parent
