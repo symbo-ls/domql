@@ -71,3 +71,17 @@ export const isStringFunction = inputString => {
   // Use the regex to test if the inputString matches the function pattern
   return functionRegex.test(inputString)
 }
+
+export function cloneFunction (fn, win = window) {
+  const temp = function () {
+    return fn.apply(win, arguments)
+  }
+
+  // Copy properties from original function
+  for (const key in fn) {
+    if (Object.hasOwnProperty.call(fn, key)) {
+      temp[key] = fn[key]
+    }
+  }
+  return temp
+}

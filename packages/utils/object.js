@@ -5,6 +5,7 @@ import { isFunction, isObjectLike, isObject, isArray, isString, is, isUndefined,
 import { mergeAndCloneIfArray, mergeArray } from './array.js'
 import { stringIncludesAny } from './string.js'
 import { isDOMNode } from './node.js'
+import { cloneFunction } from './function.js'
 
 export const exec = (param, element, state, context) => {
   if (isFunction(param)) {
@@ -176,6 +177,8 @@ export const deepCloneWithExtend = (obj, excludeFrom = ['node'], options = {}) =
       // queueMicrotask(() => {
       o[prop] = deepCloneWithExtend(objProp, excludeFrom, options)
       // })
+    } else if (isFunction(objProp) && options.window) {
+      o[prop] = cloneFunction(objProp, options.window)
     } else o[prop] = objProp
   }
   return o
