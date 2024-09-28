@@ -24,6 +24,14 @@ export const triggerEventOnUpdate = (param, updatedObj, element, options) => {
   }
 }
 
+export const applyAnimationFrame = (element, options) => {
+  const { frameListeners } = element.__ref.root.data
+  if (frameListeners) {
+    const { registerFrameListener } = element.context.utils
+    if (registerFrameListener) registerFrameListener(element)
+  }
+}
+
 export const applyEventsOnNode = (element, options) => {
   const { node, on } = element
   for (const param in on) {
@@ -38,6 +46,7 @@ export const applyEventsOnNode = (element, options) => {
       param === 'beforeStateUpdate' ||
       param === 'stateUpdate' ||
       param === 'beforeUpdate' ||
+      param === 'frame' ||
       param === 'update'
     ) continue
 
@@ -46,7 +55,6 @@ export const applyEventsOnNode = (element, options) => {
       node.addEventListener(param, event => {
         const { state, context } = element
         appliedFunction.call(context?.window || window, event, element, state, context, options)
-        // appliedFunction(event, element, state, context, options)
       })
     }
   }
