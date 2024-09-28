@@ -24,17 +24,17 @@ import {
   isNode,
   isUndefined,
   generateKey,
+  checkIfKeyIsComponent,
   deepCloneWithExtend,
+  applyComponentFromContext,
+  applyKeyComponentAsExtend,
   detectInfiniteLoop
 } from '@domql/utils'
 
 import OPTIONS from './cache/options'
 
 import {
-  applyComponentFromContext,
-  applyKeyComponentAsExtend,
   applyVariant,
-  checkIfKeyIsComponent,
   createValidDomqlObjectFromSugar,
   isVariant
 } from './utils/component'

@@ -9,7 +9,8 @@
     ".": {
       "kalduna": "./index.js",
       "default": "./dist/cjs/index.js"
-    }
+    },
+    "./utils/component": "./utils/component.js"
   },
   "source": "index.js",
   "files": [

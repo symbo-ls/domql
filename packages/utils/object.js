@@ -668,67 +668,6 @@ export const createObjectWithoutPrototype = (obj) => {
   return newObj
 }
 
-export const checkIfKeyIsComponent = (key) => {
-  const isFirstKeyString = isString(key)
-  if (!isFirstKeyString) return
-  const firstCharKey = key.slice(0, 1)
-  return /^[A-Z]*$/.test(firstCharKey)
-}
-
-export const getChildrenComponentsByKey = (key, el) => {
-  if (key === el.key || el.__ref.__componentKey === key) {
-    return el
-  }
-
-  // Check if the prop is "extend" and it's either a string or an array
-  if (el.extend) {
-    // Add the value of the extend key to the result array
-    const foundString = isString(el.extend) && el.extend === key
-    const foundInArray = isArray(el.extend) && el.extend.filter(v => v === key).length
-    if (foundString || foundInArray) return el
-  }
-
-  if (el.parent && el.parent.childExtend) {
-    // Add the value of the extend key to the result array
-    const foundString = isString(el.parent.childExtend) && el.parent.childExtend === key
-    const foundInArray = isArray(el.parent.childExtend) && el.parent.childExtend.filter(v => v === key).length
-    if (foundString || foundInArray) return el
-  }
-}
-
-export const getExtendsInElement = (obj) => {
-  let result = []
-
-  function traverse (o) {
-    for (const key in o) {
-      if (Object.hasOwnProperty.call(o, key)) {
-        // Check if the key starts with a capital letter and exclude keys like @mobileL, $propsCollection
-        if (checkIfKeyIsComponent(key)) {
-          result.push(key)
-        }
-
-        // Check if the key is "extend" and it's either a string or an array
-        if (key === 'extend') {
-          // Add the value of the extend key to the result array
-          if (typeof o[key] === 'string') {
-            result.push(o[key])
-          } else if (Array.isArray(o[key])) {
-            result = result.concat(o[key])
-          }
-        }
-
-        // If the property is an object, traverse it
-        if (typeof o[key] === 'object' && o[key] !== null) {
-          traverse(o[key])
-        }
-      }
-    }
-  }
-
-  traverse(obj)
-  return result
-}
-
 export const createNestedObject = (arr, lastValue) => {
   const nestedObject = {}
 
