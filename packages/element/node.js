@@ -1,6 +1,6 @@
 'use strict'
 
-import { exec, isFunction, isObject, isUndefined } from '@domql/utils'
+import { exec, isFunction, isObject, isUndefined, isVariant } from '@domql/utils'
 import { applyEventsOnNode, triggerEventOn, applyAnimationFrame } from '@domql/event'
 import { cacheNode } from '@domql/render'
 import { isMethod } from './methods'
@@ -13,7 +13,6 @@ import {
 } from './iterate'
 import { registry } from './mixins'
 import { applyParam } from './utils/applyParam'
-import { isVariant } from './utils'
 import { propagateEventsFromProps } from './utils/propEvents'
 // import { defineSetter } from './methods'
 

@@ -10,6 +10,7 @@ import {
   isString,
   isUndefined,
   merge,
+  isVariant,
   overwriteDeep,
   createSnapshotId
 } from '@domql/utils'
@@ -24,7 +25,7 @@ import { throughUpdatedDefine, throughUpdatedExec } from './iterate'
 import { registry } from './mixins'
 import { applyParam } from './utils/applyParam'
 import OPTIONS from './cache/options'
-import { METHODS_EXL, deepClone, isVariant, deepMerge } from './utils'
+import { METHODS_EXL, deepClone, deepMerge } from './utils' // old utils (current)
 
 const snapshot = {
   snapshotId: createSnapshotId

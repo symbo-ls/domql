@@ -28,6 +28,7 @@ import {
   deepCloneWithExtend,
   applyComponentFromContext,
   applyKeyComponentAsExtend,
+  isVariant,
   detectInfiniteLoop
 } from '@domql/utils'
 
@@ -35,8 +36,7 @@ import OPTIONS from './cache/options'
 
 import {
   applyVariant,
-  createValidDomqlObjectFromSugar,
-  isVariant
+  createValidDomqlObjectFromSugar
 } from './utils/component'
 
 const ENV = process.env.NODE_ENV

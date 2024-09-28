@@ -8,7 +8,9 @@
   "exports": {
     ".": {
       "kalduna": "./index.js",
-      "default": "./dist/cjs/index.js"
+      "default": "./dist/cjs/index.js",
+      "import": "./index.js", 
+      "require": "./dist/cjs/index.js" 
     }
   },
   "source": "index.js",
