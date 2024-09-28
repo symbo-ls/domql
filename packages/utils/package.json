@@ -1,6 +1,6 @@
 {
   "name": "@domql/utils",
-  "version": "2.5.126",
+  "version": "2.5.130",
   "license": "MIT",
   "type": "module",
   "module": "index.js",
@@ -9,8 +9,8 @@
     ".": {
       "kalduna": "./index.js",
       "default": "./dist/cjs/index.js",
-      "import": "./index.js", 
-      "require": "./dist/cjs/index.js" 
+      "import": "./index.js",
+      "require": "./dist/cjs/index.js"
     }
   },
   "source": "index.js",
