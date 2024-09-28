@@ -25,8 +25,9 @@ export const triggerEventOnUpdate = (param, updatedObj, element, options) => {
 }
 
 export const applyAnimationFrame = (element, options) => {
-  const { frameListeners } = element.__ref.root.data
-  if (frameListeners) {
+  const { props, on, __ref: ref } = element
+  const { frameListeners } = ref.root.data
+  if (frameListeners && (on?.frame || props?.onFrame)) {
     const { registerFrameListener } = element.context.utils
     if (registerFrameListener) registerFrameListener(element)
   }

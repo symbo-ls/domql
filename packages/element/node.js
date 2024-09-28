@@ -54,9 +54,11 @@ export const createNode = (element, options) => {
 
   if (element.tag !== 'string' && element.tag !== 'fragment') {
     propagateEventsFromProps(element)
+
     // apply events
+    applyAnimationFrame(element, options)
+
     if (isNewNode && isObject(element.on)) {
-      applyAnimationFrame(element, options)
       applyEventsOnNode(element, options)
     }
   }
