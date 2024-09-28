@@ -1,7 +1,7 @@
 'use strict'
 
 import { exec, isFunction, isObject, isUndefined } from '@domql/utils'
-import { applyEventsOnNode, triggerEventOn } from '@domql/event'
+import { applyEventsOnNode, triggerEventOn, applyAnimationFrame } from '@domql/event'
 import { cacheNode } from '@domql/render'
 import { isMethod } from './methods'
 
@@ -15,7 +15,6 @@ import { registry } from './mixins'
 import { applyParam } from './utils/applyParam'
 import { isVariant } from './utils'
 import { propagateEventsFromProps } from './utils/propEvents'
-import { applyAnimationFrame } from '../event/on'
 // import { defineSetter } from './methods'
 
 const ENV = process.env.NODE_ENV
