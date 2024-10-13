@@ -37,6 +37,9 @@ export const applyExtend = (element, parent, options = {}) => {
     if (!options.ignoreChildExtend && !(props && props.ignoreChildExtend)) {
       childExtendStack = getExtendStack(parent.childExtend, context)
 
+      // if (!options.ignoreChildExtend && !(props && exec(props, element).ignoreChildExtend)) {
+      //   const ignoreChildExtendRecursive = props && exec(props, element).ignoreChildExtendRecursive
+
       const ignoreChildExtendRecursive = props && props.ignoreChildExtendRecursive
       if (parent.childExtendRecursive && !ignoreChildExtendRecursive) {
         const canExtendRecursive = element.key !== '__text'

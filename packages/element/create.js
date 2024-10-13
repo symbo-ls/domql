@@ -228,7 +228,15 @@ const renderElement = (element, parent, options, attachOptions) => {
     createNode(element, options)
     ref.__uniqId = Math.random()
   } catch (e) {
-    if (ENV === 'test' || ENV === 'development') console.warn(element, e)
+    if (ENV === 'test' || ENV === 'development') {
+      const path = ref.__path
+      if (path.includes('ComponentsGrid')) path.splice(0, path.indexOf('ComponentsGrid') + 2)
+      if (path.includes('demoComponent')) path.splice(0, path.indexOf('demoComponent') + 1)
+      const isDemoComponent = element.lookup(el => el.state.key)?.state?.key
+      console.warn('Error happened in:', isDemoComponent ? isDemoComponent + ' ' : '' + path.join('.'))
+      console.warn(element)
+      console.error(e)
+    }
   }
 
   if (!ref.__if) {

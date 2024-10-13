@@ -23,6 +23,7 @@ const defaultOptions = {
   useFragment: false,
   updateState: true,
   scrollToOffset: 0,
+  contentElementKey: 'content',
   scrollToOptions: { behavior: 'smooth' }
 }
 
@@ -53,6 +54,7 @@ export const router = (
     element.state.root.debugging = false
     return
   }
+
   if (options.pushState) {
     win.history.pushState(state, null, pathname + (search || '') + (hash || ''))
   }

@@ -32,7 +32,7 @@ export const createState = function (element, parent, options) {
 export const applyInitialState = function (element, parent, options) {
   const objectizeState = checkForTypes(element)
   if (objectizeState === false) return parent.state || {}
-  else element.state = deepCloneWithExtend(objectizeState, IGNORE_STATE_PARAMS)
+  else element.state = objectizeState
 
   const whatInitReturns = triggerEventOn('stateInit', element, options)
   if (whatInitReturns === false) return element.state
@@ -54,13 +54,21 @@ export const applyInitialState = function (element, parent, options) {
 }
 
 const applyDependentState = (element, state) => {
-  const { __ref: ref } = state
-  if (!ref) return
-  const dependentState = deepCloneWithExtend(ref, IGNORE_STATE_PARAMS)
+  const { __ref, ref, __element } = state //
+  const origState = exec(__ref || ref || __element?.state, element)
+  if (!origState) return
+  const dependentState = deepCloneWithExtend(origState, IGNORE_STATE_PARAMS)
   const newDepends = { [element.key]: dependentState }
-  ref.__depends = isObject(ref.__depends)
-    ? { ...ref.__depends, ...newDepends }
+
+  const __depends = isObject(origState.__depends)
+    ? { ...origState.__depends, ...newDepends }
     : newDepends
+
+  if (Array.isArray(origState)) {
+    addProtoToArray(origState, { ...Object.getPrototypeOf(origState), __depends })
+  } else {
+    Object.setPrototypeOf(origState, { ...Object.getPrototypeOf(origState), __depends })
+  }
 
   return dependentState
 }
