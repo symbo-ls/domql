@@ -101,7 +101,7 @@ const update = function (params = {}, opts) {
   }
 
   const {
-    onlyUpdate, preventUpdate, preventDefineUpdate, preventContentUpdate, preventStateUpdate,
+    preventUpdate, preventDefineUpdate, preventContentUpdate, preventStateUpdate,
     preventRecursive, preventUpdateListener, preventUpdateAfter, preventUpdateAfterCount
   } = options
 
@@ -120,7 +120,6 @@ const update = function (params = {}, opts) {
 
     if (!Object.hasOwnProperty.call(element, param)) continue
 
-    const hasOnlyUpdateFalsy = onlyUpdate && (onlyUpdate !== param || !element.lookup(onlyUpdate))
     const isInPreventUpdate = isArray(preventUpdate) && preventUpdate.includes(param)
     const isInPreventDefineUpdate = isArray(preventDefineUpdate) && preventDefineUpdate.includes(param)
 
@@ -128,7 +127,6 @@ const update = function (params = {}, opts) {
 
     if (
       isUndefined(prop) ||
-      hasOnlyUpdateFalsy ||
       isInPreventUpdate ||
       isInPreventDefineUpdate ||
       preventDefineUpdate === true ||
@@ -137,6 +135,7 @@ const update = function (params = {}, opts) {
       (preventStateUpdate && param) === 'state' ||
       isMethod(param) || isObject(registry[param]) || isVariant(param)
     ) continue
+
     if (preventStateUpdate === 'once') options.preventStateUpdate = false
 
     const isElement = applyParam(param, element, options)
