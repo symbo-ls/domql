@@ -1,6 +1,6 @@
 {
   "name": "domql",
-  "version": "2.5.134",
+  "version": "2.5.135",
   "license": "MIT",
   "type": "module",
   "module": "index.js",
@@ -25,7 +25,7 @@
     "prepublish": "rimraf -I dist && yarn build && yarn copy:package:cjs"
   },
   "dependencies": {
-    "@domql/element": "^2.5.134",
+    "@domql/element": "^2.5.135",
     "@domql/event": "^2.5.134",
     "@domql/render": "^2.5.134",
     "@domql/state": "^2.5.134",
