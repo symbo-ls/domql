@@ -164,3 +164,13 @@ export const quietReplace = function (obj, options = {}) {
   const state = this
   return state.replace(obj, { preventUpdate: true, ...options })
 }
+
+export const keys = function (obj, options = {}) {
+  const state = this
+  return Object.keys(state)
+}
+
+export const values = function (obj, options = {}) {
+  const state = this
+  return Object.values(state)
+}

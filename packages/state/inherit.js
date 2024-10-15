@@ -96,6 +96,8 @@ export const isState = function (state) {
     state.destroy &&
     state.rootUpdate &&
     state.parentUpdate &&
+    state.keys &&
+    state.values &&
     state.toggle &&
     state.replace &&
     state.quietUpdate &&

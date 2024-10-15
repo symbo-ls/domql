@@ -19,7 +19,9 @@ import {
   replace,
   quietUpdate,
   quietReplace,
-  applyReplace
+  applyReplace,
+  keys,
+  values
 } from './methods'
 import { updateState } from './updateState'
 import { checkIfInherits, createInheritedState } from './inherit'
@@ -127,6 +129,8 @@ const applyMethods = (element) => {
     quietReplace: quietReplace.bind(state),
     reset: reset.bind(state),
     parent: element.parent.state || state,
+    keys: keys.bind(state),
+    values: values.bind(state),
     __element: element,
     __children: {},
     root: ref.root ? ref.root.state : state
