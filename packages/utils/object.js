@@ -199,6 +199,11 @@ export const deepCloneWithExtend = (obj, excludeFrom = ['node'], options = {}) =
  * Stringify object
  */
 export const deepStringify = (obj, stringified = {}) => {
+  if (obj.node || obj.__ref || obj.parent || obj.__element || obj.parse) {
+    console.warn('Trying to clone element or state at', obj)
+    obj = obj.parse?.()
+  }
+
   for (const prop in obj) {
     const objProp = obj[prop]
     if (isFunction(objProp)) {
@@ -212,6 +217,42 @@ export const deepStringify = (obj, stringified = {}) => {
         if (isObject(v)) {
           stringified[prop][i] = {}
           deepStringify(v, stringified[prop][i])
+        } else if (isFunction(v)) {
+          stringified[prop][i] = v.toString()
+        } else {
+          stringified[prop][i] = v
+        }
+      })
+    } else {
+      stringified[prop] = objProp
+    }
+  }
+  return stringified
+}
+
+const MAX_DEPTH = 100 // Adjust this value as needed
+export const deepStringifyWithMaxDepth = (obj, stringified = {}, depth = 0, path = '') => {
+  if (depth > MAX_DEPTH) {
+    console.warn(`Maximum depth exceeded at path: ${path}. Possible circular reference.`)
+    return '[MAX_DEPTH_EXCEEDED]'
+  }
+
+  for (const prop in obj) {
+    const currentPath = path ? `${path}.${prop}` : prop
+    const objProp = obj[prop]
+
+    if (isFunction(objProp)) {
+      stringified[prop] = objProp.toString()
+    } else if (isObject(objProp)) {
+      stringified[prop] = {}
+      deepStringifyWithMaxDepth(objProp, stringified[prop], depth + 1, currentPath)
+    } else if (isArray(objProp)) {
+      stringified[prop] = []
+      objProp.forEach((v, i) => {
+        const itemPath = `${currentPath}[${i}]`
+        if (isObject(v)) {
+          stringified[prop][i] = {}
+          deepStringifyWithMaxDepth(v, stringified[prop][i], depth + 1, itemPath)
         } else if (isFunction(v)) {
           stringified[prop][i] = v.toString()
         } else {

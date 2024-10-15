@@ -27,9 +27,9 @@
     "prepublish": "rimraf -I dist && yarn build && yarn copy:package:cjs"
   },
   "dependencies": {
-    "@domql/event": "latest",
-    "@domql/report": "latest",
-    "@domql/utils": "latest"
+    "@domql/event": "^2.5.0",
+    "@domql/report": "^2.5.0",
+    "@domql/utils": "^2.5.0"
   },
   "gitHead": "06c19a4cfe0e5acc6be8877cd378f654dfb0841e"
 }

@@ -2,20 +2,8 @@
 
 import createNode from './node'
 import { ROOT } from './tree'
-import { TAGS } from '@domql/registry'
-import { triggerEventOn } from '@domql/event'
-import { assignNode } from '@domql/render'
-import { createState } from '@domql/state'
-
-import { isMethod } from './methods'
-import { createProps } from './props'
-import { applyExtend } from './extend'
-import { registry } from './mixins'
-import { addMethods } from './methods/set'
-import { assignKeyAsClassname } from './mixins/classList'
-import { throughInitialExec, throughInitialDefine } from './iterate'
-
 import {
+  HTML_TAGS,
   isObject,
   isFunction,
   isString,
@@ -31,6 +19,17 @@ import {
   isVariant,
   detectInfiniteLoop
 } from '@domql/utils'
+import { triggerEventOn } from '@domql/event'
+import { assignNode } from '@domql/render'
+import { createState } from '@domql/state'
+
+import { isMethod } from './methods'
+import { createProps } from './props'
+import { applyExtend } from './extend'
+import { registry } from './mixins'
+import { addMethods } from './methods/set'
+import { assignKeyAsClassname } from './mixins/classList'
+import { throughInitialExec, throughInitialDefine } from './iterate'
 
 import OPTIONS from './cache/options'
 
@@ -262,7 +261,7 @@ const checkIfPrimitive = (element) => is(element)('string', 'number')
 const applyValueAsText = (element, parent, key) => {
   const extendTag = element.extend && element.extend.tag
   const childExtendTag = parent.childExtend && parent.childExtend.tag
-  const isKeyValidHTMLTag = ((TAGS.body.indexOf(key) > -1) && key)
+  const isKeyValidHTMLTag = ((HTML_TAGS.body.indexOf(key) > -1) && key)
   return {
     text: element,
     tag: extendTag || childExtendTag || isKeyValidHTMLTag || 'string'

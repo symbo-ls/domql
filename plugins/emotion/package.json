@@ -5,8 +5,7 @@
   "license": "MIT",
   "dependencies": {
     "@domql/classlist": "latest",
-    "@domql/env": "latest",
-    "@domql/utils": "latest"
+    "@domql/utils": "^2.5.0"
   },
   "peerDependencies": {
     "@emotion/css": "*"
