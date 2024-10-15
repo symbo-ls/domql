@@ -213,7 +213,7 @@ const addElementIntoParentChildren = (element, parent) => {
 const visitedElements = new WeakMap()
 const renderElement = (element, parent, options, attachOptions) => {
   if (visitedElements.has(element)) {
-    if (ENV === 'test' || ENV === 'development') console.warn('Cyclic rendering detected:', element.__ref.__path)
+    if (ENV === 'test' || ENV === 'development') console.warn('Cyclic rendering detected:', element.__ref.path)
   }
 
   visitedElements.set(element, true)
@@ -222,13 +222,13 @@ const renderElement = (element, parent, options, attachOptions) => {
 
   // CREATE a real NODE
   try {
-    const isInfiniteLoopDetected = detectInfiniteLoop(ref.__path)
+    const isInfiniteLoopDetected = detectInfiniteLoop(ref.path)
     if (ref.__uniqId || isInfiniteLoopDetected) return
     createNode(element, options)
     ref.__uniqId = Math.random()
   } catch (e) {
     if (ENV === 'test' || ENV === 'development') {
-      const path = ref.__path
+      const path = ref.path
       if (path.includes('ComponentsGrid')) path.splice(0, path.indexOf('ComponentsGrid') + 2)
       if (path.includes('demoComponent')) path.splice(0, path.indexOf('demoComponent') + 1)
       const isDemoComponent = element.lookup(el => el.state.key)?.state?.key
@@ -327,8 +327,8 @@ const addCaching = (element, parent) => {
   // set the PATH array
   // if (ENV === 'test' || ENV === 'development') {
   if (!parentRef) parentRef = parent.ref = {}
-  if (!parentRef.__path) parentRef.__path = []
-  ref.__path = parentRef.__path.concat(element.key)
+  if (!parentRef.path) parentRef.path = []
+  ref.path = parentRef.path.concat(element.key)
   // }
 }
 
