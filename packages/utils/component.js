@@ -60,12 +60,13 @@ export const extendizeByKey = (element, parent, key) => {
 
   if (element === isExtendKeyComponent) return element
   else if (isSugar) {
-    return {
+    const newElem = {
       extend: extendFromKey,
-      childExtend: childrenExtends,
       tag,
       props: { ...element }
     }
+    if (childrenExtends) newElem.childExtend = childrenExtends
+    return newElem
   } else if (!extend || extend === true) {
     return {
       ...element,
