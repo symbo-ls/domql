@@ -10,11 +10,14 @@ export const HTML_TAGS = {
     'title',
     'base',
     'meta',
-    'style'
+    'style',
+    'noscript',
+    'script'
   ],
 
   body: [
     'string',
+    'style',
     'fragment',
     'a',
     'abbr',

@@ -259,10 +259,11 @@ const checkIfPrimitive = (element) => is(element)('string', 'number')
 const applyValueAsText = (element, parent, key) => {
   const extendTag = element.extend && element.extend.tag
   const childExtendTag = parent.childExtend && parent.childExtend.tag
+  const childPropsTag = parent.props.childProps && parent.props.childProps.tag
   const isKeyValidHTMLTag = ((HTML_TAGS.body.indexOf(key) > -1) && key)
   return {
     text: element,
-    tag: extendTag || childExtendTag || isKeyValidHTMLTag || 'string'
+    tag: extendTag || childExtendTag || childPropsTag || isKeyValidHTMLTag || 'string'
   }
 }
 

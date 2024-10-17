@@ -1,6 +1,6 @@
 'use strict'
 
-import { deepContains , setContentKey } from '@domql/utils'
+import { deepContains, setContentKey } from '@domql/utils'
 
 import create from './create'
 import OPTIONS from './cache/options'
@@ -51,8 +51,12 @@ const set = function (params, options = {}, el) {
   }
 
   if (params) {
-    const { childExtend } = params
+    const { childExtend, childProps, props } = params
     if (!childExtend && element.childExtend) params.childExtend = element.childExtend
+    if (!childProps && element.childProps) params.childProps = element.childProps
+    if (!props?.childProps && element.props?.childProps) {
+      params.props.childProps = element.props.childProps
+    }
 
     if (lazyLoad) {
       window.requestAnimationFrame(() => resetElement(params, element, options))
