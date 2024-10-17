@@ -6,6 +6,7 @@ import {
   isArray,
   isFunction,
   isObject,
+  isObjectLike,
   isString,
   joinArrays,
   overwriteDeep
@@ -96,11 +97,20 @@ export const addChildrenIfNotInOriginal = (element, parent, key) => {
     const childKey = childElems[i]
     const childElem = element[childKey]
     const newChild = element.props[childKey]
-    if (newChild.ignoreExtend) continue
+    if (newChild?.ignoreExtend) continue
     if (!childElem) element[childKey] = deepCloneWithExtend(newChild)
     else {
       const isSugar = checkIfSugar(childElem)
-      if (!isSugar) overwriteDeep(element[childKey].props, newChild)
+      if (!isSugar) continue
+      const inheritedChildElem = element[childKey].props
+      if (isObjectLike(newChild)) {
+        overwriteDeep(inheritedChildElem, newChild)
+      } else if (isFunction(newChild)) {
+        element[childKey] = {
+          extend: element[childKey],
+          props: newChild
+        }
+      }
     }
   }
 }
@@ -194,4 +204,14 @@ export const getExtendsInElement = (obj) => {
 
   traverse(obj)
   return result
+}
+
+export const setContentKey = (el, opts = {}) => {
+  const { __ref: ref } = el
+  const contentElementKey = opts.contentElementKey
+  if ((contentElementKey !== 'content' && contentElementKey !== ref.contentElementKey) || !ref.contentElementKey) {
+    ref.contentElementKey = contentElementKey || 'content'
+  } else ref.contentElementKey = 'content'
+  if (contentElementKey !== 'content') opts.contentElementKey = 'content'
+  return ref.contentElementKey
 }

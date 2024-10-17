@@ -1,20 +1,23 @@
 'use strict'
 
-import { isFunction } from '@domql/utils'
+import { isFunction, setContentKey } from '@domql/utils'
 import set from '../set'
 
 export const updateContent = function (params, options) {
   const element = this
+  const ref = element.__ref
 
-  if (!element.content) return
-  if (element.content.update) element.content.update(params, options)
+  const contentKey = ref.contentElementKey
+
+  if (!element[contentKey]) return
+  if (element[contentKey].update) element[contentKey].update(params, options)
 }
 
 export const removeContent = function (el, opts = {}) {
   const element = el || this
-  const { __ref } = element
-  const contentElementKey = opts.contentElementKey || 'content'
-
+  const { __ref: ref } = element
+  const contentElementKey = setContentKey(element, opts)
+  if (opts.contentElementKey !== 'content') opts.contentElementKey = 'content'
   if (element[contentElementKey]) {
     if (element[contentElementKey].node && element.node) {
       if (element[contentElementKey].tag === 'fragment') element.node.innerHTML = ''
@@ -24,13 +27,13 @@ export const removeContent = function (el, opts = {}) {
       }
     }
 
-    const { __cached } = __ref
+    const { __cached } = ref
     if (__cached && __cached[contentElementKey]) {
       if (__cached[contentElementKey].tag === 'fragment') __cached[contentElementKey].parent.node.innerHTML = ''
       else if (__cached[contentElementKey] && isFunction(__cached[contentElementKey].remove)) __cached[contentElementKey].remove()
     }
 
-    delete element.content
+    delete element[contentElementKey]
   }
 }
 
@@ -38,12 +41,13 @@ export const removeContent = function (el, opts = {}) {
  * Appends anything as content
  * an original one as a child
  */
-export const setContent = (param, element, node, options) => {
+export const setContent = (param, element, node, opts) => {
+  const contentElementKey = setContentKey(element, opts)
   if (param && element) {
-    if (element.content.update) {
-      element.content.update({}, options)
+    if (element[contentElementKey].update) {
+      element[contentElementKey].update({}, opts)
     } else {
-      set.call(element, param, options)
+      set.call(element, param, opts)
     }
   }
 }

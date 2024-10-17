@@ -1,6 +1,6 @@
 'use strict'
 
-import { deepContains } from '@domql/utils'
+import { deepContains , setContentKey } from '@domql/utils'
 
 import create from './create'
 import OPTIONS from './cache/options'
@@ -10,7 +10,8 @@ import { triggerEventOn, triggerEventOnUpdate } from '@domql/event'
 
 export const resetElement = (params, element, options) => {
   if (!options.preventRemove) removeContent(element, options)
-  create(params, element, options.contentElementKey || 'content', {
+  const { __ref: ref } = element
+  create(params, element, ref.contentElementKey || 'content', {
     ignoreChildExtend: true,
     ...registry.defaultOptions,
     ...OPTIONS.create,
@@ -30,7 +31,9 @@ export const reset = (options) => {
 
 const set = function (params, options = {}, el) {
   const element = el || this
-  const { __ref: ref, content } = element
+  const { __ref: ref } = element
+
+  const content = setContentKey(element, options)
   const __contentRef = content && content.__ref
   const lazyLoad = element.props && element.props.lazyLoad
 

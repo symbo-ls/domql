@@ -207,9 +207,11 @@ const checkIfOnUpdate = (element, parent, options) => {
         delete element.node
       }
 
+      const contentKey = ref.contentElementKey
+
       if (element.$collection || element.$stateCollection || element.$propsCollection) {
         element.removeContent()
-      } else if (element.content?.parseDeep) element.content = element.content.parseDeep()
+      } else if (element[contentKey]?.parseDeep) element[contentKey] = element[contentKey].parseDeep()
 
       const previousElement = element.previousElement()
       const previousNode = previousElement?.node // document.body.contains(previousElement.node)
