@@ -1,6 +1,6 @@
 {
   "name": "@domql/state",
-  "version": "2.5.139",
+  "version": "2.5.140",
   "license": "MIT",
   "type": "module",
   "module": "dist/esm/index.js",
@@ -27,9 +27,9 @@
     "prepublish": "rimraf -I dist && yarn build && yarn copy:package:cjs"
   },
   "dependencies": {
-    "@domql/event": "^2.5.139",
+    "@domql/event": "^2.5.140",
     "@domql/report": "^2.5.0",
-    "@domql/utils": "^2.5.139"
+    "@domql/utils": "^2.5.140"
   },
   "gitHead": "06c19a4cfe0e5acc6be8877cd378f654dfb0841e"
 }
