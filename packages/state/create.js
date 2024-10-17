@@ -44,7 +44,7 @@ export const applyInitialState = function (element, parent, options) {
     element.state = isUndefined(inheritedState) ? {} : inheritedState
   }
 
-  const dependentState = applyDependentState(element, element.state)
+  const dependentState = applyDependentState(element, element.state || parent.state || {})
   if (dependentState) element.state = dependentState
 
   applyMethods(element)
@@ -76,7 +76,8 @@ const applyDependentState = (element, state) => {
 }
 
 const checkForTypes = (element) => {
-  const { state, __ref: ref } = element
+  const { state: orig, props, __ref: ref } = element
+  const state = props?.state || orig
   if (isFunction(state)) {
     ref.__state = state
     return exec(state, element)

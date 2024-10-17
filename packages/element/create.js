@@ -17,7 +17,8 @@ import {
   applyComponentFromContext,
   applyKeyComponentAsExtend,
   isVariant,
-  detectInfiniteLoop
+  detectInfiniteLoop,
+  addChildrenIfNotInOriginal
 } from '@domql/utils'
 import { triggerEventOn } from '@domql/event'
 import { assignNode } from '@domql/render'
@@ -57,23 +58,18 @@ const create = (element, parent, key, options = OPTIONS.create || {}, attachOpti
 
   const ref = addRef(element, parent, key)
 
-  // assign initial props
   ref.__initialProps = deepCloneWithExtend(element.props, [])
 
-  // assign context
   applyContext(element, parent, options)
 
   applyComponentFromContext(element, parent, options)
 
   if (!ref.__skipCreate) {
-    // create EXTEND inheritance
     applyExtend(element, parent, options)
   }
 
-  // create and assign a KEY
   element.key = key
 
-  // Only resolve extends, skip everything else
   if (options.onlyResolveExtends) {
     return onlyResolveExtends(element, parent, key, options)
   }
@@ -113,6 +109,8 @@ const create = (element, parent, key, options = OPTIONS.create || {}, attachOpti
 
   // generate a CLASS name
   assignKeyAsClassname(element)
+
+  addChildrenIfNotInOriginal(element, parent, key)
 
   renderElement(element, parent, options, attachOptions)
 
@@ -286,7 +284,7 @@ const createScope = (element, parent) => {
 const createIfConditionFlag = (element, parent) => {
   const { __ref: ref } = element
 
-  if (isFunction(element.if) && !element.if(element, element.state)) {
+  if (isFunction(element.if) && !element.if(element, element.state, element.context)) {
     delete ref.__if
   } else ref.__if = true
 }

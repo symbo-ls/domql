@@ -180,10 +180,10 @@ const captureSnapshot = (element, options) => {
 }
 
 const checkIfOnUpdate = (element, parent, options) => {
-  if (!isFunction(element.if) || !parent) return
+  if ((!isFunction(element.if) && !isFunction(element.props.if)) || !parent) return
 
   const ref = element.__ref
-  const ifPassed = element.if(element, element.state, element.context, options)
+  const ifPassed = (element.if || element.props?.if)(element, element.state, element.context, options)
   const itWasFalse = ref.__if !== true
 
   if (ifPassed) {

@@ -1,6 +1,15 @@
 'use strict'
 
-import { exec, isArray, isFunction, isObject, isString, joinArrays } from '.'
+import {
+  deepCloneWithExtend,
+  exec,
+  isArray,
+  isFunction,
+  isObject,
+  isString,
+  joinArrays,
+  overwriteDeep
+} from '.'
 const ENV = process.env.NODE_ENV
 
 export const checkIfKeyIsComponent = (key) => {
@@ -25,10 +34,16 @@ export const addAdditionalExtend = (newExtend, element) => {
   return { ...element, extend }
 }
 
+const checkIfSugar = (element, parent, key) => {
+  const { extend, props, childExtend, extends: extendProps, childrenExtends, childProps, children, on, $collection, $stateCollection, $propsCollection } = element
+  const hasComponentAttrs = extend || childExtend || props || on || $collection || $stateCollection || $propsCollection
+  return !hasComponentAttrs || childProps || extendProps || children || childrenExtends
+}
+
 export const extendizeByKey = (element, parent, key) => {
   const { context } = parent
-  const { tag, extend, props, attr, state, childExtend, childProps, on, if: condition, data } = element
-  const hasComponentAttrs = extend || childExtend || props || state || on || condition || attr || data
+  const { tag, extend, childrenExtends } = element
+  const isSugar = checkIfSugar(element)
 
   const extendFromKey = key.includes('+')
     ? key.split('+') // get array of componentKeys
@@ -44,9 +59,10 @@ export const extendizeByKey = (element, parent, key) => {
   const isExtendKeyComponent = context && context.components[extendFromKey]
 
   if (element === isExtendKeyComponent) return element
-  else if (!hasComponentAttrs || childProps) {
+  else if (isSugar) {
     return {
       extend: extendFromKey,
+      childExtend: childrenExtends,
       tag,
       props: { ...element }
     }
@@ -63,6 +79,27 @@ export const extendizeByKey = (element, parent, key) => {
       extend: extendFromKey,
       tag,
       props: { ...exec(element, parent) }
+    }
+  }
+}
+
+function getCapitalCaseKeys (obj) {
+  return Object.keys(obj).filter(key => /^[A-Z]/.test(key))
+}
+
+export const addChildrenIfNotInOriginal = (element, parent, key) => {
+  const childElems = getCapitalCaseKeys(element.props)
+  if (!childElems.length) return element
+
+  for (const i in childElems) {
+    const childKey = childElems[i]
+    const childElem = element[childKey]
+    const newChild = element.props[childKey]
+    if (newChild.ignoreExtend) continue
+    if (!childElem) element[childKey] = deepCloneWithExtend(newChild)
+    else {
+      const isSugar = checkIfSugar(childElem)
+      if (!isSugar) overwriteDeep(element[childKey].props, newChild)
     }
   }
 }

@@ -1,6 +1,6 @@
 'use strict'
 
-import { exec, isObject } from '@domql/utils'
+import { exec, isObject, deepMerge } from '@domql/utils'
 import { report } from '@domql/report'
 
 /**
@@ -8,13 +8,16 @@ import { report } from '@domql/report'
  * this should only work if `showOnNode: true` is passed
  */
 export default (params, element, node) => {
-  if (params && params.showOnNode) {
-    if (!isObject(params)) report('HTMLInvalidData', params)
+  if (params) {
+    if (element.props.attr) deepMerge(params, element.props.attr)
+    if (params.showOnNode) {
+      if (!isObject(params)) report('HTMLInvalidData', params)
 
-    // Apply data params on node
-    for (const dataset in params) {
-      if (dataset !== 'showOnNode') {
-        node.dataset[dataset] = exec(params[dataset], element)
+      // Apply data params on node
+      for (const dataset in params) {
+        if (dataset !== 'showOnNode') {
+          node.dataset[dataset] = exec(params[dataset], element)
+        }
       }
     }
   }

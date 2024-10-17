@@ -2,6 +2,7 @@
 
 import { exec, isNot, isNull, isUndefined } from '@domql/utils'
 import { report } from '@domql/report'
+import { deepMerge } from '../utils'
 
 /**
  * Recursively add attributes to a DOM node
@@ -11,6 +12,7 @@ export default (params, element, node) => {
   const { __attr } = __ref
   if (isNot('object')) report('HTMLInvalidAttr', params)
   if (params) {
+    if (element.props.attr) deepMerge(params, element.props.attr)
     for (const attr in params) {
       const val = exec(params[attr], element)
       // if (__attr[attr] === val) return
@@ -19,5 +21,4 @@ export default (params, element, node) => {
       __attr[attr] = val
     }
   }
-  console.groupEnd(params, __attr)
 }

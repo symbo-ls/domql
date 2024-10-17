@@ -58,7 +58,7 @@ export const onlyResolveExtends = (element, parent, key, options) => {
   // Borrowed from createIfConditionFlag()
   const ref = __ref
   if (isFunction(element.if)) {
-    const ifPassed = element.if(element, element.state)
+    const ifPassed = element.if(element, element.state, element.context)
     if (!ifPassed) {
       // const ifFragment = cacheNode({ tag: 'fragment' })
       // ref.__ifFragment = appendNode(ifFragment, parent.node)
