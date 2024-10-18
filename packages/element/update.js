@@ -84,6 +84,11 @@ const update = function (params = {}, opts) {
   // const overwriteChanges = overwriteDeep(element, params)
   const execChanges = throughUpdatedExec(element, { ignore: UPDATE_DEFAULT_OPTIONS })
   const definedChanges = throughUpdatedDefine(element)
+  const { props } = element
+  for (const k in props) {
+    const isDefine = k.startsWith('is') || k.startsWith('has') || k.startsWith('use')
+    if (isDefine && isFunction(props[k])) props[k] = exec(props[k], element)
+  }
 
   if (!options.isForced && !options.preventListeners) {
     triggerEventOn('beforeClassAssign', element, options)

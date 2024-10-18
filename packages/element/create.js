@@ -2,6 +2,7 @@
 
 import createNode from './node'
 import { ROOT } from './tree'
+
 import {
   HTML_TAGS,
   isObject,
@@ -20,6 +21,7 @@ import {
   detectInfiniteLoop,
   addChildrenIfNotInOriginal
 } from '@domql/utils'
+
 import { triggerEventOn } from '@domql/event'
 import { assignNode } from '@domql/render'
 import { createState } from '@domql/state'
