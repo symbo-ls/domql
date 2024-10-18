@@ -24,28 +24,28 @@ import {
 
 import { removeContent, updateContent } from '../mixins/content'
 
-export const addMethods = (element, parent) => {
+export const addMethods = (element, parent, options) => {
   const proto = {
-    set: set.bind(element),
-    reset: reset.bind(element),
-    update: update.bind(element),
-    variables: variables.bind(element),
-    remove: remove.bind(element),
-    updateContent: updateContent.bind(element),
-    removeContent: removeContent.bind(element),
-    setProps: setProps.bind(element),
-    lookup: lookup.bind(element),
-    lookdown: lookdown.bind(element),
-    lookdownAll: lookdownAll.bind(element),
-    setNodeStyles: setNodeStyles.bind(element),
-    spotByPath: spotByPath.bind(element),
-    parse: parse.bind(element),
-    parseDeep: parseDeep.bind(element),
-    keys: keys.bind(element),
-    nextElement: nextElement.bind(element),
-    previousElement: previousElement.bind(element)
+    set,
+    reset,
+    update,
+    variables,
+    remove,
+    updateContent,
+    removeContent,
+    setProps,
+    lookup,
+    lookdown,
+    lookdownAll,
+    setNodeStyles,
+    spotByPath,
+    parse,
+    parseDeep,
+    keys,
+    nextElement,
+    previousElement
   }
   if (element.context.methods) merge(proto, element.context.methods)
-  if (isDevelopment()) proto.log = log.bind(element)
+  if (isDevelopment()) proto.log = log
   Object.setPrototypeOf(element, proto)
 }

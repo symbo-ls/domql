@@ -169,30 +169,46 @@ export const deepClone = (obj, exclude = [], cleanUndefined = false, visited = n
 /**
  * Deep cloning of object
  */
-export const deepCloneWithExtend = (obj, excludeFrom = ['node'], options = {}) => {
+export const deepCloneWithExtend = (obj, excludeFrom = ['node'], options = {}, visited = new WeakSet()) => {
+  // Check if the value is object-like before trying to track it in visited
+  if (isObjectLike(obj)) {
+    if (visited.has(obj)) {
+      return obj // Return the object if it was already cloned
+    }
+    visited.add(obj) // Add to visited set only if it's an object
+  }
+
   const o = options.window
-    ? isArray(obj) ? new options.window.Array([]) : new options.window.Object({})
-    : isArray(obj) ? [] : {}
+    ? isArray(obj)
+      ? new options.window.Array([])
+      : new options.window.Object({})
+    : isArray(obj)
+      ? []
+      : {}
+
   for (const prop in obj) {
     if (!Object.prototype.hasOwnProperty.call(obj, prop)) continue
-    // if (prop === 'node' || prop === 'parent' || prop === 'root' || prop === '__element') {
-    //   console.warn('recursive clonning is called', obj)
-    //   continue
-    // }
+
     const objProp = obj[prop]
+
     if (
-      excludeFrom.includes(prop) || prop.startsWith('__') ||
+      excludeFrom.includes(prop) ||
+      prop.startsWith('__') ||
       (options.cleanUndefined && isUndefined(objProp)) ||
       (options.cleanNull && isNull(objProp))
-    ) continue
+    ) {
+      continue
+    }
+
     if (isObjectLike(objProp)) {
-      // queueMicrotask(() => {
-      o[prop] = deepCloneWithExtend(objProp, excludeFrom, options)
-      // })
+      o[prop] = deepCloneWithExtend(objProp, excludeFrom, options, visited)
     } else if (isFunction(objProp) && options.window) {
       o[prop] = (options.window || window).eval('(' + objProp.toString() + ')')
-    } else o[prop] = objProp
+    } else {
+      o[prop] = objProp
+    }
   }
+
   return o
 }
 

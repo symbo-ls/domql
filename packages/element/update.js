@@ -146,6 +146,10 @@ const update = function (params = {}, opts) {
 
       const lazyLoad = element.props.lazyLoad || options.lazyLoad
 
+      if (options.onEachUpdate) {
+        options.onEachUpdate(param, element, element.state, element.context)
+      }
+
       const childUpdateCall = () => update.call(prop, params[prop], {
         ...options,
         currentSnapshot: snapshotOnCallee,
