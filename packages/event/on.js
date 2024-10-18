@@ -47,6 +47,9 @@ export const applyEventsOnNode = (element, options) => {
       param === 'beforeStateUpdate' ||
       param === 'stateUpdate' ||
       param === 'beforeUpdate' ||
+      param === 'done' ||
+      param === 'create' ||
+      param === 'complete' ||
       param === 'frame' ||
       param === 'update'
     ) continue

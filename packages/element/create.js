@@ -252,6 +252,9 @@ const renderElement = (element, parent, options, attachOptions) => {
 
   // run `on.done`
   triggerEventOn('done', element, options)
+
+  // run `on.done`
+  triggerEventOn('create', element, options)
 }
 
 const checkIfPrimitive = (element) => is(element)('string', 'number')
