@@ -3,7 +3,7 @@
 import { isFunction } from '@domql/utils'
 
 export const applyEvent = (param, element, state, context, options) => {
-  return param.call(context?.window || window, element, state || element.state, context || element.context, options)
+  return param.call(element, element, state || element.state, context || element.context, options)
 }
 
 export const triggerEventOn = (param, element, options) => {
@@ -14,7 +14,7 @@ export const triggerEventOn = (param, element, options) => {
 }
 
 export const applyEventUpdate = (param, updatedObj, element, state, context, options) => {
-  return param.call(context?.window || window, updatedObj, element, state || element.state, context || element.context, options)
+  return param.call(element, updatedObj, element, state || element.state, context || element.context, options)
 }
 
 export const triggerEventOnUpdate = (param, updatedObj, element, options) => {
@@ -55,7 +55,7 @@ export const applyEventsOnNode = (element, options) => {
     if (isFunction(appliedFunction)) {
       node.addEventListener(param, event => {
         const { state, context } = element
-        appliedFunction.call(context?.window || window, event, element, state, context, options)
+        appliedFunction.call(element, event, element, state, context, options)
       })
     }
   }

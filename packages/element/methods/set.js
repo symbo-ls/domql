@@ -1,6 +1,6 @@
 'use strict'
 
-import { isDevelopment } from '@domql/utils'
+import { isDevelopment, merge } from '@domql/utils'
 
 import set, { reset } from '../set'
 import update from '../update'
@@ -45,6 +45,7 @@ export const addMethods = (element, parent) => {
     nextElement: nextElement.bind(element),
     previousElement: previousElement.bind(element)
   }
+  if (element.context.methods) merge(proto, element.context.methods)
   if (isDevelopment()) proto.log = log.bind(element)
   Object.setPrototypeOf(element, proto)
 }

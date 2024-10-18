@@ -80,7 +80,7 @@ export const onlyResolveExtends = (element, parent, key, options) => {
       const prop = element[param]
       if (
         isUndefined(prop) ||
-        isMethod(param) ||
+        isMethod(param, element) ||
         isObject(registry[param]) ||
         isVariant(param)
       ) continue

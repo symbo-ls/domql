@@ -362,7 +362,7 @@ const onlyResolveExtends = (element, parent, key, options) => {
     for (const k in element) {
       if (
         isUndefined(element[k]) ||
-        isMethod(k) ||
+        isMethod(k, element) ||
         isObject(registry[k]) ||
         isVariant(k)
       ) continue

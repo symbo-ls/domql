@@ -68,7 +68,7 @@ export const createNode = (element, options) => {
 
     if (
       isUndefined(value) ||
-      isMethod(param) ||
+      isMethod(param, element) ||
       isVariant(param) ||
       isObject(registry[param])
     ) continue

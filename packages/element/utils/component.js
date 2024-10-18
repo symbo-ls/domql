@@ -18,6 +18,7 @@ const replaceOnKeys = key => key.replace(/on\w+/g, match => match.substring(2))
 export const createValidDomqlObjectFromSugar = (el, parent, key, options) => {
   const newElem = {
     props: {},
+    define: {},
     on: {}
   }
   for (const k in el) {
@@ -26,6 +27,12 @@ export const createValidDomqlObjectFromSugar = (el, parent, key, options) => {
     if (isEvent) {
       const onKey = replaceOnKeys(prop)
       newElem.on[onKey] = prop
+    // } else if (!isMethod && checkIfKeyIsProperty(k)) {
+    }
+
+    const isDefine = k.startsWith('is') || k.startsWith('has') || k.startsWith('use')
+    if (isDefine) {
+      newElem.define[k] = prop
     // } else if (!isMethod && checkIfKeyIsProperty(k)) {
     }
 

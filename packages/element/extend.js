@@ -63,22 +63,20 @@ export const applyExtend = (element, parent, options = {}) => {
     stack = extendStack
   } else if (childExtendLength) {
     stack = childExtendStack
-  } else if (!options.extend) return element
+  } else if (!context.defaultExtends) return element
 
-  if (options.extend) {
+  if (context.defaultExtends) {
     if (!mainExtend) {
-      const defaultOptionsExtend = getExtendStack(options.extend, context)
+      const defaultOptionsExtend = getExtendStack(context.defaultExtends, context)
       mainExtend = cloneAndMergeArrayExtend(defaultOptionsExtend)
       delete mainExtend.extend
     }
     stack = [].concat(stack, mainExtend)
   }
 
-  // check if array contains string extends
   if (__ref) __ref.__extend = stack
   let mergedExtend = cloneAndMergeArrayExtend(stack)
 
-  // apply `component:` property
   const COMPONENTS = (context && context.components) || options.components
   const component = exec(element.component || mergedExtend.component, element)
   if (component && COMPONENTS && COMPONENTS[component]) {

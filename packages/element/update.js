@@ -133,7 +133,7 @@ const update = function (params = {}, opts) {
       preventDefineUpdate === param ||
       (preventContentUpdate && param === 'content' && !hasCollection) ||
       (preventStateUpdate && param) === 'state' ||
-      isMethod(param) || isObject(registry[param]) || isVariant(param)
+      isMethod(param, element) || isObject(registry[param]) || isVariant(param)
     ) continue
 
     if (preventStateUpdate === 'once') options.preventStateUpdate = false

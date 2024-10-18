@@ -267,6 +267,6 @@ export const METHODS = [
   'previousElement'
 ]
 
-export const isMethod = function (param) {
-  return METHODS.includes(param)
+export const isMethod = function (param, element) {
+  return METHODS.includes(param) || element?.context?.methods?.[param]
 }
