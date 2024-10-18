@@ -9,7 +9,7 @@ export const applyEvent = (param, element, state, context, options) => {
 export const triggerEventOn = (param, element, options) => {
   if (element.on && isFunction(element.on[param])) {
     const { state, context } = element
-    return applyEvent(element.on[param], element, state, context, options)
+    return applyEvent(element.on[param] || element.props?.[param], element, state, context, options)
   }
 }
 
@@ -20,7 +20,7 @@ export const applyEventUpdate = (param, updatedObj, element, state, context, opt
 export const triggerEventOnUpdate = (param, updatedObj, element, options) => {
   if (element.on && isFunction(element.on[param])) {
     const { state, context } = element
-    return applyEventUpdate(element.on[param], updatedObj, element, state, context, options)
+    return applyEventUpdate(element.on[param] || element.props?.[param], updatedObj, element, state, context, options)
   }
 }
 
@@ -54,7 +54,7 @@ export const applyEventsOnNode = (element, options) => {
       param === 'update'
     ) continue
 
-    const appliedFunction = element.on[param]
+    const appliedFunction = element.on[param] || element.props?.[param]
     if (isFunction(appliedFunction)) {
       node.addEventListener(param, event => {
         const { state, context } = element
