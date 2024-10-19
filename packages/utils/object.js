@@ -795,3 +795,25 @@ export const detectInfiniteLoop = arr => {
     }
   }
 }
+
+export const isCyclic = (obj) => {
+  const seenObjects = []
+
+  function detect (obj) {
+    if (obj && typeof obj === 'object') {
+      if (seenObjects.indexOf(obj) !== -1) {
+        return true
+      }
+      seenObjects.push(obj)
+      for (const key in obj) {
+        if (Object.hasOwnProperty.call(obj, key) && detect(obj[key])) {
+          console.log(obj, 'cycle at ' + key)
+          return true
+        }
+      }
+    }
+    return false
+  }
+
+  return detect(obj)
+}

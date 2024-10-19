@@ -8,6 +8,7 @@ import { isMethod } from './methods'
 import create from './create'
 
 import {
+  throughExecProps,
   throughInitialDefine,
   throughInitialExec
 } from './iterate'
@@ -44,11 +45,8 @@ export const createNode = (element, options) => {
     if (isFunction(node.setAttribute)) node.setAttribute('key', element.key)
   }
 
-  const { props } = element
-  for (const k in props) {
-    const isDefine = k.startsWith('is') || k.startsWith('has') || k.startsWith('use')
-    if (isDefine && isFunction(props[k])) props[k] = exec(props[k], element)
-  }
+  // iterate through exec props
+  throughExecProps(element)
 
   // iterate through define
   throughInitialDefine(element)

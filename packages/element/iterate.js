@@ -58,6 +58,21 @@ export const throughUpdatedExec = (element, options = { excludes: METHODS_EXL })
   return changes
 }
 
+export const throughExecProps = (element) => {
+  const { __ref: ref } = element
+  const { props } = element
+  for (const k in props) {
+    const isDefine = k.startsWith('is') || k.startsWith('has') || k.startsWith('use')
+    const cachedExecProp = ref.__execProps[k]
+    if (isFunction(cachedExecProp)) {
+      props[k] = exec(cachedExecProp, element)
+    } else if (isDefine && isFunction(props[k])) {
+      ref.__execProps[k] = props[k]
+      props[k] = exec(props[k], element)
+    }
+  }
+}
+
 export const throughInitialDefine = (element) => {
   const { define, context, __ref: ref } = element
 

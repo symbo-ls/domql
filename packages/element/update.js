@@ -21,7 +21,7 @@ import { updateProps } from './props'
 import { createState, findInheritedState } from '@domql/state'
 
 import create from './create'
-import { throughUpdatedDefine, throughUpdatedExec } from './iterate'
+import { throughExecProps, throughUpdatedDefine, throughUpdatedExec } from './iterate'
 import { registry } from './mixins'
 import { applyParam } from './utils/applyParam'
 import OPTIONS from './cache/options'
@@ -80,23 +80,13 @@ const update = function (params = {}, opts) {
     if (beforeUpdateReturns === false) return element
   }
 
-  const overwriteChanges = overwriteDeep(element, params, METHODS_EXL)
-  // const overwriteChanges = overwriteDeep(element, params)
-  const execChanges = throughUpdatedExec(element, { ignore: UPDATE_DEFAULT_OPTIONS })
-  const definedChanges = throughUpdatedDefine(element)
-  const { props } = element
-  for (const k in props) {
-    const isDefine = k.startsWith('is') || k.startsWith('has') || k.startsWith('use')
-    if (isDefine && isFunction(props[k])) props[k] = exec(props[k], element)
-  }
+  overwriteDeep(element, params, METHODS_EXL)
+  throughExecProps(element)
+  throughUpdatedExec(element, { ignore: UPDATE_DEFAULT_OPTIONS })
+  throughUpdatedDefine(element)
 
   if (!options.isForced && !options.preventListeners) {
     triggerEventOn('beforeClassAssign', element, options)
-  }
-
-  if (options.stackChanges && element.__stackChanges) {
-    const stackChanges = merge(definedChanges, merge(execChanges, overwriteChanges))
-    element.__stackChanges.push(stackChanges)
   }
 
   if (!ref.__if) return false
@@ -320,3 +310,14 @@ const createStateUpdate = (element, parent, options) => {
 }
 
 export default update
+
+// save updates history
+// const overwriteChanges = overwriteDeep(element, params, METHODS_EXL)
+// // const overwriteChanges = overwriteDeep(element, params)
+// const propsChanges = throughExecProps(element)
+// const execChanges = throughUpdatedExec(element, { ignore: UPDATE_DEFAULT_OPTIONS })
+// const definedChanges = throughUpdatedDefine(element)
+// if (options.stackChanges && ref.__stackChanges) {
+//   const stackChanges = merge(definedChanges, merge(execChanges, overwriteChanges))
+//   ref.__stackChanges.push(stackChanges)
+// }

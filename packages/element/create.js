@@ -308,6 +308,7 @@ const addCaching = (element, parent) => {
 
   // enable EXEC
   if (!ref.__exec) ref.__exec = {}
+  if (!ref.__execProps) ref.__execProps = {}
 
   // enable CLASS CACHING
   if (!ref.__class) ref.__class = {}
