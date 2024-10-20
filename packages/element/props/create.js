@@ -6,20 +6,20 @@ import { IGNORE_PROPS_PARAMS } from './ignore'
 import { inheritParentProps } from './inherit'
 
 const createPropsStack = (element, parent) => {
-  const { props, __ref } = element
-  const propsStack = __ref.__props = inheritParentProps(element, parent)
+  const { props, __ref: ref } = element
+  const propsStack = ref.__props = inheritParentProps(element, parent)
 
   if (isObject(props)) propsStack.push(props)
   else if (props === 'inherit' && parent.props) propsStack.push(parent.props)
   else if (props) propsStack.push(props)
 
-  if (isArray(__ref.__extend)) {
-    __ref.__extend.forEach(extend => {
+  if (isArray(ref.__extend)) {
+    ref.__extend.forEach(extend => {
       if (extend.props && extend.props !== props) propsStack.push(extend.props)
     })
   }
 
-  __ref.__props = propsStack
+  ref.__props = propsStack
 
   return propsStack
 }
