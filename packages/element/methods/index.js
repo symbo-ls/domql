@@ -160,7 +160,7 @@ export const parse = function (excl = []) {
     } else if (v === 'props') {
       const { __element, update, ...props } = element[v]
       obj[v] = props
-    } else if (isDefined(val)) obj[v] = val
+    } else if (isDefined(val) && !element.context?.methods[v]) obj[v] = val
   })
   return obj
 }
