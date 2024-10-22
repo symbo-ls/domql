@@ -46,14 +46,12 @@ export const addMethods = (element, parent, options = {}) => {
     parseDeep,
     keys,
     nextElement,
-    previousElement
+    previousElement,
+    log,
+    verbose,
+    warn,
+    error
   }
   if (element.context.methods) (options.strict ? merge : overwrite)(proto, element.context.methods)
-  if (isDevelopment()) {
-    proto.log = log
-    proto.verbose = verbose
-    proto.warn = warn
-    proto.error = error
-  }
   Object.setPrototypeOf(element, proto)
 }
