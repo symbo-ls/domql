@@ -1,6 +1,6 @@
 'use strict'
 
-import { isDevelopment, merge } from '@domql/utils'
+import { isDevelopment, merge, overwrite } from '@domql/utils'
 
 import set, { reset } from '../set'
 import update from '../update'
@@ -14,6 +14,9 @@ import {
   remove,
   spotByPath,
   log,
+  verbose,
+  warn,
+  error,
   variables,
   keys,
   parse,
@@ -24,7 +27,7 @@ import {
 
 import { removeContent, updateContent } from '../mixins/content'
 
-export const addMethods = (element, parent, options) => {
+export const addMethods = (element, parent, options = {}) => {
   const proto = {
     set,
     reset,
@@ -45,7 +48,12 @@ export const addMethods = (element, parent, options) => {
     nextElement,
     previousElement
   }
-  if (element.context.methods) merge(proto, element.context.methods)
-  if (isDevelopment()) proto.log = log
+  if (element.context.methods) (options.strict ? merge : overwrite)(proto, element.context.methods)
+  if (isDevelopment()) {
+    proto.log = log
+    proto.verbose = verbose
+    proto.warn = warn
+    proto.error = error
+  }
   Object.setPrototypeOf(element, proto)
 }

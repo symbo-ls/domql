@@ -502,23 +502,30 @@ export const deepDiff = (lhs, rhs) => {
 /**
  * Overwrites object properties with another
  */
-export const overwrite = (element, params, excludeFrom = []) => {
-  const { ref } = element
-  const changes = {}
+export const overwrite = (element, params, opts = {}) => {
+  const { __ref: ref } = element
+  const excl = opts.exclude || []
+  const allowUnderscore = opts.preventUnderscore
+  const preventCaching = opts.preventCaching
 
   for (const e in params) {
-    if (excludeFrom.includes(e) || e.startsWith('__')) continue
+    if (excl.includes(e) || (!allowUnderscore && e.startsWith('__'))) continue
 
     const elementProp = element[e]
     const paramsProp = params[e]
 
-    if (paramsProp) {
-      ref.__cache[e] = changes[e] = elementProp
-      ref[e] = paramsProp
+    if (paramsProp !== undefined) {
+      element[e] = paramsProp
+      if (ref && !preventCaching) {
+        ref.__cache[e] = elementProp
+      }
+      if (isObject(opts.diff)) {
+        diff[e] = elementProp
+      }
     }
   }
 
-  return changes
+  return element
 }
 
 export const overwriteShallow = (obj, params, excludeFrom = []) => {
@@ -532,19 +539,20 @@ export const overwriteShallow = (obj, params, excludeFrom = []) => {
 /**
  * Overwrites DEEPLY object properties with another
  */
-export const overwriteDeep = (obj, params, excludeFrom = [], visited = new WeakMap()) => {
+export const overwriteDeep = (obj, params, opts = {}, visited = new WeakMap()) => {
+  const excl = opts.exclude || []
+  const forcedExclude = opts.preventForce ? [] : ['node', 'window']
+
   if (!isObjectLike(obj) || !isObjectLike(params) || isDOMNode(obj) || isDOMNode(params)) {
     return params
   }
 
-  if (visited.has(obj)) {
-    return visited.get(obj)
-  }
-
+  if (visited.has(obj)) return visited.get(obj)
   visited.set(obj, obj)
 
   for (const e in params) {
-    if (e === '__ref' || excludeFrom.includes(e) || e.startsWith('__')) continue
+    if (!Object.hasOwnProperty.call(params, e)) continue
+    if (excl.includes(e) || (forcedExclude && e.startsWith('__'))) continue
 
     const objProp = obj[e]
     const paramsProp = params[e]
@@ -552,7 +560,7 @@ export const overwriteDeep = (obj, params, excludeFrom = [], visited = new WeakM
     if (isDOMNode(paramsProp)) {
       obj[e] = paramsProp
     } else if (isObjectLike(objProp) && isObjectLike(paramsProp)) {
-      obj[e] = overwriteDeep(objProp, paramsProp, excludeFrom, visited)
+      obj[e] = overwriteDeep(objProp, paramsProp, opts, visited)
     } else if (paramsProp !== undefined) {
       obj[e] = paramsProp
     }
@@ -816,4 +824,10 @@ export const isCyclic = (obj) => {
   }
 
   return detect(obj)
+}
+
+export const excludeKeysFromObject = (obj, excludedKeys) => {
+  const result = { ...obj }
+  excludedKeys.forEach(key => delete result[key])
+  return result
 }

@@ -80,7 +80,7 @@ const update = function (params = {}, opts) {
     if (beforeUpdateReturns === false) return element
   }
 
-  overwriteDeep(element, params, METHODS_EXL)
+  overwriteDeep(element, params, { exclude: METHODS_EXL })
   throughExecProps(element)
   throughUpdatedExec(element, { ignore: UPDATE_DEFAULT_OPTIONS })
   throughUpdatedDefine(element)
@@ -312,7 +312,7 @@ const createStateUpdate = (element, parent, options) => {
 export default update
 
 // save updates history
-// const overwriteChanges = overwriteDeep(element, params, METHODS_EXL)
+// const overwriteChanges = overwriteDeep(element, params, { exclude: METHODS_EXL })
 // // const overwriteChanges = overwriteDeep(element, params)
 // const propsChanges = throughExecProps(element)
 // const execChanges = throughUpdatedExec(element, { ignore: UPDATE_DEFAULT_OPTIONS })

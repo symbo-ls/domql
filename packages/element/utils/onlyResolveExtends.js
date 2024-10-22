@@ -52,7 +52,7 @@ export const onlyResolveExtends = (element, parent, key, options) => {
     // if (!ref.root) ref.root = hasRoot ? element : parentRef.root
   }
 
-  addMethods(element, parent)
+  addMethods(element, parent, options)
 
   createState(element, parent)
 

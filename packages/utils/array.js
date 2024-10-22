@@ -110,6 +110,7 @@ export const reorderArrayByValues = (array, valueToMove, insertBeforeValue) => {
   }
   return newArray
 }
+
 export const arraysEqual = (arr1, arr2) => {
   if (arr1.length !== arr2.length) {
     return false
@@ -122,4 +123,15 @@ export const arraysEqual = (arr1, arr2) => {
   }
 
   return true
+}
+
+// Using filter and includes
+export const filterArrays = (sourceArr, excludeArr) => {
+  return sourceArr.filter(item => !excludeArr.includes(item))
+}
+
+// Using Set for better performance with large arrays
+export const filterArraysFast = (sourceArr, excludeArr) => {
+  const excludeSet = new Set(excludeArr)
+  return sourceArr.filter(item => !excludeSet.has(item))
 }

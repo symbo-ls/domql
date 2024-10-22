@@ -3,9 +3,10 @@
 import { isDefined, isObject, isFunction, isObjectLike, isProduction, removeValueFromArray, deepClone } from '@domql/utils'
 import { TREE } from '../tree'
 import { parseFilters, registry } from '../mixins'
+const ENV = process.env.NODE_ENV
 
 // TODO: update these files
-export const spotByPath = function (path) {
+export function spotByPath (path) {
   const element = this
   const arr = [].concat(path)
   let active = TREE[arr[0]]
@@ -23,7 +24,7 @@ export const spotByPath = function (path) {
 }
 
 // TODO: update these files
-export const lookup = function (param) {
+export function lookup (param) {
   const el = this
   let { parent } = el
 
@@ -44,7 +45,7 @@ export const lookup = function (param) {
   return parent
 }
 
-export const lookdown = function (param) {
+export function lookdown (param) {
   const el = this
   const { __ref: ref } = el
   const children = ref.__children
@@ -67,7 +68,7 @@ export const lookdown = function (param) {
   return null
 }
 
-export const lookdownAll = function (param, results = []) {
+export function lookdownAll (param, results = []) {
   const el = this
   const { __ref: ref } = el
   const children = ref.__children
@@ -87,7 +88,7 @@ export const lookdownAll = function (param, results = []) {
   return results.length ? results : null
 }
 
-export const setNodeStyles = function (params = {}) {
+export function setNodeStyles (params = {}) {
   const el = this
   if (!el.node?.style) return
 
@@ -101,7 +102,7 @@ export const setNodeStyles = function (params = {}) {
   return el
 }
 
-export const remove = function () {
+export function remove () {
   const element = this
   if (isFunction(element.node.remove)) element.node.remove()
   else if (!isProduction()) {
@@ -112,28 +113,28 @@ export const remove = function () {
   if (element.parent.__ref) element.parent.__ref.__children = removeValueFromArray(element.parent.__ref.__children, element.key)
 }
 
-export const get = function (param) {
+export function get (param) {
   const element = this
   return element[param]
 }
 
-export const setProps = function (param, options) {
+export function setProps (param, options) {
   const element = this
   if (!param || !element.props) return
   element.update({ props: param }, options)
   return element
 }
 
-// export const set = function () {
+// export function set () {
 // }
 
-// export const update = function () {
+// export function update () {
 // }
 
 export const defineSetter = (element, key, get, set) =>
   Object.defineProperty(element, key, { get, set })
 
-export const keys = function () {
+export function keys () {
   const element = this
   const keys = []
   for (const param in element) {
@@ -143,7 +144,7 @@ export const keys = function () {
   return keys
 }
 
-export const parse = function (excl = []) {
+export function parse (excl = []) {
   const element = this
   const obj = {}
   const keyList = keys.call(element)
@@ -165,7 +166,7 @@ export const parse = function (excl = []) {
   return obj
 }
 
-export const parseDeep = function (excl = []) {
+export function parseDeep (excl = []) {
   const element = this
   const obj = parse.call(element, excl)
   for (const v in obj) {
@@ -175,14 +176,14 @@ export const parseDeep = function (excl = []) {
   return obj
 }
 
-export const log = function (...args) {
+export function verbose (...args) {
   const element = this
-  const { __ref } = element
+  const { __ref: ref } = element
   console.group(element.key)
   if (args.length) {
     args.forEach(v => console.log(`%c${v}:\n`, 'font-weight: bold', element[v]))
   } else {
-    console.log(__ref.path)
+    console.log(ref.path)
     const keys = element.keys()
     keys.forEach(v => console.log(`%c${v}:\n`, 'font-weight: bold', element[v]))
   }
@@ -190,7 +191,25 @@ export const log = function (...args) {
   return element
 }
 
-export const nextElement = function () {
+export function log (...params) {
+  if (ENV === 'test' || ENV === 'development') {
+    console.log(...params)
+  }
+}
+
+export function warn (...params) {
+  if (ENV === 'test' || ENV === 'development') {
+    console.warn(...params)
+  }
+}
+
+export function error (...params) {
+  if (ENV === 'test' || ENV === 'development') {
+    console.error(...params)
+  }
+}
+
+export function nextElement () {
   const element = this
   const { key, parent } = element
   const { __children } = parent.__ref
@@ -201,7 +220,7 @@ export const nextElement = function () {
   return parent[nextChild]
 }
 
-export const previousElement = function (el) {
+export function previousElement (el) {
   const element = el || this
   const { key, parent } = element
   const { __children } = parent.__ref
@@ -212,7 +231,7 @@ export const previousElement = function (el) {
   return parent[__children[currentIndex - 1]]
 }
 
-export const variables = function (obj = {}) {
+export function variables (obj = {}) {
   const element = this
   if (!element.data) element.data = {}
   if (!element.data.varCaches) element.data.varCaches = {}
@@ -263,10 +282,13 @@ export const METHODS = [
   'variables',
   'if',
   'log',
+  'verbose',
+  'warn',
+  'error',
   'nextElement',
   'previousElement'
 ]
 
-export const isMethod = function (param, element) {
+export function isMethod (param, element) {
   return METHODS.includes(param) || element?.context?.methods?.[param]
 }

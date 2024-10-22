@@ -80,7 +80,7 @@ const create = (element, parent, key, options = OPTIONS.create || {}, attachOpti
 
   addCaching(element, parent)
 
-  addMethods(element, parent)
+  addMethods(element, parent, options)
 
   createScope(element, parent)
 
@@ -342,7 +342,7 @@ const onlyResolveExtends = (element, parent, key, options) => {
   if (!ref.__skipCreate) {
     addCaching(element, parent)
 
-    addMethods(element, parent)
+    addMethods(element, parent, options)
 
     createScope(element, parent)
 
