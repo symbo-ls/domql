@@ -232,9 +232,11 @@ const renderElement = (element, parent, options, attachOptions) => {
       if (path.includes('ComponentsGrid')) path.splice(0, path.indexOf('ComponentsGrid') + 2)
       if (path.includes('demoComponent')) path.splice(0, path.indexOf('demoComponent') + 1)
       const isDemoComponent = element.lookup(el => el.state.key)?.state?.key
-      console.warn('Error happened in:', isDemoComponent ? isDemoComponent + ' ' : '' + path.join('.'))
-      console.warn(element)
-      console.error(e)
+      element.warn('Error happened in:', isDemoComponent ? isDemoComponent + ' ' : '' + path.join('.'))
+      element.verbose()
+      element.error(e)
+      if (element.on?.error) element.on.error(e, element, element.state, element.context, options)
+      if (element.props?.onError) element.props.onError(e, element, element.state, element.context, options)
     }
   }
 

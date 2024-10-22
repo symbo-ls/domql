@@ -64,8 +64,6 @@ export function lookdown (param) {
     const lookdown = childElem?.lookdown?.(param)
     if (lookdown) return lookdown
   }
-
-  return null
 }
 
 export function lookdownAll (param, results = []) {
@@ -85,7 +83,7 @@ export function lookdownAll (param, results = []) {
     childElem?.lookdownAll?.(param, results)
   }
 
-  return results.length ? results : null
+  return results.length ? results : undefined
 }
 
 export function setNodeStyles (params = {}) {

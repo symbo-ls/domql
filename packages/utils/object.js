@@ -404,7 +404,7 @@ export const deepDestringify = (obj, destringified = {}) => {
 
 export const stringToObject = (str, opts = { verbose: true }) => {
   try {
-    return window.eval('(' + str + ')') // eslint-disable-line
+    return str ? window.eval('(' + str + ')') : {} // eslint-disable-line
   } catch (e) { if (opts.verbose) console.warn(e) }
 }
 
