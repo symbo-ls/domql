@@ -1,6 +1,6 @@
 'use strict'
 
-import { isDevelopment, merge, overwrite } from '@domql/utils'
+import { merge, overwrite } from '@domql/utils'
 
 import set, { reset } from '../set'
 import update from '../update'
