@@ -175,6 +175,8 @@ export function parseDeep (excl = []) {
 }
 
 export function verbose (...args) {
+  if (ENV !== 'test' && ENV !== 'development') return
+
   const element = this
   const { __ref: ref } = element
   console.group(element.key)
