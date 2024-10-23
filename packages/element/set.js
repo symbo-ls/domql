@@ -37,16 +37,16 @@ const set = function (params, options = {}, el) {
   const __contentRef = content && content.__ref
   const lazyLoad = element.props && element.props.lazyLoad
 
-  if (!options.preventBeforeUpdateListener && !options.preventListeners) {
-    const beforeUpdateReturns = triggerEventOnUpdate('beforeUpdate', params, element, options)
-    if (beforeUpdateReturns === false) return element
-  }
-
   const hasCollection = element.$collection || element.$stateCollection || element.$propsCollection
   if (options.preventContentUpdate === true && !hasCollection) return
 
   if (ref.__noCollectionDifference || (__contentRef && __contentRef.__cached && deepContains(params, content))) {
+    if (!options.preventBeforeUpdateListener && !options.preventListeners) {
+      const beforeUpdateReturns = triggerEventOnUpdate('beforeUpdate', params, element, options)
+      if (beforeUpdateReturns === false) return element
+    }
     if (content?.update) content.update()
+    if (!options.preventUpdateListener) triggerEventOn('update', element, options)
     return
   }
 
@@ -62,8 +62,6 @@ const set = function (params, options = {}, el) {
       window.requestAnimationFrame(() => resetElement(params, element, options))
     } else resetElement(params, element, options)
   }
-
-  if (!options.preventUpdateListener) triggerEventOn('update', element, options)
 
   return element
 }

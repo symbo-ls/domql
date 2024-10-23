@@ -136,7 +136,7 @@ export function keys () {
   const element = this
   const keys = []
   for (const param in element) {
-    if ((registry[param] && !parseFilters.elementKeys.includes(param)) || Object.hasOwnProperty.call(element, param)) { continue }
+    if ((registry[param] && !parseFilters.elementKeys.includes(param)) || !Object.hasOwnProperty.call(element, param)) { continue }
     keys.push(param)
   }
   return keys

@@ -6,10 +6,8 @@ import {
   isArray,
   isFunction,
   isObject,
-  isObjectLike,
   isString,
-  joinArrays,
-  overwriteDeep
+  joinArrays
 } from '.'
 const ENV = process.env.NODE_ENV
 
@@ -109,20 +107,24 @@ export const addChildrenIfNotInOriginal = (element, parent, key) => {
     const childKey = childElems[i]
     const childElem = element[childKey]
     const newChild = element.props[childKey]
+
+    const assignChild = (val) => {
+      element[childKey] = val
+      delete element.props[childKey]
+    }
+
     if (newChild?.ignoreExtend) continue
-    if (!childElem) element[childKey] = deepCloneWithExtend(newChild)
+    if (newChild === null && childElem) {
+      console.log('is null', element)
+      assignChild(null)
+    } else if (!childElem) assignChild(deepCloneWithExtend(newChild))
     else {
-      const isSugar = checkIfSugar(childElem, parent, key)
-      if (!isSugar) continue
-      const inheritedChildElem = element[childKey].props
-      if (isObjectLike(newChild)) {
-        overwriteDeep(inheritedChildElem, newChild)
-      } else if (isFunction(newChild)) {
-        element[childKey] = {
-          extend: element[childKey],
-          props: newChild
-        }
-      }
+      const isSugarChildElem = checkIfSugar(childElem, parent, key)
+      if (isSugarChildElem) continue
+      assignChild({
+        extend: element[childKey],
+        props: newChild
+      })
     }
   }
 }
