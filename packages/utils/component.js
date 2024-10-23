@@ -114,10 +114,8 @@ export const addChildrenIfNotInOriginal = (element, parent, key) => {
     }
 
     if (newChild?.ignoreExtend) continue
-    if (newChild === null && childElem) {
-      console.log('is null', element)
-      assignChild(null)
-    } else if (!childElem) assignChild(deepCloneWithExtend(newChild))
+    if (newChild === null) assignChild(null)
+    else if (!childElem) assignChild(deepCloneWithExtend(newChild))
     else {
       const isSugarChildElem = checkIfSugar(childElem, parent, key)
       if (isSugarChildElem) continue

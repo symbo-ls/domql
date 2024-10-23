@@ -28,7 +28,7 @@ export const inheritParentProps = (element, parent) => {
       propsStack.push(objectizeStringProperty(matchParent))
     }
   }
-  if (matchParentChildProps) propsStack.push(matchParentChildProps)
+  if (matchParentChildProps && !element?.props?.ignoreChildProps) propsStack.push(matchParentChildProps)
 
   return propsStack
 }
