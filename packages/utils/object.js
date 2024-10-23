@@ -217,7 +217,7 @@ export const deepCloneWithExtend = (obj, excludeFrom = ['node'], options = {}, v
  */
 export const deepStringify = (obj, stringified = {}) => {
   if (obj.node || obj.__ref || obj.parent || obj.__element || obj.parse) {
-    console.warn('Trying to clone element or state at', obj)
+    (obj.__element || obj.parent?.__element).warn('Trying to clone element or state at', obj)
     obj = obj.parse?.()
   }
 

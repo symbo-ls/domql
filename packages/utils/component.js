@@ -52,7 +52,7 @@ const checkIfSugar = (element, parent, key) => {
   } = element
   const hasComponentAttrs = extend || childExtend || props || on || $collection || $stateCollection || $propsCollection
   if (hasComponentAttrs && (childProps || extendProps || children || childrenExtends)) {
-    parent.error('Sugar component includes params for builtin components')
+    parent.error('Sugar component includes params for builtin components', { verbose: true })
   }
   return !hasComponentAttrs || childProps || extendProps || children || childrenExtends
 }
@@ -60,7 +60,7 @@ const checkIfSugar = (element, parent, key) => {
 export const extendizeByKey = (element, parent, key) => {
   const { context } = parent
   const { tag, extend, childrenExtends } = element
-  const isSugar = checkIfSugar(element)
+  const isSugar = checkIfSugar(element, parent, key)
 
   const extendFromKey = key.includes('+')
     ? key.split('+') // get array of componentKeys
@@ -112,7 +112,7 @@ export const addChildrenIfNotInOriginal = (element, parent, key) => {
     if (newChild?.ignoreExtend) continue
     if (!childElem) element[childKey] = deepCloneWithExtend(newChild)
     else {
-      const isSugar = checkIfSugar(childElem)
+      const isSugar = checkIfSugar(childElem, parent, key)
       if (!isSugar) continue
       const inheritedChildElem = element[childKey].props
       if (isObjectLike(newChild)) {
