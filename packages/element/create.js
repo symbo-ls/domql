@@ -90,7 +90,7 @@ const create = (element, parent, key, options = OPTIONS.create || {}, attachOpti
   createIfConditionFlag(element, parent)
 
   // apply props settings
-  createProps(element, parent)
+  createProps(element, parent, options)
   if (element.scope === 'props' || element.scope === true) element.scope = element.props
 
   // recatch if it passess props again
@@ -234,7 +234,7 @@ const renderElement = (element, parent, options, attachOptions) => {
       const isDemoComponent = element.lookup(el => el.state.key)?.state?.key
       element.warn('Error happened in:', isDemoComponent ? isDemoComponent + ' ' : '' + path.join('.'))
       element.verbose()
-      element.error(e)
+      element.error(e, options)
       if (element.on?.error) element.on.error(e, element, element.state, element.context, options)
       if (element.props?.onError) element.props.onError(e, element, element.state, element.context, options)
     }
@@ -354,7 +354,7 @@ const onlyResolveExtends = (element, parent, key, options) => {
     createIfConditionFlag(element, parent)
 
     // apply props settings
-    createProps(element, parent)
+    createProps(element, parent, options)
     if (element.scope === 'props' || element.scope === true) element.scope = element.props
 
     if (element.node && ref.__if) { parent[key || element.key] = element } // Borrowed from assignNode()

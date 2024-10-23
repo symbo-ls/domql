@@ -24,13 +24,16 @@ const createPropsStack = (element, parent) => {
   return propsStack
 }
 
-export const syncProps = (props, element) => {
+export const syncProps = (props, element, opts) => {
   element.props = {}
   const mergedProps = {}
 
   props.forEach(v => {
     if (IGNORE_PROPS_PARAMS.includes(v)) return
-    const execProps = exec(v, element)
+    let execProps
+    try {
+      execProps = exec(v, element)
+    } catch (e) { element.error(e, opts) }
     // TODO: check if this failing the function props merge
     // if (isObject(execProps) && execProps.__element) return
     // it was causing infinite loop at early days
@@ -48,16 +51,16 @@ export const syncProps = (props, element) => {
   return element.props
 }
 
-export const createProps = function (element, parent, cached) {
+export const createProps = function (element, parent, options) {
   const { __ref: ref } = element
 
   const applyProps = () => {
-    const propsStack = cached || createPropsStack(element, parent)
+    const propsStack = options.cachedProps || createPropsStack(element, parent)
     if (propsStack.length) {
       ref.__props = propsStack
       syncProps(propsStack, element)
     } else {
-      ref.__props = cached || []
+      ref.__props = options.cachedProps || []
       element.props = {}
     }
   }
@@ -68,7 +71,7 @@ export const createProps = function (element, parent, cached) {
       applyProps()
     } catch {
       element.props = {}
-      ref.__props = cached || []
+      ref.__props = options.cachedProps || []
     }
   }
 

@@ -136,7 +136,7 @@ export function keys () {
   const element = this
   const keys = []
   for (const param in element) {
-    if (registry[param] && !parseFilters.elementKeys.includes(param)) { continue }
+    if ((registry[param] && !parseFilters.elementKeys.includes(param)) || Object.hasOwnProperty.call(element, param)) { continue }
     keys.push(param)
   }
   return keys
@@ -159,7 +159,7 @@ export function parse (excl = []) {
     } else if (v === 'props') {
       const { __element, update, ...props } = element[v]
       obj[v] = props
-    } else if (isDefined(val) && !element.context?.methods[v]) obj[v] = val
+    } else if (isDefined(val) && Object.hasOwnProperty.call(element, v)) obj[v] = val
   })
   return obj
 }
@@ -179,7 +179,7 @@ export function verbose (...args) {
 
   const element = this
   const { __ref: ref } = element
-  console.group(element.key)
+  console.groupCollapsed(element.key)
   if (args.length) {
     args.forEach(v => console.log(`%c${v}:\n`, 'font-weight: bold', element[v]))
   } else {
@@ -205,6 +205,7 @@ export function warn (...params) {
 
 export function error (...params) {
   if (ENV === 'test' || ENV === 'development') {
+    if (params[params.length - 1]?.debugger) debugger // eslint-disable-line
     console.error(...params)
   }
 }

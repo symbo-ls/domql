@@ -70,7 +70,7 @@ export const onlyResolveExtends = (element, parent, key, options) => {
 
   if (element.node && ref.__if) { parent[key || element.key] = element } // Borrowed from assignNode()
 
-  createProps(element, parent)
+  createProps(element, parent, options)
   applyVariant(element, parent)
 
   if (element.tag !== 'string' && element.tag !== 'fragment') {

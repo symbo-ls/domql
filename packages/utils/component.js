@@ -28,6 +28,7 @@ export const checkIfKeyIsProperty = (key) => {
 }
 
 export const addAdditionalExtend = (newExtend, element) => {
+  if (!newExtend) return element
   const { extend: elementExtend } = element
   const originalArray = isArray(elementExtend) ? elementExtend : [elementExtend]
   const receivedArray = isArray(newExtend) ? newExtend : [newExtend]
@@ -36,8 +37,23 @@ export const addAdditionalExtend = (newExtend, element) => {
 }
 
 const checkIfSugar = (element, parent, key) => {
-  const { extend, props, childExtend, extends: extendProps, childrenExtends, childProps, children, on, $collection, $stateCollection, $propsCollection } = element
+  const {
+    extend,
+    props,
+    childExtend,
+    extends: extendProps,
+    childrenExtends,
+    childProps,
+    children,
+    on,
+    $collection,
+    $stateCollection,
+    $propsCollection
+  } = element
   const hasComponentAttrs = extend || childExtend || props || on || $collection || $stateCollection || $propsCollection
+  if (hasComponentAttrs && (childProps || extendProps || children || childrenExtends)) {
+    element.error('Sugar component includes params for builtin components')
+  }
   return !hasComponentAttrs || childProps || extendProps || children || childrenExtends
 }
 
@@ -58,14 +74,13 @@ export const extendizeByKey = (element, parent, key) => {
   // console.log(context, context?.components)
   // console.log(element)
   const isExtendKeyComponent = context && context.components[extendFromKey]
-
   if (element === isExtendKeyComponent) return element
   else if (isSugar) {
-    const newElem = {
+    const newElem = addAdditionalExtend(element.extends, {
       extend: extendFromKey,
       tag,
       props: { ...element }
-    }
+    })
     if (childrenExtends) newElem.childExtend = childrenExtends
     return newElem
   } else if (!extend || extend === true) {

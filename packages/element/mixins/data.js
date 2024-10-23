@@ -9,7 +9,7 @@ import { report } from '@domql/report'
  */
 export default (params, element, node) => {
   if (params) {
-    if (element.props.attr) deepMerge(params, element.props.attr)
+    if (element.props.data) deepMerge(params, element.props.data)
     if (params.showOnNode) {
       if (!isObject(params)) report('HTMLInvalidData', params)
 
