@@ -52,7 +52,7 @@ const checkIfSugar = (element, parent, key) => {
   } = element
   const hasComponentAttrs = extend || childExtend || props || on || $collection || $stateCollection || $propsCollection
   if (hasComponentAttrs && (childProps || extendProps || children || childrenExtends)) {
-    element.error('Sugar component includes params for builtin components')
+    parent.error('Sugar component includes params for builtin components')
   }
   return !hasComponentAttrs || childProps || extendProps || children || childrenExtends
 }
@@ -70,9 +70,6 @@ export const extendizeByKey = (element, parent, key) => {
         ? [key.split('.')[0]] // get component key split .
         : [key]
 
-  // console.log(extendFromKey)
-  // console.log(context, context?.components)
-  // console.log(element)
   const isExtendKeyComponent = context && context.components[extendFromKey]
   if (element === isExtendKeyComponent) return element
   else if (isSugar) {
