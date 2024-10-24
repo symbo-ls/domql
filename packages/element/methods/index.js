@@ -185,8 +185,9 @@ export function verbose (...args) {
   } else {
     console.log(ref.path)
     const keys = element.keys()
-    keys.forEach(v => console.log(`%c${v}:\n`, 'font-weight: bold', element[v]))
+    keys.forEach(v => console.log(`%c${v}:`, 'font-weight: bold', element[v]))
   }
+  console.log(element)
   console.groupEnd(element.key)
   return element
 }
