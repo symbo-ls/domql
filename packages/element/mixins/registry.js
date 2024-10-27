@@ -48,6 +48,8 @@ export default {
   variables: {},
   lookup: {},
   lookdown: {},
+  getRef: {},
+  getPath: {},
   lookdownAll: {},
   setNodeStyles: {},
   spotByPath: {},

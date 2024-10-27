@@ -23,6 +23,8 @@ export const METHODS = [
   'lookup',
   'lookdown',
   'lookdownAll',
+  'getRef',
+  'getPath',
   'setNodeStyles',
   'spotByPath',
   'keys',

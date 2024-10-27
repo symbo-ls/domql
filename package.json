@@ -5,7 +5,7 @@
   "scripts": {
     "postinstall": "npx lerna link --force-local && npx lerna run build && npx lerna run copy:package:cjs",
     "build": "yarn build:packages",
-    "build:watch": "nodemon --exec \"yarn build:cjs\" --ignore 'dist/*'",
+    "build:watch": "nodemon --exec \"yarn build\" --ignore 'dist/*'",
     "build:packages": "lerna run build",
     "test:watch": "jest --watch --env=jsdom",
     "test:unit": "jest --env=jsdom",

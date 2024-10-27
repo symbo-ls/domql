@@ -361,6 +361,8 @@ const onlyResolveExtends = (element, parent, key, options) => {
 
     if (!element.props) element.props = {}
     applyVariant(element, parent)
+
+    addElementIntoParentChildren(element, parent)
   }
 
   if (element.tag !== 'string' && element.tag !== 'fragment') {

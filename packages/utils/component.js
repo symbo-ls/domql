@@ -34,13 +34,13 @@ export const addAdditionalExtend = (newExtend, element) => {
   return { ...element, extend }
 }
 
-const checkIfSugar = (element, parent, key) => {
+export const checkIfSugar = (element, parent, key) => {
   const {
     extend,
     props,
     childExtend,
     extends: extendProps,
-    childrenExtends,
+    childExtends,
     childProps,
     children,
     on,
@@ -49,15 +49,16 @@ const checkIfSugar = (element, parent, key) => {
     $propsCollection
   } = element
   const hasComponentAttrs = extend || childExtend || props || on || $collection || $stateCollection || $propsCollection
-  if (hasComponentAttrs && (childProps || extendProps || children || childrenExtends)) {
-    parent.error('Sugar component includes params for builtin components', { verbose: true })
+  if (hasComponentAttrs && (childProps || extendProps || children || childExtends)) {
+    const logErr = (parent || element)?.error
+    if (logErr) logErr('Sugar component includes params for builtin components', { verbose: true })
   }
-  return !hasComponentAttrs || childProps || extendProps || children || childrenExtends
+  return !hasComponentAttrs || childProps || extendProps || children || childExtends
 }
 
 export const extendizeByKey = (element, parent, key) => {
   const { context } = parent
-  const { tag, extend, childrenExtends } = element
+  const { tag, extend, childExtends } = element
   const isSugar = checkIfSugar(element, parent, key)
 
   const extendFromKey = key.includes('+')
@@ -76,7 +77,7 @@ export const extendizeByKey = (element, parent, key) => {
       tag,
       props: { ...element }
     })
-    if (childrenExtends) newElem.childExtend = childrenExtends
+    if (childExtends) newElem.childExtend = childExtends
     return newElem
   } else if (!extend || extend === true) {
     return {
@@ -95,7 +96,7 @@ export const extendizeByKey = (element, parent, key) => {
   }
 }
 
-function getCapitalCaseKeys (obj) {
+export function getCapitalCaseKeys (obj) {
   return Object.keys(obj).filter(key => /^[A-Z]/.test(key))
 }
 

@@ -123,6 +123,14 @@ export function setProps (param, options) {
   return element
 }
 
+export function getRef () {
+  return this.__ref
+}
+
+export function getPath () {
+  return this.getRef().path
+}
+
 // export function set () {
 // }
 
@@ -276,6 +284,8 @@ export const METHODS = [
   'lookup',
   'lookdown',
   'lookdownAll',
+  'getRef',
+  'getPath',
   'setNodeStyles',
   'spotByPath',
   'keys',
