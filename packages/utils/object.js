@@ -295,7 +295,7 @@ export const objectToString = (obj = {}, indent = 0) => {
     if (isArray(value)) {
       str += '[\n'
       for (const element of value) {
-        if (isObject(element) && element !== null) {
+        if (isObjectLike(element) && element !== null) {
           str += `${spaces}    ${objectToString(element, indent + 2)},\n`
         } else if (isString(element)) {
           // if (element.includes('\n')) str += spaces + '    ' + '`' + element + '`,\n'
