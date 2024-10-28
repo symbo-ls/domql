@@ -3,9 +3,6 @@
 import { TREE, create as createElement } from '@domql/element'
 
 const create = (element, parent, key, options) => {
-  // createState
-  // createNode
-
   const domqlElement = (createElement.default || createElement)(element, parent, key, options)
 
   const complete = domqlElement.on?.complete
