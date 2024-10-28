@@ -22,7 +22,7 @@ import { createState, findInheritedState } from '@domql/state'
 
 import create from './create'
 import { throughExecProps, throughUpdatedDefine, throughUpdatedExec } from './iterate'
-import { registry } from './mixins'
+import { REGISTRY } from './mixins'
 import { applyParam } from './utils/applyParam'
 import OPTIONS from './cache/options'
 import { METHODS_EXL, deepClone, deepMerge } from './utils' // old utils (current)
@@ -128,7 +128,7 @@ const update = function (params = {}, opts) {
       preventDefineUpdate === param ||
       (preventContentUpdate && param === 'content' && !hasCollection) ||
       (preventStateUpdate && param) === 'state' ||
-      isMethod(param, element) || isObject(registry[param]) || isVariant(param)
+      isMethod(param, element) || isObject(REGISTRY[param]) || isVariant(param)
     ) continue
 
     if (preventStateUpdate === 'once') options.preventStateUpdate = false

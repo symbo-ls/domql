@@ -2,7 +2,7 @@
 
 import { exec, isFunction, isObject, isUndefined } from '@domql/utils'
 import { create } from '..'
-import { registry } from '../mixins'
+import { REGISTRY } from '../mixins'
 import { applyVariant, isVariant } from '.'
 import { isMethod } from '../methods'
 import { addMethods } from '../methods/set'
@@ -82,7 +82,7 @@ export const onlyResolveExtends = (element, parent, key, options) => {
       if (
         isUndefined(prop) ||
         isMethod(param, element) ||
-        isObject(registry[param]) ||
+        isObject(REGISTRY[param]) ||
         isVariant(param)
       ) continue
 
@@ -91,7 +91,7 @@ export const onlyResolveExtends = (element, parent, key, options) => {
             element.context.define[param]
       const optionsHasDefine = options.define && options.define[param]
 
-      if (registry[param] && !optionsHasDefine) {
+      if (REGISTRY[param] && !optionsHasDefine) {
         continue
       } else if (element[param] && !hasDefine && !optionsHasDefine && !contextHasDefine) {
         create(exec(prop, element), element, param, options)

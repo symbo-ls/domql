@@ -6,7 +6,7 @@ import {
   text, scope
 } from '.'
 
-export default {
+export const REGISTRY = {
   attr,
   style,
   text,
@@ -67,6 +67,8 @@ export default {
   $setStateCollection: {},
   $setPropsCollection: {}
 }
+
+export default REGISTRY
 
 // List of keys for .parse() and .parseDeep() to include in the result.
 // Keys not in the array are excluded.

@@ -2,7 +2,7 @@
 
 import { isDefined, isObject, isFunction, isObjectLike, isProduction, removeValueFromArray, deepClone } from '@domql/utils'
 import { TREE } from '../tree'
-import { parseFilters, registry } from '../mixins'
+import { parseFilters, REGISTRY, registry } from '../mixins'
 const ENV = process.env.NODE_ENV
 
 // TODO: update these files
@@ -144,7 +144,7 @@ export function keys () {
   const element = this
   const keys = []
   for (const param in element) {
-    if ((registry[param] && !parseFilters.elementKeys.includes(param)) || !Object.hasOwnProperty.call(element, param)) { continue }
+    if ((REGISTRY[param] && !parseFilters.elementKeys.includes(param)) || !Object.hasOwnProperty.call(element, param)) { continue }
     keys.push(param)
   }
   return keys

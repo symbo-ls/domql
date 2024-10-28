@@ -12,7 +12,7 @@ import {
   throughInitialDefine,
   throughInitialExec
 } from './iterate'
-import { registry } from './mixins'
+import { REGISTRY, registry } from './mixins'
 import { applyParam } from './utils/applyParam'
 import { propagateEventsFromProps } from './utils/propEvents'
 // import { defineSetter } from './methods'
@@ -74,7 +74,7 @@ export const createNode = (element, options) => {
       isUndefined(value) ||
       isMethod(param, element) ||
       isVariant(param) ||
-      isObject(registry[param])
+      isObject(REGISTRY[param])
     ) continue
 
     const isElement = applyParam(param, element, options)

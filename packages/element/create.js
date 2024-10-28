@@ -29,7 +29,7 @@ import { createState } from '@domql/state'
 import { isMethod } from './methods'
 import { createProps } from './props'
 import { applyExtend } from './extend'
-import { registry } from './mixins'
+import { REGISTRY, registry } from './mixins'
 import { addMethods } from './methods/set'
 import { assignKeyAsClassname } from './mixins/classList'
 import { throughInitialExec, throughInitialDefine } from './iterate'
@@ -373,7 +373,7 @@ const onlyResolveExtends = (element, parent, key, options) => {
       if (
         isUndefined(element[k]) ||
         isMethod(k, element) ||
-        isObject(registry[k]) ||
+        isObject((registry.default || registry)[k]) ||
         isVariant(k)
       ) continue
 
@@ -382,7 +382,7 @@ const onlyResolveExtends = (element, parent, key, options) => {
             element.context.define[k]
       const optionsHasDefine = options.define && options.define[k]
 
-      if (!ref.__skipCreate && registry[k] && !optionsHasDefine) {
+      if (!ref.__skipCreate && REGISTRY[k] && !optionsHasDefine) {
         continue
       } else if (element[k] && !hasDefine && !optionsHasDefine && !contextHasDefine) {
         create(exec(element[k], element), element, k, options)

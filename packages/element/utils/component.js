@@ -11,7 +11,7 @@ import {
 } from '@domql/utils'
 
 import { applyExtend } from '../extend'
-import { registry } from '../mixins'
+import { REGISTRY } from '../mixins'
 
 const replaceOnKeys = key => key.replace(/on\w+/g, match => match.substring(2))
 
@@ -37,7 +37,7 @@ export const createValidDomqlObjectFromSugar = (el, parent, key, options) => {
     }
 
     const isComponent = checkIfKeyIsComponent(k)
-    const isRegistry = registry[k]
+    const isRegistry = REGISTRY[k]
     if (isComponent || isRegistry) {
       newElem[k] = prop
     } else {

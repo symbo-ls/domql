@@ -1,7 +1,7 @@
 'use strict'
 
 import { isFunction } from '@domql/utils'
-import { registry } from '../mixins'
+import { REGISTRY } from '../mixins'
 
 export const applyParam = (param, element, options) => {
   const { node, context, __ref: ref } = element
@@ -9,7 +9,7 @@ export const applyParam = (param, element, options) => {
 
   const { onlyUpdate } = options
 
-  const DOMQLProperty = registry[param]
+  const DOMQLProperty = REGISTRY[param]
   const DOMQLPropertyFromContext = context && context.registry && context.registry[param]
   const isGlobalTransformer = DOMQLPropertyFromContext || DOMQLProperty
 
