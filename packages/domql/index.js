@@ -6,7 +6,7 @@ const create = (element, parent, key, options) => {
   // createState
   // createNode
 
-  const domqlElement = createElement(element, parent, key, options)
+  const domqlElement = (createElement.default || createElement)(element, parent, key, options)
 
   const complete = domqlElement.on?.complete
   if (complete) domqlElement.on.complete(element, element.state, element.context, options)
