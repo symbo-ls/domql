@@ -7,9 +7,9 @@
   "main": "index.js",
   "exports": {
     ".": {
-      "kalduna": "./index.js",
+      "kalduna": "./dist/esm/index.js",
       "default": "./dist/cjs/index.js",
-      "import": "./index.js",
+      "import": "./dist/esm/index.js",
       "require": "./dist/cjs/index.js"
     }
   },
@@ -22,8 +22,8 @@
     "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
     "build:esm": "npx esbuild *.js --target=es2017 --format=esm --outdir=dist/esm",
     "build:cjs": "npx esbuild *.js --target=node16 --format=cjs --outdir=dist/cjs",
-    "build": "yarn build:cjs",
-    "prepublish": "rimraf -I dist && yarn build && yarn copy:package:cjs"
+    "build": "yarn build:cjs; yarn build:esm",
+    "prepublish": "rimraf -I dist; yarn build; yarn copy:package:cjs"
   },
   "gitHead": "e5952db705e332f062e2e78113d620bd48ba16d9",
   "devDependencies": {
