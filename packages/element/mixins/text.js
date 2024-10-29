@@ -11,7 +11,7 @@ import {
  * Creates a text node and appends into
  * an original one as a child
  */
-export default (param, element, node) => {
+export const text = (param, element, node) => {
   let prop = exec(param, element)
   if (isString(prop) && prop.includes('{{')) {
     prop = replaceLiteralsWithObjectFields(prop, element.state)
@@ -26,3 +26,5 @@ export default (param, element, node) => {
     } else create({ tag: 'string', text: prop }, element, '__text')
   }
 }
+
+export default text

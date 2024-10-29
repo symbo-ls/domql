@@ -7,7 +7,7 @@ import { deepMerge } from '../utils'
 /**
  * Recursively add attributes to a DOM node
  */
-export default (params, element, node) => {
+export const attr = (params, element, node) => {
   const { __ref } = element
   const { __attr } = __ref
   if (isNot('object')) report('HTMLInvalidAttr', params)
@@ -22,3 +22,5 @@ export default (params, element, node) => {
     }
   }
 }
+
+export default attr

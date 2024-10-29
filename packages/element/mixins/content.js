@@ -1,7 +1,7 @@
 'use strict'
 
 import { isFunction, setContentKey } from '@domql/utils'
-import set from '../set'
+import { set } from '../set'
 
 export const updateContent = function (params, options) {
   const element = this

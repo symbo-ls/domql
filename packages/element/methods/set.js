@@ -2,8 +2,8 @@
 
 import { merge, overwrite } from '@domql/utils'
 
-import set, { reset } from '../set'
-import update from '../update'
+import { set, reset } from '../set'
+import { update } from '../update'
 
 import {
   lookup,

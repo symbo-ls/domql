@@ -1,3 +1,4 @@
 'use strict'
 
-export default {}
+export const OPTIONS = {}
+export default OPTIONS

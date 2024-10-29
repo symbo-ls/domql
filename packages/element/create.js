@@ -34,7 +34,7 @@ import { addMethods } from './methods/set'
 import { assignKeyAsClassname } from './mixins/classList'
 import { throughInitialExec, throughInitialDefine } from './iterate'
 
-import OPTIONS from './cache/options'
+import { OPTIONS } from './cache/options'
 
 import {
   applyVariant,
@@ -46,7 +46,7 @@ const ENV = process.env.NODE_ENV
 /**
  * Creating a domQL element using passed parameters
  */
-const create = (element, parent, key, options = OPTIONS.create || {}, attachOptions) => {
+export const create = (element, parent, key, options = OPTIONS.create || {}, attachOptions) => {
   cacheOptions(element, options)
 
   // if element is STRING

@@ -7,7 +7,7 @@ import { report } from '@domql/report'
  * Apply data parameters on the DOM nodes
  * this should only work if `showOnNode: true` is passed
  */
-export default (params, element, node) => {
+export const data = (params, element, node) => {
   if (params) {
     if (element.props.data) deepMerge(params, element.props.data)
     if (params.showOnNode) {
@@ -22,3 +22,5 @@ export default (params, element, node) => {
     }
   }
 }
+
+export default data

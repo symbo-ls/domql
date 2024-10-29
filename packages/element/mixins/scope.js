@@ -6,7 +6,7 @@ import { isFunction, isObject } from '@domql/utils'
  * Apply data parameters on the DOM nodes
  * this should only work if `showOnNode: true` is passed
  */
-export default (params, element, node) => {
+export const scope = (params, element, node) => {
   if (!isObject(params)) return
 
   // Apply data params on node
@@ -19,3 +19,5 @@ export default (params, element, node) => {
     }
   }
 }
+
+export default scope

@@ -1,25 +1,28 @@
 'use strict'
 
-import attr from './attr'
-import classList from './classList'
-import content from './content'
-import data from './data'
-import html from './html'
-import style from './style'
-import text from './text'
-import state from './state'
-import scope from './scope'
-import registry from './registry'
+import { attr } from './attr'
+import { applyClasslist } from './classList'
+import { setContent } from './content'
+import { data } from './data'
+import { html } from './html'
+import { style } from './style'
+import { text } from './text'
+import { state } from './state'
+import { scope } from './scope'
+import { REGISTRY } from './registry'
+
+export { REGISTRY as registry }
+export { applyClasslist as classList }
+export { setContent as content }
+
 export {
   attr,
-  classList,
-  content,
   data,
   style,
   text,
   html,
   state,
-  scope,
-  registry
+  scope
 }
+
 export * from './registry'

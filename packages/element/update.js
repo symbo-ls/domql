@@ -20,11 +20,11 @@ import { isMethod } from './methods'
 import { updateProps } from './props'
 import { createState, findInheritedState } from '@domql/state'
 
-import create from './create'
+import { create } from './create'
 import { throughExecProps, throughUpdatedDefine, throughUpdatedExec } from './iterate'
 import { REGISTRY } from './mixins'
 import { applyParam } from './utils/applyParam'
-import OPTIONS from './cache/options'
+import { OPTIONS } from './cache/options'
 import { METHODS_EXL, deepClone, deepMerge } from './utils' // old utils (current)
 
 const snapshot = {
@@ -40,7 +40,7 @@ const UPDATE_DEFAULT_OPTIONS = {
   excludes: METHODS_EXL
 }
 
-const update = function (params = {}, opts) {
+export const update = function (params = {}, opts) {
   const calleeElementCache = opts?.calleeElement
   const options = deepClone(isObject(opts) ? deepMerge(opts, UPDATE_DEFAULT_OPTIONS) : UPDATE_DEFAULT_OPTIONS, ['calleeElement'])
   options.calleeElement = calleeElementCache

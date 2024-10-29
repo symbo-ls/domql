@@ -2,8 +2,8 @@
 
 import { deepContains, setContentKey } from '@domql/utils'
 
-import create from './create'
-import OPTIONS from './cache/options'
+import { OPTIONS } from './cache/options'
+import { create } from './create'
 import { registry } from './mixins'
 import { removeContent } from './mixins/content'
 import { triggerEventOn, triggerEventOnUpdate } from '@domql/event'
@@ -29,7 +29,7 @@ export const reset = (options) => {
   })
 }
 
-const set = function (params, options = {}, el) {
+export const set = function (params, options = {}, el) {
   const element = el || this
   const { __ref: ref } = element
 
