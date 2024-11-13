@@ -1,7 +1,7 @@
 'use strict'
 
 import {
-  deepCloneWithExtend,
+  deepClone,
   exec,
   isArray,
   isFunction,
@@ -116,7 +116,7 @@ export const addChildrenIfNotInOriginal = (element, parent, key) => {
 
     if (newChild?.ignoreExtend) continue
     if (newChild === null) assignChild(null)
-    else if (!childElem) assignChild(deepCloneWithExtend(newChild))
+    else if (!childElem) assignChild(deepClone(newChild))
     else {
       const isSugarChildElem = checkIfSugar(childElem, parent, key)
       if (isSugarChildElem) continue

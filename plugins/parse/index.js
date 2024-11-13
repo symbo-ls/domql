@@ -1,6 +1,6 @@
 'use strict'
 
-import { create } from '@domql/create'
+import { create } from '@domql/element'
 import { assignNode } from '@domql/render'
 
 export const parse = (element) => {

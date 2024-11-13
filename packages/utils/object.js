@@ -74,142 +74,96 @@ export const clone = (obj, excludeFrom = []) => {
   return o
 }
 
-// Clone anything deeply but excludeFrom keys given in 'excludeFrom'
-export const deepCloneExclude = (obj, excludeFrom = []) => {
-  if (isArray(obj)) {
-    return obj.map(x => deepCloneExclude(x, excludeFrom))
-  }
-
-  const o = {}
-  for (const k in obj) {
-    const hasOwnProperty = Object.prototype.hasOwnProperty.call(obj, k)
-    if (!hasOwnProperty || excludeFrom.includes(k) || k.startsWith('__')) continue
-
-    let v = obj[k]
-
-    if (k === 'extend' && isArray(v)) {
-      v = mergeArrayExclude(v, excludeFrom)
-    }
-
-    if (isArray(v)) {
-      o[k] = v.map(x => deepCloneExclude(x, excludeFrom))
-    } else if (isObject(v)) {
-      o[k] = deepCloneExclude(v, excludeFrom)
-    } else o[k] = v
-  }
-
-  return o
-}
-
 // Merge array, but exclude keys listed in 'excl'z
-export const mergeArrayExclude = (arr, excl = []) => {
-  return arr.reduce((acc, curr) => deepMerge(acc, deepCloneExclude(curr, excl)), {})
+export const mergeArrayExclude = (arr, exclude = []) => {
+  return arr.reduce((acc, curr) => deepMerge(acc, deepClone(curr, { exclude })), {})
 }
-
 /**
- * Deep cloning of object
+ * Enhanced deep clone function that combines features from multiple implementations
+ * @param {any} obj - Object to clone
+ * @param {Object} options - Configuration options
+ * @param {string[]} options.exclude - Properties to exclude from cloning
+ * @param {boolean} options.cleanUndefined - Remove undefined values
+ * @param {boolean} options.cleanNull - Remove null values
+ * @param {Window} options.window - Window object for cross-frame cloning
+ * @param {WeakMap} options.visited - WeakMap for tracking circular references
+ * @param {boolean} options.handleExtend - Whether to handle 'extend' arrays specially
+ * @returns {any} Cloned object
  */
-export const deepClone = (obj, exclude = [], cleanUndefined = false, visited = new WeakMap()) => {
-  // Handle non-object types, null, and ignored types
-  if (!isObjectLike(obj) || isDOMNode(obj)) return obj
+export const deepClone = (obj, options = {}) => {
+  const {
+    exclude = [],
+    cleanUndefined = false,
+    cleanNull = false,
+    window: targetWindow,
+    visited = new WeakMap(),
+    handleExtend = false
+  } = options
 
-  // Check for circular references
-  if (visited.has(obj)) return visited.get(obj)
-
-  // Create a new object or array
-  const clone = isArray(obj) ? [] : {}
-
-  // Store the clone in the WeakMap to handle circular references
-  visited.set(obj, clone)
-
-  // Iterate over the properties of the object
-  for (const key in obj) {
-    if (Object.prototype.hasOwnProperty.call(obj, key) && !exclude.includes(key)) {
-      const value = obj[key]
-
-      if (isDOMNode(value)) {
-        // Skip cloning for DOM nodes
-        clone[key] = value
-      } else if (key === 'extend' && isArray(value)) {
-        clone[key] = mergeArray(value, exclude)
-      } else if (isObjectLike(value)) {
-        clone[key] = deepClone(value, exclude, cleanUndefined, visited)
-      } else {
-        clone[key] = value
-      }
-    }
+  // Handle non-object types and special cases
+  if (!isObjectLike(obj) || isDOMNode(obj)) {
+    return obj
   }
 
-  return clone
-}
-// export const deepClone = (obj, excludeFrom = [], cleanUndefined = false) => {
-//   const o = isArray(obj) ? [] : {}
-//   for (const prop in obj) {
-//     if (!Object.prototype.hasOwnProperty.call(obj, prop)) continue
-//     // if (prop === 'node' || prop === 'parent' || prop === 'root' || prop === '__element') {
-//     //   console.warn('recursive clonning is called', obj)
-//     //   continue
-//     // }
-//     if (prop === '__proto__') continue
-//     if (excludeFrom.includes(prop) || prop.startsWith('__')) continue
-//     let objProp = obj[prop]
-//     if (cleanUndefined && isUndefined(objProp)) continue
-//     if (prop === 'extend' && isArray(objProp)) {
-//       objProp = mergeArray(objProp)
-//     }
-//     if (isObjectLike(objProp)) {
-//       // queueMicrotask(() => {
-//       o[prop] = deepClone(objProp, excludeFrom, cleanUndefined)
-//       // })
-//     } else o[prop] = objProp
-//   }
-//   return o
-// }
-
-/**
- * Deep cloning of object
- */
-export const deepCloneWithExtend = (obj, excludeFrom = ['node'], options = {}, visited = new WeakSet()) => {
-  // Check if the value is object-like before trying to track it in visited
-  if (isObjectLike(obj)) {
-    if (visited.has(obj)) {
-      return obj // Return the object if it was already cloned
-    }
-    visited.add(obj) // Add to visited set only if it's an object
+  // Handle circular references
+  if (visited.has(obj)) {
+    return visited.get(obj)
   }
 
-  const o = options.window
+  // Create appropriate container based on type and window context
+  const clone = targetWindow
     ? isArray(obj)
-      ? new options.window.Array([])
-      : new options.window.Object({})
+      ? new targetWindow.Array()
+      : new targetWindow.Object()
     : isArray(obj)
       ? []
       : {}
 
-  for (const prop in obj) {
-    if (!Object.prototype.hasOwnProperty.call(obj, prop)) continue
+  // Store the clone to handle circular references
+  visited.set(obj, clone)
 
-    const objProp = obj[prop]
+  // Clone properties
+  for (const key in obj) {
+    if (!Object.prototype.hasOwnProperty.call(obj, key)) continue
 
-    if (
-      excludeFrom.includes(prop) ||
-      prop.startsWith('__') ||
-      (options.cleanUndefined && isUndefined(objProp)) ||
-      (options.cleanNull && isNull(objProp))
-    ) {
+    // Skip excluded properties
+    if (exclude.includes(key) || key.startsWith('__') || key === '__proto__') continue
+
+    const value = obj[key]
+
+    // Skip based on cleanup options
+    if ((cleanUndefined && isUndefined(value)) || (cleanNull && isNull(value))) continue
+
+    // Handle special cases
+    if (isDOMNode(value)) {
+      clone[key] = value
       continue
     }
 
-    if (isObjectLike(objProp)) {
-      o[prop] = deepCloneWithExtend(objProp, excludeFrom, options, visited)
-    } else if (isFunction(objProp) && options.window) {
-      o[prop] = (options.window || window).eval('(' + objProp.toString() + ')')
+    // Handle 'extend' array if enabled
+    if (handleExtend && key === 'extend' && isArray(value)) {
+      clone[key] = mergeArray(value, exclude)
+      continue
+    }
+
+    // Handle functions in cross-frame scenario
+    if (isFunction(value) && targetWindow) {
+      clone[key] = targetWindow.eval('(' + value.toString() + ')')
+      continue
+    }
+
+    // Recursively clone objects
+    if (isObjectLike(value)) {
+      clone[key] = deepClone(value, {
+        ...options,
+        visited
+      })
     } else {
-      o[prop] = objProp
+      clone[key] = value
     }
   }
 
-  return o
+  return clone
 }
 
 /**

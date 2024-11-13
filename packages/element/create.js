@@ -14,7 +14,7 @@ import {
   isUndefined,
   generateKey,
   checkIfKeyIsComponent,
-  deepCloneWithExtend,
+  deepClone,
   applyComponentFromContext,
   applyKeyComponentAsExtend,
   isVariant,
@@ -60,7 +60,7 @@ export const create = (element, parent, key, options = OPTIONS.create || {}, att
 
   const ref = addRef(element, parent, key)
 
-  ref.__initialProps = deepCloneWithExtend(element.props, [])
+  ref.__initialProps = deepClone(element.props)
 
   applyContext(element, parent, options)
 

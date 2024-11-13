@@ -2,7 +2,7 @@
 
 import { isDefined, isObject, isFunction, isObjectLike, isProduction, removeValueFromArray, deepClone } from '@domql/utils'
 import { TREE } from '../tree'
-import { parseFilters, REGISTRY, registry } from '../mixins'
+import { parseFilters, REGISTRY } from '../mixins'
 const ENV = process.env.NODE_ENV
 
 // TODO: update these files

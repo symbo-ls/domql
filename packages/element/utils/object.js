@@ -1,6 +1,6 @@
 'use strict'
 
-import { isArray, isObject, isObjectLike, joinArrays, deepCloneWithExtend } from '@domql/utils'
+import { isArray, isObject, isObjectLike, joinArrays, deepClone } from '@domql/utils'
 import { IGNORE_PROPS_PARAMS } from '../props'
 
 // breaks server build
@@ -65,48 +65,6 @@ export const clone = (obj, exclude = METHODS_EXL) => {
     if (exclude.includes(e)) continue
     o[e] = obj[e]
   }
-  return o
-}
-
-/**
- * Deep cloning of object
- */
-export const deepClone = (obj, exclude = METHODS_EXL, seen = new WeakMap()) => {
-  // Check for null or undefined
-  if (obj === null || typeof obj !== 'object') {
-    return obj
-  }
-
-  // Check for DOM nodes, Window, or Document
-  if (obj instanceof window.Node || obj === window || obj instanceof window.Document) {
-    return obj
-  }
-
-  // Check for circular references
-  if (seen.has(obj)) {
-    return seen.get(obj)
-  }
-
-  // Create a new object or array
-  const o = Array.isArray(obj) ? [] : {}
-
-  // Store this object in our circular reference map
-  seen.set(obj, o)
-
-  for (const key in obj) {
-    if (Object.prototype.hasOwnProperty.call(obj, key)) {
-      if (exclude.includes(key)) continue
-
-      let value = obj[key]
-
-      if (key === 'extend' && Array.isArray(value)) {
-        value = mergeArray(value, exclude)
-      }
-
-      o[key] = deepClone(value, exclude, seen)
-    }
-  }
-
   return o
 }
 
@@ -187,14 +145,14 @@ export const mergeIfExisted = (a, b) => {
  * Merges array extends
  */
 export const mergeArray = (arr, exclude = ['parent', 'node', '__element', 'state', 'context', '__ref']) => {
-  return arr.reduce((a, c) => deepMerge(a, deepCloneWithExtend(c, exclude)), {})
+  return arr.reduce((a, c) => deepMerge(a, deepClone(c, { exclude })), {})
 }
 
 /**
  * Merges array extends
  */
 export const mergeAndCloneIfArray = obj => {
-  return isArray(obj) ? mergeArray(obj) : deepCloneWithExtend(obj)
+  return isArray(obj) ? mergeArray(obj) : deepClone(obj)
 }
 
 /**

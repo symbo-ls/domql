@@ -12,7 +12,8 @@ import {
   merge,
   isVariant,
   overwriteDeep,
-  createSnapshotId
+  createSnapshotId,
+  deepClone
 } from '@domql/utils'
 
 import { applyEvent, triggerEventOn, triggerEventOnUpdate } from '@domql/event'
@@ -25,7 +26,7 @@ import { throughExecProps, throughUpdatedDefine, throughUpdatedExec } from './it
 import { REGISTRY } from './mixins'
 import { applyParam } from './utils/applyParam'
 import { OPTIONS } from './cache/options'
-import { METHODS_EXL, deepClone, deepMerge } from './utils' // old utils (current)
+import { METHODS_EXL, deepMerge } from './utils' // old utils (current)
 
 const snapshot = {
   snapshotId: createSnapshotId
@@ -42,7 +43,7 @@ const UPDATE_DEFAULT_OPTIONS = {
 
 export const update = function (params = {}, opts) {
   const calleeElementCache = opts?.calleeElement
-  const options = deepClone(isObject(opts) ? deepMerge(opts, UPDATE_DEFAULT_OPTIONS) : UPDATE_DEFAULT_OPTIONS, ['calleeElement'])
+  const options = deepClone(isObject(opts) ? deepMerge(opts, UPDATE_DEFAULT_OPTIONS) : UPDATE_DEFAULT_OPTIONS, { exclude: ['calleeElement'] })
   options.calleeElement = calleeElementCache
   const element = this
   const { parent, node, key } = element
