@@ -4,6 +4,6 @@
     "packages/*/*",
     "plugins/*"
   ],
-  "npmClient": "yarn",
+  "npmClient": "npm",
   "version": "2.5.161"
 }

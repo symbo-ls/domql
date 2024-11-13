@@ -22,8 +22,8 @@
     "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
     "build:esm": "npx esbuild *.js **/*.js --target=es2019 --format=esm --outdir=dist/esm",
     "build:cjs": "npx esbuild *.js **/*.js --target=node16 --format=cjs --outdir=dist/cjs",
-    "build": "yarn build:cjs",
-    "prepublish": "rimraf -I dist && yarn build && yarn copy:package:cjs"
+    "build": "npm run build:cjs",
+    "prepublish": "rimraf -I dist && npm run build && npm run copy:package:cjs"
   },
   "dependencies": {
     "@domql/event": "^2.5.161",
