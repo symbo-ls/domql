@@ -43,7 +43,7 @@ export const applyClassListOnNode = (params, element, node) => {
   return className
 }
 
-export const applyClasslist = (params, element, node) => {
+export function applyClasslist (params, element, node) {
   applyClassListOnNode(params, element, node)
 }
 

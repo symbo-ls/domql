@@ -41,7 +41,7 @@ export const removeContent = function (el, opts = {}) {
  * Appends anything as content
  * an original one as a child
  */
-export const setContent = (param, element, node, opts) => {
+export function setContent (param, element, node, opts) {
   const contentElementKey = setContentKey(element, opts)
   if (param && element) {
     if (element[contentElementKey].update) {
