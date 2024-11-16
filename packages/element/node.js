@@ -12,7 +12,7 @@ import {
   throughInitialDefine,
   throughInitialExec
 } from './iterate'
-import { REGISTRY, registry } from './mixins'
+import { REGISTRY } from './mixins'
 import { applyParam } from './utils/applyParam'
 import { propagateEventsFromProps } from './utils/propEvents'
 // import { defineSetter } from './methods'
