@@ -56,19 +56,21 @@ export const checkIfSugar = (element, parent, key) => {
   return !hasComponentAttrs || childProps || extendProps || children || childExtends
 }
 
-export const extendizeByKey = (element, parent, key) => {
-  const { context } = parent
-  const { tag, extend, childExtends } = element
-  const isSugar = checkIfSugar(element, parent, key)
-
-  const extendFromKey = key.includes('+')
+export const extractComponentKeyFromKey = (key) => {
+  return key.includes('+')
     ? key.split('+') // get array of componentKeys
     : key.includes('_')
       ? [key.split('_')[0]] // get component key split _
       : key.includes('.') && !checkIfKeyIsComponent(key.split('.')[1])
         ? [key.split('.')[0]] // get component key split .
         : [key]
+}
 
+export const extendizeByKey = (element, parent, key) => {
+  const { context } = parent
+  const { tag, extend, childExtends } = element
+  const isSugar = checkIfSugar(element, parent, key)
+  const extendFromKey = extractComponentKeyFromKey(key)
   const isExtendKeyComponent = context && context.components[extendFromKey]
   if (element === isExtendKeyComponent) return element
   else if (isSugar) {

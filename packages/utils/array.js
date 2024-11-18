@@ -135,3 +135,8 @@ export const filterArraysFast = (sourceArr, excludeArr) => {
   const excludeSet = new Set(excludeArr)
   return sourceArr.filter(item => !excludeSet.has(item))
 }
+
+export const checkIfStringIsInArray = (string, arr) => {
+  if (!string) return
+  return arr.filter(v => string.includes(v)).length
+}
