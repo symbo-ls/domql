@@ -1,6 +1,14 @@
 'use strict'
 
-import { isArray, deepClone, isFunction, isObject, isString } from '@domql/utils'
+import {
+  isArray,
+  deepClone,
+  isFunction,
+  isObject,
+  isString,
+  removeFromArray,
+  removeFromObject
+} from '@domql/utils'
 
 import { IGNORE_STATE_PARAMS } from './ignore'
 
@@ -102,10 +110,10 @@ export const toggle = function (key, options = {}) {
 
 export const remove = function (key, options = {}) {
   const state = this
-  // if (isArray(state)) removeFromArray(state, key)
-  // if (isObject(state)) removeFromObject(state, key)
-  state[key] = null
-  return state.set(state.parse(), { replace: true, ...options })
+  if (isArray(state)) removeFromArray(state, key)
+  if (isObject(state)) removeFromObject(state, key)
+  if (options.applyReset) return state.set(state.parse(), { replace: true, ...options })
+  return state.update()
 }
 
 export const set = function (val, options = {}) {

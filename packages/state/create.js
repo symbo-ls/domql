@@ -83,7 +83,7 @@ const checkForTypes = (element) => {
     return exec(state, element)
   } else if (is(state)('string', 'number')) {
     ref.__state = state
-    return {}
+    return { value: state }
   } else if (state === true) {
     ref.__state = element.key
     return {}
