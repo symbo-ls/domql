@@ -200,7 +200,7 @@ export const getExtendsInElement = (obj) => {
         }
 
         // Check if the key is "extend" and it's either a string or an array
-        if (key === 'extend') {
+        if (key === 'extend' || key === 'extends') {
           // Add the value of the extend key to the result array
           if (typeof o[key] === 'string') {
             result.push(o[key])
