@@ -14,7 +14,6 @@ export function html (param, element, node) {
     // param = parser.parseFromString(param, 'text/html')
     if (node.nodeName === 'SVG') node.textContent = prop
     else node.innerHTML = prop
-
     __ref.__html = prop
   }
 }

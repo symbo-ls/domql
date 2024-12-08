@@ -29,13 +29,14 @@ const brackRegex = {
   3: /\{\{\{\s*((?:\.\.\/)+)?([^}\s]+)\s*\}\}\}/g
 }
 
-export const replaceLiteralsWithObjectFields = (str, state, options = {}) => {
+export function replaceLiteralsWithObjectFields (str, options = {}, forcedState) {
   if (!str.includes(options.bracketsLength === 3 ? '{{{' : '{{')) return str
   const reg = brackRegex[options.bracketsLength || 2]
+  const obj = forcedState || this.state || {}
   return str.replace(reg, (_, parentPath, variable) => {
     if (parentPath) {
       const parentLevels = parentPath.match(options.bracketsLength === 3 ? /\.\.\.\//g : /\.\.\//g).length
-      let parentState = state
+      let parentState = obj
       for (let i = 0; i < parentLevels; i++) {
         parentState = parentState.parent
         if (!parentState) {
@@ -45,7 +46,7 @@ export const replaceLiteralsWithObjectFields = (str, state, options = {}) => {
       const value = parentState[variable.trim()]
       return value !== undefined ? `${value}` : ''
     } else {
-      const value = state[variable.trim()]
+      const value = obj[variable.trim()]
       return value !== undefined ? `${value}` : ''
     }
   })

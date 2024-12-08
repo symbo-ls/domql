@@ -3,8 +3,7 @@
 import { create } from '../create'
 import {
   exec,
-  isString,
-  replaceLiteralsWithObjectFields
+  isString
 } from '@domql/utils'
 
 /**
@@ -14,7 +13,7 @@ import {
 export function text (param, element, node) {
   let prop = exec(param, element)
   if (isString(prop) && prop.includes('{{')) {
-    prop = replaceLiteralsWithObjectFields(prop, element.state)
+    prop = element.call('replaceLiteralsWithObjectFields', prop)
   }
   if (element.tag === 'string') {
     node.nodeValue = prop
