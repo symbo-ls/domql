@@ -91,6 +91,10 @@ export const extendizeByKey = (element, parent, key) => {
       newElem.attr = newElem.props.attr
       delete newElem.props.attr
     }
+    if (newElem.props.if) {
+      newElem.if = newElem.props.if
+      delete newElem.props.if
+    }
     if (childExtends) newElem.childExtend = childExtends
     return newElem
   } else if (!extend || extend === true) {
