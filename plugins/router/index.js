@@ -29,10 +29,11 @@ const defaultOptions = {
 
 export const router = (
   path,
-  element,
+  el,
   state = {},
   options = {}
 ) => {
+  const element = el || this
   const win = element.context.window || window
   const doc = element.context.document || document
   const opts = { ...defaultOptions, ...element.context.routerOptions, ...options }
