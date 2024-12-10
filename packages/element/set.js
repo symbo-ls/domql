@@ -51,10 +51,11 @@ export const set = function (params, options = {}, el) {
   }
 
   if (params) {
-    const { childExtend, childProps, props } = params
+    let { childExtend, childProps, props } = params
     if (!childExtend && element.childExtend) params.childExtend = element.childExtend
     if (!childProps && element.childProps) params.childProps = element.childProps
     if (!props?.childProps && element.props?.childProps) {
+      if (!props) props = params.props = {}
       props.childProps = element.props.childProps
     }
 
