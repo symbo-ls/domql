@@ -2,14 +2,21 @@
 
 import { isFunction } from '@domql/utils'
 
+const getOnOrPropsEvent = (param, element) => {
+  const onEvent = element.on?.[param]
+  const onPropEvent = element.props?.['on' + param.slice(0, 1).toUpperCase() + param.slice(1)]
+  return onEvent || onPropEvent
+}
+
 export const applyEvent = (param, element, state, context, options) => {
   return param.call(element, element, state || element.state, context || element.context, options)
 }
 
 export const triggerEventOn = (param, element, options) => {
-  if (element.on && isFunction(element.on[param])) {
+  const appliedFunction = getOnOrPropsEvent(param, element)
+  if (appliedFunction) {
     const { state, context } = element
-    return applyEvent(element.on[param] || element.props?.[param], element, state, context, options)
+    return applyEvent(appliedFunction, element, state, context, options)
   }
 }
 
@@ -18,9 +25,10 @@ export const applyEventUpdate = (param, updatedObj, element, state, context, opt
 }
 
 export const triggerEventOnUpdate = (param, updatedObj, element, options) => {
-  if (element.on && isFunction(element.on[param])) {
+  const appliedFunction = getOnOrPropsEvent(param, element)
+  if (appliedFunction) {
     const { state, context } = element
-    return applyEventUpdate(element.on[param] || element.props?.[param], updatedObj, element, state, context, options)
+    return applyEventUpdate(appliedFunction, updatedObj, element, state, context, options)
   }
 }
 
@@ -54,7 +62,7 @@ export const applyEventsOnNode = (element, options) => {
       param === 'update'
     ) continue
 
-    const appliedFunction = element.on[param] || element.props?.[param]
+    const appliedFunction = getOnOrPropsEvent(param, element)
     if (isFunction(appliedFunction)) {
       node.addEventListener(param, event => {
         const { state, context } = element

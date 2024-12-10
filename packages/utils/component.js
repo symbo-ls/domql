@@ -79,6 +79,18 @@ export const extendizeByKey = (element, parent, key) => {
       tag,
       props: { ...element }
     })
+    if (newElem.props.data) {
+      newElem.data = newElem.props.data
+      delete newElem.props.data
+    }
+    if (newElem.props.state) {
+      newElem.state = newElem.props.state
+      delete newElem.props.state
+    }
+    if (newElem.props.attr) {
+      newElem.attr = newElem.props.attr
+      delete newElem.props.attr
+    }
     if (childExtends) newElem.childExtend = childExtends
     return newElem
   } else if (!extend || extend === true) {

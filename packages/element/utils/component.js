@@ -13,22 +13,13 @@ import {
 import { applyExtend } from '../extend'
 import { REGISTRY } from '../mixins'
 
-const replaceOnKeys = key => key.replace(/on\w+/g, match => match.substring(2))
-
 export const createValidDomqlObjectFromSugar = (el, parent, key, options) => {
   const newElem = {
     props: {},
-    define: {},
-    on: {}
+    define: {}
   }
   for (const k in el) {
     const prop = el[k]
-    const isEvent = k.startsWith('on')
-    if (isEvent) {
-      const onKey = replaceOnKeys(prop)
-      newElem.on[onKey] = prop
-    // } else if (!isMethod && checkIfKeyIsProperty(k)) {
-    }
 
     const isDefine = k.startsWith('is') || k.startsWith('has') || k.startsWith('use')
     if (isDefine) {
@@ -38,7 +29,7 @@ export const createValidDomqlObjectFromSugar = (el, parent, key, options) => {
 
     const isComponent = checkIfKeyIsComponent(k)
     const isRegistry = REGISTRY[k]
-    if (isComponent || isRegistry) {
+    if (isComponent || isRegistry || k === 'data' || k === 'state') {
       newElem[k] = prop
     } else {
       newElem.props[k] = prop
