@@ -1,6 +1,6 @@
 {
   "name": "@domql/event",
-  "version": "2.5.169",
+  "version": "2.5.170",
   "license": "MIT",
   "type": "module",
   "module": "dist/esm/index.js",
@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "@domql/report": "^2.5.162",
-    "@domql/utils": "^2.5.169"
+    "@domql/utils": "^2.5.170"
   },
   "gitHead": "c867d7db9e2450d67e97a15ffc7b61692713c234"
 }

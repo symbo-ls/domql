@@ -5,5 +5,5 @@
     "plugins/*"
   ],
   "npmClient": "npm",
-  "version": "2.5.169"
+  "version": "2.5.170"
 }
