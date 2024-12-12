@@ -67,8 +67,9 @@ const applyOverwrite = (state, obj, options) => {
 const hoistStateUpdate = (state, obj, options) => {
   const element = state.__element
   const { parent, __ref: ref } = element
-  const stateKey = ref.__state
-  const stateType = ref.__stateType
+
+  const stateKey = ref?.__state
+  const stateType = ref?.__stateType
   if (!stateKey) return
 
   const asksForInherit = checkIfInherits(element)
