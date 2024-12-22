@@ -1,6 +1,6 @@
 'use strict'
 
-import { triggerEventOnUpdate } from '@domql/event'
+import { triggerEventOn } from '@domql/event'
 import { isDefined, isObject, isFunction, isObjectLike, isProduction, removeValueFromArray, deepClone } from '@domql/utils'
 import { TREE } from '../tree'
 import { parseFilters, REGISTRY } from '../mixins'
@@ -103,7 +103,7 @@ export function setNodeStyles (params = {}) {
 
 export function remove (opts) {
   const element = this
-  const beforeUpdateReturns = triggerEventOnUpdate('beforeRemove', element, opts)
+  const beforeUpdateReturns = triggerEventOn('beforeRemove', element, opts)
   if (beforeUpdateReturns === false) return element
   if (isFunction(element.node.remove)) element.node.remove()
   else if (!isProduction()) {
@@ -112,7 +112,7 @@ export function remove (opts) {
   }
   delete element.parent[element.key]
   if (element.parent.__ref) element.parent.__ref.__children = removeValueFromArray(element.parent.__ref.__children, element.key)
-  triggerEventOnUpdate('remove', element, opts)
+  triggerEventOn('remove', element, opts)
 }
 
 export function get (param) {
