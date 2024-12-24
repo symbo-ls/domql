@@ -19,20 +19,15 @@ export const createValidDomqlObjectFromSugar = (el, parent, key, options) => {
     define: {}
   }
   for (const k in el) {
-    const prop = el[k]
-
-    const isDefine = k.startsWith('is') || k.startsWith('has') || k.startsWith('use')
-    if (isDefine) {
-      newElem.define[k] = prop
-    // } else if (!isMethod && checkIfKeyIsProperty(k)) {
-    }
+    const value = el[k]
 
     const isComponent = checkIfKeyIsComponent(k)
     const isRegistry = REGISTRY[k]
-    if (isComponent || isRegistry || k === 'data' || k === 'state') {
-      newElem[k] = prop
+    const allowedKeys = ['data', 'state', 'attr', 'if']
+    if (isComponent || isRegistry || allowedKeys.includes(k)) {
+      newElem[k] = value
     } else {
-      newElem.props[k] = prop
+      newElem.props[k] = value
     }
   }
   return newElem
