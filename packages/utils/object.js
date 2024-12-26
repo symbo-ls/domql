@@ -239,6 +239,11 @@ export const deepStringifyWithMaxDepth = (obj, stringified = {}, depth = 0, path
 
 export const objectToString = (obj = {}, indent = 0) => {
   // Handle empty object case
+  if (obj === null || typeof obj !== 'object') {
+    return String(obj)
+  }
+
+  // Handle empty object case
   if (Object.keys(obj).length === 0) {
     return '{}'
   }
