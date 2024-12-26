@@ -238,6 +238,11 @@ export const deepStringifyWithMaxDepth = (obj, stringified = {}, depth = 0, path
 }
 
 export const objectToString = (obj = {}, indent = 0) => {
+  // Handle empty object case
+  if (Object.keys(obj).length === 0) {
+    return '{}'
+  }
+
   const spaces = '  '.repeat(indent)
   let str = '{\n'
 
@@ -252,7 +257,6 @@ export const objectToString = (obj = {}, indent = 0) => {
         if (isObjectLike(element) && element !== null) {
           str += `${spaces}    ${objectToString(element, indent + 2)},\n`
         } else if (isString(element)) {
-          // if (element.includes('\n')) str += spaces + '    ' + '`' + element + '`,\n'
           str += `${spaces}    '${element}',\n`
         } else {
           str += `${spaces}    ${element},\n`
