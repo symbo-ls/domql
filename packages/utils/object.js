@@ -737,6 +737,44 @@ export const removeNestedKeyByPath = (obj, path) => {
   }
 }
 
+export const setInObjectByPath = (obj, path, value) => {
+  if (!Array.isArray(path)) {
+    throw new Error('Path must be an array.')
+  }
+
+  let current = obj
+
+  for (let i = 0; i < path.length - 1; i++) {
+    // If the current path segment doesn't exist or isn't an object, create it
+    if (!current[path[i]] || typeof current[path[i]] !== 'object') {
+      current[path[i]] = {}
+    }
+    current = current[path[i]]
+  }
+
+  const lastKey = path[path.length - 1]
+  current[lastKey] = value
+
+  return obj
+}
+
+export const getInObjectByPath = (obj, path) => {
+  if (!Array.isArray(path)) {
+    throw new Error('Path must be an array.')
+  }
+
+  let current = obj
+
+  for (let i = 0; i < path.length; i++) {
+    if (current === undefined || current === null) {
+      return undefined
+    }
+    current = current[path[i]]
+  }
+
+  return current
+}
+
 export const detectInfiniteLoop = arr => {
   const maxRepeats = 10 // Maximum allowed repetitions
   let pattern = []

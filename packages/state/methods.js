@@ -7,7 +7,12 @@ import {
   isObject,
   isString,
   removeFromArray,
-  removeFromObject
+  removeFromObject,
+  overwriteDeep,
+  createNestedObject,
+  getInObjectByPath,
+  removeNestedKeyByPath,
+  setInObjectByPath
 } from '@domql/utils'
 
 import { IGNORE_STATE_PARAMS } from './ignore'
@@ -121,6 +126,44 @@ export const set = function (val, options = {}) {
   const value = deepClone(val)
   return state.clean({ preventStateUpdate: true, ...options })
     .update(value, { replace: true, ...options })
+}
+
+export const setByPath = function (path, val, options = {}) {
+  const state = this
+  const value = deepClone(val)
+  setInObjectByPath(state, path, val)
+  const update = createNestedObject(path, value)
+  if (options.preventUpdate) return update
+  return state.update(update, options)
+}
+
+export const setPathCollection = function (changes, options = {}) {
+  const state = this
+  const update = changes.reduce((acc, change) => {
+    const result = setByPath(...change, { preventUpdate: true })
+    return overwriteDeep(acc, result)
+  }, {})
+  return state.update(update, options)
+}
+
+export const removeByPath = function (path, options = {}) {
+  const state = this
+  removeNestedKeyByPath(state, path)
+  if (options.preventUpdate) return path
+  return state.update({}, options)
+}
+
+export const removePathCollection = function (changes, options = {}) {
+  const state = this
+  changes.forEach(item => {
+    removeByPath(item, { preventUpdate: true })
+  })
+  return state.update({}, options)
+}
+
+export const getByPath = function (path, options = {}) {
+  const state = this
+  return getInObjectByPath(state, path)
 }
 
 export const reset = function (options = {}) {

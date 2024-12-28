@@ -32,7 +32,7 @@ const brackRegex = {
 export function replaceLiteralsWithObjectFields (str, options = {}, forcedState) {
   if (!str.includes(options.bracketsLength === 3 ? '{{{' : '{{')) return str
   const reg = brackRegex[options.bracketsLength || 2]
-  const obj = forcedState || this.state || {}
+  const obj = forcedState || this?.state || {}
   return str.replace(reg, (_, parentPath, variable) => {
     if (parentPath) {
       const parentLevels = parentPath.match(options.bracketsLength === 3 ? /\.\.\.\//g : /\.\.\//g).length
