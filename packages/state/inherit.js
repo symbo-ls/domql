@@ -105,6 +105,11 @@ export const isState = function (state) {
     state.add &&
     state.apply &&
     state.applyReplace &&
+    state.setByPath &&
+    state.setPathCollection &&
+    state.removeByPath &&
+    state.removePathCollection &&
+    state.getByPath &&
     state.applyFunction &&
     state.__element &&
     state.__children

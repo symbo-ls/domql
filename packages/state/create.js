@@ -20,6 +20,11 @@ import {
   quietUpdate,
   quietReplace,
   applyReplace,
+  setByPath,
+  setPathCollection,
+  removeByPath,
+  removePathCollection,
+  getByPath,
   keys,
   values
 } from './methods'
@@ -130,6 +135,13 @@ const applyMethods = (element) => {
     quietReplace: quietReplace.bind(state),
     reset: reset.bind(state),
     parent: element.parent.state || state,
+
+    setByPath: setByPath.bind(state),
+    setPathCollection: setPathCollection.bind(state),
+    removeByPath: removeByPath.bind(state),
+    removePathCollection: removePathCollection.bind(state),
+    getByPath: getByPath.bind(state),
+
     keys: keys.bind(state),
     values: values.bind(state),
     __element: element,
