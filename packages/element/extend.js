@@ -22,9 +22,10 @@ export const applyExtend = (element, parent, options = {}) => {
 
   const { props, __ref } = element
   let extend = props?.extends || element.extends || element.extend
+  const variant = props?.variant
   const context = element.context || parent.context
 
-  extend = fallbackStringExtend(extend, context, options)
+  extend = fallbackStringExtend(extend, context, options, variant)
 
   const extendStack = getExtendStack(extend, context)
 

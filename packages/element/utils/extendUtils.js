@@ -75,11 +75,15 @@ export const cloneAndMergeArrayExtend = stack => {
   }, {})
 }
 
-export const fallbackStringExtend = (extend, context, options = {}) => {
+export const fallbackStringExtend = (extend, context, options = {}, variant) => {
   const COMPONENTS = (context && context.components) || options.components
   const PAGES = (context && context.pages) || options.pages
   if (isString(extend)) {
-    const componentExists = COMPONENTS && (COMPONENTS[extend] || COMPONENTS['smbls.' + extend])
+    const componentExists = COMPONENTS && (
+      COMPONENTS[extend + '.' + variant] ||
+      COMPONENTS[extend] ||
+      COMPONENTS['smbls.' + extend]
+    )
     const pageExists = PAGES && extend.startsWith('/') && PAGES[extend]
     if (componentExists) return componentExists
     else if (pageExists) return pageExists
