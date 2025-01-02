@@ -1,14 +1,9 @@
 'use strict'
 
-import {
-  deepClone,
-  exec,
-  isArray,
-  isFunction,
-  isObject,
-  isString,
-  joinArrays
-} from '.'
+import { joinArrays } from './array.js'
+import { deepClone, exec } from './object.js'
+import { isArray, isFunction, isObject, isString } from './types.js'
+
 const ENV = process.env.NODE_ENV
 
 export const checkIfKeyIsComponent = (key) => {
