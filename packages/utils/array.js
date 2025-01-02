@@ -1,7 +1,7 @@
 'use strict'
 
-import { deepClone, deepMerge } from './object'
-import { isArray, isNumber, isString } from './types'
+import { deepClone, deepMerge } from './object.js'
+import { isArray, isNumber, isString } from './types.js'
 
 export const arrayContainsOtherArray = (arr1, arr2) => {
   return arr2.every(val => arr1.includes(val))

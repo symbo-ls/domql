@@ -1,6 +1,6 @@
 'use strict'
 
-import { window } from './globals'
+import { window } from './globals.js'
 
 export const isNode = (obj) => {
   return (

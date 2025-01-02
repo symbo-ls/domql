@@ -1,6 +1,6 @@
 'use strict'
 
-import { isHtmlElement, isNode } from './node'
+import { isHtmlElement, isNode } from './node.js'
 
 export const isObject = arg => {
   if (arg === null) return false

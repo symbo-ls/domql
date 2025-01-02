@@ -11,7 +11,7 @@
       "default": "./dist/cjs/index.js"
     },
     "./utils/component": "./utils/component.js",
-    "./methods.js": "./methods.js"
+    "./methods/index.js": "./methods/index.js"
   },
   "source": "index.js",
   "files": [
