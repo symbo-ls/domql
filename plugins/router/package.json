@@ -22,6 +22,7 @@
     "prepublish": "rimraf -I dist && npm run build && npm run copy:package:cjs"
   },
   "dependencies": {
+    "@domql/event": "^2.5.182",
     "@domql/utils": "^2.5.179"
   },
   "gitHead": "604e68df467e8c9aa5aa07a7766e5b76c70458d3",
