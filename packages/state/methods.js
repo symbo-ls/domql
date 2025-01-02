@@ -140,7 +140,7 @@ export const setByPath = function (path, val, options = {}) {
 export const setPathCollection = function (changes, options = {}) {
   const state = this
   const update = changes.reduce((acc, change) => {
-    const result = setByPath(...change, { preventUpdate: true })
+    const result = setByPath(...change.slice(1), { preventUpdate: true })
     return overwriteDeep(acc, result)
   }, {})
   return state.update(update, options)

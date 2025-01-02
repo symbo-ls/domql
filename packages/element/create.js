@@ -46,7 +46,7 @@ const ENV = process.env.NODE_ENV
 /**
  * Creating a domQL element using passed parameters
  */
-export const create = (element, parent, key, options = OPTIONS.create || {}, attachOptions) => {
+export const create = async (element, parent, key, options = OPTIONS.create || {}, attachOptions) => {
   cacheOptions(element, options)
 
   // if element is STRING
@@ -76,6 +76,8 @@ export const create = (element, parent, key, options = OPTIONS.create || {}, att
     return onlyResolveExtends(element, parent, key, options)
   }
 
+  await triggerEventOn('start', element, options)
+
   switchDefaultOptions(element, parent, options)
 
   addCaching(element, parent)
@@ -84,7 +86,7 @@ export const create = (element, parent, key, options = OPTIONS.create || {}, att
 
   createScope(element, parent)
 
-  createState(element, parent)
+  await createState(element, parent)
   if (element.scope === 'state') element.scope = element.state
 
   createIfConditionFlag(element, parent)
@@ -104,7 +106,7 @@ export const create = (element, parent, key, options = OPTIONS.create || {}, att
   // apply variants
   applyVariant(element, parent)
 
-  const onInit = triggerEventOn('init', element, options)
+  const onInit = await triggerEventOn('init', element, options)
   if (onInit === false) return element
 
   triggerEventOn('beforeClassAssign', element, options)
@@ -114,11 +116,11 @@ export const create = (element, parent, key, options = OPTIONS.create || {}, att
 
   addChildrenIfNotInOriginal(element, parent, key)
 
-  renderElement(element, parent, options, attachOptions)
+  await renderElement(element, parent, options, attachOptions)
 
   addElementIntoParentChildren(element, parent)
 
-  triggerEventOn('complete', element, options)
+  await triggerEventOn('complete', element, options)
 
   return element
 }
@@ -211,7 +213,7 @@ const addElementIntoParentChildren = (element, parent) => {
 }
 
 const visitedElements = new WeakMap()
-const renderElement = (element, parent, options, attachOptions) => {
+const renderElement = async (element, parent, options, attachOptions) => {
   if (visitedElements.has(element)) {
     if (ENV === 'test' || ENV === 'development') console.warn('Cyclic rendering detected:', element.__ref.path)
   }
@@ -224,7 +226,7 @@ const renderElement = (element, parent, options, attachOptions) => {
   try {
     const isInfiniteLoopDetected = detectInfiniteLoop(ref.path)
     if (ref.__uniqId || isInfiniteLoopDetected) return
-    createNode(element, options)
+    await createNode(element, options)
     ref.__uniqId = Math.random()
   } catch (e) {
     if (ENV === 'test' || ENV === 'development') {
@@ -249,16 +251,16 @@ const renderElement = (element, parent, options, attachOptions) => {
   assignNode(element, parent, key, attachOptions)
 
   // run `on.renderRouter`
-  triggerEventOn('renderRouter', element, options)
+  await triggerEventOn('renderRouter', element, options)
 
   // run `on.render`
-  triggerEventOn('render', element, options)
+  await triggerEventOn('render', element, options)
 
   // run `on.done`
-  triggerEventOn('done', element, options)
+  await triggerEventOn('done', element, options)
 
   // run `on.done`
-  triggerEventOn('create', element, options)
+  await triggerEventOn('create', element, options)
 }
 
 const checkIfPrimitive = (element) => is(element)('string', 'number')

@@ -24,7 +24,8 @@ import {
   parse,
   parseDeep,
   nextElement,
-  previousElement
+  previousElement,
+  call
 } from './'
 
 import { removeContent, updateContent } from '../mixins/content'
@@ -54,7 +55,8 @@ export const addMethods = (element, parent, options = {}) => {
     log,
     verbose,
     warn,
-    error
+    error,
+    call
   }
   if (element.context.methods) (options.strict ? merge : overwrite)(proto, element.context.methods)
   Object.setPrototypeOf(element, proto)

@@ -278,6 +278,11 @@ export function variables (obj = {}) {
   }
 }
 
+export function call (fnKey, ...args) {
+  const context = this.context
+  return (context.utils[fnKey] || context.functions[fnKey] || context.methods[fnKey] || context.snippets[fnKey])?.call(this, ...args)
+}
+
 export const METHODS = [
   'set',
   'reset',
@@ -302,6 +307,7 @@ export const METHODS = [
   'verbose',
   'warn',
   'error',
+  'call',
   'nextElement',
   'previousElement'
 ]

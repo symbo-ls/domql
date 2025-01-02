@@ -12,11 +12,11 @@ export const applyEvent = (param, element, state, context, options) => {
   return param.call(element, element, state || element.state, context || element.context, options)
 }
 
-export const triggerEventOn = (param, element, options) => {
+export const triggerEventOn = async (param, element, options) => {
   const appliedFunction = getOnOrPropsEvent(param, element)
   if (appliedFunction) {
     const { state, context } = element
-    return applyEvent(appliedFunction, element, state, context, options)
+    return await applyEvent(appliedFunction, element, state, context, options)
   }
 }
 

@@ -31,13 +31,13 @@ import {
 import { updateState } from './updateState'
 import { checkIfInherits, createInheritedState } from './inherit'
 
-export const createState = function (element, parent, options) {
-  element.state = applyInitialState(element, parent, options)
+export const createState = async function (element, parent, options) {
+  element.state = await applyInitialState(element, parent, options)
   return element.state
 }
 
-export const applyInitialState = function (element, parent, options) {
-  const objectizeState = checkForTypes(element)
+export const applyInitialState = async function (element, parent, options) {
+  const objectizeState = await checkForTypes(element)
   if (objectizeState === false) return parent.state || {}
   else element.state = objectizeState
 
@@ -80,12 +80,12 @@ const applyDependentState = (element, state) => {
   return dependentState
 }
 
-const checkForTypes = (element) => {
+const checkForTypes = async (element) => {
   const { state: orig, props, __ref: ref } = element
   const state = props?.state || orig
   if (isFunction(state)) {
     ref.__state = state
-    return exec(state, element)
+    return await exec(state, element)
   } else if (is(state)('string', 'number')) {
     ref.__state = state
     return { value: state }

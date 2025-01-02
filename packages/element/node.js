@@ -19,7 +19,7 @@ import { propagateEventsFromProps } from './utils/propEvents'
 
 const ENV = process.env.NODE_ENV
 
-export const createNode = (element, options) => {
+export const createNode = async (element, options) => {
   // create and assign a node
   let { node, tag, __ref: ref } = element
 
@@ -81,13 +81,13 @@ export const createNode = (element, options) => {
     if (isElement) {
       const { hasDefine, hasContextDefine } = isElement
       if (element[param] && !hasDefine && !hasContextDefine) {
-        const createAsync = () => {
-          create(exec(value, element), element, param, options)
+        const createAsync = async () => {
+          await create(exec(value, element), element, param, options)
         }
 
         if ((element.props && element.props.lazyLoad) || options.lazyLoad) {
-          window.requestAnimationFrame(() => createAsync())
-        } else createAsync()
+          window.requestAnimationFrame(async () => await createAsync())
+        } else await createAsync()
       }
     }
   }
