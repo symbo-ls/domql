@@ -10,7 +10,7 @@ import {
   isVariant
 } from '@domql/utils'
 
-import { applyExtend } from '../extend'
+import { applyExtend } from '../extend.js'
 import { REGISTRY } from '../mixins/index.js'
 
 export const createValidDomqlObjectFromSugar = (el, parent, key, options) => {

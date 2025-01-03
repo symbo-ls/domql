@@ -2,10 +2,10 @@
 
 import { deepContains, setContentKey } from '@domql/utils'
 
-import { OPTIONS } from './cache/options'
-import { create } from './create'
-import { registry } from './mixins'
-import { removeContent } from './mixins/content'
+import { OPTIONS } from './cache/options.js'
+import { create } from './create.js'
+import { registry } from './mixins/index.js'
+import { removeContent } from './mixins/content.js'
 import { triggerEventOn, triggerEventOnUpdate } from '@domql/event'
 
 export const resetElement = (params, element, options) => {

@@ -2,7 +2,7 @@
 
 import { exec, isNot, isNull, isUndefined } from '@domql/utils'
 import { report } from '@domql/report'
-import { deepMerge } from '../utils'
+import { deepMerge } from '../utils/index.js'
 
 /**
  * Recursively add attributes to a DOM node

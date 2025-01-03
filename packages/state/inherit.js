@@ -1,7 +1,7 @@
 'use strict'
 
 import { deepClone, is, isObjectLike, isUndefined } from '@domql/utils'
-import { IGNORE_STATE_PARAMS } from './ignore'
+import { IGNORE_STATE_PARAMS } from './ignore.js'
 
 export const getRootStateInKey = (stateKey, parentState) => {
   if (!stateKey.includes('~/')) return

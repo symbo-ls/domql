@@ -1,4 +1,4 @@
 'use strict'
 
-export * from './on'
-export * from './can'
+export * from './on.js'
+export * from './can.js'

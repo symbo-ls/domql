@@ -1,5 +1,5 @@
 'use strict'
 
-export * from './object'
-export * from './extendUtils'
-export * from './component'
+export * from './object.js'
+export * from './extendUtils.js'
+export * from './component.js'

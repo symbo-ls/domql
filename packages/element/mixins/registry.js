@@ -1,14 +1,14 @@
 'use strict'
 
-import attr from './attr'
-import { classList } from './classList'
-import setContent from './content'
-import data from './data'
-import html from './html'
-import scope from './scope'
-import state from './state'
-import style from './style'
-import text from './text'
+import attr from './attr.js'
+import { classList } from './classList.js'
+import setContent from './content.js'
+import data from './data.js'
+import html from './html.js'
+import scope from './scope.js'
+import state from './state.js'
+import style from './style.js'
+import text from './text.js'
 
 export const REGISTRY = {
   attr,

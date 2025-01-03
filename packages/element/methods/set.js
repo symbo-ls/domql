@@ -2,33 +2,32 @@
 
 import { merge, overwrite } from '@domql/utils'
 
-import { set, reset } from '../set'
-import { update } from '../update'
+import { set, reset } from '../set.js'
+import { update } from '../update.js'
 
+import { removeContent, updateContent } from '../mixins/content.js'
 import {
-  lookup,
+  call,
+  error,
+  getPath,
+  getRef,
+  keys,
+  log,
   lookdown,
   lookdownAll,
-  getRef,
-  getPath,
-  setNodeStyles,
-  setProps,
-  remove,
-  spotByPath,
-  log,
-  verbose,
-  warn,
-  error,
-  variables,
-  keys,
+  lookup,
+  nextElement,
   parse,
   parseDeep,
-  nextElement,
   previousElement,
-  call
-} from './'
-
-import { removeContent, updateContent } from '../mixins/content'
+  remove,
+  setNodeStyles,
+  setProps,
+  spotByPath,
+  variables,
+  verbose,
+  warn
+} from './index.js'
 
 export const addMethods = (element, parent, options = {}) => {
   const proto = {

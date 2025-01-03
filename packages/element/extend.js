@@ -7,7 +7,7 @@ import {
   cloneAndMergeArrayExtend,
   deepMergeExtend,
   fallbackStringExtend
-} from './utils'
+} from './utils/index.js'
 
 const ENV = process.env.NODE_ENV
 

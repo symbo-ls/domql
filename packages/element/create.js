@@ -1,7 +1,7 @@
 'use strict'
 
-import createNode from './node'
-import { ROOT } from './tree'
+import createNode from './node.js'
+import { ROOT } from './tree.js'
 
 import {
   HTML_TAGS,
@@ -26,20 +26,20 @@ import { triggerEventOn } from '@domql/event'
 import { assignNode } from '@domql/render'
 import { createState } from '@domql/state'
 
-import { isMethod } from './methods'
-import { createProps } from './props'
-import { applyExtend } from './extend'
-import { REGISTRY, registry } from './mixins'
-import { addMethods } from './methods/set'
-import { assignKeyAsClassname } from './mixins/classList'
-import { throughInitialExec, throughInitialDefine } from './iterate'
+import { isMethod } from './methods/index.js'
+import { createProps } from './props/index.js'
+import { applyExtend } from './extend.js'
+import { REGISTRY, registry } from './mixins/index.js'
+import { addMethods } from './methods/set.js'
+import { assignKeyAsClassname } from './mixins/classList.js'
+import { throughInitialExec, throughInitialDefine } from './iterate.js'
 
-import { OPTIONS } from './cache/options'
+import { OPTIONS } from './cache/options.js'
 
 import {
   applyVariant,
   createValidDomqlObjectFromSugar
-} from './utils/component'
+} from './utils/component.js'
 
 const ENV = process.env.NODE_ENV
 

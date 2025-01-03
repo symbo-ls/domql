@@ -17,16 +17,16 @@ import {
 } from '@domql/utils'
 
 import { applyEvent, triggerEventOn, triggerEventOnUpdate } from '@domql/event'
-import { isMethod } from './methods'
-import { updateProps } from './props'
+import { isMethod } from './methods/index.js'
+import { updateProps } from './props/index.js'
 import { createState, findInheritedState } from '@domql/state'
 
-import { create } from './create'
-import { throughExecProps, throughUpdatedDefine, throughUpdatedExec } from './iterate'
-import { REGISTRY } from './mixins'
-import { applyParam } from './utils/applyParam'
-import { OPTIONS } from './cache/options'
-import { METHODS_EXL, deepMerge } from './utils' // old utils (current)
+import { create } from './create.js'
+import { throughExecProps, throughUpdatedDefine, throughUpdatedExec } from './iterate.js'
+import { REGISTRY } from './mixins/index.js'
+import { applyParam } from './utils/applyParam.js'
+import { OPTIONS } from './cache/options.js'
+import { METHODS_EXL, deepMerge } from './utils/index.js' // old utils (current)
 
 const snapshot = {
   snapshotId: createSnapshotId

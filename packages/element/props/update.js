@@ -1,7 +1,7 @@
 'use strict'
 
-import { syncProps } from './create'
-import { inheritParentProps } from './inherit'
+import { syncProps } from './create.js'
+import { inheritParentProps } from './inherit.js'
 
 export const updateProps = (newProps, element, parent) => {
   const { __ref } = element

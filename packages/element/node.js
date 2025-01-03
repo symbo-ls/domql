@@ -3,18 +3,18 @@
 import { exec, isFunction, isObject, isUndefined, isVariant } from '@domql/utils'
 import { applyEventsOnNode, triggerEventOn, applyAnimationFrame } from '@domql/event'
 import { cacheNode } from '@domql/render'
-import { isMethod } from './methods'
+import { isMethod } from './methods/index.js'
 
-import create from './create'
+import create from './create.js'
 
 import {
   throughExecProps,
   throughInitialDefine,
   throughInitialExec
-} from './iterate'
-import { REGISTRY } from './mixins'
-import { applyParam } from './utils/applyParam'
-import { propagateEventsFromProps } from './utils/propEvents'
+} from './iterate.js'
+import { REGISTRY } from './mixins/index.js'
+import { applyParam } from './utils/applyParam.js'
+import { propagateEventsFromProps } from './utils/propEvents.js'
 // import { defineSetter } from './methods'
 
 const ENV = process.env.NODE_ENV

@@ -15,7 +15,7 @@ import {
   setInObjectByPath
 } from '@domql/utils'
 
-import { IGNORE_STATE_PARAMS } from './ignore'
+import { IGNORE_STATE_PARAMS } from './ignore.js'
 
 export const parse = function () {
   const state = this

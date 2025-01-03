@@ -1,7 +1,7 @@
 'use strict'
 
-export * from './ignore'
-export * from './create'
-export * from './updateState'
-export * from './methods'
-export * from './inherit'
+export * from './ignore.js'
+export * from './create.js'
+export * from './updateState.js'
+export * from './methods.js'
+export * from './inherit.js'

@@ -1,6 +1,6 @@
 'use strict'
 
-export * from './ignore'
-export * from './create'
-export * from './inherit'
-export * from './update'
+export * from './ignore.js'
+export * from './create.js'
+export * from './inherit.js'
+export * from './update.js'

@@ -1,6 +1,6 @@
 'use strict'
 
-import { create } from '../create'
+import { create } from '../create.js'
 import {
   exec,
   isString

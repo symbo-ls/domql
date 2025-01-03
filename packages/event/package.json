@@ -24,6 +24,7 @@
     "build:esm": "npx esbuild *.js --target=es2017 --format=esm --outdir=dist/esm",
     "build:cjs": "npx esbuild *.js --target=node16 --format=cjs --outdir=dist/cjs",
     "build:iife": "npx esbuild *.js --target=node16 --format=iife --outdir=dist/iife",
+    "build": "rimraf -I dist; npm run build:cjs; npm run build:esm",
     "prepublish": "npm run build; npm run copy:package:cjs"
   },
   "dependencies": {

@@ -1,15 +1,15 @@
 'use strict'
 
-import { attr } from './attr'
-import { applyClasslist } from './classList'
-import { setContent } from './content'
-import { data } from './data'
-import { html } from './html'
-import { style } from './style'
-import { text } from './text'
-import { state } from './state'
-import { scope } from './scope'
-import { REGISTRY } from './registry'
+import { attr } from './attr.js'
+import { applyClasslist } from './classList.js'
+import { setContent } from './content.js'
+import { data } from './data.js'
+import { html } from './html.js'
+import { style } from './style.js'
+import { text } from './text.js'
+import { state } from './state.js'
+import { scope } from './scope.js'
+import { REGISTRY } from './registry.js'
 
 export { REGISTRY as registry }
 export { applyClasslist as classList }
@@ -25,4 +25,4 @@ export {
   scope
 }
 
-export * from './registry'
+export * from './registry.js'

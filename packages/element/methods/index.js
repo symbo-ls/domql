@@ -2,7 +2,7 @@
 
 import { triggerEventOn } from '@domql/event'
 import { isDefined, isObject, isFunction, isObjectLike, isProduction, removeValueFromArray, deepClone } from '@domql/utils'
-import { TREE } from '../tree'
+import { TREE } from '../tree.js'
 import { parseFilters, REGISTRY } from '../mixins/index.js'
 const ENV = process.env.NODE_ENV
 

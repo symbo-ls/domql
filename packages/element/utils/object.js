@@ -1,7 +1,7 @@
 'use strict'
 
 import { isArray, isObject, isObjectLike, joinArrays, deepClone } from '@domql/utils'
-import { IGNORE_PROPS_PARAMS } from '../props'
+import { IGNORE_PROPS_PARAMS } from '../props/index.js'
 
 // breaks server build
 // import { IGNORE_STATE_PARAMS } from '@domql/state'
