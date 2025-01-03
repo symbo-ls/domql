@@ -1,17 +1,21 @@
 'use strict'
 
-import {
-  attr, classList, content,
-  data, html, state, style,
-  text, scope
-} from '.'
+import attr from './attr'
+import { classList } from './classList'
+import setContent from './content'
+import data from './data'
+import html from './html'
+import scope from './scope'
+import state from './state'
+import style from './style'
+import text from './text'
 
 export const REGISTRY = {
   attr,
   style,
   text,
   html,
-  content,
+  setContent,
   data,
   class: classList,
   state,

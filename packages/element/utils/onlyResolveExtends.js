@@ -2,7 +2,7 @@
 
 import { exec, isFunction, isObject, isUndefined } from '@domql/utils'
 import { create } from '..'
-import { REGISTRY } from '../mixins'
+import { REGISTRY } from '../mixins/index.js'
 import { applyVariant, isVariant } from '.'
 import { isMethod } from '../methods'
 import { addMethods } from '../methods/set'

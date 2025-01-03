@@ -1,7 +1,7 @@
 'use strict'
 
 import { isFunction } from '@domql/utils'
-import { REGISTRY } from '../mixins'
+import { REGISTRY } from '../mixins/index.js'
 
 export const applyParam = (param, element, options) => {
   const { node, context, __ref: ref } = element

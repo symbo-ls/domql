@@ -11,7 +11,7 @@ import {
 } from '@domql/utils'
 
 import { applyExtend } from '../extend'
-import { REGISTRY } from '../mixins'
+import { REGISTRY } from '../mixins/index.js'
 
 export const createValidDomqlObjectFromSugar = (el, parent, key, options) => {
   const newElem = {
