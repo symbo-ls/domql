@@ -311,30 +311,47 @@ export const detachFunctionsFromObject = (obj, detached = {}) => {
   return detached
 }
 
-/**
- * Detringify object
- */
+export const hasFunction = (str) => {
+  if (!str) return false
+
+  const trimmed = str.trim().replace(/\n\s*/g, ' ').trim()
+
+  if (trimmed === '') return false
+  if (trimmed === '{}') return false
+  if (trimmed === '[]') return false
+
+  const patterns = [
+    /^\(\s*\{[^}]*\}\s*\)\s*=>/,
+    /^(\([^)]*\)|[^=]*)\s*=>/,
+    /^function[\s(]/,
+    /^async\s+/,
+    /^\(\s*function/,
+    /^[a-zA-Z_$][a-zA-Z0-9_$]*\s*=>/
+  ]
+
+  const isFunction = patterns.some(pattern => pattern.test(trimmed))
+  const isObjectLiteral = trimmed.startsWith('{') && !trimmed.includes('=>')
+  const isArrayLiteral = trimmed.startsWith('[')
+  const isJSONLike = /^["[{]/.test(trimmed) && !trimmed.includes('=>')
+
+  return isFunction && !isObjectLiteral && !isArrayLiteral && !isJSONLike
+}
+
 export const deepDestringify = (obj, destringified = {}) => {
   for (const prop in obj) {
     const hasOwnProperty = Object.prototype.hasOwnProperty.call(obj, prop)
     if (!hasOwnProperty) continue
+
     const objProp = obj[prop]
+
     if (isString(objProp)) {
-      if ((
-        objProp.includes('(){') ||
-        objProp.includes('() {') ||
-        objProp.includes('=>') ||
-        objProp.startsWith('()') ||
-        objProp.startsWith('async') ||
-        objProp.startsWith('function') ||
-        objProp.startsWith('(')
-      ) &&
-        !objProp.startsWith('{') && !objProp.startsWith('[')
-      ) {
+      if (hasFunction(objProp)) {
         try {
           const evalProp = window.eval(`(${objProp})`)
           destringified[prop] = evalProp
-        } catch (e) { if (e) destringified[prop] = objProp }
+        } catch (e) {
+          if (e) destringified[prop] = objProp
+        }
       } else {
         destringified[prop] = objProp
       }
@@ -342,11 +359,13 @@ export const deepDestringify = (obj, destringified = {}) => {
       destringified[prop] = []
       objProp.forEach((arrProp) => {
         if (isString(arrProp)) {
-          if (arrProp.includes('=>') || arrProp.includes('function') || arrProp.startsWith('(')) {
+          if (hasFunction(arrProp)) {
             try {
-              const evalProp = window.eval(`(${arrProp})`) // use parentheses to convert string to function expression
+              const evalProp = window.eval(`(${arrProp})`)
               destringified[prop].push(evalProp)
-            } catch (e) { if (e) destringified[prop].push(arrProp) }
+            } catch (e) {
+              if (e) destringified[prop].push(arrProp)
+            }
           } else {
             destringified[prop].push(arrProp)
           }
