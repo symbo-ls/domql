@@ -1,7 +1,7 @@
 'use strict'
 
 import { exec, isFunction, isObject, isUndefined, isVariant } from '@domql/utils'
-import { applyEventsOnNode, triggerEventOn, applyAnimationFrame } from '@domql/event'
+import { applyEventsOnNode, triggerEventOn } from '@domql/event'
 import { cacheNode } from '@domql/render'
 import { isMethod } from './methods/index.js'
 
@@ -37,7 +37,6 @@ export const createNode = async (element, options) => {
     // trigger `on.attachNode`
     triggerEventOn('attachNode', element, options)
   }
-
   // node.dataset // .key = element.key
 
   if (ENV === 'test' || ENV === 'development' || options.alowRefReference) {
@@ -56,9 +55,6 @@ export const createNode = async (element, options) => {
 
   if (element.tag !== 'string' && element.tag !== 'fragment') {
     propagateEventsFromProps(element)
-
-    // apply events
-    applyAnimationFrame(element, options)
 
     if (isNewNode && isObject(element.on)) {
       applyEventsOnNode(element, options)

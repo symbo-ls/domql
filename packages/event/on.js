@@ -24,20 +24,11 @@ export const applyEventUpdate = (param, updatedObj, element, state, context, opt
   return param.call(element, updatedObj, element, state || element.state, context || element.context, options)
 }
 
-export const triggerEventOnUpdate = (param, updatedObj, element, options) => {
+export const triggerEventOnUpdate = async (param, updatedObj, element, options) => {
   const appliedFunction = getOnOrPropsEvent(param, element)
   if (appliedFunction) {
     const { state, context } = element
-    return applyEventUpdate(appliedFunction, updatedObj, element, state, context, options)
-  }
-}
-
-export const applyAnimationFrame = (element, options) => {
-  const { props, on, __ref: ref } = element
-  const { frameListeners } = ref.root.data
-  if (frameListeners && (on?.frame || props?.onFrame)) {
-    const { registerFrameListener } = element.context.utils
-    if (registerFrameListener) registerFrameListener(element)
+    return await applyEventUpdate(appliedFunction, updatedObj, element, state, context, options)
   }
 }
 
@@ -64,9 +55,9 @@ export const applyEventsOnNode = (element, options) => {
 
     const appliedFunction = getOnOrPropsEvent(param, element)
     if (isFunction(appliedFunction)) {
-      node.addEventListener(param, event => {
+      node.addEventListener(param, async event => {
         const { state, context } = element
-        appliedFunction.call(element, event, element, state, context, options)
+        await appliedFunction.call(element, event, element, state, context, options)
       })
     }
   }

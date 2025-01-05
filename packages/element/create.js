@@ -22,7 +22,7 @@ import {
   addChildrenIfNotInOriginal
 } from '@domql/utils'
 
-import { triggerEventOn } from '@domql/event'
+import { applyAnimationFrame, triggerEventOn } from '@domql/event'
 import { assignNode } from '@domql/render'
 import { createState } from '@domql/state'
 
@@ -255,6 +255,9 @@ const renderElement = async (element, parent, options, attachOptions) => {
 
   // assign NODE
   assignNode(element, parent, key, attachOptions)
+
+  // apply events
+  applyAnimationFrame(element, options)
 
   // run `on.renderRouter`
   await triggerEventOn('renderRouter', element, options)
