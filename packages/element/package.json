@@ -32,7 +32,7 @@
     "@domql/state": "^2.5.189",
     "@domql/utils": "^2.5.187"
   },
-  "gitHead": "06c19a4cfe0e5acc6be8877cd378f654dfb0841e",
+  "gitHead": "8c45cc75c8e80a64423ca336d7f29cf3d101e526",
   "devDependencies": {
     "@babel/core": "^7.12.0"
   }
