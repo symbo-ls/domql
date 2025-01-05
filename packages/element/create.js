@@ -222,14 +222,20 @@ const renderElement = async (element, parent, options, attachOptions) => {
 
   const { __ref: ref, key } = element
 
-  // CREATE a real NODE
-  try {
+  const createNestedChild = async () => {
     const isInfiniteLoopDetected = detectInfiniteLoop(ref.path)
     if (ref.__uniqId || isInfiniteLoopDetected) return
     await createNode(element, options)
     ref.__uniqId = Math.random()
-  } catch (e) {
-    if (ENV === 'test' || ENV === 'development') {
+  }
+
+  // CREATE a real NODE
+  if (ENV === 'test' || ENV === 'development') {
+    await createNestedChild()
+  } else {
+    try {
+      await createNestedChild()
+    } catch (e) {
       const path = ref.path
       if (path.includes('ComponentsGrid')) path.splice(0, path.indexOf('ComponentsGrid') + 2)
       if (path.includes('demoComponent')) path.splice(0, path.indexOf('demoComponent') + 1)

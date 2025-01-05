@@ -51,12 +51,15 @@ export const set = function (params, options = {}, el) {
   }
 
   if (params) {
-    let { childExtend, childProps, props } = params
-    if (!childExtend && element.childExtend) params.childExtend = element.childExtend
-    if (!childProps && element.childProps) params.childProps = element.childProps
+    let { childExtend, props } = params
+    if (!props) props = params.props = {}
+    if (!childExtend && element.childExtend) {
+      params.childExtend = element.childExtend
+      props.ignoreChildExtend = true
+    }
     if (!props?.childProps && element.props?.childProps) {
-      if (!props) props = params.props = {}
       props.childProps = element.props.childProps
+      props.ignoreChildProps = true
     }
 
     if (lazyLoad) {

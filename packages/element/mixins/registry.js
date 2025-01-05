@@ -2,7 +2,7 @@
 
 import attr from './attr.js'
 import { classList } from './classList.js'
-import setContent from './content.js'
+import content from './content.js'
 import data from './data.js'
 import html from './html.js'
 import scope from './scope.js'
@@ -15,7 +15,7 @@ export const REGISTRY = {
   style,
   text,
   html,
-  setContent,
+  content,
   data,
   class: classList,
   state,
