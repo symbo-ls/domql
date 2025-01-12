@@ -1,5 +1,5 @@
 # DOMQL
-DOMQL is new framework made by Symbols team to simplify app development process with full potential of reusabile components. The aim to create this framework is to build one of the most reusable components library, and together with a design system library, it creates strong foundation of web interface kits.
+DOMQL is new framework made by Symbols team to simplify app development process with full potential of reusable components. The aim to create this framework is to build one of the most reusable components library, and together with a [design system library](https://github.com/symbo-ls/smbls), it creates strong foundation of any web interface kits.
 
 DOMQL recursively creates elements on your tree, runs transformations based on passed properties, applies state and events, and replicating this virtual tree, renders a DOM tree. The rendering part is separated from the schema part, which makes it easy to use other rendering transformers such as Mikado, React, Vue and so.
 
