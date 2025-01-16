@@ -259,11 +259,12 @@ const renderElement = async (element, parent, options, attachOptions) => {
   // apply events
   applyAnimationFrame(element, options)
 
-  // run `on.renderRouter`
-  await triggerEventOn('renderRouter', element, options)
-
   // run `on.render`
   await triggerEventOn('render', element, options)
+  // triggerEventOn('render', element, options).then(() => {})
+
+  // run `on.renderRouter`
+  await triggerEventOn('renderRouter', element, options)
 
   // run `on.done`
   await triggerEventOn('done', element, options)
