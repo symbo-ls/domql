@@ -63,7 +63,13 @@ export const set = function (params, options = {}, el) {
     }
 
     if (lazyLoad) {
-      window.requestAnimationFrame(() => resetElement(params, element, options))
+      window.requestAnimationFrame(() => {
+        resetElement(params, element, options)
+        // handle lazy load
+        if (!options.preventUpdateListener) {
+          triggerEventOn('lazyLoad', element, options)
+        }
+      })
     } else resetElement(params, element, options)
   }
 

@@ -82,7 +82,13 @@ export const createNode = async (element, options) => {
         }
 
         if ((element.props && element.props.lazyLoad) || options.lazyLoad) {
-          window.requestAnimationFrame(async () => await createAsync())
+          window.requestAnimationFrame(async () => {
+            await createAsync()
+            // handle lazy load
+            if (!options.preventUpdateListener) {
+              triggerEventOn('lazyLoad', element, options)
+            }
+          })
         } else await createAsync()
       }
     }

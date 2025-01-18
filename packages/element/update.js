@@ -152,7 +152,13 @@ export const update = function (params = {}, opts) {
         calleeElement
       })
 
-      lazyLoad ? window.requestAnimationFrame(() => childUpdateCall()) : childUpdateCall()
+      lazyLoad ? window.requestAnimationFrame(() => { // eslint-disable-line
+        childUpdateCall()
+        // handle lazy load
+        if (!options.preventUpdateListener) {
+          triggerEventOn('lazyLoad', element, options)
+        }
+      }) : childUpdateCall()
     }
   }
 
