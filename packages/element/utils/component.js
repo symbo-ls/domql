@@ -18,12 +18,13 @@ export const createValidDomqlObjectFromSugar = (el, parent, key, options) => {
     props: {},
     define: {}
   }
+
+  const allowedKeys = ['data', 'state', 'attr', 'if']
+
   for (const k in el) {
     const value = el[k]
-
     const isComponent = checkIfKeyIsComponent(k)
     const isRegistry = REGISTRY[k]
-    const allowedKeys = ['data', 'state', 'attr', 'if']
     if (isComponent || isRegistry || allowedKeys.includes(k)) {
       newElem[k] = value
     } else {
