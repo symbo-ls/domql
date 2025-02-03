@@ -103,8 +103,8 @@ export function setNodeStyles (params = {}) {
 
 export function remove (opts) {
   const element = this
-  const beforeUpdateReturns = triggerEventOn('beforeRemove', element, opts)
-  if (beforeUpdateReturns === false) return element
+  const beforeRemoveReturns = triggerEventOn('beforeRemove', element, opts)
+  if (beforeRemoveReturns === false) return element
   if (isFunction(element.node.remove)) element.node.remove()
   else if (!isProduction()) {
     console.warn('This item cant be removed')

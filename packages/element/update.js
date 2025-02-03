@@ -41,7 +41,7 @@ const UPDATE_DEFAULT_OPTIONS = {
   excludes: METHODS_EXL
 }
 
-export const update = function (params = {}, opts) {
+export const update = async function (params = {}, opts) {
   const calleeElementCache = opts?.calleeElement
   const options = deepClone(isObject(opts) ? deepMerge(opts, UPDATE_DEFAULT_OPTIONS) : UPDATE_DEFAULT_OPTIONS, { exclude: ['calleeElement'] })
   options.calleeElement = calleeElementCache
@@ -54,7 +54,7 @@ export const update = function (params = {}, opts) {
   const [snapshotOnCallee, calleeElement, snapshotHasUpdated] = captureSnapshot(element, options)
   if (snapshotHasUpdated) return
 
-  if (!options.preventListeners) triggerEventOnUpdate('startUpdate', params, element, options)
+  if (!options.preventListeners) await triggerEventOnUpdate('startUpdate', params, element, options)
 
   if (preventInheritAtCurrentState && preventInheritAtCurrentState.__element === element) return
   if (!excludes) merge(options, UPDATE_DEFAULT_OPTIONS)
@@ -63,7 +63,7 @@ export const update = function (params = {}, opts) {
     params = { text: params }
   }
 
-  const inheritState = inheritStateUpdates(element, options)
+  const inheritState = await inheritStateUpdates(element, options)
   if (inheritState === false) return
 
   const ifFails = checkIfOnUpdate(element, parent, options)
@@ -77,11 +77,14 @@ export const update = function (params = {}, opts) {
   }
 
   if (!options.preventBeforeUpdateListener && !options.preventListeners) {
-    const beforeUpdateReturns = triggerEventOnUpdate('beforeUpdate', params, element, options)
+    const beforeUpdateReturns = await triggerEventOnUpdate('beforeUpdate', params, element, options)
     if (beforeUpdateReturns === false) return element
   }
 
+  // apply new updates
   overwriteDeep(element, params, { exclude: METHODS_EXL })
+
+  // exec updates
   throughExecProps(element)
   throughUpdatedExec(element, { ignore: UPDATE_DEFAULT_OPTIONS })
   throughUpdatedDefine(element)
@@ -109,10 +112,6 @@ export const update = function (params = {}, opts) {
 
   for (const param in element) {
     const prop = element[param]
-
-    if (element.Iframe && element.Overlay && element.ComponentFrameCanvas && param === 'Iframe') {
-      console.log('isframe')
-    }
 
     if (!Object.hasOwnProperty.call(element, param)) continue
 
@@ -262,7 +261,7 @@ const checkIfOnUpdate = (element, parent, options) => {
  * @param {boolean} [options.preventStateUpdateListener] - If true, prevent the 'stateUpdate' event listener.
  * @returns {boolean} - If returns false, it breaks the update function
  */
-const inheritStateUpdates = (element, options) => {
+const inheritStateUpdates = async (element, options) => {
   const { __ref: ref } = element
   const stateKey = ref.__state
   const { parent, state } = element
@@ -290,7 +289,7 @@ const inheritStateUpdates = (element, options) => {
 
   // Trigger on.beforeStateUpdate event
   if (!options.preventBeforeStateUpdateListener && !options.preventListeners) {
-    const initStateReturns = triggerEventOnUpdate('beforeStateUpdate', keyInParentState, element, options)
+    const initStateReturns = await triggerEventOnUpdate('beforeStateUpdate', keyInParentState, element, options)
     if (initStateReturns === false) return element
   }
 
@@ -299,7 +298,7 @@ const inheritStateUpdates = (element, options) => {
 
   // Trigger on.stateUpdate event
   if (!options.preventStateUpdateListener && !options.preventListeners) {
-    triggerEventOnUpdate('stateUpdate', newState.parse(), element, options)
+    await triggerEventOnUpdate('stateUpdate', newState.parse(), element, options)
   }
 }
 

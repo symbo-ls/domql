@@ -14,7 +14,7 @@ const STATE_UPDATE_OPTIONS = {
   execStateFunction: true
 }
 
-export const updateState = function (obj, options = STATE_UPDATE_OPTIONS) {
+export const updateState = async function (obj, options = STATE_UPDATE_OPTIONS) {
   const state = this
   const element = state.__element
 
@@ -28,7 +28,7 @@ export const updateState = function (obj, options = STATE_UPDATE_OPTIONS) {
   } else if (options.preventInheritAtCurrentState) return
 
   if (!options.preventBeforeStateUpdateListener) {
-    const beforeStateUpdateReturns = triggerEventOnUpdate('beforeStateUpdate', obj, element, options)
+    const beforeStateUpdateReturns = await triggerEventOnUpdate('beforeStateUpdate', obj, element, options)
     if (beforeStateUpdateReturns === false) return element
   }
 
@@ -41,7 +41,7 @@ export const updateState = function (obj, options = STATE_UPDATE_OPTIONS) {
   applyElementUpdate(state, obj, options)
 
   if (!options.preventStateUpdateListener) {
-    triggerEventOnUpdate('stateUpdate', obj, element, options)
+    await triggerEventOnUpdate('stateUpdate', obj, element, options)
   }
 
   return state

@@ -29,7 +29,7 @@ export const reset = (options) => {
   })
 }
 
-export const set = function (params, options = {}, el) {
+export const set = async function (params, options = {}, el) {
   const element = el || this
   const { __ref: ref } = element
 
@@ -42,11 +42,11 @@ export const set = function (params, options = {}, el) {
 
   if (ref.__noCollectionDifference || (__contentRef && __contentRef.__cached && deepContains(params, content))) {
     if (!options.preventBeforeUpdateListener && !options.preventListeners) {
-      const beforeUpdateReturns = triggerEventOnUpdate('beforeUpdate', params, element, options)
+      const beforeUpdateReturns = await triggerEventOnUpdate('beforeUpdate', params, element, options)
       if (beforeUpdateReturns === false) return element
     }
     if (content?.update) content.update()
-    if (!options.preventUpdateListener) triggerEventOn('update', element, options)
+    if (!options.preventUpdateListener) await triggerEventOn('update', element, options)
     return
   }
 
