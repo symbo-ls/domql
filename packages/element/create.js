@@ -1,6 +1,6 @@
 'use strict'
 
-import createNode from './node.js'
+import { createNode } from './node.js'
 import { ROOT } from './tree.js'
 
 import {

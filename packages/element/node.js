@@ -5,7 +5,7 @@ import { applyEventsOnNode, triggerEventOn } from '@domql/event'
 import { cacheNode } from '@domql/render'
 import { isMethod } from './methods/index.js'
 
-import create from './create.js'
+import { create } from './create.js'
 
 import {
   throughExecProps,
