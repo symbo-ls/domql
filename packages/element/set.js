@@ -8,10 +8,10 @@ import { registry } from './mixins/index.js'
 import { removeContent } from './mixins/content.js'
 import { triggerEventOn, triggerEventOnUpdate } from '@domql/event'
 
-export const resetElement = (params, element, options) => {
+export const resetElement = async (params, element, options) => {
   if (!options.preventRemove) removeContent(element, options)
   const { __ref: ref } = element
-  create(params, element, ref.contentElementKey || 'content', {
+  await create(params, element, ref.contentElementKey || 'content', {
     ignoreChildExtend: true,
     ...registry.defaultOptions,
     ...OPTIONS.create,
@@ -63,14 +63,14 @@ export const set = async function (params, options = {}, el) {
     }
 
     if (lazyLoad) {
-      window.requestAnimationFrame(() => {
-        resetElement(params, element, options)
+      window.requestAnimationFrame(async () => {
+        await resetElement(params, element, options)
         // handle lazy load
         if (!options.preventUpdateListener) {
           triggerEventOn('lazyLoad', element, options)
         }
       })
-    } else resetElement(params, element, options)
+    } else await resetElement(params, element, options)
   }
 
   return element
