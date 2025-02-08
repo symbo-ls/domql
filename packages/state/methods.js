@@ -143,7 +143,7 @@ export const setPathCollection = function (changes, options = {}) {
     if (change[0] === 'update') {
       const result = setByPath.call(state, change[1], change[2], { preventStateUpdate: true })
       return overwriteDeep(acc, result)
-    } else if (change[0] === 'remove') {
+    } else if (change[0] === 'delete') {
       removeByPath.call(state, change[1], options)
     }
     return acc
