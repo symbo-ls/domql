@@ -133,15 +133,20 @@ export const setByPath = function (path, val, options = {}) {
   const value = deepClone(val)
   setInObjectByPath(state, path, val)
   const update = createNestedObject(path, value)
-  if (options.preventUpdate) return update
+  if (options.preventStateUpdate) return update
   return state.update(update, options)
 }
 
 export const setPathCollection = function (changes, options = {}) {
   const state = this
   const update = changes.reduce((acc, change) => {
-    const result = setByPath(...change.slice(1), { preventUpdate: true })
-    return overwriteDeep(acc, result)
+    if (change[0] === 'update') {
+      const result = setByPath.call(state, change[1], change[2], { preventStateUpdate: true })
+      return overwriteDeep(acc, result)
+    } else if (change[0] === 'remove') {
+      removeByPath.call(state, change[1], options)
+    }
+    return acc
   }, {})
   return state.update(update, options)
 }
