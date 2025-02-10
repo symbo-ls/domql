@@ -1,7 +1,7 @@
 'use strict'
 
 // import DOM from '../../src'
-import { isObjectLike, isString, isNumber, isBoolean, exec, isObject, isEqualDeep, isProduction } from '@domql/utils'
+import { isObjectLike, isString, isNumber, isBoolean, exec } from '@domql/utils'
 import { applyClassListOnNode } from '@domql/classlist'
 import createEmotion from '@emotion/css/create-instance'
 
@@ -37,10 +37,6 @@ export const transformEmotionClass = (emotion) => {
 
     for (const key in __class) {
       const prop = __class[key]
-      if (key === 'selector') {
-        // console.log(prop)
-        // continue
-      }
       if (!prop) {
         delete __classNames[key]
         continue

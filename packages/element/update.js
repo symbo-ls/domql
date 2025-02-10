@@ -196,7 +196,7 @@ const checkIfOnUpdate = (element, parent, options) => {
     if (itWasFalse) {
       delete element.__hash
       delete element.__text
-      delete element.extend
+      delete element.extends
       if (!ref.__hasRootState) {
         delete element.state
       }

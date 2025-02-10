@@ -1,6 +1,6 @@
 'use strict'
 
-import { isFunction, exec, addAdditionalExtend } from '@domql/utils'
+import { isFunction, exec } from '@domql/utils'
 import {
   getExtendStack,
   jointStacks,
@@ -8,6 +8,7 @@ import {
   deepMergeExtend,
   fallbackStringExtend
 } from './utils/index.js'
+import { addExtend } from '../utils/component.js'
 
 const ENV = process.env.NODE_ENV
 
@@ -15,69 +16,73 @@ let mainExtend
 
 /**
  * Checks whether element has `extend` or is a part
- * of parent's `childExtend` extend
+ * of parent's `childExtends` extend
  */
 export const applyExtend = (element, parent, options = {}) => {
   if (isFunction(element)) element = exec(element, parent)
 
   const { props, __ref } = element
-  // let extend = addAdditionalExtend(props?.extends || element.extends, element)
-  let extend = element.extend
+  // let extend = applyAdditionalExtend(props?.extends || element.extends, element)
+  let extend = props?.extends ? addExtend(props.extends, element.extends) : element.extends
   const variant = props?.variant
   const context = element.context || parent.context
-  if (props?.extends) addAdditionalExtend(props.extends, element)
 
   extend = fallbackStringExtend(extend, context, options, variant)
 
   const extendStack = getExtendStack(extend, context)
 
-  if (ENV !== 'test' || ENV !== 'development') delete element.extend
+  if (ENV !== 'test' && ENV !== 'development') delete element.extends
 
-  let childExtendStack = []
+  let childExtendsStack = []
   if (parent) {
     element.parent = parent
+
     // Assign parent attr to the element
-    if (!options.ignoreChildExtend && !(props && props.ignoreChildExtend)) {
-      childExtendStack = getExtendStack(parent.childExtend, context)
+    if (!options.ignoreChildExtends && !(props && props.ignoreChildExtends)) {
+      const childExtends = parent.props?.childExtends
+        ? addExtend(parent.props.childExtends, element.childExtends)
+        : parent.childExtends
 
-      // if (!options.ignoreChildExtend && !(props && exec(props, element).ignoreChildExtend)) {
-      //   const ignoreChildExtendRecursive = props && exec(props, element).ignoreChildExtendRecursive
+      childExtendsStack = getExtendStack(childExtends, context)
 
-      const ignoreChildExtendRecursive = props && props.ignoreChildExtendRecursive
-      if (parent.childExtendRecursive && !ignoreChildExtendRecursive) {
-        const canExtendRecursive = element.key !== '__text'
-        if (canExtendRecursive) {
-          const childExtendRecursiveStack = getExtendStack(parent.childExtendRecursive, context)
-          // add error if childExtendRecursive contains element which goes to infinite loop
-          childExtendStack = childExtendStack.concat(childExtendRecursiveStack)
-          element.childExtendRecursive = parent.childExtendRecursive
-        }
-      }
+      // if (!options.ignoreChildExtends && !(props && exec(props, element).ignoreChildExtends)) {
+      //   const ignoreChildExtendsRecursive = props && exec(props, element).ignoreChildExtendsRecursive
+
+      // const ignoreChildExtendsRecursive = props && props.ignoreChildExtendsRecursive
+      // if (parent.childExtendsRecursive && !ignoreChildExtendsRecursive) {
+      //   const canExtendRecursive = element.key !== '__text'
+      //   if (canExtendRecursive) {
+      //     const childExtendsRecursiveStack = getExtendStack(parent.childExtendsRecursive, context)
+      //     // add error if childExtendsRecursive contains element which goes to infinite loop
+      //     childExtendsStack = childExtendsStack.concat(childExtendsRecursiveStack)
+      //     element.childExtendsRecursive = parent.childExtendsRecursive
+      //   }
+      // }
     }
   }
 
   const extendLength = extendStack.length
-  const childExtendLength = childExtendStack.length
+  const childExtendsLength = childExtendsStack.length
 
   let stack = []
-  if (extendLength && childExtendLength) {
-    stack = jointStacks(extendStack, childExtendStack)
+  if (extendLength && childExtendsLength) {
+    stack = jointStacks(extendStack, childExtendsStack)
   } else if (extendLength) {
     stack = extendStack
-  } else if (childExtendLength) {
-    stack = childExtendStack
-  } else if (!context.defaultExtends) return element
+  } else if (childExtendsLength) {
+    stack = childExtendsStack
+  }
 
   if (context.defaultExtends) {
     if (!mainExtend) {
       const defaultOptionsExtend = getExtendStack(context.defaultExtends, context)
       mainExtend = cloneAndMergeArrayExtend(defaultOptionsExtend)
-      delete mainExtend.extend
+      delete mainExtend.extends
     }
     stack = [].concat(stack, mainExtend)
-  }
+  } else if (!context.defaultExtends) return element
 
-  if (__ref) __ref.__extend = stack
+  if (__ref) __ref.__extends = stack
   let mergedExtend = cloneAndMergeArrayExtend(stack)
 
   const COMPONENTS = (context && context.components) || options.components

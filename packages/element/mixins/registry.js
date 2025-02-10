@@ -23,11 +23,11 @@ export const REGISTRY = {
 
   deps: (param, el) => param || el.parent.deps,
 
-  extend: {},
-  childExtend: {},
-  childExtendRecursive: {},
+  extends: {},
+  children: {},
+  childExtends: {},
+  childExtendsRecursive: {},
   props: {},
-  path: {},
   if: {},
   define: {},
   transform: {},
@@ -35,44 +35,17 @@ export const REGISTRY = {
   __ref: {},
   __hash: {},
   __text: {},
-  nextElement: {},
-  previousElement: {},
   key: {},
   tag: {},
   query: {},
   parent: {},
   node: {},
-  set: {},
-  reset: {},
-  update: {},
-  error: {},
-  warn: {},
-  call: {},
-  setProps: {},
-  remove: {},
-  updateContent: {},
-  removeContent: {},
   variables: {},
-  lookup: {},
-  lookdown: {},
-  getRef: {},
-  getPath: {},
-  lookdownAll: {},
-  setNodeStyles: {},
-  spotByPath: {},
   keys: {},
   log: {},
-  parse: {},
-  parseDeep: {},
   on: {},
   component: {},
-  context: {},
-  $collection: {},
-  $stateCollection: {},
-  $propsCollection: {},
-  $setCollection: {},
-  $setStateCollection: {},
-  $setPropsCollection: {}
+  context: {}
 }
 
 export default REGISTRY
@@ -82,9 +55,8 @@ export default REGISTRY
 export const parseFilters = {
   elementKeys: [
     'tag', 'text', 'style', 'attr', 'class', 'state', 'props',
-    'data', 'content', 'html', 'on', 'key', 'extend', 'childExtend',
-    'childExtendRecursive', 'scope', 'query',
-    '$collection', '$stateCollection', '$propsCollection'
+    'data', 'content', 'html', 'on', 'key', 'extends', 'childExtends',
+    'childExtendsRecursive', 'scope', 'query'
   ],
   propsKeys: ['__element', 'update'],
   stateKeys: []

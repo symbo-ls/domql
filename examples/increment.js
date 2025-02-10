@@ -19,7 +19,7 @@ const increment = {
 }
 
 const decrement = {
-  extend: Button,
+  extends: Button,
   text: 'Decrement',
   on: {
     click: (e) => {

@@ -40,7 +40,7 @@ export const METHODS = [
 ]
 
 export const METHODS_EXL = joinArrays(
-  ['node', 'state', 'context', 'extend', '__element'],
+  ['node', 'state', 'context', 'extends', '__element'],
   METHODS,
   IGNORE_STATE_PARAMS,
   IGNORE_PROPS_PARAMS
@@ -74,7 +74,7 @@ export const clone = (obj, exclude = METHODS_EXL) => {
 //   for (const e in obj) {
 //     if (exclude.includes(e)) continue
 //     let objProp = obj[e]
-//     if (e === 'extend' && isArray(objProp)) {
+//     if (e === 'extends' && isArray(objProp)) {
 //       objProp = mergeArray(objProp, exclude)
 //     }
 //     if (isObjectLike(objProp)) {

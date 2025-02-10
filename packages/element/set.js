@@ -12,7 +12,7 @@ export const resetElement = async (params, element, options) => {
   if (!options.preventRemove) removeContent(element, options)
   const { __ref: ref } = element
   await create(params, element, ref.contentElementKey || 'content', {
-    ignoreChildExtend: true,
+    ignoreChildExtends: true,
     ...registry.defaultOptions,
     ...OPTIONS.create,
     ...options
@@ -22,7 +22,7 @@ export const resetElement = async (params, element, options) => {
 export const reset = (options) => {
   const element = this
   create(element, element.parent, undefined, {
-    ignoreChildExtend: true,
+    ignoreChildExtends: true,
     ...registry.defaultOptions,
     ...OPTIONS.create,
     ...options
@@ -51,11 +51,11 @@ export const set = async function (params, options = {}, el) {
   }
 
   if (params) {
-    let { childExtend, props } = params
+    let { childExtends, props } = params
     if (!props) props = params.props = {}
-    if (!childExtend && element.childExtend) {
-      params.childExtend = element.childExtend
-      props.ignoreChildExtend = true
+    if (!childExtends && element.childExtends) {
+      params.childExtends = element.childExtends
+      props.ignoreChildExtends = true
     }
     if (!props?.childProps && element.props?.childProps) {
       props.childProps = element.props.childProps
