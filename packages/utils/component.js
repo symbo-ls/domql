@@ -69,11 +69,11 @@ export const extendizeByKey = (element, parent, key) => {
   const isExtendKeyComponent = context && context.components[extendFromKey]
   if (element === isExtendKeyComponent) return element
   else if (isSugar) {
-    const newElem = addAdditionalExtend(element.extends, {
+    const newElem = {
       extend: extendFromKey,
       tag,
       props: { ...element }
-    })
+    }
     if (newElem.props.data) {
       newElem.data = newElem.props.data
       delete newElem.props.data
