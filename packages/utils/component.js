@@ -63,8 +63,8 @@ export const extendizeByKey = (initialElement, parent, key) => {
   const extendFromKey = extractComponentKeyFromKey(key)
   const isExtendKeyComponent = context && context.components[extendFromKey]
 
-  console.log('--------')
-  console.log(element)
+  // console.log('--------')
+  // console.log(element)
 
   if (element === isExtendKeyComponent) return element
 
@@ -114,7 +114,7 @@ export const extendizeByKey = (initialElement, parent, key) => {
     delete newElem.props.props
   }
 
-  console.log(newElem)
+  // console.log(newElem)
 
   return newElem
 }

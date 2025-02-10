@@ -56,7 +56,7 @@ export const parseFilters = {
   elementKeys: [
     'tag', 'text', 'style', 'attr', 'class', 'state', 'props',
     'data', 'content', 'html', 'on', 'key', 'extends', 'childExtends',
-    'childExtendsRecursive', 'scope', 'query'
+    'childExtendsRecursive', 'scope', 'query', 'children'
   ],
   propsKeys: ['__element', 'update'],
   stateKeys: []
