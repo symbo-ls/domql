@@ -24,31 +24,37 @@ export const transformEmotionClass = (emotion) => {
 
     if (!isObjectLike(params)) return
     if (element.props.class) { __classNames.classProps = element.props.class }
-    if (element.attr.class) { __classNames.class = element.attr.class }
+    if (element.attr?.class) { __classNames.class = element.attr.class }
 
-    for (const key in params) {
-      const prop = exec(params[key], element)
+    // for (const key in params) {
+    //   const prop = exec(params[key], element)
 
+    //   if (!prop) {
+    //     delete __class[key]
+    //     continue
+    //   }
+    // }
+
+    for (const key in __class) {
+      const prop = __class[key]
+      if (key === 'selector') {
+        // console.log(prop)
+        // continue
+      }
       if (!prop) {
-        delete __class[key]
         delete __classNames[key]
         continue
       }
-
-      const isEqual = isEqualDeep(__class[key], prop)
-      if (!isEqual) {
-        if (!isProduction() && isObject(prop)) prop.label = key || element.key
-        let className
-        if (isString(prop) || isNumber(prop)) className = prop
-        else if (isBoolean(prop)) className = element.key
-        else className = emotion.css(prop)
-        __class[key] = prop
-        __classNames[key] = className
-      }
+      // console.log(prop, key, element)
+      let className
+      if (isString(prop) || isNumber(prop)) className = prop
+      else if (isBoolean(prop)) className = element.key
+      else className = emotion.css(prop)
+      // console.log(className)
+      __classNames[key] = className
     }
 
     applyClassListOnNode(__classNames, element, element.node)
-    // return element.class
   }
 }
 

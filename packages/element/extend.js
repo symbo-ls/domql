@@ -1,6 +1,6 @@
 'use strict'
 
-import { isFunction, exec } from '@domql/utils'
+import { isFunction, exec, addAdditionalExtend } from '@domql/utils'
 import {
   getExtendStack,
   jointStacks,
@@ -21,9 +21,11 @@ export const applyExtend = (element, parent, options = {}) => {
   if (isFunction(element)) element = exec(element, parent)
 
   const { props, __ref } = element
-  let extend = props?.extends || element.extends || element.extend
+  // let extend = addAdditionalExtend(props?.extends || element.extends, element)
+  let extend = element.extend
   const variant = props?.variant
   const context = element.context || parent.context
+  if (props?.extends) addAdditionalExtend(props.extends, element)
 
   extend = fallbackStringExtend(extend, context, options, variant)
 
