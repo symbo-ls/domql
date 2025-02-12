@@ -13,8 +13,8 @@ const createPropsStack = (element, parent) => {
   else if (props === 'inherit' && parent.props) propsStack.push(parent.props)
   else if (props) propsStack.push(props)
 
-  if (isArray(ref.__extend)) {
-    ref.__extend.forEach(extend => {
+  if (isArray(ref.__extends)) {
+    ref.__extends.forEach(extend => {
       if (extend.props && extend.props !== props) propsStack.push(extend.props)
     })
   }
@@ -31,9 +31,9 @@ export const syncProps = (props, element, opts) => {
   props.forEach(v => {
     if (IGNORE_PROPS_PARAMS.includes(v)) return
     let execProps
-    try {
-      execProps = exec(v, element)
-    } catch (e) { element.error(e, opts) }
+    // try {
+    execProps = exec(v, element)
+    // } catch (e) { element.error(e, opts) }
     // TODO: check if this failing the function props merge
     // if (isObject(execProps) && execProps.__element) return
     // it was causing infinite loop at early days

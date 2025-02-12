@@ -1,8 +1,8 @@
 'use strict'
 
 import { joinArrays } from './array.js'
-import { deepClone, exec } from './object.js'
-import { isArray, isFunction, isObject, isString } from './types.js'
+import { deepMerge, exec, overwriteDeep } from './object.js'
+import { isArray, isFunction, isObject, isObjectLike, isString } from './types.js'
 
 const ENV = process.env.NODE_ENV
 
@@ -20,9 +20,16 @@ export const checkIfKeyIsProperty = (key) => {
   return /^[a-z]*$/.test(firstCharKey)
 }
 
-export const addAdditionalExtend = (newExtend, element) => {
+export const addExtend = (newExtend, elementExtend) => {
+  if (!newExtend) return elementExtend
+  const originalArray = isArray(elementExtend) ? elementExtend : [elementExtend]
+  const receivedArray = isArray(newExtend) ? newExtend : [newExtend]
+  return joinArrays(receivedArray, originalArray)
+}
+
+export const applyAdditionalExtend = (newExtend, element, extendKey = 'extends') => {
   if (!newExtend) return element
-  const { extend: elementExtend } = element
+  const elementExtend = element[extendKey]
   const originalArray = isArray(elementExtend) ? elementExtend : [elementExtend]
   const receivedArray = isArray(newExtend) ? newExtend : [newExtend]
   const extend = joinArrays(receivedArray, originalArray)
@@ -30,25 +37,6 @@ export const addAdditionalExtend = (newExtend, element) => {
 }
 
 export const checkIfSugar = (element, parent, key) => {
-  const {
-    extend,
-    props,
-    childExtend,
-    extends: extendProps,
-    childExtends,
-    childProps,
-    children,
-    on,
-    $collection,
-    $stateCollection,
-    $propsCollection
-  } = element
-  const hasComponentAttrs = extend || childExtend || props || on || $collection || $stateCollection || $propsCollection
-  if (hasComponentAttrs && (childProps || extendProps || children || childExtends)) {
-    const logErr = (parent || element)?.error
-    if (logErr) logErr.call(element, 'Sugar component includes params for builtin components', { verbose: true })
-  }
-  return !hasComponentAttrs || childProps || extendProps || children || childExtends
 }
 
 export const extractComponentKeyFromKey = (key) => {
@@ -61,84 +49,83 @@ export const extractComponentKeyFromKey = (key) => {
         : [key]
 }
 
-export const extendizeByKey = (element, parent, key) => {
-  const { context } = parent
-  const { tag, extend, childExtends } = element
-  const isSugar = checkIfSugar(element, parent, key)
-  const extendFromKey = extractComponentKeyFromKey(key)
-  const isExtendKeyComponent = context && context.components[extendFromKey]
-  if (element === isExtendKeyComponent) return element
-  else if (isSugar) {
-    const newElem = addAdditionalExtend(element.extends, {
-      extend: extendFromKey,
-      tag,
-      props: { ...element }
-    })
-    if (newElem.props.data) {
-      newElem.data = newElem.props.data
-      delete newElem.props.data
-    }
-    if (newElem.props.state) {
-      newElem.state = newElem.props.state
-      delete newElem.props.state
-    }
-    if (newElem.props.attr) {
-      newElem.attr = newElem.props.attr
-      delete newElem.props.attr
-    }
-    if (newElem.props.if) {
-      newElem.if = newElem.props.if
-      delete newElem.props.if
-    }
-    if (childExtends) newElem.childExtend = childExtends
-    return newElem
-  } else if (!extend || extend === true) {
-    return {
-      ...element,
-      tag,
-      extend: extendFromKey
-    }
-  } else if (extend) {
-    return addAdditionalExtend(extendFromKey, element)
-  } else if (isFunction(element)) {
-    return {
-      extend: extendFromKey,
-      tag,
-      props: { ...exec(element, parent) }
-    }
-  }
-}
-
 export function getCapitalCaseKeys (obj) {
   return Object.keys(obj).filter(key => /^[A-Z]/.test(key))
 }
 
-export const addChildrenIfNotInOriginal = (element, parent, key) => {
-  const childElems = getCapitalCaseKeys(element.props)
-  if (!childElems.length) return element
+export function getSpreadChildren (obj) {
+  return Object.keys(obj).filter(key => /^\d+$/.test(key))
+}
 
-  for (const i in childElems) {
-    const childKey = childElems[i]
-    const childElem = element[childKey]
-    const newChild = element.props[childKey]
+export const extendizeByKey = (initialElement, parent, key) => {
+  const element = exec(initialElement, parent)
+  const { context } = parent
+  const extendFromKey = extractComponentKeyFromKey(key)
+  const isExtendKeyComponent = context && context.components[extendFromKey]
 
-    const assignChild = (val) => {
-      element[childKey] = val
-      delete element.props[childKey]
+  console.log('--------')
+  console.log(element)
+
+  if (element === isExtendKeyComponent) return element
+
+  const newElem = { props: element }
+
+  const extend = (isExtendKeyComponent && newElem.props.extends)
+    ? addExtend(extendFromKey, newElem.props.extends)
+    : (newElem.props.extends || extendFromKey)
+  if (extend) {
+    newElem.props.extends = extend
+  }
+
+  const propMappings = [
+    'define', 'deps', 'on', 'content', 'routes', '$router', 'data', 'context', 'scope'
+  ]
+
+  for (const prop in newElem.props) {
+    if (prop === 'props') continue
+
+    const existingValue = newElem[prop]
+    const newValue = newElem.props[prop]
+
+    if (propMappings.includes(prop)) {
+      // if (existingValue && newValue) {
+      if (isFunction(existingValue)) {
+        newElem.extends = addExtend({ [prop]: existingValue }, newElem.extends)
+        newElem[prop] = newValue
+      } else if (isObjectLike(existingValue)) {
+        overwriteDeep(existingValue, newValue)
+      } else {
+        newElem[prop] = newValue
+      }
+      // } else {
+      //   newElem[prop] = newValue
+      // }
+      delete newElem.props[prop]
     }
 
-    if (newChild?.ignoreExtend) continue
-    if (newChild === null) assignChild(null)
-    else if (!childElem) assignChild(deepClone(newChild))
-    else {
-      const isSugarChildElem = checkIfSugar(childElem, parent, key)
-      if (isSugarChildElem) continue
-      assignChild({
-        extend: element[childKey],
-        props: newChild
-      })
+    const isComponent = /^[A-Z]/.test(prop)
+    const isSpreadedElement = /^\d+$/.test(prop)
+    if (isComponent || isSpreadedElement) {
+      if (!newElem[prop]) newElem[prop] = {}
+      if (isObjectLike(existingValue)) {
+        overwriteDeep(newElem[prop], newElem.props[prop])
+      } else {
+        newElem[prop] = newValue
+      }
+      delete newElem.props[prop]
     }
   }
+
+  if (newElem.props.props) {
+    if (isFunction(newElem.props.props)) {
+      newElem.extends = addExtend({ props: newElem.props.props }, newElem.extends)
+    } else deepMerge(newElem.props, newElem.props.props)
+    delete newElem.props.props
+  }
+
+  console.log(newElem)
+
+  return newElem
 }
 
 export const applyKeyComponentAsExtend = (element, parent, key) => {
@@ -151,17 +138,16 @@ export const applyComponentFromContext = (element, parent, options) => {
   if (!context || !context.components) return
 
   const { components } = context
-  const { extend } = element
-  const execExtend = exec(extend, element)
+  const execExtend = exec(element.extends, element)
   if (isString(execExtend)) {
     const componentExists = components[execExtend] || components['smbls.' + execExtend]
-    if (componentExists) element.extend = componentExists
+    if (componentExists) element.extends = componentExists
     else {
       if ((ENV === 'test' || ENV === 'development') && options.verbose) {
         console.warn(execExtend, 'is not in library', components, element)
         console.warn('replacing with ', {})
       }
-      element.extend = {}
+      element.extends = {}
     }
   }
 }
@@ -184,17 +170,17 @@ export const getChildrenComponentsByKey = (key, el) => {
   }
 
   // Check if the prop is "extend" and it's either a string or an array
-  if (el.extend) {
+  if (el.extends) {
     // Add the value of the extend key to the result array
-    const foundString = isString(el.extend) && el.extend === key
-    const foundInArray = isArray(el.extend) && el.extend.filter(v => v === key).length
+    const foundString = isString(el.extends) && el.extends === key
+    const foundInArray = isArray(el.extends) && el.extends.filter(v => v === key).length
     if (foundString || foundInArray) return el
   }
 
-  if (el.parent && el.parent.childExtend) {
+  if (el.parent && el.parent.childExtends) {
     // Add the value of the extend key to the result array
-    const foundString = isString(el.parent.childExtend) && el.parent.childExtend === key
-    const foundInArray = isArray(el.parent.childExtend) && el.parent.childExtend.filter(v => v === key).length
+    const foundString = isString(el.parent.childExtends) && el.parent.childExtends === key
+    const foundInArray = isArray(el.parent.childExtends) && el.parent.childExtends.filter(v => v === key).length
     if (foundString || foundInArray) return el
   }
 }
@@ -211,7 +197,7 @@ export const getExtendsInElement = (obj) => {
         }
 
         // Check if the key is "extend" and it's either a string or an array
-        if (key === 'extend' || key === 'extends') {
+        if (key === 'extends' || key === 'extends') {
           // Add the value of the extend key to the result array
           if (typeof o[key] === 'string') {
             result.push(o[key])

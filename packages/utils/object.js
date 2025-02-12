@@ -87,7 +87,7 @@ export const mergeArrayExclude = (arr, exclude = []) => {
  * @param {boolean} options.cleanNull - Remove null values
  * @param {Window} options.window - Window object for cross-frame cloning
  * @param {WeakMap} options.visited - WeakMap for tracking circular references
- * @param {boolean} options.handleExtend - Whether to handle 'extend' arrays specially
+ * @param {boolean} options.handleExtend - Whether to handle 'extends' arrays specially
  * @returns {any} Cloned object
  */
 export const deepClone = (obj, options = {}) => {
@@ -140,8 +140,8 @@ export const deepClone = (obj, options = {}) => {
       continue
     }
 
-    // Handle 'extend' array if enabled
-    if (handleExtend && key === 'extend' && isArray(value)) {
+    // Handle 'extends' array if enabled
+    if (handleExtend && key === 'extends' && isArray(value)) {
       clone[key] = mergeArray(value, exclude)
       continue
     }

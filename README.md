@@ -68,7 +68,7 @@ const ListItem = {
 }
 
 const menu = {
-  childExtend: ListItem,
+  childExtends: ListItem,
   home: 'Home',
   text: 'About'
 }
@@ -116,7 +116,7 @@ const Increment = {
 | --- | --- | --- | --- |
 | `key` | `Number` `String` | Defines the key of the Element | The key of the object, or randomly generated name |
 | `extend` | `Object` `Array` | Clones the other element | `undefined` |
-| `childExtend` | `Object` `Array` | Specifies the `extend` for all child elements | `undefined` |
+| `childExtends` | `Object` `Array` | Specifies the `extend` for all child elements | `undefined` |
 | `tag` | `String` | Specifis the HTML tag  | `div` or related HTML tag if the key matches |
 | `class` | `Any` | Specifies the HTML class | `undefined` |
 | `attr` | `Object` | Specifies the set of HTML attributes | `{}` |
@@ -174,7 +174,7 @@ const layout = { // this will be <div>
   header: {}, // will create <header>
   aside: {}, // will create <aside>
   main: { // will create <main>
-    childExtend: {
+    childExtends: {
       article: { // will create <article>
         title: {}, // will create <div>
         description: {}, // will create <div>

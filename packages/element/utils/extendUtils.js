@@ -32,7 +32,7 @@ export const extractArrayExtend = (extend, stack, context) => {
 }
 
 export const deepExtend = (extend, stack, context) => {
-  const extendOflattenExtend = extend.extend
+  const extendOflattenExtend = extend.extends
   if (extendOflattenExtend) {
     flattenExtend(extendOflattenExtend, stack, context)
   }
@@ -44,7 +44,7 @@ export const flattenExtend = (extend, stack, context) => {
   if (isArray(extend)) return extractArrayExtend(extend, stack, context)
   if (isString(extend)) extend = fallbackStringExtend(extend, context)
   stack.push(extend)
-  if (extend.extend) deepExtend(extend, stack, context)
+  if (extend.extends) deepExtend(extend, stack, context)
   return stack
 }
 
@@ -98,12 +98,12 @@ export const fallbackStringExtend = (extend, context, options = {}, variant) => 
 }
 
 // joint stacks
-export const jointStacks = (extendStack, childExtendStack) => {
+export const jointStacks = (extendStack, childExtendsStack) => {
   return []
     .concat(extendStack.slice(0, 1))
-    .concat(childExtendStack.slice(0, 1))
+    .concat(childExtendsStack.slice(0, 1))
     .concat(extendStack.slice(1))
-    .concat(childExtendStack.slice(1))
+    .concat(childExtendsStack.slice(1))
 }
 
 // init
@@ -126,8 +126,8 @@ export const getExtendMerged = extend => {
 //       const component = COMPONENTS[v]
 //       return component
 //     }
-//     if (isString(v.extend)) {
-//       v.extend = getExtendMerged(COMPONENTS[v.extend])
+//     if (isString(v.extends)) {
+//       v.extends = getExtendMerged(COMPONENTS[v.extends])
 //     }
 //     return v
 //   })

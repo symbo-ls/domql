@@ -18,8 +18,7 @@ import {
   applyComponentFromContext,
   applyKeyComponentAsExtend,
   isVariant,
-  detectInfiniteLoop,
-  addChildrenIfNotInOriginal
+  detectInfiniteLoop
 } from '@domql/utils'
 
 import { applyAnimationFrame, triggerEventOn } from '@domql/event'
@@ -36,10 +35,9 @@ import { throughInitialExec, throughInitialDefine } from './iterate.js'
 
 import { OPTIONS } from './cache/options.js'
 
-import {
-  applyVariant,
-  createValidDomqlObjectFromSugar
-} from './utils/component.js'
+// import {
+//   applyVariant
+// } from './utils/component.js'
 
 const ENV = process.env.NODE_ENV
 
@@ -54,6 +52,7 @@ export const create = async (element, parent, key, options = OPTIONS.create || {
     element = applyValueAsText(element, parent, key)
   }
 
+  // element = createBasedOnType(element, parent, key, options)
   element = redefineElement(element, parent, key, options)
   parent = redefineParent(element, parent, key)
   key = createKey(element, parent, key)
@@ -72,11 +71,11 @@ export const create = async (element, parent, key, options = OPTIONS.create || {
 
   element.key = key
 
+  await triggerEventOn('start', element, options)
+
   if (options.onlyResolveExtends) {
     return onlyResolveExtends(element, parent, key, options)
   }
-
-  await triggerEventOn('start', element, options)
 
   switchDefaultOptions(element, parent, options)
 
@@ -104,7 +103,7 @@ export const create = async (element, parent, key, options = OPTIONS.create || {
   }
 
   // apply variants
-  applyVariant(element, parent)
+  // applyVariant(element, parent)
 
   const onInit = await triggerEventOn('init', element, options)
   if (onInit === false) return element
@@ -113,8 +112,6 @@ export const create = async (element, parent, key, options = OPTIONS.create || {
 
   // generate a CLASS name
   assignKeyAsClassname(element)
-
-  addChildrenIfNotInOriginal(element, parent, key)
 
   await renderElement(element, parent, options, attachOptions)
 
@@ -143,7 +140,7 @@ const createBasedOnType = (element, parent, key, options) => {
 
   // if element is extend
   if (element.__hash) {
-    return { extend: element }
+    return { props: { extends: element } }
   }
 
   return element
@@ -151,22 +148,7 @@ const createBasedOnType = (element, parent, key, options) => {
 
 const redefineElement = (element, parent, key, options) => {
   const elementWrapper = createBasedOnType(element, parent, key, options)
-
-  if (options.syntaxv3 || (element.props && element.props.syntaxv3) || (parent && parent.props && parent.props.syntaxv3) /* kalduna guard */) {
-    if (element.props) element.props.syntaxv3 = true
-    else element.syntaxv3 = true
-    return createValidDomqlObjectFromSugar(element, parent, key, options)
-  } else if (checkIfKeyIsComponent(key)) {
-    return applyKeyComponentAsExtend(elementWrapper, parent, key)
-  }
-
-  // TODO: move as define plugins
-  // Responsive rendering
-  if (checkIfMedia(key)) {
-    return applyMediaProps(elementWrapper, parent, key)
-  }
-
-  return elementWrapper
+  return applyKeyComponentAsExtend(elementWrapper, parent, key)
 }
 
 const redefineParent = (element, parent, key, options) => {
@@ -204,7 +186,7 @@ const addRef = (element, parent) => {
 const switchDefaultOptions = (element, parent, options) => {
   if (Object.keys(options).length) {
     registry.defaultOptions = options
-    if (options.ignoreChildExtend) delete options.ignoreChildExtend
+    if (options.ignoreChildExtends) delete options.ignoreChildExtends
   }
 }
 
@@ -225,6 +207,7 @@ const renderElement = async (element, parent, options, attachOptions) => {
   const createNestedChild = async () => {
     const isInfiniteLoopDetected = detectInfiniteLoop(ref.path)
     if (ref.__uniqId || isInfiniteLoopDetected) return
+    // console.log(element)
     await createNode(element, options)
     ref.__uniqId = Math.random()
   }
@@ -276,13 +259,13 @@ const renderElement = async (element, parent, options, attachOptions) => {
 const checkIfPrimitive = (element) => is(element)('string', 'number')
 
 const applyValueAsText = (element, parent, key) => {
-  const extendTag = element.extend && element.extend.tag
-  const childExtendTag = parent.childExtend && parent.childExtend.tag
+  const extendTag = element.extends && element.extends.tag
+  const childExtendsTag = parent.childExtends && parent.childExtends.tag
   const childPropsTag = parent.props.childProps && parent.props.childProps.tag
   const isKeyValidHTMLTag = ((HTML_TAGS.body.indexOf(key) > -1) && key)
   return {
     text: element,
-    tag: extendTag || childExtendTag || childPropsTag || isKeyValidHTMLTag || 'string'
+    tag: extendTag || childExtendsTag || childPropsTag || isKeyValidHTMLTag || 'string'
   }
 }
 
@@ -372,7 +355,7 @@ const onlyResolveExtends = (element, parent, key, options) => {
     if (element.node && ref.__if) { parent[key || element.key] = element } // Borrowed from assignNode()
 
     if (!element.props) element.props = {}
-    applyVariant(element, parent)
+    // applyVariant(element, parent)
 
     addElementIntoParentChildren(element, parent)
   }
@@ -416,24 +399,24 @@ const onlyResolveExtends = (element, parent, key, options) => {
   return element
 }
 
-const checkIfMedia = (key) => key.slice(0, 1) === '@'
+// const checkIfMedia = (key) => key.slice(0, 1) === '@'
 
-const applyMediaProps = (element, parent, key) => {
-  const { props } = element
-  if (props) {
-    props.display = 'none'
-    if (props[key]) props[key].display = props.display
-    else props[key] = { display: props.display || 'block' }
-    return element
-  } else {
-    return {
-      ...element,
-      props: {
-        display: 'none',
-        [key]: { display: 'block' }
-      }
-    }
-  }
-}
+// const applyMediaProps = (element, parent, key) => {
+//   const { props } = element
+//   if (props) {
+//     props.display = 'none'
+//     if (props[key]) props[key].display = props.display
+//     else props[key] = { display: props.display || 'block' }
+//     return element
+//   } else {
+//     return {
+//       ...element,
+//       props: {
+//         display: 'none',
+//         [key]: { display: 'block' }
+//       }
+//     }
+//   }
+// }
 
 export default create
