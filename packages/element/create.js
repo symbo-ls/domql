@@ -35,9 +35,9 @@ import { throughInitialExec, throughInitialDefine } from './iterate.js'
 
 import { OPTIONS } from './cache/options.js'
 
-import {
-  applyVariant
-} from './utils/component.js'
+// import {
+//   applyVariant
+// } from './utils/component.js'
 
 const ENV = process.env.NODE_ENV
 
@@ -52,6 +52,7 @@ export const create = async (element, parent, key, options = OPTIONS.create || {
     element = applyValueAsText(element, parent, key)
   }
 
+  // element = createBasedOnType(element, parent, key, options)
   element = redefineElement(element, parent, key, options)
   parent = redefineParent(element, parent, key)
   key = createKey(element, parent, key)
@@ -102,7 +103,7 @@ export const create = async (element, parent, key, options = OPTIONS.create || {
   }
 
   // apply variants
-  applyVariant(element, parent)
+  // applyVariant(element, parent)
 
   const onInit = await triggerEventOn('init', element, options)
   if (onInit === false) return element
@@ -147,22 +148,7 @@ const createBasedOnType = (element, parent, key, options) => {
 
 const redefineElement = (element, parent, key, options) => {
   const elementWrapper = createBasedOnType(element, parent, key, options)
-
-  // if (options.syntaxv3 || (element.props && element.props.syntaxv3) || (parent && parent.props && parent.props.syntaxv3) /* kalduna guard */) {
-  //   if (element.props) element.props.syntaxv3 = true
-  //   else element.syntaxv3 = true
-  //   return createValidDomqlObjectFromSugar(element, parent, key, options)
-  // } else if (checkIfKeyIsComponent(key)) {
-  // }
   return applyKeyComponentAsExtend(elementWrapper, parent, key)
-
-  // TODO: move as define plugins
-  // Responsive rendering
-  // if (checkIfMedia(key)) {
-  //   return applyMediaProps(elementWrapper, parent, key)
-  // }
-
-  // return elementWrapper
 }
 
 const redefineParent = (element, parent, key, options) => {
@@ -369,7 +355,7 @@ const onlyResolveExtends = (element, parent, key, options) => {
     if (element.node && ref.__if) { parent[key || element.key] = element } // Borrowed from assignNode()
 
     if (!element.props) element.props = {}
-    applyVariant(element, parent)
+    // applyVariant(element, parent)
 
     addElementIntoParentChildren(element, parent)
   }

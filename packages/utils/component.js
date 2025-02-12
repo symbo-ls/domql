@@ -1,7 +1,7 @@
 'use strict'
 
 import { joinArrays } from './array.js'
-import { deepClone, deepMerge, exec, overwriteDeep } from './object.js'
+import { deepMerge, exec, overwriteDeep } from './object.js'
 import { isArray, isFunction, isObject, isObjectLike, isString } from './types.js'
 
 const ENV = process.env.NODE_ENV
@@ -63,8 +63,8 @@ export const extendizeByKey = (initialElement, parent, key) => {
   const extendFromKey = extractComponentKeyFromKey(key)
   const isExtendKeyComponent = context && context.components[extendFromKey]
 
-  // console.log('--------')
-  // console.log(element)
+  console.log('--------')
+  console.log(element)
 
   if (element === isExtendKeyComponent) return element
 
@@ -74,37 +74,46 @@ export const extendizeByKey = (initialElement, parent, key) => {
     ? addExtend(extendFromKey, newElem.props.extends)
     : (newElem.props.extends || extendFromKey)
   if (extend) {
-    newElem.extends = extend
-    delete newElem.props.extends
+    newElem.props.extends = extend
   }
 
   const propMappings = [
-    'data', 'tag', 'state', 'attr', 'if', 'define', 'deps', 'on', 'content', 'routes', 'children', 'html', '$router', 'deps', 'context', 'content', 'scope', 'text'
+    'define', 'deps', 'on', 'content', 'routes', '$router', 'data', 'context', 'scope'
   ]
 
-  propMappings.forEach(prop => {
-    if (newElem.props[prop]) {
-      if (isFunction(newElem[prop])) {
-        newElem.extends = addExtend({ [prop]: newElem[prop] }, newElem.extends)
-        newElem[prop] = newElem.props[prop]
-      } else if (isObjectLike(newElem[prop])) {
+  for (const prop in newElem.props) {
+    if (prop === 'props') continue
+
+    const existingValue = newElem[prop]
+    const newValue = newElem.props[prop]
+
+    if (propMappings.includes(prop)) {
+      // if (existingValue && newValue) {
+      if (isFunction(existingValue)) {
+        newElem.extends = addExtend({ [prop]: existingValue }, newElem.extends)
+        newElem[prop] = newValue
+      } else if (isObjectLike(existingValue)) {
+        overwriteDeep(existingValue, newValue)
+      } else {
+        newElem[prop] = newValue
+      }
+      // } else {
+      //   newElem[prop] = newValue
+      // }
+      delete newElem.props[prop]
+    }
+
+    const isComponent = /^[A-Z]/.test(prop)
+    const isSpreadedElement = /^\d+$/.test(prop)
+    if (isComponent || isSpreadedElement) {
+      if (!newElem[prop]) newElem[prop] = {}
+      if (isObjectLike(existingValue)) {
         overwriteDeep(newElem[prop], newElem.props[prop])
       } else {
-        newElem[prop] = newElem.props[prop]
+        newElem[prop] = newValue
       }
       delete newElem.props[prop]
     }
-  })
-
-  const childElems = getCapitalCaseKeys(newElem.props)
-  const childSpreads = getSpreadChildren(newElem.props)
-  const childArr = childElems.concat(childSpreads)
-  if (childArr.length) {
-    childArr.forEach(prop => {
-      if (!newElem[prop]) newElem[prop] = {}
-      overwriteDeep(newElem[prop], newElem.props[prop])
-      delete newElem.props[prop]
-    })
   }
 
   if (newElem.props.props) {
@@ -114,35 +123,9 @@ export const extendizeByKey = (initialElement, parent, key) => {
     delete newElem.props.props
   }
 
-  // console.log(newElem)
+  console.log(newElem)
 
   return newElem
-}
-
-export const addChildrenIfNotInOriginal = (element, parent, key) => {
-  const childElems = getCapitalCaseKeys(element.props)
-  if (!childElems.length) return
-
-  for (const i in childElems) {
-    const childKey = childElems[i]
-    const childElem = element[childKey]
-    const newChild = element.props[childKey]
-
-    const assignChild = (val) => {
-      element[childKey] = val
-      delete element.props[childKey]
-    }
-
-    if (newChild?.ignoreExtends) continue
-    if (newChild === null) assignChild(null)
-    else if (!childElem) assignChild(deepClone(newChild))
-    else {
-      assignChild({
-        extend: element[childKey],
-        props: newChild
-      })
-    }
-  }
 }
 
 export const applyKeyComponentAsExtend = (element, parent, key) => {
@@ -155,8 +138,7 @@ export const applyComponentFromContext = (element, parent, options) => {
   if (!context || !context.components) return
 
   const { components } = context
-  const { extend } = element
-  const execExtend = exec(extend, element)
+  const execExtend = exec(element.extends, element)
   if (isString(execExtend)) {
     const componentExists = components[execExtend] || components['smbls.' + execExtend]
     if (componentExists) element.extends = componentExists
