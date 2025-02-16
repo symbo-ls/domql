@@ -4,7 +4,13 @@ import { report } from '@domql/report'
 import { triggerEventOnUpdate } from '@domql/event'
 import { IGNORE_STATE_PARAMS } from './ignore.js'
 import { deepMerge, merge, overwriteDeep, overwriteShallow } from '@domql/utils'
-import { checkIfInherits, createNestedObjectByKeyPath, findInheritedState, getParentStateInKey, getRootStateInKey } from './inherit.js'
+import {
+  checkIfInherits,
+  createNestedObjectByKeyPath,
+  findInheritedState,
+  getParentStateInKey,
+  getRootStateInKey
+} from './inherit.js'
 
 const STATE_UPDATE_OPTIONS = {
   overwrite: true,

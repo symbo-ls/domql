@@ -5,8 +5,12 @@
  * and assigns them into real DOM tree
  */
 export const appendNode = (node, parentNode) => {
-  parentNode.appendChild(node)
-  return node
+  try {
+    parentNode.appendChild(node)
+    return node
+  } catch (e) {
+    console.error('Does not support to append', parentNode, node)
+  }
 }
 
 export const insertNodeAfter = (node, siblingNode, parentNode) => {

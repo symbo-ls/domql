@@ -118,7 +118,7 @@ export const remove = function (key, options = {}) {
   if (isArray(state)) removeFromArray(state, key)
   if (isObject(state)) removeFromObject(state, key)
   if (options.applyReset) return state.set(state.parse(), { replace: true, ...options })
-  return state.update()
+  return state.update({}, options)
 }
 
 export const set = function (val, options = {}) {
