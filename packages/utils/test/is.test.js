@@ -1,4 +1,4 @@
-const {
+import { 
   isValidHtmlTag,
   isObject,
   isString,
@@ -12,8 +12,7 @@ const {
   isUndefined,
   TYPES,
   is,
-  isNot
-} = require('../dist/cjs')
+  isNot } from '../'
 
 describe('isValidHtmlTag', () => {
   it('returns true for valid HTML tag', () => {

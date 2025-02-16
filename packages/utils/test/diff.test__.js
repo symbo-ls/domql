@@ -1,4 +1,4 @@
-const { deepDiff } = require('../dist/cjs')
+import { deepDiff } from '../'
 
 describe('diff', () => {
   it('should return an empty object when comparing identical simple objects', () => {

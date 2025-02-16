@@ -1,4 +1,4 @@
-const { isHtmlElement } = require('../dist/cjs')
+import { isHtmlElement } from '../'
 
 describe('isHtmlElement', () => {
   test('returns true for valid HTML element', () => {

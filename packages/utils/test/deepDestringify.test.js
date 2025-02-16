@@ -1,4 +1,4 @@
-const { deepDestringify } = require('../dist/cjs')
+import { deepDestringify } from '../'
 
 describe('deepDestringify', () => {
   test('should return a new object with function strings replaced by their evaluated results', () => {

@@ -1,4 +1,4 @@
-const { overwriteDeep } = require('../dist/cjs')
+import { overwriteDeep } from '../'
 
 describe('overwriteDeep', () => {
   test('should return an empty object when both parameters are empty objects', () => {

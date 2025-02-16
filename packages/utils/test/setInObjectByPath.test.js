@@ -1,4 +1,4 @@
-const { setInObjectByPath } = require('../dist/cjs')
+import { setInObjectByPath } from '../'
 
 describe('setInObjectByPath', () => {
   it('sets a value in an empty object with a simple path', () => {

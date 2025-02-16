@@ -1,4 +1,4 @@
-const { createNestedObjectByKeyPath } = require('../dist/cjs/inherit')
+import { createNestedObjectByKeyPath } from '../inherit'
 
 test('createNestedObjectByKeyPath should create nested object with value', () => {
   const path = 'test/2/4/6';

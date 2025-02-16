@@ -1,4 +1,4 @@
-const { replaceLiteralsWithObjectFields } = require('../dist/cjs')
+import { replaceLiteralsWithObjectFields } from '../'
 
 describe('replaceLiteralsWithObjectFields', () => {
   it('replaces placeholders in a string with corresponding values from an object', () => {

@@ -1,4 +1,4 @@
-const { deepClone } = require('../dist/cjs')
+import { deepClone } from '../'
 
 const obj = {
   tag: 'button',

@@ -1,4 +1,4 @@
-const { swapItemsInArray } = require('../dist/cjs')
+import { swapItemsInArray } from '../'
 
 describe('swapItemsInArray', () => {
   it('swaps two items in the middle of the array', () => {

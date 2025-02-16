@@ -1,4 +1,4 @@
-const { isEqualDeep } = require('../dist/cjs')
+import { isEqualDeep } from '../'
 
 describe('isEqualDeep', () => {
   // Test cases for comparing primitive values

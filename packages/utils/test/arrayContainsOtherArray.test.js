@@ -1,4 +1,4 @@
-const { arrayContainsOtherArray } = require('../dist/cjs')
+import { arrayContainsOtherArray } from '../'
 
 describe('arrayContainsOtherArray', () => {
   it('should return true if the first array contains all elements in the second array', () => {

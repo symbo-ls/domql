@@ -1,4 +1,4 @@
-const { deepStringify } = require('../dist/cjs')
+import { deepStringify } from '../'
 
 const testObject1 = {
   a: 'hello',

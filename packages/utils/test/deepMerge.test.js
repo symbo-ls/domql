@@ -1,4 +1,4 @@
-const { deepMerge } = require('../dist/cjs')
+import { deepMerge } from '../'
 
 describe('deepMerge', () => {
   test('should merge two objects with nested properties', () => {

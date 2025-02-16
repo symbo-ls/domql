@@ -1,4 +1,4 @@
-const { removeFromObject, removeFromArray } = require('../dist/cjs')
+import { removeFromObject, removeFromArray } from '../'
 
 describe('removeFromObject', () => {
   it('removes a single property from an object', () => {
