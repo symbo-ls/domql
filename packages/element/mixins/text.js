@@ -11,7 +11,11 @@ import {
  * an original one as a child
  */
 export function text (param, element, node) {
-  let prop = exec(param, element)
+  let prop = exec(param || element.props.text, element)
+  console.log(prop)
+  if (element.content) {
+    console.log('text', param)
+  }
   if (isString(prop) && prop.includes('{{')) {
     prop = element.call('replaceLiteralsWithObjectFields', prop)
   }

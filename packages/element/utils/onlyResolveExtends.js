@@ -24,7 +24,6 @@ export const onlyResolveExtends = (element, parent, key, options) => {
 
     // enable TRANSFORM in data
     // TODO: do we need this at all?
-    // if (!element.transform) element.transform = {}
 
     // enable CACHING
     if (!ref.__cached) ref.__cached = {}

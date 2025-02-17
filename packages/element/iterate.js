@@ -7,7 +7,7 @@ import {
   isNumber,
   isString,
   checkIfKeyIsComponent,
-  extendizeByKey,
+  applyKeyComponentAsExtend,
   isVariant
 } from '@domql/utils'
 
@@ -44,7 +44,7 @@ export const throughUpdatedExec = (element, options = { excludes: METHODS_EXL })
       overwrite(prop, { text: newExec }, options)
     } else if (newExec !== prop) {
       if (checkIfKeyIsComponent(param)) {
-        const { extend, ...newElem } = extendizeByKey(newExec, element, param)
+        const { extends: extend, ...newElem } = applyKeyComponentAsExtend(newExec, element, param)
         overwrite(prop, newElem, options)
         // } else {
         //   overwrite(prop, newExec, options)
@@ -71,6 +71,10 @@ export const throughExecProps = (element) => {
       props[k] = exec(props[k], element)
     }
   }
+}
+
+export const isPropertyInDefines = (key, element) => {
+
 }
 
 export const throughInitialDefine = (element) => {

@@ -12,6 +12,7 @@ export const registerFrameListener = (el) => {
 
 export const applyAnimationFrame = (element, options) => {
   const { props, on, __ref: ref } = element
+  if (!ref.root.data) return
   const { frameListeners } = ref.root.data
   if (frameListeners && (on?.frame || props?.onFrame)) {
     registerFrameListener(element)
@@ -28,7 +29,7 @@ export const initAnimationFrame = (ctx) => {
         frameListeners.delete(element) // Remove if node has no parent
       } else {
         try {
-          (element.on.frame || element.props.onFrame)(element, element.state, element.context)
+          (element.on?.frame || element.props.onFrame)(element, element.state, element.context)
         } catch (e) {
           console.warn(e)
         }

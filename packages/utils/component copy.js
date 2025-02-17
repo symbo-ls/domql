@@ -1,9 +1,8 @@
 'use strict'
 
-import { addEventInOn } from './events.js'
 import { joinArrays } from './array.js'
-import { exec } from './object.js'
-import { isArray, isFunction, isObject, isString } from './types.js'
+import { deepMerge, exec, overwriteDeep } from './object.js'
+import { isArray, isFunction, isObject, isObjectLike, isString } from './types.js'
 
 const ENV = process.env.NODE_ENV
 
@@ -34,13 +33,13 @@ export const applyAdditionalExtend = (newExtend, element, extendKey = 'extends')
   const originalArray = isArray(elementExtend) ? elementExtend : [elementExtend]
   const receivedArray = isArray(newExtend) ? newExtend : [newExtend]
   const extend = joinArrays(receivedArray, originalArray)
-  return { ...element, extends: extend }
+  return { ...element, extend }
 }
 
 export const checkIfSugar = (element, parent, key) => {
 }
 
-export const extractComponentKeyFromElementKey = (key) => {
+export const extractComponentKeyFromKey = (key) => {
   return key.includes('+')
     ? key.split('+') // get array of componentKeys
     : key.includes('_')
@@ -61,104 +60,114 @@ export function getSpreadChildren (obj) {
 export function applyKeyComponentAsExtend (initialElement, parent, key) {
   const element = exec(initialElement, parent)
   const { context } = parent || {}
-  const extendFromKey = extractComponentKeyFromElementKey(key)[0]
+  const extendFromKey = extractComponentKeyFromKey(key)[0]
   const isExtendKeyComponent = context?.components?.[extendFromKey]
 
-  const isComponent = /^[A-Z]/.test(key)
-  if (!isComponent || !isExtendKeyComponent || element === isExtendKeyComponent) return element
+  if (element === isExtendKeyComponent) return element
 
-  return applyAdditionalExtend(extendFromKey, element)
-}
+  const propMappings = [
+    'define', 'deps', 'on', 'content', 'routes', '$router', 'data', 'context', 'scope'
+  ]
 
-const propMappings = [
-  'attr',
-  'style',
-  'text',
-  'html',
-  'content',
-  'data',
-  'class',
-  'state',
-  'scope',
-  'routes',
-  '$router',
-  'deps',
-  'extends',
-  'children',
-  'childExtends',
-  'childExtendsRecursive',
-  'props',
-  'if',
-  'define',
-  '__name',
-  '__ref',
-  '__hash',
-  '__text',
-  'key',
-  'tag',
-  'query',
-  'parent',
-  'node',
-  'variables',
-  'on',
-  'component',
-  'context'
-]
+  const newElem = {
+    props: isExtendKeyComponent
+      ? {
+          extends: [extendFromKey]
+        }
+      : {}
+  }
 
-/**
- * Reorganizes and normalizes properties of an element
- * @param {Object} element - The element to process
- * @param {Object} parent - The parent context
- * @returns {Object} - The processed element
- */
-export function redefineProperties (element) {
-  if (!element.props) element.props = {}
-  if (!element.on) element.on = {}
-  const cachedKeys = []
+  // Handle element if it's a direct object
+  if (!element.props) {
+    // Copy all properties except extends
+    const { extends: _, ...rest } = element
+    overwriteDeep(newElem, rest)
+  } else {
+    // Copy non-props properties
+    Object.keys(element).forEach(key => {
+      if (key !== 'props') {
+        const isComponent = /^[A-Z]/.test(key)
+        if (isComponent) {
+          newElem[key] = element[key]
+        } else if (propMappings.includes(key) && isObjectLike(element[key])) {
+          newElem[key] = { ...element[key] }
+        } else {
+          newElem.props[key] = element[key]
+        }
+      }
+    })
+  }
 
-  for (const key in element) {
-    const value = (element)[key]
+  const elementProps = element.props || element
 
-    const hasDefine = isObject(element.define?.[key])
-    const hasGlobalDefine = isObject(element.context?.define?.[key])
-    const isComponent = /^[A-Z]/.test(key)
-    const isSpreadedElement = /^\d+$/.test(key)
-    const isPropMapping = propMappings.includes(key)
-    if (!isComponent && !isSpreadedElement && !isPropMapping && !hasDefine && !hasGlobalDefine) {
-      element.props[key] = value
-      delete element[key]
-      cachedKeys.push(key)
-      continue
+  // Handle existing extends
+  if (elementProps.extends) {
+    const currentExtends = newElem.props.extends?.[0]
+    if (Array.isArray(elementProps.extends)) {
+      newElem.props.extends = [...elementProps.extends, currentExtends].filter(Boolean)
+    } else {
+      newElem.props.extends = [elementProps.extends, currentExtends].filter(Boolean)
     }
   }
 
-  for (const key in element.props) {
-    const value = element.props[key]
+  // Handle property mappings and nested components
+  for (const prop in elementProps) {
+    if (prop === 'props' || prop === 'extends') continue
 
-    const isEvent = key.startsWith('on')
-    const isFn = isFunction(value)
+    const newValue = elementProps[prop]
+    const isComponent = /^[A-Z]/.test(prop)
+    const isSpreadedElement = /^\d+$/.test(prop)
 
-    if (isEvent && isFn) {
-      addEventInOn(key, element)
-      delete element.props[key]
-      continue
-    }
-
-    if (cachedKeys.includes(key)) continue
-
-    const hasDefine = isObject(element.define?.[key])
-    const hasGlobalDefine = isObject(element.context?.define?.[key])
-    const isComponent = /^[A-Z]/.test(key)
-    const isSpreadedElement = /^\d+$/.test(key)
-    const isPropMapping = propMappings.includes(key)
-    if (isComponent || isSpreadedElement || isPropMapping || hasDefine || hasGlobalDefine) {
-      element[key] = value
-      delete element.props[key]
-      continue
+    if (isComponent || isSpreadedElement) {
+      if (!newElem[prop]) newElem[prop] = {}
+      if (isObjectLike(newValue)) {
+        overwriteDeep(newElem[prop], newValue)
+      } else {
+        newElem[prop] = newValue
+      }
+    } else if (propMappings.includes(prop)) {
+      if (newElem[prop] && isObjectLike(newElem[prop]) && isObjectLike(newValue)) {
+        // Merge objects for prop mappings
+        newElem[prop] = {
+          ...newElem[prop],
+          ...newValue
+        }
+      } else if (isObjectLike(newValue)) {
+        newElem[prop] = { ...newValue }
+      } else {
+        newElem[prop] = newValue
+      }
+    } else {
+      newElem.props[prop] = newValue
     }
   }
 
-  return element
+  // Handle nested props
+  if (elementProps.props) {
+    if (isFunction(elementProps.props)) {
+      newElem.extends = [{ props: elementProps.props }]
+    } else {
+      const props = exec(elementProps.props, parent)
+      Object.entries(props).forEach(([key, value]) => {
+        const isComponent = /^[A-Z]/.test(key)
+        if (isComponent) {
+          if (!newElem[key]) newElem[key] = {}
+          if (isObjectLike(value)) {
+            overwriteDeep(newElem[key], value)
+          } else {
+            newElem[key] = value
+          }
+        } else if (propMappings.includes(key) && isObjectLike(value)) {
+          if (!newElem[key]) newElem[key] = {}
+          Object.assign(newElem[key], value)
+        } else {
+          newElem.props[key] = value
+        }
+      })
+    }
+  }
+
+  return newElem
 }
 
 export const applyComponentFromContext = (element, parent, options) => {
@@ -168,22 +177,16 @@ export const applyComponentFromContext = (element, parent, options) => {
 
   const { components } = context
   const execExtend = exec(element.extends, element)
-
-  const applyStringExtend = (extendKey) => {
-    const componentExists = components[extendKey] || components['smbls.' + extendKey]
+  if (isString(execExtend)) {
+    const componentExists = components[execExtend] || components['smbls.' + execExtend]
     if (componentExists) element.extends = componentExists
     else {
       if ((ENV === 'test' || ENV === 'development') && options.verbose) {
-        console.warn(extendKey, 'is not in library', components, element)
+        console.warn(execExtend, 'is not in library', components, element)
         console.warn('replacing with ', {})
       }
       element.extends = {}
     }
-  }
-
-  if (isString(execExtend)) applyStringExtend(execExtend)
-  if (isArray(execExtend)) {
-    if (isString(execExtend[0])) applyStringExtend(execExtend[0])
   }
 }
 

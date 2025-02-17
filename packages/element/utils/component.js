@@ -40,7 +40,7 @@ export const overwriteVariant = (element, variant, variantProps) => {
   const props = isObject(variantProps) ? variantProps : {}
   if (isString(variantElement)) {
     variantElement = {
-      extend: [{ props }, variantElement]
+      extends: [{ props }, variantElement]
     }
   } else if (variantElement.extends) {
     variantElement = applyAdditionalExtend({ props }, variantElement)

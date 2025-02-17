@@ -13,7 +13,8 @@ import {
   isVariant,
   overwriteDeep,
   createSnapshotId,
-  deepClone
+  deepClone,
+  redefineProperties
 } from '@domql/utils'
 
 import { applyEvent, triggerEventOn, triggerEventOnUpdate } from '@domql/event'
@@ -62,6 +63,8 @@ export const update = async function (params = {}, opts) {
   if (isString(params) || isNumber(params)) {
     params = { text: params }
   }
+
+  redefineProperties(params)
 
   const inheritState = await inheritStateUpdates(element, options)
   if (inheritState === false) return
@@ -294,7 +297,7 @@ const inheritStateUpdates = async (element, options) => {
   }
 
   // Recreate the state again
-  const newState = createStateUpdate(element, parent, options)
+  const newState = await createStateUpdate(element, parent, options)
 
   // Trigger on.stateUpdate event
   if (!options.preventStateUpdateListener && !options.preventListeners) {

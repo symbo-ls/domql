@@ -13,7 +13,6 @@ import {
 } from './iterate.js'
 import { REGISTRY } from './mixins/index.js'
 import { applyParam } from './utils/applyParam.js'
-import { propagateEventsFromProps } from './utils/propEvents.js'
 // import { defineSetter } from './methods'
 
 const ENV = process.env.NODE_ENV
@@ -34,7 +33,7 @@ export const createNode = async (element, options) => {
     } else node = element.node = cacheNode(element)
 
     // trigger `on.attachNode`
-    triggerEventOn('attachNode', element, options)
+    await triggerEventOn('attachNode', element, options)
   }
   // node.dataset // .key = element.key
 
@@ -44,19 +43,19 @@ export const createNode = async (element, options) => {
   }
 
   // iterate through exec props
-  throughExecProps(element)
+  await throughExecProps(element)
 
   // iterate through define
-  throughInitialDefine(element)
+  await throughInitialDefine(element)
 
   // iterate through exec
-  throughInitialExec(element)
+  await throughInitialExec(element)
 
   if (element.tag !== 'string' && element.tag !== 'fragment') {
-    propagateEventsFromProps(element)
+    // propagateEventsFromProps(element)
 
     if (isNewNode && isObject(element.on)) {
-      applyEventsOnNode(element, options)
+      await applyEventsOnNode(element, options)
     }
   }
 

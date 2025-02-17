@@ -30,7 +30,6 @@ export const REGISTRY = {
   props: {},
   if: {},
   define: {},
-  transform: {},
   __name: {},
   __ref: {},
   __hash: {},

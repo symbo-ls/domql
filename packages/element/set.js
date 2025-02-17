@@ -37,8 +37,8 @@ export const set = async function (params, options = {}, el) {
   const __contentRef = content && content.__ref
   const lazyLoad = element.props && element.props.lazyLoad
 
-  const hasCollection = element.$collection || element.$stateCollection || element.$propsCollection
-  if (options.preventContentUpdate === true && !hasCollection) return
+  const hasChildren = element.children
+  if (options.preventContentUpdate === true && !hasChildren) return
 
   if (ref.__noCollectionDifference || (__contentRef && __contentRef.__cached && deepContains(params, content))) {
     if (!options.preventBeforeUpdateListener && !options.preventListeners) {
@@ -63,8 +63,8 @@ export const set = async function (params, options = {}, el) {
     }
 
     if (lazyLoad) {
-      window.requestAnimationFrame(async () => {
-        await resetElement(params, element, options)
+      window.requestAnimationFrame(() => {
+        resetElement(params, element, options)
         // handle lazy load
         if (!options.preventUpdateListener) {
           triggerEventOn('lazyLoad', element, options)

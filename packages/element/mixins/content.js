@@ -17,7 +17,10 @@ export const removeContent = function (el, opts = {}) {
   const element = el || this
   const { __ref: ref } = element
   const contentElementKey = setContentKey(element, opts)
-  if (opts.contentElementKey !== 'content') opts.contentElementKey = 'content'
+  if (opts.contentElementKey !== 'content') {
+    opts.contentElementKey = 'content'
+  }
+
   if (element[contentElementKey]) {
     if (element[contentElementKey].node && element.node) {
       if (element[contentElementKey].tag === 'fragment') element.node.innerHTML = ''

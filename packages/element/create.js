@@ -18,7 +18,8 @@ import {
   applyComponentFromContext,
   applyKeyComponentAsExtend,
   isVariant,
-  detectInfiniteLoop
+  detectInfiniteLoop,
+  redefineProperties
 } from '@domql/utils'
 
 import { applyAnimationFrame, triggerEventOn } from '@domql/event'
@@ -52,8 +53,10 @@ export const create = async (element, parent, key, options = OPTIONS.create || {
     element = applyValueAsText(element, parent, key)
   }
 
+  // if (key === 'content') debugger
+
   // element = createBasedOnType(element, parent, key, options)
-  element = redefineElement(element, parent, key, options)
+  element = redefineElement(element, parent, key)
   parent = redefineParent(element, parent, key)
   key = createKey(element, parent, key)
 
@@ -68,6 +71,11 @@ export const create = async (element, parent, key, options = OPTIONS.create || {
   if (!ref.__skipCreate) {
     applyExtend(element, parent, options)
   }
+
+  // console.log('----', key)
+  // console.log(element)
+  redefineProperties(element, parent)
+  // console.log(element)
 
   element.key = key
 
@@ -122,7 +130,7 @@ export const create = async (element, parent, key, options = OPTIONS.create || {
   return element
 }
 
-const createBasedOnType = (element, parent, key, options) => {
+const createBasedOnType = (element, parent, key) => {
   // if ELEMENT is not given
   if (element === undefined) {
     if (ENV === 'test' || ENV === 'development') {
@@ -146,8 +154,8 @@ const createBasedOnType = (element, parent, key, options) => {
   return element
 }
 
-const redefineElement = (element, parent, key, options) => {
-  const elementWrapper = createBasedOnType(element, parent, key, options)
+const redefineElement = (element, parent, key) => {
+  const elementWrapper = createBasedOnType(element, parent, key)
   return applyKeyComponentAsExtend(elementWrapper, parent, key)
 }
 
@@ -295,9 +303,6 @@ const createIfConditionFlag = (element, parent) => {
 const addCaching = (element, parent) => {
   const { __ref: ref, key } = element
   let { __ref: parentRef } = parent
-
-  // enable TRANSFORM in data
-  if (!element.transform) element.transform = {}
 
   // enable CACHING
   if (!ref.__cached) ref.__cached = {}
