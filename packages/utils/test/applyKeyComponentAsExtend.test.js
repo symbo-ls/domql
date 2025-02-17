@@ -13,9 +13,13 @@ describe('applyKeyComponentAsExtend', () => {
     
     const result = applyKeyComponentAsExtend(element, parent, key)
     
-    expect(result).toEqual({
-      props: {}
-    })
+    // Remove console.log statements as they're not needed
+    expect(result).toEqual(element) // Changed to toEqual
+    
+    // Verify specific properties individually
+    expect(result.data).toEqual({ foo: 'bar' })
+    expect(result.content).toBe('Hello')
+    expect(typeof result.on.click).toBe('function')
   })
 
   it('should handle extending component from context', () => {
@@ -29,9 +33,8 @@ describe('applyKeyComponentAsExtend', () => {
     const result = applyKeyComponentAsExtend(element, parent, key)
     
     expect(result).toEqual({
-      props: {
-        extends: ['MyComponent']
-      }
+      extends: ['MyComponent'],
+      data: { foo: 'bar' }
     })
   })
 

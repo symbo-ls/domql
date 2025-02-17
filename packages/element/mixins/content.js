@@ -2,6 +2,7 @@
 
 import { isFunction, setContentKey } from '@domql/utils'
 import { set } from '../set.js'
+import { applyChildren } from './children.js'
 
 export const updateContent = function (params, options) {
   const element = this
@@ -46,11 +47,15 @@ export const removeContent = function (el, opts = {}) {
  */
 export function setContent (param, element, node, opts) {
   const contentElementKey = setContentKey(element, opts)
-  if (param && element) {
+  const content = element.children ? applyChildren(element.children, element) : param
+
+  console.log(content)
+
+  if (content && element) {
     if (element[contentElementKey].update) {
       element[contentElementKey].update({}, opts)
     } else {
-      set.call(element, param, opts)
+      set.call(element, content, opts)
     }
   }
 }

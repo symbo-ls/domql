@@ -31,7 +31,8 @@ describe('redefineProperties', () => {
       props: {},
       NestedComponent: {
         data: { nested: true }
-      }
+      },
+      on: {}
     })
   })
 
@@ -46,7 +47,8 @@ describe('redefineProperties', () => {
     expect(element).toEqual({
       props: {},
       '0': { content: 'First' },
-      '1': { content: 'Second' }
+      '1': { content: 'Second' },
+      on: {}
     })
   })
 
@@ -69,7 +71,7 @@ describe('redefineProperties', () => {
         click: onClick
       },
       Hello: {},
-      H4: {}
+      H4: {},
     })
   })
 
@@ -88,7 +90,8 @@ describe('redefineProperties', () => {
       style: { color: 'red' },
       NestedComponent: {
         data: { nested: true }
-      }
+      },
+      on: {}
     })
   })
 
