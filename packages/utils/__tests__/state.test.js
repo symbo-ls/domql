@@ -7,7 +7,7 @@ import {
   checkIfInherits,
   isState,
   createNestedObjectByKeyPath
-} from './state.js'
+} from '../state.js'
 
 describe('getRootStateInKey', () => {
   it('should return root state when key contains "~/"', () => {
