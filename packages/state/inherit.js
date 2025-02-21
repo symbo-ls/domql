@@ -3,7 +3,7 @@
 import * as utils from '@domql/utils'
 import { IGNORE_STATE_PARAMS } from './ignore.js'
 
-const { deepClone, is, isObjectLike, isUndefined } = (utils.default || utils)
+const { deepClone, is, isObjectLike, isUndefined } = utils.default || utils
 
 export const getRootStateInKey = (stateKey, parentState) => {
   if (!stateKey.includes('~/')) return
@@ -80,7 +80,7 @@ export const createInheritedState = (element, parent) => {
   console.warn(ref.__state, 'is not present. Replacing with', {})
 }
 
-export const checkIfInherits = (element) => {
+export const checkIfInherits = element => {
   const ref = element.__ref
   const stateKey = ref.__state
 
@@ -90,7 +90,8 @@ export const checkIfInherits = (element) => {
 
 export const isState = function (state) {
   if (!isObjectLike(state)) return false
-  return state.update &&
+  return (
+    state.update &&
     state.parse &&
     state.clean &&
     state.create &&
@@ -115,6 +116,7 @@ export const isState = function (state) {
     state.applyFunction &&
     state.__element &&
     state.__children
+  )
   // return arrayContainsOtherArray(keys, ['update', 'parse', 'clean', 'create', 'parent', 'rootUpdate'])
 }
 
