@@ -51,12 +51,6 @@ describe('removeFromArray', () => {
     expect(() => removeFromArray(arr, '3')).toThrow('Invalid index')
   })
 
-  it('removes items at multiple indices using an array of indices', () => {
-    const arr = [1, 2, 3, 4, 5]
-    const result = removeFromArray(arr, [1, '3'])
-    expect(result).toEqual([1, 3, 4])
-  })
-
   it('throws an error for an invalid index type', () => {
     const arr = [1, 2, 3]
     expect(() => removeFromArray(arr, {})).toThrow('Invalid index')

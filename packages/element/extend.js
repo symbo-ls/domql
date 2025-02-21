@@ -1,6 +1,6 @@
 'use strict'
 
-import { isFunction, exec } from '@domql/utils'
+import { isFunction, exec, addExtend } from '@domql/utils'
 import {
   getExtendStack,
   jointStacks,
@@ -8,7 +8,6 @@ import {
   deepMergeExtend,
   fallbackStringExtend
 } from './utils/index.js'
-import { addExtend } from '../utils/component.js'
 
 const ENV = process.env.NODE_ENV
 
@@ -23,7 +22,9 @@ export const applyExtend = (element, parent, options = {}) => {
 
   const { props, __ref } = element
   // let extend = applyAdditionalExtend(props?.extends || element.extends, element)
-  let extend = props?.extends ? addExtend(props.extends, element.extends) : element.extends
+  let extend = props?.extends
+    ? addExtend(props.extends, element.extends)
+    : element.extends
   const variant = props?.variant
   const context = element.context || parent.context
 
@@ -75,7 +76,10 @@ export const applyExtend = (element, parent, options = {}) => {
 
   if (context.defaultExtends) {
     if (!mainExtend) {
-      const defaultOptionsExtend = getExtendStack(context.defaultExtends, context)
+      const defaultOptionsExtend = getExtendStack(
+        context.defaultExtends,
+        context
+      )
       mainExtend = cloneAndMergeArrayExtend(defaultOptionsExtend)
       delete mainExtend.extends
     }
@@ -88,7 +92,9 @@ export const applyExtend = (element, parent, options = {}) => {
   const COMPONENTS = (context && context.components) || options.components
   const component = exec(element.component || mergedExtend.component, element)
   if (component && COMPONENTS && COMPONENTS[component]) {
-    const componentExtend = cloneAndMergeArrayExtend(getExtendStack(COMPONENTS[component]))
+    const componentExtend = cloneAndMergeArrayExtend(
+      getExtendStack(COMPONENTS[component])
+    )
     mergedExtend = deepMergeExtend(componentExtend, mergedExtend)
   }
 

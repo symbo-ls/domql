@@ -1,6 +1,12 @@
 'use strict'
 
-import { isArray, isObject, isObjectLike, joinArrays, deepClone } from '@domql/utils'
+import {
+  isArray,
+  isObject,
+  isObjectLike,
+  joinArrays,
+  deepClone
+} from '@domql/utils'
 import { IGNORE_PROPS_PARAMS } from '../props/index.js'
 
 // breaks server build
@@ -8,10 +14,35 @@ import { IGNORE_PROPS_PARAMS } from '../props/index.js'
 // import { METHODS } from '../methods'
 
 const IGNORE_STATE_PARAMS = [
-  'update', 'parse', 'clean', 'create', 'destroy', 'add', 'toggle', 'remove', 'apply', 'set', 'reset',
-  'replace', 'quietReplace', 'quietUpdate', 'applyReplace', 'applyFunction',
-  'rootUpdate', 'parentUpdate', 'parent', '__element', '__depends', '__ref', '__children', 'root',
-  'setByPath', 'setPathCollection', 'removeByPath', 'removePathCollection', 'getByPath'
+  'update',
+  'parse',
+  'clean',
+  'create',
+  'destroy',
+  'add',
+  'toggle',
+  'remove',
+  'apply',
+  'set',
+  'reset',
+  'replace',
+  'quietReplace',
+  'quietUpdate',
+  'applyReplace',
+  'applyFunction',
+  'rootUpdate',
+  'parentUpdate',
+  'parent',
+  '__element',
+  '__depends',
+  '__ref',
+  '__children',
+  'root',
+  'setByPath',
+  'setPathCollection',
+  'removeByPath',
+  'removePathCollection',
+  'getByPath'
 ]
 
 export const METHODS = [
@@ -68,21 +99,6 @@ export const clone = (obj, exclude = METHODS_EXL) => {
   }
   return o
 }
-
-// export const deepClone = (obj, exclude = METHODS_EXL) => {
-//   const o = isArray(obj) ? [] : {}
-//   for (const e in obj) {
-//     if (exclude.includes(e)) continue
-//     let objProp = obj[e]
-//     if (e === 'extends' && isArray(objProp)) {
-//       objProp = mergeArray(objProp, exclude)
-//     }
-//     if (isObjectLike(objProp)) {
-//       o[e] = deepClone(objProp, exclude)
-//     } else o[e] = objProp
-//   }
-//   return o
-// }
 
 /**
  * Overwrites object properties with another
@@ -145,28 +161,9 @@ export const mergeIfExisted = (a, b) => {
 /**
  * Merges array extends
  */
-export const mergeArray = (arr, exclude = ['parent', 'node', '__element', 'state', 'context', '__ref']) => {
+export const unstackArrayOfObjects = (
+  arr,
+  exclude = ['parent', 'node', '__element', 'state', 'context', '__ref']
+) => {
   return arr.reduce((a, c) => deepMerge(a, deepClone(c, { exclude })), {})
-}
-
-/**
- * Merges array extends
- */
-export const mergeAndCloneIfArray = obj => {
-  return isArray(obj) ? mergeArray(obj) : deepClone(obj)
-}
-
-/**
- * Overwrites object properties with another
- */
-export const flattenRecursive = (param, prop, stack = []) => {
-  const objectized = mergeAndCloneIfArray(param)
-  stack.push(objectized)
-
-  const extendOfExtend = objectized[prop]
-  if (extendOfExtend) flattenRecursive(extendOfExtend, prop, stack)
-
-  delete objectized[prop]
-
-  return stack
 }

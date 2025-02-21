@@ -22,12 +22,14 @@ export const throughInitialExec = (element, exclude = {}) => {
     if (isFunction(prop) && !isMethod(param, element) && !isVariant(param)) {
       ref.__exec[param] = prop
       element[param] = prop(element, element.state, element.context)
-      // if (isComponent)
     }
   }
 }
 
-export const throughUpdatedExec = (element, options = { excludes: METHODS_EXL }) => {
+export const throughUpdatedExec = (
+  element,
+  options = { excludes: METHODS_EXL }
+) => {
   const { __ref: ref } = element
   const changes = {}
 
@@ -44,7 +46,11 @@ export const throughUpdatedExec = (element, options = { excludes: METHODS_EXL })
       overwrite(prop, { text: newExec }, options)
     } else if (newExec !== prop) {
       if (checkIfKeyIsComponent(param)) {
-        const { extends: extend, ...newElem } = applyKeyComponentAsExtend(newExec, element, param)
+        const { extends: extend, ...newElem } = applyKeyComponentAsExtend(
+          newExec,
+          element,
+          param
+        )
         overwrite(prop, newElem, options)
         // } else {
         //   overwrite(prop, newExec, options)
@@ -58,11 +64,12 @@ export const throughUpdatedExec = (element, options = { excludes: METHODS_EXL })
   return changes
 }
 
-export const throughExecProps = (element) => {
+export const throughExecProps = element => {
   const { __ref: ref } = element
   const { props } = element
   for (const k in props) {
-    const isDefine = k.startsWith('is') || k.startsWith('has') || k.startsWith('use')
+    const isDefine =
+      k.startsWith('is') || k.startsWith('has') || k.startsWith('use')
     const cachedExecProp = ref.__execProps[k]
     if (isFunction(cachedExecProp)) {
       props[k] = exec(cachedExecProp, element)
@@ -73,11 +80,9 @@ export const throughExecProps = (element) => {
   }
 }
 
-export const isPropertyInDefines = (key, element) => {
+export const isPropertyInDefines = (key, element) => {}
 
-}
-
-export const throughInitialDefine = (element) => {
+export const throughInitialDefine = element => {
   const { define, context, __ref: ref } = element
 
   let defineObj = {}
@@ -88,23 +93,34 @@ export const throughInitialDefine = (element) => {
   for (const param in defineObj) {
     let elementProp = element[param]
 
-    if (isFunction(elementProp) && !isMethod(param, element) && !isVariant(param)) {
+    if (
+      isFunction(elementProp) &&
+      !isMethod(param, element) &&
+      !isVariant(param)
+    ) {
       ref.__exec[param] = elementProp
-      const execParam = elementProp = exec(elementProp, element)
+      const execParam = (elementProp = exec(elementProp, element))
 
       if (execParam) {
-        elementProp = element[param] = execParam.parse ? execParam.parse() : execParam
+        elementProp = element[param] = execParam.parse
+          ? execParam.parse()
+          : execParam
         ref.__defineCache[param] = elementProp
       }
     }
 
-    const execParam = defineObj[param](elementProp, element, element.state, element.context)
+    const execParam = defineObj[param](
+      elementProp,
+      element,
+      element.state,
+      element.context
+    )
     if (execParam) element[param] = execParam
   }
   return element
 }
 
-export const throughUpdatedDefine = (element) => {
+export const throughUpdatedDefine = element => {
   const { context, define, __ref: ref } = element
   const changes = {}
 
@@ -114,9 +130,20 @@ export const throughUpdatedDefine = (element) => {
 
   for (const param in obj) {
     const execParam = ref.__exec[param]
-    if (execParam) ref.__defineCache[param] = execParam(element, element.state, element.context)
+    if (execParam) {
+      ref.__defineCache[param] = execParam(
+        element,
+        element.state,
+        element.context
+      )
+    }
     const cached = exec(ref.__defineCache[param], element)
-    const newExecParam = obj[param](cached, element, element.state, element.context)
+    const newExecParam = obj[param](
+      cached,
+      element,
+      element.state,
+      element.context
+    )
     if (newExecParam) element[param] = newExecParam
   }
   return changes
