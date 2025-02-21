@@ -72,8 +72,9 @@ export const flattenExtend = (
   if (!extend) return stack
   if (processed.has(extend)) return stack
 
-  if (isArray(extend))
+  if (isArray(extend)) {
     return extractArrayExtend(extend, stack, context, processed)
+  }
   if (isString(extend)) extend = fallbackStringExtend(extend, context)
 
   processed.add(extend)

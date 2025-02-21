@@ -19,7 +19,7 @@ export const resetElement = async (params, element, options) => {
   })
 }
 
-export const reset = (options) => {
+export const reset = options => {
   const element = this
   create(element, element.parent, undefined, {
     ignoreChildExtends: true,
@@ -40,13 +40,23 @@ export const set = async function (params, options = {}, el) {
   const hasChildren = element.children
   if (options.preventContentUpdate === true && !hasChildren) return
 
-  if (ref.__noCollectionDifference || (__contentRef && __contentRef.__cached && deepContains(params, content))) {
+  if (
+    ref.__noCollectionDifference ||
+    (__contentRef && __contentRef.__cached && deepContains(params, content))
+  ) {
     if (!options.preventBeforeUpdateListener && !options.preventListeners) {
-      const beforeUpdateReturns = await triggerEventOnUpdate('beforeUpdate', params, element, options)
+      const beforeUpdateReturns = await triggerEventOnUpdate(
+        'beforeUpdate',
+        params,
+        element,
+        options
+      )
       if (beforeUpdateReturns === false) return element
     }
-    if (content?.update) content.update()
-    if (!options.preventUpdateListener) await triggerEventOn('update', element, options)
+    if (content?.update) await content.update()
+    if (!options.preventUpdateListener) {
+      await triggerEventOn('update', element, options)
+    }
     return
   }
 

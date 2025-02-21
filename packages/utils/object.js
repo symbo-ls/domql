@@ -666,46 +666,39 @@ export const isEqualDeep = (param, element, visited = new Set()) => {
 
 export const deepContains = (obj1, obj2, ignoredKeys = ['node', '__ref']) => {
   if (obj1 === obj2) return true
-  if (!isObjectLike(obj1) || !isObjectLike(obj2)) return false
+  if (!isObjectLike(obj1) || !isObjectLike(obj2)) return obj1 === obj2
   if (isDOMNode(obj1) || isDOMNode(obj2)) return obj1 === obj2
 
-  const stack = [[obj1, obj2]]
   const visited = new WeakSet()
 
-  while (stack.length > 0) {
-    const [current1, current2] = stack.pop()
+  function checkContains (target, source) {
+    if (visited.has(source)) return true
+    visited.add(source)
 
-    if (visited.has(current1)) continue
-    visited.add(current1)
+    // Check each property in source
+    for (const key in source) {
+      if (!Object.prototype.hasOwnProperty.call(source, key)) continue
+      if (ignoredKeys.includes(key)) continue
 
-    const keys1 = Object.keys(current1).filter(
-      key => !ignoredKeys.includes(key)
-    )
-    const keys2 = Object.keys(current2).filter(
-      key => !ignoredKeys.includes(key)
-    )
+      // If key doesn't exist in target, return false
+      if (!Object.prototype.hasOwnProperty.call(target, key)) return false
 
-    if (keys1.length !== keys2.length) return false
+      const sourceValue = source[key]
+      const targetValue = target[key]
 
-    for (const key of keys1) {
-      if (!Object.prototype.hasOwnProperty.call(current2, key)) return false
-
-      const value1 = current1[key]
-      const value2 = current2[key]
-
-      if (isDOMNode(value1) || isDOMNode(value2)) {
-        if (value1 !== value2) return false
-      } else if (isObjectLike(value1) && isObjectLike(value2)) {
-        if (value1 !== value2) {
-          stack.push([value1, value2])
-        }
-      } else if (value1 !== value2) {
+      if (isDOMNode(sourceValue) || isDOMNode(targetValue)) {
+        if (sourceValue !== targetValue) return false
+      } else if (isObjectLike(sourceValue) && isObjectLike(targetValue)) {
+        if (!checkContains(targetValue, sourceValue)) return false
+      } else if (sourceValue !== targetValue) {
         return false
       }
     }
+
+    return true
   }
 
-  return true
+  return checkContains(obj1, obj2)
 }
 
 export const removeFromObject = (obj, props) => {
