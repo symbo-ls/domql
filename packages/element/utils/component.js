@@ -5,9 +5,7 @@ import {
   isString,
   overwriteDeep,
   checkIfKeyIsComponent,
-  applyAdditionalExtend,
-  hasVariantProp,
-  isVariant
+  applyAdditionalExtend
 } from '@domql/utils'
 
 import { applyExtend } from '../extend.js'
@@ -49,20 +47,4 @@ export const overwriteVariant = (element, variant, variantProps) => {
   const { parent, ...rest } = extendedVariant
   return overwriteDeep(element, rest) // TODO: check why string is not working
   // return overwriteDeep(element, applyExtend(variantElement, element.parent)) // TODO: check why string is not working
-}
-
-export const applyVariant = (element) => {
-  const { props } = element
-  if (!hasVariantProp(element)) return element
-  const { variant } = props
-  overwriteVariant(element, `.${variant}`)
-
-  const elKeys = Object.keys(element).filter((key) => isVariant(key))
-  elKeys.forEach((variant) => {
-    const slicedVariantElementKey = variant.slice(1)
-    const variantElementProps = props[slicedVariantElementKey]
-    if (variantElementProps) overwriteVariant(element, variant, variantElementProps)
-  })
-
-  return element
 }

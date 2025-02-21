@@ -3,7 +3,6 @@
 import { exec, isFunction, isObject, isUndefined } from '@domql/utils'
 import { create } from '..'
 import { REGISTRY } from '../mixins/index.js'
-import { applyVariant, isVariant } from '.'
 import { isMethod } from '../methods'
 import { addMethods } from '../methods/set'
 import { createState } from '@domql/state'
@@ -67,10 +66,11 @@ export const onlyResolveExtends = (element, parent, key, options) => {
   } else ref.__if = true
   /// ///
 
-  if (element.node && ref.__if) { parent[key || element.key] = element } // Borrowed from assignNode()
+  if (element.node && ref.__if) {
+    parent[key || element.key] = element
+  } // Borrowed from assignNode()
 
   createProps(element, parent, options)
-  applyVariant(element, parent)
 
   if (element.tag !== 'string' && element.tag !== 'fragment') {
     throughInitialDefine(element)
@@ -81,18 +81,25 @@ export const onlyResolveExtends = (element, parent, key, options) => {
       if (
         isUndefined(prop) ||
         isMethod(param, element) ||
-        isObject(REGISTRY[param]) ||
-        isVariant(param)
-      ) continue
+        isObject(REGISTRY[param])
+      )
+        continue
 
       const hasDefine = element.define && element.define[param]
-      const contextHasDefine = element.context && element.context.define &&
-            element.context.define[param]
+      const contextHasDefine =
+        element.context &&
+        element.context.define &&
+        element.context.define[param]
       const optionsHasDefine = options.define && options.define[param]
 
       if (REGISTRY[param] && !optionsHasDefine) {
         continue
-      } else if (element[param] && !hasDefine && !optionsHasDefine && !contextHasDefine) {
+      } else if (
+        element[param] &&
+        !hasDefine &&
+        !optionsHasDefine &&
+        !contextHasDefine
+      ) {
         create(exec(prop, element), element, param, options)
       }
     }

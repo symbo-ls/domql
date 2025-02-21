@@ -31,18 +31,6 @@ export function getSpreadChildren (obj) {
   return Object.keys(obj).filter(key => /^\d+$/.test(key))
 }
 
-export const isVariant = param => {
-  if (!isString(param)) return
-  const firstCharKey = param.slice(0, 1)
-  // return (firstCharKey === '.' || firstCharKey === '$')
-  return firstCharKey === '.'
-}
-
-export const hasVariantProp = element => {
-  const { props } = element
-  if (isObject(props) && isString(props.variant)) return true
-}
-
 export const getChildrenComponentsByKey = (key, el) => {
   if (key === el.key || el.__ref.__componentKey === key) {
     return el

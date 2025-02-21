@@ -1,12 +1,6 @@
 'use strict'
 
-import {
-  exec,
-  isFunction,
-  isObject,
-  isUndefined,
-  isVariant
-} from '@domql/utils'
+import { exec, isFunction, isObject, isUndefined } from '@domql/utils'
 import { applyEventsOnNode, triggerEventOn } from '@domql/event'
 import { cacheNode } from '@domql/render'
 import { isMethod } from './methods/index.js'
@@ -73,7 +67,6 @@ export const createNode = async (element, options) => {
     if (
       isUndefined(value) ||
       isMethod(param, element) ||
-      isVariant(param) ||
       isObject(REGISTRY[param])
     ) {
       continue

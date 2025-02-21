@@ -12,7 +12,6 @@ import {
   deepClone,
   applyComponentFromContext,
   applyKeyComponentAsExtend,
-  isVariant,
   detectInfiniteLoop,
   redefineProperties,
   createBasedOnType,
@@ -305,8 +304,7 @@ const onlyResolveExtends = (element, parent, key, options) => {
       if (
         isUndefined(element[k]) ||
         isMethod(k, element) ||
-        isObject((registry.default || registry)[k]) ||
-        isVariant(k)
+        isObject((registry.default || registry)[k])
       ) {
         continue
       }

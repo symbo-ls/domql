@@ -7,8 +7,7 @@ import {
   isNumber,
   isString,
   checkIfKeyIsComponent,
-  applyKeyComponentAsExtend,
-  isVariant
+  applyKeyComponentAsExtend
 } from '@domql/utils'
 
 import { METHODS_EXL, overwrite } from './utils/index.js'
@@ -19,7 +18,7 @@ export const throughInitialExec = (element, exclude = {}) => {
   for (const param in element) {
     if (exclude[param]) continue
     const prop = element[param]
-    if (isFunction(prop) && !isMethod(param, element) && !isVariant(param)) {
+    if (isFunction(prop) && !isMethod(param, element)) {
       ref.__exec[param] = prop
       element[param] = prop(element, element.state, element.context)
     }
@@ -93,11 +92,7 @@ export const throughInitialDefine = element => {
   for (const param in defineObj) {
     let elementProp = element[param]
 
-    if (
-      isFunction(elementProp) &&
-      !isMethod(param, element) &&
-      !isVariant(param)
-    ) {
+    if (isFunction(elementProp) && !isMethod(param, element)) {
       ref.__exec[param] = elementProp
       const execParam = (elementProp = exec(elementProp, element))
 
