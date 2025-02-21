@@ -30,9 +30,10 @@ export const syncProps = (props, element, opts) => {
 
   props.forEach(v => {
     if (IGNORE_PROPS_PARAMS.includes(v)) return
-    let execProps
+    const execProps = exec(v, element)
+    // let execProps
     // try {
-    execProps = exec(v, element)
+    // execProps = exec(v, element)
     // } catch (e) { element.error(e, opts) }
     // TODO: check if this failing the function props merge
     // if (isObject(execProps) && execProps.__element) return
