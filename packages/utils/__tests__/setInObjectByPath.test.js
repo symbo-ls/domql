@@ -1,4 +1,4 @@
-import { setInObjectByPath } from '../'
+import { setInObjectByPath } from '..'
 
 describe('setInObjectByPath', () => {
   it('sets a value in an empty object with a simple path', () => {
@@ -33,7 +33,9 @@ describe('setInObjectByPath', () => {
 
   it('throws error when path is not an array', () => {
     const obj = {}
-    expect(() => setInObjectByPath(obj, 'not-an-array', 42)).toThrow('Path must be an array.')
+    expect(() => setInObjectByPath(obj, 'not-an-array', 42)).toThrow(
+      'Path must be an array.'
+    )
   })
 
   it('overwrites non-object values in the path with objects', () => {

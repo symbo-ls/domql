@@ -1,4 +1,4 @@
-import { isNode } from '../'
+import { isNode } from '..'
 
 describe('isNode', () => {
   test('returns true for DOM nodes', () => {

@@ -35,14 +35,10 @@ import { throughInitialExec, throughInitialDefine } from './iterate.js'
 
 import { OPTIONS } from './cache/options.js'
 
-// import {
-//   applyVariant
-// } from './utils/component.js'
-
 const ENV = process.env.NODE_ENV
 
 /**
- * Creating a domQL element using passed parameters
+ * Creating a DOMQL element using passed parameters
  */
 export const create = async (
   element,
@@ -69,10 +65,7 @@ export const create = async (
     applyExtend(element, parent, options)
   }
 
-  // console.log('----', key)
-  // console.log(element)
   redefineProperties(element, parent)
-  // console.log(element)
 
   element.key = key
 

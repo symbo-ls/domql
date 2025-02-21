@@ -1,4 +1,4 @@
-import { joinArrays } from '../'
+import { joinArrays } from '..'
 
 describe('joinArrays', () => {
   test('returns a single array containing all elements from input arrays', () => {

@@ -1,4 +1,4 @@
-import { 
+import {
   isValidHtmlTag,
   isObject,
   isString,
@@ -12,7 +12,8 @@ import {
   isUndefined,
   TYPES,
   is,
-  isNot } from '../'
+  isNot
+} from '..'
 
 describe('isValidHtmlTag', () => {
   it('returns true for valid HTML tag', () => {

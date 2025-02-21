@@ -1,4 +1,4 @@
-import { exec } from '../'
+import { exec } from '..'
 
 test('should check whether value is executable and if yes, return executed value', () => {
   const val1 = exec('val1', {})

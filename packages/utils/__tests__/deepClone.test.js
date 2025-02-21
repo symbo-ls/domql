@@ -1,4 +1,4 @@
-import { deepClone } from '../'
+import { deepClone } from '..'
 
 const obj = {
   tag: 'button',

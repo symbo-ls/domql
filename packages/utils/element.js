@@ -78,11 +78,9 @@ export const addCaching = (element, parent) => {
   if (!ref.root) ref.root = hasRoot ? element : parentRef.root
 
   // set the PATH array
-  // if (ENV === 'test' || ENV === 'development') {
   if (!parentRef) parentRef = parent.ref = {}
   if (!parentRef.path) parentRef.path = []
   ref.path = parentRef.path.concat(element.key)
-  // }
 }
 
 export const addRef = (element, parent) => {

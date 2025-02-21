@@ -1,4 +1,4 @@
-import { removeFromObject, removeFromArray } from '../'
+import { removeFromObject, removeFromArray } from '..'
 
 describe('removeFromObject', () => {
   it('removes a single property from an object', () => {

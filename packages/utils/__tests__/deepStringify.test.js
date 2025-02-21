@@ -1,4 +1,4 @@
-import { deepStringify } from '../'
+import { deepStringify } from '..'
 
 const testObject1 = {
   a: 'hello',
@@ -10,7 +10,9 @@ const testObject1 = {
       g: 'world'
     }
   },
-  h: function () { console.log('test') }
+  h: function () {
+    console.log('test')
+  }
 }
 
 const testObject2 = {
@@ -23,14 +25,18 @@ const testObject2 = {
     state: 'CA',
     zip: '12345'
   },
-  sayHello: function () { return 'Hello' }
+  sayHello: function () {
+    return 'Hello'
+  }
 }
 
 describe('deepStringify', () => {
   test('should convert functions to string', () => {
     const obj = {
       a: 1,
-      b: function () { return 'test' }
+      b: function () {
+        return 'test'
+      }
     }
     const expected = {
       a: 1,
@@ -66,13 +72,23 @@ describe('deepStringify', () => {
   test('should stringify arrays', () => {
     const obj = {
       a: 1,
-      b: [1, 2, function () { return 'test' }]
+      b: [
+        1,
+        2,
+        function () {
+          return 'test'
+        }
+      ]
     }
     const expected = {
       a: 1,
-      b: [1, 2, `function () {
+      b: [
+        1,
+        2,
+        `function () {
         return 'test';
-      }`]
+      }`
+      ]
     }
     expect(deepStringify(obj)).toEqual(expected)
   })

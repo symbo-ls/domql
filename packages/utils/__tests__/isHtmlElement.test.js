@@ -1,4 +1,4 @@
-import { isHtmlElement } from '../'
+import { isHtmlElement } from '..'
 
 describe('isHtmlElement', () => {
   test('returns true for valid HTML element', () => {

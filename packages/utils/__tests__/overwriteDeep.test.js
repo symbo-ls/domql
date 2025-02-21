@@ -1,4 +1,4 @@
-import { overwriteDeep } from '../'
+import { overwriteDeep } from '..'
 
 describe('overwriteDeep', () => {
   test('should return an empty object when both parameters are empty objects', () => {
@@ -8,7 +8,7 @@ describe('overwriteDeep', () => {
     expect(result).toEqual({})
   })
 
-  test('should add a new property to the object when it doesn\'t exist', () => {
+  test("should add a new property to the object when it doesn't exist", () => {
     const params = { name: 'John' }
     const obj = { age: 30 }
     const result = overwriteDeep(obj, params)
@@ -33,14 +33,19 @@ describe('overwriteDeep', () => {
     const params = { person: { name: 'John', age: 30 } }
     const obj = { person: { name: 'Jane', city: 'New York' } }
     const result = overwriteDeep(obj, params)
-    expect(result).toEqual({ person: { name: 'John', age: 30, city: 'New York' } })
+    expect(result).toEqual({
+      person: { name: 'John', age: 30, city: 'New York' }
+    })
   })
 
   test('should add a nested object to the target object', () => {
     const params = { person: { name: 'John', age: 30 } }
     const obj = { city: 'New York' }
     const result = overwriteDeep(obj, params)
-    expect(result).toEqual({ person: { name: 'John', age: 30 }, city: 'New York' })
+    expect(result).toEqual({
+      person: { name: 'John', age: 30 },
+      city: 'New York'
+    })
   })
 
   test('should skip a property with a value of undefined', () => {

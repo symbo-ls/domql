@@ -497,47 +497,6 @@ export const isEmptyObject = o => isObject(o) && isEmpty(o)
 
 export const makeObjectWithoutPrototype = () => Object.create(null)
 
-// by mattphillips
-// https://github.com/mattphillips/deep-object-diff/blob/main/src/diff.js
-export const deepDiff = (lhs, rhs) => {
-  if (lhs === rhs) return {}
-
-  if (!isObjectLike(lhs) || !isObjectLike(rhs)) return rhs
-
-  const deletedValues = Object.keys(lhs).reduce((acc, key) => {
-    if (!hasOwnProperty(rhs, key)) {
-      acc[key] = undefined
-    }
-
-    return acc
-  }, makeObjectWithoutPrototype())
-
-  if (isDate(lhs) || isDate(rhs)) {
-    if (lhs.valueOf() === rhs.valueOf()) return {}
-    return rhs
-  }
-
-  return Object.keys(rhs).reduce((acc, key) => {
-    if (!hasOwnProperty(lhs, key)) {
-      acc[key] = rhs[key]
-      return acc
-    }
-
-    const difference = diff(lhs[key], rhs[key])
-
-    if (
-      isEmptyObject(difference) &&
-      !isDate(difference) &&
-      (isEmptyObject(lhs[key]) || !isEmptyObject(rhs[key]))
-    ) {
-      return acc
-    }
-
-    acc[key] = difference
-    return acc
-  }, deletedValues)
-}
-
 /**
  * Overwrites object properties with another
  */
