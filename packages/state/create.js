@@ -2,15 +2,17 @@
 
 import { triggerEventOn } from '@domql/event'
 import {
+  checkIfInherits,
+  createInheritedState,
   deepClone,
   exec,
+  IGNORE_STATE_PARAMS,
   is,
   isArray,
   isFunction,
   isObject,
   isUndefined
 } from '@domql/utils'
-import { IGNORE_STATE_PARAMS } from './ignore.js'
 import {
   add,
   apply,
@@ -37,7 +39,6 @@ import {
   values
 } from './methods.js'
 import { updateState } from './updateState.js'
-import { checkIfInherits, createInheritedState } from './inherit.js'
 
 export const createState = async function (element, parent, options) {
   element.state = await applyInitialState(element, parent, options)

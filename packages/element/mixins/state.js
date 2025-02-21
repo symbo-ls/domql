@@ -1,7 +1,6 @@
 'use strict'
 
-import { IGNORE_STATE_PARAMS } from '@domql/state'
-import { exec, isObject } from '@domql/utils'
+import { exec, IGNORE_STATE_PARAMS, isObject } from '@domql/utils'
 
 export function state (params, element, node) {
   const state = exec(params, element)

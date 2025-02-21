@@ -1,49 +1,16 @@
 'use strict'
 
 import {
-  isArray,
   isObject,
   isObjectLike,
   joinArrays,
-  deepClone
+  deepClone,
+  IGNORE_STATE_PARAMS
 } from '@domql/utils'
 import { IGNORE_PROPS_PARAMS } from '../props/index.js'
 
 // breaks server build
-// import { IGNORE_STATE_PARAMS } from '@domql/state'
 // import { METHODS } from '../methods'
-
-const IGNORE_STATE_PARAMS = [
-  'update',
-  'parse',
-  'clean',
-  'create',
-  'destroy',
-  'add',
-  'toggle',
-  'remove',
-  'apply',
-  'set',
-  'reset',
-  'replace',
-  'quietReplace',
-  'quietUpdate',
-  'applyReplace',
-  'applyFunction',
-  'rootUpdate',
-  'parentUpdate',
-  'parent',
-  '__element',
-  '__depends',
-  '__ref',
-  '__children',
-  'root',
-  'setByPath',
-  'setPathCollection',
-  'removeByPath',
-  'removePathCollection',
-  'getByPath'
-]
 
 export const METHODS = [
   'set',
