@@ -2,7 +2,7 @@
 
 import { applyAdditionalExtend } from './extend.js'
 import { exec } from './object.js'
-import { isArray, isObject, isString } from './types.js'
+import { isArray, isString } from './types.js'
 
 const ENV = process.env.NODE_ENV
 
@@ -87,10 +87,6 @@ export const applyComponentFromContext = (element, parent, options) => {
       components[extendKey] || components['smbls.' + extendKey]
     if (componentExists) element.extends = componentExists
     else {
-      if ((ENV === 'test' || ENV === 'development') && options.verbose) {
-        console.warn(extendKey, 'is not in library', components, element)
-        console.warn('replacing with ', {})
-      }
       element.extends = {}
     }
   }

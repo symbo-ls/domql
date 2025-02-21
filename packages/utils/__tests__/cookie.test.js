@@ -76,4 +76,73 @@ describe('Cookie and Storage Utils', () => {
       expect(() => removeCookie('test')).not.toThrow()
     })
   })
+
+  describe('localStorage Utils', () => {
+    let mockStorage
+
+    beforeEach(() => {
+      mockStorage = {
+        getItem: jest.fn(),
+        setItem: jest.fn(),
+        removeItem: jest.fn(),
+        clear: jest.fn()
+      }
+
+      Object.defineProperty(window, 'localStorage', {
+        value: mockStorage,
+        writable: true
+      })
+    })
+
+    describe('setLocalStorage', () => {
+      it('should save object data to localStorage', () => {
+        const testData = { name: 'John', age: 30 }
+        setLocalStorage('testKey', testData)
+
+        expect(window.localStorage.setItem).toHaveBeenCalledWith(
+          'testKey',
+          JSON.stringify(testData)
+        )
+      })
+
+      it('should save primitive data to localStorage', () => {
+        setLocalStorage('testKey', 'testValue')
+        expect(window.localStorage.setItem).toHaveBeenCalledWith(
+          'testKey',
+          'testValue'
+        )
+      })
+
+      it('should not save undefined or null data', () => {
+        setLocalStorage('testKey', undefined)
+        setLocalStorage('testKey', null)
+
+        expect(window.localStorage.setItem).not.toHaveBeenCalled()
+      })
+    })
+
+    describe('getLocalStorage', () => {
+      it('should retrieve and parse JSON data from localStorage', () => {
+        const testData = { name: 'John', age: 30 }
+        mockStorage.getItem.mockReturnValue(JSON.stringify(testData))
+
+        const result = getLocalStorage('testKey')
+        expect(result).toEqual(testData)
+      })
+
+      it('should return undefined for non-existent keys', () => {
+        mockStorage.getItem.mockReturnValue(null)
+
+        const result = getLocalStorage('nonExistentKey')
+        expect(result).toBeUndefined()
+      })
+
+      it('should handle invalid JSON gracefully', () => {
+        mockStorage.getItem.mockReturnValue('invalid JSON')
+
+        const result = getLocalStorage('testKey')
+        expect(result).toBeUndefined()
+      })
+    })
+  })
 })

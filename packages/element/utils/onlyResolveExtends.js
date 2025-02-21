@@ -82,8 +82,9 @@ export const onlyResolveExtends = (element, parent, key, options) => {
         isUndefined(prop) ||
         isMethod(param, element) ||
         isObject(REGISTRY[param])
-      )
+      ) {
         continue
+      }
 
       const hasDefine = element.define && element.define[param]
       const contextHasDefine =

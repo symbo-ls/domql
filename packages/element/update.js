@@ -66,14 +66,16 @@ export const update = async function (params = {}, opts) {
   )
   if (snapshotHasUpdated) return
 
-  if (!options.preventListeners)
+  if (!options.preventListeners) {
     await triggerEventOnUpdate('startUpdate', params, element, options)
+  }
 
   if (
     preventInheritAtCurrentState &&
     preventInheritAtCurrentState.__element === element
-  )
+  ) {
     return
+  }
   if (!excludes) merge(options, UPDATE_DEFAULT_OPTIONS)
 
   if (isString(params) || isNumber(params)) {
@@ -139,11 +141,11 @@ export const update = async function (params = {}, opts) {
     if (
       isNumber(preventUpdateAfterCount) &&
       preventUpdateAfter <= preventUpdateAfterCount
-    )
+    ) {
       return
-    else if (options.preventUpdateAfterCount === undefined)
+    } else if (options.preventUpdateAfterCount === undefined) {
       options.preventUpdateAfterCount = 1
-    else options.preventUpdateAfterCount++
+    } else options.preventUpdateAfterCount++
   }
 
   for (const param in element) {
@@ -171,8 +173,9 @@ export const update = async function (params = {}, opts) {
       (preventStateUpdate && param) === 'state' ||
       isMethod(param, element) ||
       isObject(REGISTRY[param])
-    )
+    ) {
       continue
+    }
 
     if (preventStateUpdate === 'once') options.preventStateUpdate = false
 
@@ -233,8 +236,9 @@ const captureSnapshot = (element, options) => {
 }
 
 const checkIfOnUpdate = (element, parent, options) => {
-  if ((!isFunction(element.if) && !isFunction(element.props?.if)) || !parent)
+  if ((!isFunction(element.if) && !isFunction(element.props?.if)) || !parent) {
     return
+  }
 
   const ref = element.__ref
   const ifPassed = (element.if || element.props?.if)(
@@ -274,8 +278,9 @@ const checkIfOnUpdate = (element, parent, options) => {
         element.$propsCollection
       ) {
         element.removeContent()
-      } else if (element[contentKey]?.parseDeep)
+      } else if (element[contentKey]?.parseDeep) {
         element[contentKey] = element[contentKey].parseDeep()
+      }
 
       const previousElement = element.previousElement()
       const previousNode = previousElement?.node // document.body.contains(previousElement.node)
