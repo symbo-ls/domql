@@ -151,14 +151,6 @@ export const overwriteDeep = (obj, params, exclude = METHODS_EXL) => {
 }
 
 /**
- * Overwrites object properties with another
- */
-export const mergeIfExisted = (a, b) => {
-  if (isObjectLike(a) && isObjectLike(b)) return deepMerge(a, b)
-  return a || b
-}
-
-/**
  * Merges array extends
  */
 export const unstackArrayOfObjects = (

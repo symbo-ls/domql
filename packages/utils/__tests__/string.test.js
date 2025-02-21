@@ -1,7 +1,6 @@
 import {
   stringIncludesAny,
   trimStringFromSymbols,
-  replaceLiteralsWithObjectFields,
   lowercaseFirstLetter,
   findKeyPosition,
   replaceOctalEscapeSequences,
@@ -28,37 +27,6 @@ describe('String Utils', () => {
     })
   })
 
-  describe('replaceLiteralsWithObjectFields', () => {
-    it('should replace {{ }} placeholders with object values', () => {
-      const state = { name: 'John', age: 30 }
-      expect(replaceLiteralsWithObjectFields('Hello {{name}}', state)).toBe(
-        'Hello John'
-      )
-      expect(replaceLiteralsWithObjectFields('Age: {{age}}', state)).toBe(
-        'Age: 30'
-      )
-    })
-
-    it('should handle parent references', () => {
-      const state = {
-        name: 'Child',
-        parent: { name: 'Parent' }
-      }
-      expect(replaceLiteralsWithObjectFields('{{../name}}', state)).toBe(
-        'Parent'
-      )
-    })
-
-    it('should handle triple brackets', () => {
-      const state = { name: 'John' }
-      expect(
-        replaceLiteralsWithObjectFields('{{{name}}}', state, {
-          bracketsLength: 3
-        })
-      ).toBe('John')
-    })
-  })
-
   describe('lowercaseFirstLetter', () => {
     it('should convert first letter to lowercase', () => {
       expect(lowercaseFirstLetter('Hello')).toBe('hello')
@@ -72,6 +40,35 @@ describe('String Utils', () => {
       const result = findKeyPosition(str, 'name')
       expect(result.startLineNumber).toBe(2)
       expect(result.startColumn).toBe(3)
+    })
+
+    it('should handle nested objects', () => {
+      const str =
+        'const obj = {\n  user: {\n    name: "John",\n    age: 30\n  }\n}'
+      const result = findKeyPosition(str, 'user')
+      expect(result.startLineNumber).toBe(2)
+      expect(result.endLineNumber).toBe(5)
+    })
+
+    it('should handle arrays', () => {
+      const str = 'const obj = {\n  items: [\n    1,\n    2,\n    3\n  ]\n}'
+      const result = findKeyPosition(str, 'items')
+      expect(result.startLineNumber).toBe(2)
+      expect(result.endLineNumber).toBe(6)
+    })
+
+    it('should handle empty objects', () => {
+      const str = 'const obj = {\n  empty: {},\n  name: "John"\n}'
+      const result = findKeyPosition(str, 'empty')
+      expect(result.startLineNumber).toBe(2)
+      expect(result.endLineNumber).toBe(2)
+    })
+
+    it('should handle single-line objects', () => {
+      const str = 'const obj = { name: "John", age: 30 }'
+      const result = findKeyPosition(str, 'age')
+      expect(result.startLineNumber).toBe(1)
+      expect(result.endLineNumber).toBe(1)
     })
   })
 

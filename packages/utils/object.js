@@ -9,7 +9,6 @@ import {
   isString,
   is,
   isUndefined,
-  isDate,
   isNull
 } from './types.js'
 import { unstackArrayOfObjects } from './array.js'
@@ -217,59 +216,6 @@ export const deepStringify = (obj, stringified = {}) => {
   return stringified
 }
 
-const MAX_DEPTH = 100 // Adjust this value as needed
-export const deepStringifyWithMaxDepth = (
-  obj,
-  stringified = {},
-  depth = 0,
-  path = ''
-) => {
-  if (depth > MAX_DEPTH) {
-    console.warn(
-      `Maximum depth exceeded at path: ${path}. Possible circular reference.`
-    )
-    return '[MAX_DEPTH_EXCEEDED]'
-  }
-
-  for (const prop in obj) {
-    const currentPath = path ? `${path}.${prop}` : prop
-    const objProp = obj[prop]
-
-    if (isFunction(objProp)) {
-      stringified[prop] = objProp.toString()
-    } else if (isObject(objProp)) {
-      stringified[prop] = {}
-      deepStringifyWithMaxDepth(
-        objProp,
-        stringified[prop],
-        depth + 1,
-        currentPath
-      )
-    } else if (isArray(objProp)) {
-      stringified[prop] = []
-      objProp.forEach((v, i) => {
-        const itemPath = `${currentPath}[${i}]`
-        if (isObject(v)) {
-          stringified[prop][i] = {}
-          deepStringifyWithMaxDepth(
-            v,
-            stringified[prop][i],
-            depth + 1,
-            itemPath
-          )
-        } else if (isFunction(v)) {
-          stringified[prop][i] = v.toString()
-        } else {
-          stringified[prop][i] = v
-        }
-      })
-    } else {
-      stringified[prop] = objProp
-    }
-  }
-  return stringified
-}
-
 export const objectToString = (obj = {}, indent = 0) => {
   // Handle empty object case
   if (obj === null || typeof obj !== 'object') {
@@ -331,34 +277,6 @@ export const objectToString = (obj = {}, indent = 0) => {
 
   str += `${spaces}}`
   return str
-}
-
-/**
- * Stringify object
- */
-export const detachFunctionsFromObject = (obj, detached = {}) => {
-  for (const prop in obj) {
-    const objProp = obj[prop]
-    if (isFunction(objProp)) continue
-    else if (isObject(objProp)) {
-      detached[prop] = {}
-      deepStringify(objProp, detached[prop])
-    } else if (isArray(objProp)) {
-      detached[prop] = []
-      objProp.forEach((v, i) => {
-        if (isFunction(v)) return
-        if (isObject(v)) {
-          detached[prop][i] = {}
-          detachFunctionsFromObject(v, detached[prop][i])
-        } else {
-          detached[prop][i] = v
-        }
-      })
-    } else {
-      detached[prop] = objProp
-    }
-  }
-  return detached
 }
 
 export const hasFunction = str => {
@@ -442,52 +360,6 @@ export const stringToObject = (str, opts = { verbose: true }) => {
   }
 }
 
-export const diffObjects = (original, objToDiff, cache) => {
-  for (const e in objToDiff) {
-    if (e === 'ref') continue
-
-    const originalProp = original[e]
-    const objToDiffProp = objToDiff[e]
-
-    if (isObject(originalProp) && isObject(objToDiffProp)) {
-      cache[e] = {}
-      diff(originalProp, objToDiffProp, cache[e])
-    } else if (objToDiffProp !== undefined) {
-      cache[e] = objToDiffProp
-    }
-  }
-  return cache
-}
-
-export const diffArrays = (original, objToDiff, cache) => {
-  if (original.length !== objToDiff.length) {
-    cache = objToDiff
-  } else {
-    const diffArr = []
-    for (let i = 0; i < original.length; i++) {
-      const diffObj = diff(original[i], objToDiff[i])
-      if (Object.keys(diffObj).length > 0) {
-        diffArr.push(diffObj)
-      }
-    }
-    if (diffArr.length > 0) {
-      cache = diffArr
-    }
-  }
-  return cache
-}
-
-export const diff = (original, objToDiff, cache = {}) => {
-  if (isArray(original) && isArray(objToDiff)) {
-    cache = []
-    diffArrays(original, objToDiff, cache)
-  } else {
-    diffObjects(original, objToDiff, cache)
-  }
-
-  return cache
-}
-
 export const hasOwnProperty = (o, ...args) =>
   Object.prototype.hasOwnProperty.call(o, ...args)
 
@@ -516,9 +388,6 @@ export const overwrite = (element, params, opts = {}) => {
       element[e] = paramsProp
       if (ref && !preventCaching) {
         ref.__cache[e] = elementProp
-      }
-      if (isObject(opts.diff)) {
-        diff[e] = elementProp
       }
     }
   }
@@ -575,14 +444,6 @@ export const overwriteDeep = (
   }
 
   return obj
-}
-
-/**
- * Overwrites object properties with another
- */
-export const mergeIfExisted = (a, b) => {
-  if (isObjectLike(a) && isObjectLike(b)) return deepMerge(a, b)
-  return a || b
 }
 
 /**

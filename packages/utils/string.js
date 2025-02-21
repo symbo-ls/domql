@@ -25,8 +25,14 @@ export const trimStringFromSymbols = (str, characters) => {
  * @returns {string} The modified string with placeholders replaced by values from the object.
  */
 const brackRegex = {
-  2: /{{\s*(?:((?:\.\.\/)+)|)([^}]*)}}/g,
-  3: /{{{(?:((?:\.\.\/)+)|)([^}]*)}}}/g // Fixed the regex for triple brackets
+  2: /{{\s*((?:\.\.\/)*)([\w\d.]+)\s*}}/g,
+  3: /{{{(\s*(?:\.\.\/)*)([\w\d.]+)\s*}}}/g
+}
+
+const getNestedValue = (obj, path) => {
+  return path.split('.').reduce((acc, part) => {
+    return acc && acc[part] !== undefined ? acc[part] : undefined
+  }, obj)
 }
 
 export function replaceLiteralsWithObjectFields (str, state = {}, options = {}) {
@@ -39,21 +45,25 @@ export function replaceLiteralsWithObjectFields (str, state = {}, options = {}) 
 
   return str.replace(reg, (_, parentPath, variable) => {
     if (parentPath) {
-      const parentLevels =
-        parentPath.match(bracketsLength === 3 ? /\.\.\.\//g : /\.\.\//g)
-          ?.length || 0
+      const parentLevels = (parentPath.match(/\.\.\//g) || []).length
       let parentState = obj
+
       for (let i = 0; i < parentLevels; i++) {
+        if (!parentState || !parentState.parent) return ''
         parentState = parentState.parent
-        if (!parentState) {
-          return ''
-        }
       }
-      const value = parentState[variable.trim()]
-      return value !== undefined ? `${value}` : ''
+
+      // If the variable is 'parent', return the value property
+      const key = variable.trim()
+      if (key === 'parent') {
+        return parentState.value !== undefined ? String(parentState.value) : ''
+      }
+
+      const value = getNestedValue(parentState, key)
+      return value !== undefined ? String(value) : ''
     } else {
-      const value = obj[variable.trim()]
-      return value !== undefined ? `${value}` : ''
+      const value = getNestedValue(obj, variable.trim())
+      return value !== undefined ? String(value) : ''
     }
   })
 }
