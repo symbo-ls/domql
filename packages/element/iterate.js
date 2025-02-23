@@ -6,8 +6,8 @@ import {
   isFunction,
   isNumber,
   isString,
-  checkIfKeyIsComponent,
-  applyKeyComponentAsExtend
+  matchesComponentNaming,
+  isContextComponent
 } from '@domql/utils'
 
 import { METHODS_EXL, overwrite } from './utils/index.js'
@@ -44,8 +44,8 @@ export const throughUpdatedExec = (
     if (prop && prop.node && execReturnsString) {
       overwrite(prop, { text: newExec }, options)
     } else if (newExec !== prop) {
-      if (checkIfKeyIsComponent(param)) {
-        const { extends: extend, ...newElem } = applyKeyComponentAsExtend(
+      if (matchesComponentNaming(param)) {
+        const { extends: extend, ...newElem } = isContextComponent(
           newExec,
           element,
           param

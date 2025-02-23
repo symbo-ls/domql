@@ -1,8 +1,11 @@
 'use strict'
 
-import { checkIfKeyIsComponent } from './component.js'
+import { matchesComponentNaming } from './component.js'
+import { createExtends } from './extends.js'
+import { createKey } from './key.js'
+import { isNode } from './node.js'
 import { HTML_TAGS } from './tags.js'
-import { is } from './types.js'
+import { is, isFunction } from './types.js'
 
 const ENV = process.env.NODE_ENV
 
@@ -36,9 +39,8 @@ export const createBasedOnType = (element, parent, key) => {
     return returnValueAsText(element, parent, key)
   }
 
-  // if element is extend
-  if (element.__hash) {
-    return { extends: [element] }
+  if (isFunction(element)) {
+    return { props: element }
   }
 
   return element
@@ -69,7 +71,7 @@ export const addCaching = (element, parent) => {
   // enable CHANGES storing
   if (!ref.__children) ref.__children = []
 
-  if (checkIfKeyIsComponent(key)) {
+  if (matchesComponentNaming(key)) {
     ref.__componentKey = key.split('_')[0].split('.')[0].split('+')[0]
   }
 
@@ -84,7 +86,36 @@ export const addCaching = (element, parent) => {
 }
 
 export const addRef = (element, parent) => {
-  if (element.__ref) element.__ref.origin = element
-  else element.__ref = { origin: element }
-  return element.__ref
+  const ref = {}
+  ref.origin = element
+  return ref
+}
+
+export const createParent = (element, parent, key, options, root) => {
+  if (isNode(parent)) {
+    const parentNodeWrapper = { key: ':root', node: parent }
+    root[`${key}_parent`] = parentNodeWrapper
+    return parentNodeWrapper
+  }
+  return parent
+}
+
+export const createElement = (props = {}, parentEl, passedKey, opts, root) => {
+  const hashed = props.__hash
+  const element = hashed
+    ? { extends: [props] }
+    : createBasedOnType(props, parentEl, passedKey)
+
+  const parent = createParent(element, parentEl, passedKey, opts, root)
+  const key = createKey(element, parent, passedKey)
+
+  const __ref = addRef(element, parent, key)
+  __ref.__extends = createExtends(element, parent, key)
+
+  return {
+    props: element,
+    parent,
+    key,
+    __ref
+  }
 }

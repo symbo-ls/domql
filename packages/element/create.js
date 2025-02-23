@@ -7,17 +7,13 @@ import {
   isObject,
   isFunction,
   exec,
-  isNode,
   isUndefined,
   deepClone,
-  applyComponentFromContext,
-  applyKeyComponentAsExtend,
   detectInfiniteLoop,
   redefineProperties,
-  createBasedOnType,
+  createElement,
   addCaching,
-  createKey,
-  addRef
+  applyExtend
 } from '@domql/utils'
 
 import { applyAnimationFrame, triggerEventOn } from '@domql/event'
@@ -26,7 +22,6 @@ import { createState } from '@domql/state'
 
 import { isMethod } from './methods/index.js'
 import { createProps } from './props/index.js'
-import { applyExtend } from './extend.js'
 import { REGISTRY, registry } from './mixins/index.js'
 import { addMethods } from './methods/set.js'
 import { assignKeyAsClassname } from './mixins/classList.js'
@@ -40,25 +35,20 @@ const ENV = process.env.NODE_ENV
  * Creating a DOMQL element using passed parameters
  */
 export const create = async (
-  element,
-  parent,
-  key,
+  props,
+  parentEl,
+  passedKey,
   options = OPTIONS.create || {},
   attachOptions
 ) => {
-  cacheOptions(element, options)
+  cacheOptions(options)
 
-  element = redefineElement(element, parent, key)
-  parent = redefineParent(element, parent, key)
-  key = createKey(element, parent, key)
+  const element = createElement(props, parentEl, passedKey, options, ROOT)
+  const { key, parent, __ref: ref } = element
 
-  const ref = addRef(element, parent, key)
+  addContext(element, parent, options)
 
   ref.__initialProps = deepClone(element.props)
-
-  applyContext(element, parent, options)
-
-  applyComponentFromContext(element, parent, options)
 
   if (!ref.__skipCreate) {
     applyExtend(element, parent, options)
@@ -121,25 +111,10 @@ export const create = async (
   return element
 }
 
-const redefineElement = (element, parent, key) => {
-  const elementWrapper = createBasedOnType(element, parent, key)
-  return applyKeyComponentAsExtend(elementWrapper, parent, key)
-}
-
-const redefineParent = (element, parent, key, options) => {
-  if (!parent) return ROOT
-  if (isNode(parent)) {
-    const parentNodeWrapper = { key: ':root', node: parent }
-    ROOT[`${key}_parent`] = parentNodeWrapper
-    return parentNodeWrapper
-  }
-  return parent
-}
-
-const cacheOptions = (element, options) => {
+const cacheOptions = options => {
   if (options && !OPTIONS.create) {
     OPTIONS.create = options
-    OPTIONS.create.context = element.context || options.context
+    OPTIONS.create.context = options.context
   }
 }
 
@@ -237,7 +212,7 @@ const renderElement = async (element, parent, options, attachOptions) => {
   await triggerEventOn('create', element, options)
 }
 
-const applyContext = (element, parent, options) => {
+const addContext = (element, parent, options) => {
   const forcedOptionsContext =
     options.context && !ROOT.context && !element.context
   if (forcedOptionsContext) ROOT.context = options.context
@@ -246,6 +221,8 @@ const applyContext = (element, parent, options) => {
   if (!element.context) {
     element.context = parent.context || options.context || ROOT.context
   }
+
+  return element.context
 }
 
 // Create scope - shared object across the elements to the own or the nearest parent

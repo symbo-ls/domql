@@ -4,7 +4,7 @@ import {
   isObject,
   isString,
   overwriteDeep,
-  checkIfKeyIsComponent,
+  matchesComponentNaming,
   addAsExtends
 } from '@domql/utils'
 
@@ -21,7 +21,7 @@ export const createValidDomqlObjectFromSugar = (el, parent, key, options) => {
 
   for (const k in el) {
     const value = el[k]
-    const isComponent = checkIfKeyIsComponent(k)
+    const isComponent = matchesComponentNaming(k)
     const isRegistry = REGISTRY[k]
     if (isComponent || isRegistry || allowedKeys.includes(k)) {
       newElem[k] = value

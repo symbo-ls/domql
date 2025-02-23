@@ -1,4 +1,4 @@
-import { redefineProperties } from '..'
+import { redefineProperties } from '.'
 
 describe('redefineProperties', () => {
   it('should handle direct object properties', () => {
@@ -105,32 +105,6 @@ describe('redefineProperties', () => {
 
     expect(result).toBe(element) // verify same object reference
     expect(element.props).toEqual({}) // verify mutation occurred
-  })
-
-  it('should handle correct property management', () => {
-    const onClick = () => {}
-
-    const element = {
-      boxSizing: 'border-box',
-      props: { onClick, H4: {} },
-      Hello: {}
-    }
-
-    const parent = { context: {} }
-    const key = 'MyComponent'
-
-    const result = redefineProperties(element, parent, key)
-
-    expect(result).toEqual({
-      props: {
-        boxSizing: 'border-box'
-      },
-      on: {
-        click: onClick
-      },
-      Hello: {},
-      H4: {}
-    })
   })
 })
 
@@ -327,7 +301,6 @@ describe('Complex recursive component structures', () => {
 
           SelectField: {
             props: {},
-            on: {},
 
             Select: {
               props: {

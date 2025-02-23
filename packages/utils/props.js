@@ -1,7 +1,7 @@
 'use strict'
 
 import { addEventInOn } from './events.js'
-import { addAsExtends } from './extend.js'
+import { addAsExtends } from './extends.js'
 import { isFunction, isObject } from './types.js'
 
 export const IGNORE_PROPS_PARAMS = ['update', '__element']
@@ -48,12 +48,8 @@ const propMappings = [
  * @returns {Object} - The processed element
  */
 export function redefineProperties (element, opts = {}) {
-  const on = {}
-  const props = {}
-
-  if (isFunction(element.props)) {
-    addAsExtends(element, { props })
-  }
+  // const on = {}
+  // const props = {}
 
   element.props = {}
   if (!element.on) element.on = {}

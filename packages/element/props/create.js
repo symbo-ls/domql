@@ -19,8 +19,8 @@ const createPropsStack = (element, parent) => {
   else if (props === 'inherit' && parent.props) propsStack.push(parent.props)
   else if (props) propsStack.push(props)
 
-  if (isArray(ref.__extends)) {
-    ref.__extends.forEach(extend => {
+  if (isArray(ref.__extendsStack)) {
+    ref.__extendsStack.forEach(extend => {
       if (extend.props && extend.props !== props) propsStack.push(extend.props)
     })
   }

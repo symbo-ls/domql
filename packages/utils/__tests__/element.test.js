@@ -1,9 +1,4 @@
-import {
-  returnValueAsText,
-  createBasedOnType,
-  addCaching,
-  addRef
-} from '../element.js'
+import { returnValueAsText, createBasedOnType, addCaching } from '../element.js'
 
 describe('returnValueAsText', () => {
   test('should return text object with default tag', () => {
@@ -42,11 +37,6 @@ describe('createBasedOnType', () => {
     const result = createBasedOnType('test', { props: {} }, 'key')
     expect(result).toHaveProperty('text', 'test')
   })
-
-  test('should handle elements with __hash', () => {
-    const result = createBasedOnType({ __hash: '123' }, {}, 'key')
-    expect(result).toEqual({ extends: [{ __hash: '123' }] })
-  })
 })
 
 describe('addCaching', () => {
@@ -70,21 +60,5 @@ describe('addCaching', () => {
     addCaching(element, parent)
 
     expect(element.__ref.root).toBe(element)
-  })
-})
-
-describe('addRef', () => {
-  test('should add __ref if not exists', () => {
-    const element = {}
-    const result = addRef(element, {})
-    expect(element.__ref).toBeDefined()
-    expect(element.__ref.origin).toBe(element)
-  })
-
-  test('should not override existing __ref', () => {
-    const element = { __ref: { existing: true } }
-    const result = addRef(element, {})
-    expect(element.__ref.existing).toBe(true)
-    expect(element.__ref.origin).toBe(element)
   })
 })

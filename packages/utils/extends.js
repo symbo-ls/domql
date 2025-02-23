@@ -1,10 +1,32 @@
 'use strict'
 
 import { joinArrays } from './array.js'
-import { checkIfKeyIsComponent } from './component.js'
-import { deepClone } from './object.js'
+import {
+  matchesComponentNaming,
+  extractComponentKeyFromElementKey
+} from './component.js'
+import { deepClone, exec } from './object.js'
 import { isArray, isFunction, isObject, isString } from './types.js'
 const ENV = process.env.NODE_ENV
+
+export function isContextComponent (initialElement, parent, key) {
+  const { context } = parent || {}
+  const extendFromKey = extractComponentKeyFromElementKey(key)[0]
+  return context?.components?.[extendFromKey] || context?.pages?.[extendFromKey]
+}
+
+export const createExtends = (element, parent, key) => {
+  const __extends = []
+  const keyExtends = isContextComponent(key)
+  if (keyExtends) __extends.push(keyExtends)
+  const elementExtends = element.extends
+  if (elementExtends) {
+    return isArray(elementExtends)
+      ? __extends.concat(elementExtends)
+      : __extends.push(elementExtends)
+  }
+  return __extends
+}
 
 export const generateHash = () => Math.random().toString(36).substring(2)
 
@@ -94,8 +116,14 @@ export const deepMergeExtend = (element, extend) => {
     if (['parent', 'node', '__element'].indexOf(e) > -1) continue
     const elementProp = element[e]
     const extendProp = extend[e]
+    if (e === '__proto__') continue
     if (elementProp === undefined) {
-      element[e] = extendProp
+      if (
+        Object.prototype.hasOwnProperty.call(extend, e) &&
+        !['__proto__', 'constructor', 'prototype'].includes(e)
+      ) {
+        element[e] = extendProp
+      }
     } else if (isObject(elementProp) && isObject(extendProp)) {
       deepMergeExtend(elementProp, extendProp)
     } else if (isArray(elementProp) && isArray(extendProp)) {
@@ -168,11 +196,8 @@ export const getExtendMerged = extend => {
 
 export const addExtend = (newExtends, elementExtends) => {
   if (!newExtends) return elementExtends
-  const originalArray = isArray(elementExtends)
-    ? elementExtends
-    : [elementExtends]
   const receivedArray = isArray(newExtends) ? newExtends : [newExtends]
-  return joinArrays(receivedArray, originalArray)
+  return joinArrays(receivedArray, elementExtends)
 }
 
 export const addAsExtends = (newExtends, element) => {
@@ -188,7 +213,7 @@ export const getExtendsInElement = obj => {
     for (const key in o) {
       if (Object.hasOwnProperty.call(o, key)) {
         // Check if the key starts with a capital letter and exclude keys like @mobileL, $propsCollection
-        if (checkIfKeyIsComponent(key)) {
+        if (matchesComponentNaming(key)) {
           result.push(key)
         }
 
@@ -212,4 +237,117 @@ export const getExtendsInElement = obj => {
 
   traverse(obj)
   return result
+}
+
+let mainExtend
+
+export const createExtendElement = (element, parent, options = {}) => {
+  if (isFunction(element)) element = exec(element, parent)
+
+  const { props, __ref } = element
+  let extend = props?.extends
+    ? addExtend(props.extends, element.extends)
+    : element.extends
+  const variant = props?.variant
+  const context = element.context || parent.context
+
+  extend = fallbackStringExtend(extend, context, options, variant)
+
+  if (parent) {
+    element.parent = parent
+  }
+
+  return { element, extend, context, props, __ref }
+}
+
+export const createExtendStack = (
+  element,
+  extend,
+  context,
+  parent,
+  options = {}
+) => {
+  const extendStack = getExtendStack(extend, context)
+
+  if (ENV !== 'test' && ENV !== 'development') delete element.extends
+
+  let childExtendsStack = []
+  if (
+    parent &&
+    !options.ignoreChildExtends &&
+    !(element.props && element.props.ignoreChildExtends)
+  ) {
+    const childExtends = parent.props?.childExtends
+      ? addExtend(parent.props.childExtends, element.childExtends)
+      : parent.childExtends
+
+    childExtendsStack = getExtendStack(childExtends, context)
+  }
+
+  let stack = []
+  if (extendStack.length && childExtendsStack.length) {
+    stack = jointStacks(extendStack, childExtendsStack)
+  } else if (extendStack.length) {
+    stack = extendStack
+  } else if (childExtendsStack.length) {
+    stack = childExtendsStack
+  }
+
+  if (context.defaultExtends) {
+    if (!mainExtend) {
+      const defaultOptionsExtend = getExtendStack(
+        context.defaultExtends,
+        context
+      )
+      mainExtend = cloneAndMergeArrayExtend(defaultOptionsExtend)
+      delete mainExtend.extends
+    }
+    stack = [].concat(stack, mainExtend)
+  }
+
+  return stack
+}
+
+export const finalizeExtend = (
+  element,
+  stack,
+  context,
+  __ref,
+  options = {}
+) => {
+  if (__ref && typeof __ref === 'object' && !('__proto__' in __ref)) {
+    __ref.__extendsStack = stack
+  }
+
+  let mergedExtend = cloneAndMergeArrayExtend(stack)
+
+  const COMPONENTS = (context && context.components) || options.components
+  const component = exec(element.component || mergedExtend.component, element)
+  if (component && COMPONENTS && COMPONENTS[component]) {
+    const componentExtend = cloneAndMergeArrayExtend(
+      getExtendStack(COMPONENTS[component])
+    )
+    mergedExtend = deepMergeExtend(componentExtend, mergedExtend)
+  }
+
+  return deepMergeExtend(element, mergedExtend)
+}
+
+export const applyExtend = (element, parent, options = {}) => {
+  const {
+    element: preparedElement,
+    extend,
+    context,
+    __ref
+  } = createExtendElement(element, parent, options)
+  if (!context.defaultExtends && !extend) return preparedElement
+
+  const stack = createExtendStack(
+    preparedElement,
+    extend,
+    context,
+    parent,
+    options
+  )
+  return finalizeExtend(preparedElement, stack, context, __ref, options)
 }
