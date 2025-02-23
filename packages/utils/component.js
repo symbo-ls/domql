@@ -1,6 +1,6 @@
 'use strict'
 
-import { applyAdditionalExtend } from './extend.js'
+import { addAsExtends } from './extend.js'
 import { exec } from './object.js'
 import { isArray, isString } from './types.js'
 
@@ -17,10 +17,10 @@ export const extractComponentKeyFromElementKey = key => {
   return key.includes('+')
     ? key.split('+') // get array of componentKeys
     : key.includes('_')
-    ? [key.split('_')[0]] // get component key split _
-    : key.includes('.') && !checkIfKeyIsComponent(key.split('.')[1])
-    ? [key.split('.')[0]] // get component key split .
-    : [key]
+      ? [key.split('_')[0]] // get component key split _
+      : key.includes('.') && !checkIfKeyIsComponent(key.split('.')[1])
+        ? [key.split('.')[0]] // get component key split .
+        : [key]
 }
 
 export function getCapitalCaseKeys (obj) {
@@ -71,7 +71,7 @@ export function applyKeyComponentAsExtend (initialElement, parent, key) {
     return element
   }
 
-  return applyAdditionalExtend(extendFromKey, element)
+  return addAsExtends(extendFromKey, element)
 }
 
 export const applyComponentFromContext = (element, parent, options) => {

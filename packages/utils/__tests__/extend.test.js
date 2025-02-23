@@ -12,7 +12,7 @@ import {
   jointStacks,
   getExtendStack,
   addExtend,
-  applyAdditionalExtend,
+  addAsExtends,
   getExtendsInElement
 } from '../extend.js'
 
@@ -123,10 +123,10 @@ describe('Additional extend operations', () => {
     expect(result).toEqual([{ a: 1 }, { b: 2 }])
   })
 
-  test('applyAdditionalExtend adds extends to element', () => {
+  test('addAsExtends adds extends to element', () => {
     const element = { extends: { a: 1 } }
     const newExtend = { b: 2 }
-    const result = applyAdditionalExtend(newExtend, element)
+    const result = addAsExtends(newExtend, element)
     expect(result.extends).toEqual([{ b: 2 }, { a: 1 }])
   })
 

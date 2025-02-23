@@ -1,7 +1,10 @@
 'use strict'
 
 import { addEventInOn } from './events.js'
+import { addAsExtends } from './extend.js'
 import { isFunction, isObject } from './types.js'
+
+export const IGNORE_PROPS_PARAMS = ['update', '__element']
 
 const propMappings = [
   'attr',
@@ -44,8 +47,15 @@ const propMappings = [
  * @param {Object} parent - The parent context
  * @returns {Object} - The processed element
  */
-export function redefineProperties (element) {
-  if (!element.props) element.props = {}
+export function redefineProperties (element, opts = {}) {
+  const on = {}
+  const props = {}
+
+  if (isFunction(element.props)) {
+    addAsExtends(element, { props })
+  }
+
+  element.props = {}
   if (!element.on) element.on = {}
   const cachedKeys = []
 
@@ -55,20 +65,19 @@ export function redefineProperties (element) {
     const hasDefine = isObject(element.define?.[key])
     const hasGlobalDefine = isObject(element.context?.define?.[key])
     const isElement = /^[A-Z]/.test(key) || /^\d+$/.test(key)
-    const isPropMapping = propMappings.includes(key)
+    const isBuiltin = propMappings.includes(key)
 
-    if (!isElement && !isPropMapping && !hasDefine && !hasGlobalDefine) {
-      element.props[key] = value
-      delete element[key]
-      cachedKeys.push(key)
-      continue
-    }
+    if (isElement || isBuiltin || hasDefine || hasGlobalDefine) continue
+
+    element.props[key] = value
+    delete element[key]
+    cachedKeys.push(key)
   }
 
   for (const key in element.props) {
     const value = element.props[key]
 
-    const isEvent = key.startsWith('on')
+    const isEvent = key.startsWith('on') && key.length > 2
     const isFn = isFunction(value)
 
     if (isEvent && isFn) {

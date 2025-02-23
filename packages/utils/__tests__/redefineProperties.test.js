@@ -199,3 +199,172 @@ describe('Complex component structures', () => {
     })
   })
 })
+
+describe('Complex recursive component structures', () => {
+  it('should recursively handle redefining properties', () => {
+    const stateUpdate = (_, el, s) => {
+      console.log('STATE UPDATED:')
+      console.log(s)
+    }
+
+    const component = {
+      extends: 'Flex',
+
+      props: {
+        flow: 'y',
+        onStateUpdate: stateUpdate
+      },
+
+      state: {
+        method: 'GET',
+        headers: {}
+      },
+
+      TitleField: {
+        key: 'titleState',
+        Title: { text: 'Title' },
+        Input: { placeholder: 'Title of the state' }
+      },
+
+      GroupField: {
+        width: '100%',
+
+        Title: {
+          text: 'Connect to a custom URL'
+        },
+
+        Flex: {
+          flow: 'x',
+          align: 'stretch start',
+
+          childProps: {
+            borderRadius: 'Y',
+            ':first-child': { borderRadius: 'Y 0 0 Y' },
+            ':last-child': { borderRadius: '0 Y Y 0' }
+          },
+
+          SelectField: {
+            Select: {
+              theme: null,
+              borderRadius: 'X2',
+
+              Get: {
+                text: 'Get',
+                value: 'GET'
+              },
+              Post: {
+                text: 'Post',
+                value: 'POST'
+              },
+              onChange: (event, element, state) => {
+                state.update({
+                  method: element.node.value
+                })
+              }
+            }
+          }
+        }
+      }
+    }
+
+    const recursive = el => {
+      for (const key in el) {
+        const isElement = /^[A-Z]/.test(key) || /^\d+$/.test(key)
+        if (isElement) {
+          el[key] = redefineProperties(el[key])
+        }
+      }
+      return redefineProperties(component)
+    }
+
+    const result = recursive(component)
+
+    expect(result).toEqual({
+      on: {
+        stateUpdate
+      },
+      extends: 'Flex',
+
+      props: {
+        flow: 'y'
+      },
+
+      state: {
+        method: 'GET',
+        headers: {}
+      },
+
+      TitleField: {
+        props: {},
+        on: {},
+        key: 'titleState',
+        Title: { text: 'Title' },
+        Input: { props: { placeholder: 'Title of the state' } }
+      },
+
+      GroupField: {
+        on: {},
+        props: {
+          width: '100%'
+        },
+
+        Title: {
+          text: 'Connect to a custom URL'
+        },
+
+        Flex: {
+          on: {},
+          props: {
+            flow: 'x',
+            align: 'stretch start',
+
+            childProps: {
+              borderRadius: 'Y',
+              ':first-child': { borderRadius: 'Y 0 0 Y' },
+              ':last-child': { borderRadius: '0 Y Y 0' }
+            }
+          },
+
+          SelectField: {
+            props: {},
+            on: {},
+
+            Select: {
+              props: {
+                theme: null,
+                borderRadius: 'X2',
+
+                onChange: (event, element, state) => {
+                  state.update({
+                    method: element.node.value
+                  })
+                }
+              },
+
+              Get: {
+                props: {
+                  value: 'GET'
+                },
+                text: 'Get'
+              },
+              Post: {
+                props: {
+                  value: 'POST'
+                },
+                text: 'Post'
+              }
+            },
+
+            on: {
+              change: (event, element, state) => {
+                state.update({
+                  method: element.node.value
+                })
+              }
+            }
+          }
+        }
+      }
+    })
+  })
+})

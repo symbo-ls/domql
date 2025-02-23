@@ -5,7 +5,7 @@ import {
   isString,
   overwriteDeep,
   checkIfKeyIsComponent,
-  applyAdditionalExtend
+  addAsExtends
 } from '@domql/utils'
 
 import { applyExtend } from '../extend.js'
@@ -41,7 +41,7 @@ export const overwriteVariant = (element, variant, variantProps) => {
       extends: [{ props }, variantElement]
     }
   } else if (variantElement.extends) {
-    variantElement = applyAdditionalExtend({ props }, variantElement)
+    variantElement = addAsExtends({ props }, variantElement)
   }
   const extendedVariant = applyExtend(variantElement, element.parent)
   const { parent, ...rest } = extendedVariant

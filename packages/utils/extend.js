@@ -166,23 +166,18 @@ export const getExtendMerged = extend => {
   return cloneAndMergeArrayExtend(stack)
 }
 
-export const addExtend = (newExtend, elementExtend) => {
-  if (!newExtend) return elementExtend
-  const originalArray = isArray(elementExtend) ? elementExtend : [elementExtend]
-  const receivedArray = isArray(newExtend) ? newExtend : [newExtend]
+export const addExtend = (newExtends, elementExtends) => {
+  if (!newExtends) return elementExtends
+  const originalArray = isArray(elementExtends)
+    ? elementExtends
+    : [elementExtends]
+  const receivedArray = isArray(newExtends) ? newExtends : [newExtends]
   return joinArrays(receivedArray, originalArray)
 }
 
-export const applyAdditionalExtend = (
-  newExtend,
-  element,
-  extendKey = 'extends'
-) => {
-  if (!newExtend) return element
-  const elementExtend = element[extendKey]
-  const originalArray = isArray(elementExtend) ? elementExtend : [elementExtend]
-  const receivedArray = isArray(newExtend) ? newExtend : [newExtend]
-  const extend = joinArrays(receivedArray, originalArray)
+export const addAsExtends = (newExtends, element) => {
+  if (!newExtends) return element
+  const extend = addExtend(newExtends, element.extends)
   return { ...element, extends: extend }
 }
 

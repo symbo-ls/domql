@@ -64,7 +64,7 @@ export const applyInitialState = async function (element, parent, options) {
   )
   if (dependentState) element.state = dependentState
 
-  applyMethods(element)
+  applyStateMethods(element)
 
   // trigger `on.stateCreated`
   triggerEventOn('stateCreated', element)
@@ -129,7 +129,7 @@ const addProtoToArray = (state, proto) => {
   }
 }
 
-const applyMethods = element => {
+export const applyStateMethods = element => {
   const state = element.state
   const ref = element.__ref
 

@@ -1,13 +1,19 @@
 'use strict'
 
-import { exec, isArray, isObject, deepClone, deepMerge } from '@domql/utils'
-import { IGNORE_PROPS_PARAMS } from './ignore.js'
+import {
+  exec,
+  isArray,
+  isObject,
+  deepClone,
+  deepMerge,
+  IGNORE_PROPS_PARAMS
+} from '@domql/utils'
 
 import { inheritParentProps } from './inherit.js'
 
 const createPropsStack = (element, parent) => {
   const { props, __ref: ref } = element
-  const propsStack = ref.__props = inheritParentProps(element, parent)
+  const propsStack = (ref.__props = inheritParentProps(element, parent))
 
   if (isObject(props)) propsStack.push(props)
   else if (props === 'inherit' && parent.props) propsStack.push(parent.props)

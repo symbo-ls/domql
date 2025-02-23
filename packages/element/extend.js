@@ -23,7 +23,7 @@ export const applyExtend = (element, parent, options = {}) => {
   if (isFunction(element)) element = exec(element, parent)
 
   const { props, __ref } = element
-  // let extend = applyAdditionalExtend(props?.extends || element.extends, element)
+  // let extend = addAsExtends(props?.extends || element.extends, element)
   let extend = props?.extends
     ? addExtend(props.extends, element.extends)
     : element.extends

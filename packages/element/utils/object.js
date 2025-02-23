@@ -5,9 +5,9 @@ import {
   isObjectLike,
   joinArrays,
   deepClone,
-  IGNORE_STATE_PARAMS
+  IGNORE_STATE_PARAMS,
+  IGNORE_PROPS_PARAMS
 } from '@domql/utils'
-import { IGNORE_PROPS_PARAMS } from '../props/index.js'
 
 // breaks server build
 // import { METHODS } from '../methods'

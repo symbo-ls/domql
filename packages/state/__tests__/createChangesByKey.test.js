@@ -1,4 +1,4 @@
-import { createNestedObjectByKeyPath } from '../inherit'
+import { createNestedObjectByKeyPath } from '@domql/utils'
 
 test('createNestedObjectByKeyPath should create nested object with value', () => {
   const path = 'test/2/4/6'
