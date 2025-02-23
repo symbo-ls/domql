@@ -4,6 +4,7 @@ import { matchesComponentNaming } from './component.js'
 import { createExtends } from './extends.js'
 import { createKey } from './key.js'
 import { isNode } from './node.js'
+import { createProps } from './props.js'
 import { HTML_TAGS } from './tags.js'
 import { is, isFunction } from './types.js'
 
@@ -100,22 +101,42 @@ export const createParent = (element, parent, key, options, root) => {
   return parent
 }
 
-export const createElement = (props = {}, parentEl, passedKey, opts, root) => {
-  const hashed = props.__hash
+export const addContext = (element, parent, key, options, root) => {
+  const forcedOptionsContext =
+    options.context && !root.context && !element.context
+  if (forcedOptionsContext) root.context = options.context
+
+  // inherit from parent or root
+  if (!element.context) {
+    return parent.context || options.context || root.context
+  }
+
+  return element.context
+}
+
+export const createElement = (passedProps, parentEl, passedKey, opts, root) => {
+  const hashed = passedProps.__hash
   const element = hashed
-    ? { extends: [props] }
-    : createBasedOnType(props, parentEl, passedKey)
+    ? { extends: [passedProps] }
+    : createBasedOnType(passedProps, parentEl, passedKey)
 
   const parent = createParent(element, parentEl, passedKey, opts, root)
   const key = createKey(element, parent, passedKey)
 
-  const __ref = addRef(element, parent, key)
-  __ref.__extends = createExtends(element, parent, key)
+  const ref = addRef(element, parent, key)
+  ref.__extends = createExtends(element, parent, key)
+
+  addCaching(element, parent)
+
+  const props = createProps(element, parent, key)
+  const context = addContext(element, parent, key, opts, root)
 
   return {
-    props: element,
+    ...element,
+    props,
     parent,
     key,
-    __ref
+    context,
+    __ref: ref
   }
 }

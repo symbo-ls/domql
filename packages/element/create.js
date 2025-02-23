@@ -8,7 +8,6 @@ import {
   isFunction,
   exec,
   isUndefined,
-  deepClone,
   detectInfiniteLoop,
   redefineProperties,
   createElement,
@@ -46,10 +45,6 @@ export const create = async (
   const element = createElement(props, parentEl, passedKey, options, ROOT)
   const { key, parent, __ref: ref } = element
 
-  addContext(element, parent, options)
-
-  ref.__initialProps = deepClone(element.props)
-
   if (!ref.__skipCreate) {
     applyExtend(element, parent, options)
   }
@@ -65,8 +60,6 @@ export const create = async (
   }
 
   switchDefaultOptions(element, parent, options)
-
-  addCaching(element, parent)
 
   addMethods(element, parent, options)
 
@@ -210,19 +203,6 @@ const renderElement = async (element, parent, options, attachOptions) => {
 
   // run `on.done`
   await triggerEventOn('create', element, options)
-}
-
-const addContext = (element, parent, options) => {
-  const forcedOptionsContext =
-    options.context && !ROOT.context && !element.context
-  if (forcedOptionsContext) ROOT.context = options.context
-
-  // inherit from parent or root
-  if (!element.context) {
-    element.context = parent.context || options.context || ROOT.context
-  }
-
-  return element.context
 }
 
 // Create scope - shared object across the elements to the own or the nearest parent

@@ -243,8 +243,9 @@ let mainExtend
 
 export const createExtendElement = (element, parent, options = {}) => {
   if (isFunction(element)) element = exec(element, parent)
-
   const { props, __ref } = element
+  // const __extends = ref.__extends
+
   let extend = props?.extends
     ? addExtend(props.extends, element.extends)
     : element.extends
@@ -260,14 +261,9 @@ export const createExtendElement = (element, parent, options = {}) => {
   return { element, extend, context, props, __ref }
 }
 
-export const createExtendStack = (
-  element,
-  extend,
-  context,
-  parent,
-  options = {}
-) => {
-  const extendStack = getExtendStack(extend, context)
+export const createExtendStack = (element, parent, options = {}) => {
+  const context = element.context
+  const extendStack = getExtendStack(element.extends, context)
 
   if (ENV !== 'test' && ENV !== 'development') delete element.extends
 
@@ -308,17 +304,13 @@ export const createExtendStack = (
   return stack
 }
 
-export const finalizeExtend = (
-  element,
-  stack,
-  context,
-  __ref,
-  options = {}
-) => {
-  if (__ref && typeof __ref === 'object' && !('__proto__' in __ref)) {
-    __ref.__extendsStack = stack
+export const finalizeExtend = (element, stack, options = {}) => {
+  const { __ref: ref } = element
+  if (ref && typeof ref === 'object' && !('__proto__' in ref)) {
+    ref.__extendsStack = stack
   }
 
+  const context = element.context
   let mergedExtend = cloneAndMergeArrayExtend(stack)
 
   const COMPONENTS = (context && context.components) || options.components
@@ -334,20 +326,12 @@ export const finalizeExtend = (
 }
 
 export const applyExtend = (element, parent, options = {}) => {
-  const {
-    element: preparedElement,
-    extend,
-    context,
-    __ref
-  } = createExtendElement(element, parent, options)
-  if (!context.defaultExtends && !extend) return preparedElement
-
-  const stack = createExtendStack(
-    preparedElement,
-    extend,
-    context,
+  const { element: preparedElement, __ref } = createExtendElement(
+    element,
     parent,
     options
   )
-  return finalizeExtend(preparedElement, stack, context, __ref, options)
+
+  const stack = createExtendStack(preparedElement, parent, options)
+  return finalizeExtend(preparedElement, stack, __ref, options)
 }

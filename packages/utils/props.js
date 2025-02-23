@@ -1,10 +1,21 @@
 'use strict'
 
 import { addEventInOn } from './events.js'
-import { addAsExtends } from './extends.js'
-import { isFunction, isObject } from './types.js'
+import { exec } from './object.js'
+import { is, isFunction, isObject, isObjectLike, isString } from './types.js'
 
 export const IGNORE_PROPS_PARAMS = ['update', '__element']
+
+export const createProps = (element, parent, key) => {
+  const { props, __ref: ref } = element
+  ref.__propsStack = []
+  if (props) ref.__initialProps = props
+  if (!isObjectLike(props)) {
+    ref.__propsStack.push(props)
+    return {}
+  }
+  return { ...props }
+}
 
 const propMappings = [
   'attr',
@@ -48,11 +59,6 @@ const propMappings = [
  * @returns {Object} - The processed element
  */
 export function redefineProperties (element, opts = {}) {
-  // const on = {}
-  // const props = {}
-
-  element.props = {}
-  if (!element.on) element.on = {}
   const cachedKeys = []
 
   for (const key in element) {
@@ -103,4 +109,39 @@ export function redefineProperties (element, opts = {}) {
   }
 
   return element
+}
+
+const objectizeStringProperty = propValue => {
+  if (is(propValue)('string', 'number')) {
+    return { inheritedString: propValue }
+  }
+  return propValue
+}
+
+export const inheritParentProps = (element, parent) => {
+  let propsStack = []
+  const parentProps = exec(parent, parent.state).props
+
+  const matchParent = parent.props && parentProps[element.key]
+  const matchParentIsString = isString(matchParent)
+  const matchParentChildProps = parentProps && parentProps.childProps
+
+  if (matchParent) {
+    if (matchParentIsString) {
+      const inheritedStringExists = propsStack.filter(v => v.inheritedString)[0]
+      if (inheritedStringExists) {
+        inheritedStringExists.inheritedString = matchParent
+      } else {
+        propsStack = [].concat(objectizeStringProperty(matchParent), propsStack)
+      }
+    } else {
+      propsStack.push(objectizeStringProperty(matchParent))
+    }
+  }
+
+  if (matchParentChildProps && !element?.props?.ignoreChildProps) {
+    propsStack.push(matchParentChildProps)
+  }
+
+  return propsStack
 }

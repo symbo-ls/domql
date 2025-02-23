@@ -1,14 +1,6 @@
 'use strict'
 
-import {
-  isObject,
-  isString,
-  overwriteDeep,
-  matchesComponentNaming,
-  addAsExtends
-} from '@domql/utils'
-
-import { applyExtend } from '../extend.js'
+import { matchesComponentNaming } from '@domql/utils'
 import { REGISTRY } from '../mixins/index.js'
 
 export const createValidDomqlObjectFromSugar = (el, parent, key, options) => {
@@ -30,21 +22,4 @@ export const createValidDomqlObjectFromSugar = (el, parent, key, options) => {
     }
   }
   return newElem
-}
-
-export const overwriteVariant = (element, variant, variantProps) => {
-  let variantElement = element[variant]
-  if (!variantElement) return
-  const props = isObject(variantProps) ? variantProps : {}
-  if (isString(variantElement)) {
-    variantElement = {
-      extends: [{ props }, variantElement]
-    }
-  } else if (variantElement.extends) {
-    variantElement = addAsExtends({ props }, variantElement)
-  }
-  const extendedVariant = applyExtend(variantElement, element.parent)
-  const { parent, ...rest } = extendedVariant
-  return overwriteDeep(element, rest) // TODO: check why string is not working
-  // return overwriteDeep(element, applyExtend(variantElement, element.parent)) // TODO: check why string is not working
 }

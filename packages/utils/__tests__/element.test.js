@@ -1,4 +1,10 @@
-import { returnValueAsText, createBasedOnType, addCaching } from '../element.js'
+import {
+  returnValueAsText,
+  createBasedOnType,
+  addCaching,
+  addRef,
+  createParent
+} from '../element.js'
 
 describe('returnValueAsText', () => {
   test('should return text object with default tag', () => {
@@ -60,5 +66,40 @@ describe('addCaching', () => {
     addCaching(element, parent)
 
     expect(element.__ref.root).toBe(element)
+  })
+})
+
+describe('addRef', () => {
+  test('should create ref object with origin', () => {
+    const element = { key: 'test', props: {} }
+    const parent = {}
+    const ref = addRef(element, parent)
+
+    expect(ref).toEqual({
+      origin: element
+    })
+  })
+})
+
+describe('createParent', () => {
+  test('should return parent if not a node', () => {
+    const element = {}
+    const parent = { key: 'parent' }
+    const result = createParent(element, parent, 'key', {}, {})
+
+    expect(result).toBe(parent)
+  })
+
+  test('should create parent wrapper for node', () => {
+    const element = {}
+    const nodeParent = document.createElement('div')
+    const root = {}
+    const result = createParent(element, nodeParent, 'testKey', {}, root)
+
+    expect(result).toEqual({
+      key: ':root',
+      node: nodeParent
+    })
+    expect(root.testKey_parent).toBe(result)
   })
 })

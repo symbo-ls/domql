@@ -35,8 +35,6 @@ describe('Component Children Structure', () => {
     const result = redefineProperties(children[0])
 
     expect(result).toEqual({
-      props: {},
-      on: {},
       Icon: {},
       SizeUnits: {
         NumberValue: {
@@ -53,8 +51,6 @@ describe('Component Children Structure', () => {
     const result = redefineProperties(children[1])
 
     expect(result).toEqual({
-      props: {},
-      on: {},
       Icon: {
         opacity: '0'
       },
@@ -99,7 +95,7 @@ describe('Component Children Structure', () => {
     })
 
     it('should ensure no additional properties exist', () => {
-      const expectedKeys = ['props', 'on', 'Icon', 'SizeUnits', 'Span']
+      const expectedKeys = ['Icon', 'SizeUnits', 'Span']
       expect(Object.keys(result).sort()).toEqual(expectedKeys.sort())
     })
 

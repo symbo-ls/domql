@@ -6,10 +6,9 @@ import {
   isObject,
   deepClone,
   deepMerge,
-  IGNORE_PROPS_PARAMS
+  IGNORE_PROPS_PARAMS,
+  inheritParentProps
 } from '@domql/utils'
-
-import { inheritParentProps } from './inherit.js'
 
 const createPropsStack = (element, parent) => {
   const { props, __ref: ref } = element
