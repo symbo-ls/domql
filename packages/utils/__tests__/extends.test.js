@@ -480,122 +480,7 @@ describe('createElementExtends', () => {
     const result = createElementExtends(element, {})
     expect(result).toEqual(['Button', 'NonExistent'])
   })
-})
 
-describe('inheritChildExtends', () => {
-  test('inherits childExtends from parent props', () => {
-    const element = {
-      props: {},
-      __ref: {
-        __extends: ['Base']
-      }
-    }
-    const parent = {
-      props: {
-        childExtends: ['Child1', 'Child2']
-      }
-    }
-    const result = inheritChildExtends(element, parent)
-    expect(result).toEqual(['Base', 'Child1', 'Child2'])
-  })
-
-  test('inherits childExtends from parent object', () => {
-    const element = {
-      props: {},
-      __ref: {
-        __extends: ['Base']
-      }
-    }
-    const parent = {
-      childExtends: ['Child1', 'Child2']
-    }
-    const result = inheritChildExtends(element, parent)
-    expect(result).toEqual(['Base', 'Child1', 'Child2'])
-  })
-
-  test('ignores inheritance when ignoreChildExtends is true', () => {
-    const element = {
-      props: {
-        ignoreChildExtends: true
-      },
-      __ref: {
-        __extends: ['Base']
-      }
-    }
-    const parent = {
-      props: {
-        childExtends: ['Child1']
-      },
-      childExtends: ['Child2']
-    }
-    const result = inheritChildExtends(element, parent)
-    expect(result).toEqual(['Base'])
-  })
-})
-
-describe('inheritRecursiveChildExtends', () => {
-  test('inherits recursive childExtends from parent props', () => {
-    const element = {
-      props: {},
-      __ref: {
-        __extends: ['Base']
-      }
-    }
-    const parent = {
-      props: {
-        childExtendsRecursive: ['Recursive1']
-      }
-    }
-    const result = inheritRecursiveChildExtends(element, parent)
-    expect(result).toEqual(['Base', 'Recursive1'])
-  })
-
-  test('inherits recursive childExtends from parent object', () => {
-    const element = {
-      props: {},
-      __ref: {
-        __extends: ['Base']
-      }
-    }
-    const parent = {
-      childExtendsRecursive: ['Recursive1']
-    }
-    const result = inheritRecursiveChildExtends(element, parent)
-    expect(result).toEqual(['Base', 'Recursive1'])
-  })
-
-  test('ignores recursive inheritance when ignoreChildExtendsRecursive is true', () => {
-    const element = {
-      props: {
-        ignoreChildExtendsRecursive: true
-      },
-      __ref: {
-        __extends: ['Base']
-      }
-    }
-    const parent = {
-      childExtendsRecursive: ['Recursive1']
-    }
-    const result = inheritRecursiveChildExtends(element, parent)
-    expect(result).toEqual(['Base'])
-  })
-
-  test('ignores inheritance when childExtendsRecursive is false', () => {
-    const element = {
-      props: {},
-      __ref: {
-        __extends: ['Base']
-      }
-    }
-    const parent = {
-      childExtendsRecursive: ['Recursive1']
-    }
-    const result = inheritRecursiveChildExtends(element, parent)
-    expect(result).toEqual(['Base', 'Recursive1'])
-  })
-})
-
-describe('createElementExtends', () => {
   test('creates basic extend stack', () => {
     const element = {
       props: {},
@@ -743,5 +628,118 @@ describe('createElementExtends', () => {
     expect(element.extends).toBe('ShouldRemain')
 
     process.env.NODE_ENV = originalEnv
+  })
+})
+
+describe('inheritChildExtends', () => {
+  test('inherits childExtends from parent props', () => {
+    const element = {
+      props: {},
+      __ref: {
+        __extends: ['Base']
+      }
+    }
+    const parent = {
+      props: {
+        childExtends: ['Child1', 'Child2']
+      }
+    }
+    const result = inheritChildExtends(element, parent)
+    expect(result).toEqual(['Base', 'Child1', 'Child2'])
+  })
+
+  test('inherits childExtends from parent object', () => {
+    const element = {
+      props: {},
+      __ref: {
+        __extends: ['Base']
+      }
+    }
+    const parent = {
+      childExtends: ['Child1', 'Child2']
+    }
+    const result = inheritChildExtends(element, parent)
+    expect(result).toEqual(['Base', 'Child1', 'Child2'])
+  })
+
+  test('ignores inheritance when ignoreChildExtends is true', () => {
+    const element = {
+      props: {
+        ignoreChildExtends: true
+      },
+      __ref: {
+        __extends: ['Base']
+      }
+    }
+    const parent = {
+      props: {
+        childExtends: ['Child1']
+      },
+      childExtends: ['Child2']
+    }
+    const result = inheritChildExtends(element, parent)
+    expect(result).toEqual(['Base'])
+  })
+})
+
+describe('inheritRecursiveChildExtends', () => {
+  test('inherits recursive childExtends from parent props', () => {
+    const element = {
+      props: {},
+      __ref: {
+        __extends: ['Base']
+      }
+    }
+    const parent = {
+      props: {
+        childExtendsRecursive: ['Recursive1']
+      }
+    }
+    const result = inheritRecursiveChildExtends(element, parent)
+    expect(result).toEqual(['Base', 'Recursive1'])
+  })
+
+  test('inherits recursive childExtends from parent object', () => {
+    const element = {
+      props: {},
+      __ref: {
+        __extends: ['Base']
+      }
+    }
+    const parent = {
+      childExtendsRecursive: ['Recursive1']
+    }
+    const result = inheritRecursiveChildExtends(element, parent)
+    expect(result).toEqual(['Base', 'Recursive1'])
+  })
+
+  test('ignores recursive inheritance when ignoreChildExtendsRecursive is true', () => {
+    const element = {
+      props: {
+        ignoreChildExtendsRecursive: true
+      },
+      __ref: {
+        __extends: ['Base']
+      }
+    }
+    const parent = {
+      childExtendsRecursive: ['Recursive1']
+    }
+    const result = inheritRecursiveChildExtends(element, parent)
+    expect(result).toEqual(['Base'])
+  })
+
+  test('ignores inheritance when childExtendsRecursive is false', () => {
+    const element = {
+      props: {},
+      __ref: {
+        __extends: ['Base']
+      }
+    }
+    const parent = {
+      childExtendsRecursive: ['Recursive1']
+    }
+    const result = inheritRecursiveChildExtends(element, parent)
+    expect(result).toEqual(['Base', 'Recursive1'])
   })
 })

@@ -326,11 +326,10 @@ export const createExtendStack = (element, parent, options = {}) => {
 
 export const finalizeExtend = (element, parent, options = {}) => {
   const { __ref: ref } = element
-  const stack = ref.__extendsStack
+  const { __extendsStack } = ref
+  const flattenExtends = cloneAndMergeArrayExtend(__extendsStack)
 
-  const mergedExtend = cloneAndMergeArrayExtend(stack)
-
-  return deepMergeExtend(element, mergedExtend)
+  return deepMergeExtend(element, flattenExtends)
 }
 
 export const applyExtend = (element, parent, options = {}) => {
