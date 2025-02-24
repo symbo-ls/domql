@@ -12,14 +12,14 @@ import {
   propertizeElement,
   createElement,
   applyExtends,
-  createScope
+  createScope,
+  isMethod
 } from '@domql/utils'
 
 import { applyAnimationFrame, triggerEventOn } from '@domql/event'
 import { assignNode } from '@domql/render'
 import { createState } from '@domql/state'
 
-import { isMethod } from './methods/index.js'
 import { createProps } from './props/index.js'
 import { REGISTRY, registry } from './mixins/index.js'
 import { addMethods } from './methods/set.js'

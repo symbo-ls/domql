@@ -13,11 +13,11 @@ import {
   overwriteDeep,
   createSnapshotId,
   deepClone,
-  propertizeElement
+  propertizeElement,
+  isMethod
 } from '@domql/utils'
 
 import { applyEvent, triggerEventOn, triggerEventOnUpdate } from '@domql/event'
-import { isMethod } from './methods/index.js'
 import { updateProps } from './props/index.js'
 import { createState, findInheritedState } from '@domql/state'
 

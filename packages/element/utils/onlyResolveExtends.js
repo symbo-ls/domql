@@ -1,9 +1,8 @@
 'use strict'
 
-import { exec, isFunction, isObject, isUndefined } from '@domql/utils'
+import { exec, isFunction, isMethod, isObject, isUndefined } from '@domql/utils'
 import { create } from '..'
 import { REGISTRY } from '../mixins/index.js'
-import { isMethod } from '../methods'
 import { addMethods } from '../methods/set'
 import { createState } from '@domql/state'
 import { detectTag } from '@domql/render'
