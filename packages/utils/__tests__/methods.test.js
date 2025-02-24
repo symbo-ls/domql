@@ -22,7 +22,8 @@ import {
   variables,
   call,
   isMethod,
-  METHODS
+  METHODS,
+  defineSetter
 } from '../methods.js'
 
 // Mock console methods
@@ -59,6 +60,41 @@ describe('Element Navigation Methods', () => {
       }
       expect(lookup.call(mockElement, 'testProp')).toBe('found')
     })
+
+    test('should find parent element by callback function', () => {
+      const mockElement = {
+        parent: {
+          state: { type: 'parent' },
+          context: {},
+          parent: null
+        }
+      }
+      const result = lookup.call(
+        mockElement,
+        (el, state) => state.type === 'parent'
+      )
+      expect(result).toBe(mockElement.parent)
+    })
+
+    test('should recursively lookup parent elements', () => {
+      const mockElement = {
+        parent: {
+          state: { type: 'child' },
+          context: {},
+          parent: {
+            state: { type: 'parent' },
+            context: {},
+            parent: null
+          },
+          lookup
+        }
+      }
+      const result = lookup.call(
+        mockElement,
+        (el, state) => state.type === 'parent'
+      )
+      expect(result).toBe(mockElement.parent.parent)
+    })
   })
 
   describe('lookdown', () => {
@@ -73,6 +109,24 @@ describe('Element Navigation Methods', () => {
         }
       }
       expect(lookdown.call(mockElement, 'child1')).toBeDefined()
+    })
+
+    test('should find child element by callback function', () => {
+      const mockElement = {
+        __ref: {
+          __children: ['child1']
+        },
+        child1: {
+          key: 'child1',
+          state: { type: 'target' },
+          context: {}
+        }
+      }
+      const result = lookdown.call(
+        mockElement,
+        (el, state) => state.type === 'target'
+      )
+      expect(result).toBe(mockElement.child1)
     })
   })
 
@@ -193,6 +247,43 @@ describe('State Management Methods', () => {
       const vars = variables.call(mockElement, { test: 'value' })
       expect(vars.changed).toBeDefined()
     })
+
+    test('should execute changed callback with changes', () => {
+      const mockElement = {
+        data: { varCaches: { existing: 'old' } }
+      }
+      const callback = jest.fn()
+
+      const vars = variables.call(mockElement, {
+        test: 'new',
+        existing: 'updated'
+      })
+      vars.changed(callback)
+
+      expect(callback).toHaveBeenCalledWith(
+        { test: 'new', existing: 'updated' },
+        { existing: 'old' }
+      )
+      expect(mockElement.data.varCaches).toEqual({
+        existing: 'updated',
+        test: 'new'
+      })
+    })
+
+    test('should execute timeout callback after delay', () => {
+      jest.useFakeTimers()
+      const mockElement = {
+        data: { varCaches: {} }
+      }
+      const callback = jest.fn()
+
+      const vars = variables.call(mockElement, { test: 'new' })
+      vars.timeout(callback, 1000)
+
+      jest.advanceTimersByTime(1000)
+      expect(callback).toHaveBeenCalledWith({ test: 'new' })
+      jest.useRealTimers()
+    })
   })
 })
 
@@ -307,6 +398,47 @@ describe('Utility Methods', () => {
       METHODS.forEach(method => {
         expect(isMethod(method)).toBe(true)
       })
+    })
+  })
+
+  describe('defineSetter', () => {
+    test('should define getter and setter on element', () => {
+      const element = {}
+      const getter = jest.fn(() => 'value')
+      const setter = jest.fn()
+
+      defineSetter(element, 'testProp', getter, setter)
+
+      // eslint-disable-next-line
+      element.testProp
+      element.testProp = 'newValue'
+
+      expect(getter).toHaveBeenCalled()
+      expect(setter).toHaveBeenCalledWith('newValue')
+    })
+  })
+})
+
+describe('Parsing Methods', () => {
+  describe('parse with scope', () => {
+    test('should parse scope when __hasRootScope is true', () => {
+      const mockElement = {
+        scope: { test: 'value' },
+        __ref: { __hasRootScope: true },
+        keys: () => ['scope']
+      }
+      const result = parse.call(mockElement)
+      expect(result.scope).toEqual({ test: 'value' })
+    })
+
+    test('should skip scope when __hasRootScope is false', () => {
+      const mockElement = {
+        scope: { test: 'value' },
+        __ref: { __hasRootScope: false },
+        keys: () => ['scope']
+      }
+      const result = parse.call(mockElement)
+      expect(result.scope).toBeUndefined()
     })
   })
 })
