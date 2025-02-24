@@ -3,10 +3,8 @@
 import { lowercaseFirstLetter } from './string.js'
 import { isFunction } from './types.js'
 
-export const addEventInOn = (key, element) => {
-  if (!element.on) element.on = {}
+export const addEventFromProps = (key, element) => {
   const { props, on } = element
-
   const eventName = lowercaseFirstLetter(key.split('on')[1])
   const origEvent = on[eventName]
   const funcFromProps = props[key]

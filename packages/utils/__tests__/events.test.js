@@ -1,15 +1,16 @@
 import { jest } from '@jest/globals'
-import { addEventInOn } from '../events.js'
+import { addEventFromProps } from '../events.js'
 
-describe('addEventInOn', () => {
+describe('addEventFromProps', () => {
   test('should add event handler from props to on object', () => {
     const element = {
+      on: {},
       props: {
         onClick: () => 'clicked'
       }
     }
 
-    addEventInOn('onClick', element)
+    addEventFromProps('onClick', element)
 
     expect(element.on).toBeDefined()
     expect(typeof element.on.click).toBe('function')
@@ -29,7 +30,7 @@ describe('addEventInOn', () => {
       }
     }
 
-    addEventInOn('onClick', element)
+    addEventFromProps('onClick', element)
     element.on.click()
 
     expect(handler1Called).toHaveBeenCalled()
@@ -48,7 +49,7 @@ describe('addEventInOn', () => {
       }
     }
 
-    addEventInOn('onClick', element)
+    addEventFromProps('onClick', element)
     element.on.click()
 
     expect(handler2Called).not.toHaveBeenCalled()

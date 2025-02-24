@@ -1,23 +1,10 @@
-import { redefineProperties } from '.'
+import {
+  pickupElementFromProps,
+  pickupPropsFromElement,
+  propertizeElement
+} from '../props'
 
-describe('redefineProperties', () => {
-  it('should handle direct object properties', () => {
-    const element = {
-      data: { foo: 'bar' },
-      content: 'Hello',
-      on: { click: () => {} }
-    }
-
-    redefineProperties(element)
-
-    expect(element).toEqual({
-      props: {},
-      data: { foo: 'bar' },
-      content: 'Hello',
-      on: { click: expect.any(Function) }
-    })
-  })
-
+describe('propertizeElement', () => {
   it('should handle nested component properties', () => {
     const element = {
       NestedComponent: {
@@ -25,14 +12,12 @@ describe('redefineProperties', () => {
       }
     }
 
-    redefineProperties(element)
+    propertizeElement(element)
 
     expect(element).toEqual({
-      props: {},
       NestedComponent: {
         data: { nested: true }
-      },
-      on: {}
+      }
     })
   })
 
@@ -42,13 +27,11 @@ describe('redefineProperties', () => {
       1: { content: 'Second' }
     }
 
-    redefineProperties(element)
+    propertizeElement(element)
 
     expect(element).toEqual({
-      props: {},
       0: { content: 'First' },
-      1: { content: 'Second' },
-      on: {}
+      1: { content: 'Second' }
     })
   })
 
@@ -56,12 +39,13 @@ describe('redefineProperties', () => {
     const onClick = () => {}
 
     const element = {
+      on: {},
       boxSizing: 'border-box',
       props: { onClick, H4: {} },
       Hello: {}
     }
 
-    redefineProperties(element)
+    propertizeElement(element)
 
     expect(element).toEqual({
       props: {
@@ -83,28 +67,15 @@ describe('redefineProperties', () => {
       }
     }
 
-    redefineProperties(element)
+    propertizeElement(element)
 
     expect(element).toEqual({
-      props: {},
       style: { color: 'red' },
       NestedComponent: {
         data: { nested: true }
       },
-      on: {}
+      props: {}
     })
-  })
-
-  // New test to verify mutation
-  it('should mutate the original object', () => {
-    const element = {
-      data: { foo: 'bar' }
-    }
-
-    const result = redefineProperties(element)
-
-    expect(result).toBe(element) // verify same object reference
-    expect(element.props).toEqual({}) // verify mutation occurred
   })
 })
 
@@ -130,7 +101,7 @@ describe('Complex component structures', () => {
   }
 
   it('should handle complex nested components with extends', () => {
-    const result = redefineProperties(element)
+    const result = propertizeElement(element)
 
     expect(result).toEqual({
       extends: 'Flex',
@@ -139,7 +110,6 @@ describe('Complex component structures', () => {
         maxWidth: 'fit-content',
         border: '.7px dashed #232E31'
       },
-      on: {},
       Flex: {
         border: '1px solid #232E31',
         round: 'Z1',
@@ -155,10 +125,11 @@ describe('Complex component structures', () => {
   })
 
   it('should handle complex nested components with extends', () => {
-    const result = redefineProperties(element.Flex)
+    if (!element.Flex.props) element.Flex.props = {}
+
+    const result = propertizeElement(element.Flex)
 
     expect(result).toEqual({
-      on: {},
       props: {
         border: '1px solid #232E31',
         round: 'Z1',
@@ -176,6 +147,12 @@ describe('Complex component structures', () => {
 
 describe('Complex recursive component structures', () => {
   it('should recursively handle redefining properties', () => {
+    const change = (event, element, state) => {
+      state.update({
+        method: element.node.value
+      })
+    }
+
     const stateUpdate = (_, el, s) => {
       console.log('STATE UPDATED:')
       console.log(s)
@@ -230,11 +207,7 @@ describe('Complex recursive component structures', () => {
                 text: 'Post',
                 value: 'POST'
               },
-              onChange: (event, element, state) => {
-                state.update({
-                  method: element.node.value
-                })
-              }
+              onChange: change
             }
           }
         }
@@ -242,13 +215,17 @@ describe('Complex recursive component structures', () => {
     }
 
     const recursive = el => {
+      if (!el.on) el.on = {}
+      if (!el.props) el.props = {}
       for (const key in el) {
         const isElement = /^[A-Z]/.test(key) || /^\d+$/.test(key)
         if (isElement) {
-          el[key] = redefineProperties(el[key])
+          if (!el[key].on) el[key].on = {}
+          if (!el[key].props) el[key].props = {}
+          el[key] = recursive(el[key])
         }
       }
-      return redefineProperties(component)
+      return propertizeElement(el)
     }
 
     const result = recursive(component)
@@ -269,25 +246,31 @@ describe('Complex recursive component structures', () => {
       },
 
       TitleField: {
+        key: 'titleState',
+
         props: {},
         on: {},
-        key: 'titleState',
-        Title: { text: 'Title' },
-        Input: { props: { placeholder: 'Title of the state' } }
+        Title: {
+          props: {},
+          on: {},
+          text: 'Title'
+        },
+        Input: { on: {}, props: { placeholder: 'Title of the state' } }
       },
 
       GroupField: {
-        on: {},
         props: {
           width: '100%'
         },
+        on: {},
 
         Title: {
-          text: 'Connect to a custom URL'
+          text: 'Connect to a custom URL',
+          props: {},
+          on: {}
         },
 
         Flex: {
-          on: {},
           props: {
             flow: 'x',
             align: 'stretch start',
@@ -299,44 +282,155 @@ describe('Complex recursive component structures', () => {
             }
           },
 
+          on: {},
+
           SelectField: {
             props: {},
-
+            on: {},
             Select: {
               props: {
                 theme: null,
-                borderRadius: 'X2',
-
-                onChange: (event, element, state) => {
-                  state.update({
-                    method: element.node.value
-                  })
-                }
+                borderRadius: 'X2'
               },
 
               Get: {
                 props: {
                   value: 'GET'
                 },
-                text: 'Get'
+                text: 'Get',
+                on: {}
               },
               Post: {
                 props: {
                   value: 'POST'
                 },
-                text: 'Post'
-              }
-            },
+                text: 'Post',
+                on: {}
+              },
 
-            on: {
-              change: (event, element, state) => {
-                state.update({
-                  method: element.node.value
-                })
+              on: {
+                change
               }
             }
           }
         }
+      }
+    })
+  })
+})
+
+describe('pickupPropsFromElement', () => {
+  it('should move non-special properties to props', () => {
+    const element = {
+      props: {},
+      on: {},
+      normalProp: 'value',
+      CapitalComponent: {},
+      extends: 'something',
+      style: { color: 'red' }
+    }
+
+    const result = pickupPropsFromElement(element, { cachedKeys: [] })
+
+    expect(result).toEqual({
+      props: {
+        normalProp: 'value'
+      },
+      on: {},
+      CapitalComponent: {},
+      extends: 'something',
+      style: { color: 'red' }
+    })
+  })
+
+  it('should handle elements with define property', () => {
+    const element = {
+      props: {},
+      on: {},
+      define: {
+        customProp: { type: 'string' }
+      },
+      customProp: 'test'
+    }
+
+    const result = pickupPropsFromElement(element, { cachedKeys: [] })
+
+    expect(result).toEqual({
+      props: {},
+      define: {
+        customProp: { type: 'string' }
+      },
+      on: {},
+      customProp: 'test'
+    })
+  })
+})
+
+describe('pickupElementFromProps', () => {
+  it('should move special properties from props to element root', () => {
+    const element = {
+      on: {},
+      props: {
+        CapitalComponent: {},
+        style: { color: 'red' },
+        normalProp: 'value',
+        onClick: () => {}
+      }
+    }
+
+    const result = pickupElementFromProps(element, { cachedKeys: [] })
+
+    expect(result).toEqual({
+      props: {
+        normalProp: 'value'
+      },
+      on: {
+        click: expect.any(Function)
+      },
+      CapitalComponent: {},
+      style: { color: 'red' }
+    })
+  })
+
+  it('should respect cached keys', () => {
+    const element = {
+      on: {},
+      props: {
+        preserveMe: 'preserved',
+        CapitalComponent: {}
+      }
+    }
+
+    const result = pickupElementFromProps(element, {
+      cachedKeys: ['preserveMe']
+    })
+
+    expect(result).toEqual({
+      props: {
+        preserveMe: 'preserved'
+      },
+      on: {},
+      CapitalComponent: {}
+    })
+  })
+
+  it('should handle event handlers correctly', () => {
+    const handler = () => {}
+    const element = {
+      on: {},
+      props: {
+        onClick: handler,
+        onMouseover: handler
+      }
+    }
+
+    const result = pickupElementFromProps(element, { cachedKeys: [] })
+
+    expect(result).toEqual({
+      props: {},
+      on: {
+        click: handler,
+        mouseover: handler
       }
     })
   })

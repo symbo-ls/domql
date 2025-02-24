@@ -1,6 +1,6 @@
 'use strict'
 
-import { addEventInOn } from './events.js'
+import { addEventFromProps } from './events.js'
 import { exec } from './object.js'
 import { is, isFunction, isObject, isObjectLike, isString } from './types.js'
 
@@ -60,8 +60,61 @@ const propMappings = [
  * @param {Object} parent - The parent context
  * @returns {Object} - The processed element
  */
-export function redefineProperties (element, opts = {}) {
-  const cachedKeys = []
+// export function propertizeElement (element, opts = {}) {
+//   const cachedKeys = []
+
+//   for (const key in element) {
+//     const value = element[key]
+
+//     const hasDefine = isObject(element.define?.[key])
+//     const hasGlobalDefine = isObject(element.context?.define?.[key])
+//     const isElement = /^[A-Z]/.test(key) || /^\d+$/.test(key)
+//     const isBuiltin = propMappings.includes(key)
+
+//     if (isElement || isBuiltin || hasDefine || hasGlobalDefine) continue
+
+//     element.props[key] = value
+//     delete element[key]
+//     cachedKeys.push(key)
+//   }
+
+//   for (const key in element.props) {
+//     const value = element.props[key]
+
+//     const isEvent = key.startsWith('on') && key.length > 2
+//     const isFn = isFunction(value)
+
+//     if (isEvent && isFn) {
+//       addEventFromProps(key, element)
+//       delete element.props[key]
+//       continue
+//     }
+
+//     if (cachedKeys.includes(key)) continue
+
+//     const hasDefine = isObject(element.define?.[key])
+//     const hasGlobalDefine = isObject(element.context?.define?.[key])
+//     const isComponent = /^[A-Z]/.test(key)
+//     const isSpreadedElement = /^\d+$/.test(key)
+//     const isPropMapping = propMappings.includes(key)
+//     if (
+//       isComponent ||
+//       isSpreadedElement ||
+//       isPropMapping ||
+//       hasDefine ||
+//       hasGlobalDefine
+//     ) {
+//       element[key] = value
+//       delete element.props[key]
+//       continue
+//     }
+//   }
+
+//   return element
+// }
+
+export function pickupPropsFromElement (element, opts = {}) {
+  const cachedKeys = opts.cachedKeys || []
 
   for (const key in element) {
     const value = element[key]
@@ -71,45 +124,56 @@ export function redefineProperties (element, opts = {}) {
     const isElement = /^[A-Z]/.test(key) || /^\d+$/.test(key)
     const isBuiltin = propMappings.includes(key)
 
-    if (isElement || isBuiltin || hasDefine || hasGlobalDefine) continue
-
-    element.props[key] = value
-    delete element[key]
-    cachedKeys.push(key)
+    // If it's not a special case, move to props
+    if (!isElement && !isBuiltin && !hasDefine && !hasGlobalDefine) {
+      element.props[key] = value
+      delete element[key]
+      cachedKeys.push(key)
+    }
   }
+
+  return element
+}
+
+export function pickupElementFromProps (element, opts) {
+  const cachedKeys = opts.cachedKeys || []
 
   for (const key in element.props) {
     const value = element.props[key]
 
+    // Handle event handlers
     const isEvent = key.startsWith('on') && key.length > 2
     const isFn = isFunction(value)
 
     if (isEvent && isFn) {
-      addEventInOn(key, element)
+      addEventFromProps(key, element)
       delete element.props[key]
       continue
     }
 
+    // Skip if key was originally from element
     if (cachedKeys.includes(key)) continue
 
     const hasDefine = isObject(element.define?.[key])
     const hasGlobalDefine = isObject(element.context?.define?.[key])
-    const isComponent = /^[A-Z]/.test(key)
-    const isSpreadedElement = /^\d+$/.test(key)
-    const isPropMapping = propMappings.includes(key)
-    if (
-      isComponent ||
-      isSpreadedElement ||
-      isPropMapping ||
-      hasDefine ||
-      hasGlobalDefine
-    ) {
+    const isElement = /^[A-Z]/.test(key) || /^\d+$/.test(key)
+    const isBuiltin = propMappings.includes(key)
+
+    // Move qualifying properties back to element root
+    if (isElement || isBuiltin || hasDefine || hasGlobalDefine) {
       element[key] = value
       delete element.props[key]
-      continue
     }
   }
 
+  return element
+}
+
+// Helper function to maintain compatibility with original propertizeElement
+export function propertizeElement (element, opts = {}) {
+  const cachedKeys = []
+  pickupPropsFromElement(element, { cachedKeys })
+  pickupElementFromProps(element, { cachedKeys })
   return element
 }
 

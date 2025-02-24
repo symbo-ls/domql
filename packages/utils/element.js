@@ -137,12 +137,14 @@ export const createElement = (passedProps, parentEl, passedKey, opts, root) => {
 
   const props = createProps(element, parent, key)
   const context = addContext(element, parent, key, opts, root)
+  const on = element.on || {}
 
   return {
     ...element,
     key,
     props,
     parent,
-    context
+    context,
+    on
   }
 }

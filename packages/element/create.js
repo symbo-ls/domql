@@ -9,7 +9,7 @@ import {
   exec,
   isUndefined,
   detectInfiniteLoop,
-  redefineProperties,
+  propertizeElement,
   createElement,
   applyExtends
 } from '@domql/utils'
@@ -48,7 +48,7 @@ export const create = async (
 
   applyExtends(element, parent, options)
 
-  redefineProperties(element, parent)
+  propertizeElement(element, parent)
 
   element.key = key
 

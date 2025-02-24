@@ -259,6 +259,7 @@ export const createElementExtends = (element, parent, options = {}) => {
 
   if (props.extends) addExtends(props.extends, element)
 
+  inheritChildPropsExtends(element, parent, options)
   inheritChildExtends(element, parent, options)
   inheritRecursiveChildExtends(element, parent, options)
 
@@ -273,6 +274,18 @@ export const createElementExtends = (element, parent, options = {}) => {
   }
 
   return removeDuplicatesInArray(ref.__extends)
+}
+
+export const inheritChildPropsExtends = (element, parent, options = {}) => {
+  const { props, __ref: ref } = element
+  const ignoreChildExtends =
+    options.ignoreChildExtends || props.ignoreChildExtends
+  if (!ignoreChildExtends) {
+    if (parent.props?.childProps?.extends) {
+      addExtends(parent.props.childProps.extends, element)
+    }
+  }
+  return ref.__extends
 }
 
 export const inheritChildExtends = (element, parent, options = {}) => {

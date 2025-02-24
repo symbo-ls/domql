@@ -13,7 +13,7 @@ import {
   overwriteDeep,
   createSnapshotId,
   deepClone,
-  redefineProperties
+  propertizeElement
 } from '@domql/utils'
 
 import { applyEvent, triggerEventOn, triggerEventOnUpdate } from '@domql/event'
@@ -82,7 +82,7 @@ export const update = async function (params = {}, opts) {
     params = { text: params }
   }
 
-  redefineProperties(params)
+  propertizeElement(params)
 
   const inheritState = await inheritStateUpdates(element, options)
   if (inheritState === false) return
@@ -202,12 +202,12 @@ export const update = async function (params = {}, opts) {
       lazyLoad
         ? window.requestAnimationFrame(() => {
             // eslint-disable-line
-            childUpdateCall()
-            // handle lazy load
-            if (!options.preventUpdateListener) {
-              triggerEventOn('lazyLoad', element, options)
-            }
-          })
+          childUpdateCall()
+          // handle lazy load
+          if (!options.preventUpdateListener) {
+            triggerEventOn('lazyLoad', element, options)
+          }
+        })
         : childUpdateCall()
     }
   }
