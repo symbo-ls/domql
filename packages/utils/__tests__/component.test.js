@@ -1,7 +1,8 @@
 import {
   matchesComponentNaming,
   getCapitalCaseKeys,
-  getSpreadChildren
+  getSpreadChildren,
+  isContextComponent
 } from '../component'
 
 describe('Component Utils', () => {
@@ -35,6 +36,45 @@ describe('Component Utils', () => {
         2: 'third'
       }
       expect(getSpreadChildren(obj)).toEqual(['0', '1', '2'])
+    })
+  })
+
+  describe('isContextComponent', () => {
+    test('identifies component from context.components', () => {
+      const parent = {
+        context: {
+          components: {
+            Button: { type: 'button' }
+          }
+        }
+      }
+      expect(isContextComponent({}, parent, 'Button')).toBeTruthy()
+    })
+
+    test('identifies component from context.pages', () => {
+      const parent = {
+        context: {
+          pages: {
+            Home: { path: '/' }
+          }
+        }
+      }
+      expect(isContextComponent({}, parent, 'Home')).toBeTruthy()
+    })
+
+    test('returns falsy for non-existent components', () => {
+      const parent = {
+        context: {
+          components: {},
+          pages: {}
+        }
+      }
+      expect(isContextComponent({}, parent, 'NonExistent')).toBeFalsy()
+    })
+
+    test('handles missing context gracefully', () => {
+      expect(isContextComponent({}, {}, 'Button')).toBeFalsy()
+      expect(isContextComponent({}, null, 'Button')).toBeFalsy()
     })
   })
 })

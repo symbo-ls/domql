@@ -18,8 +18,9 @@ export function getSpreadChildren (obj) {
   return Object.keys(obj).filter(key => /^\d+$/.test(key))
 }
 
-export function isContextComponent (initialElement, parent, key) {
+export function isContextComponent (element, parent, passedKey) {
   const { context } = parent || {}
-  const extendFromKey = createExtendsFromKeys(key)[0]
-  return context?.components?.[extendFromKey] || context?.pages?.[extendFromKey]
+  const [extendsKey] = createExtendsFromKeys(passedKey)
+  const key = passedKey || extendsKey
+  return context?.components?.[key] || context?.pages?.[key]
 }
