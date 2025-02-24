@@ -53,6 +53,16 @@ export const PARSED_DOMQ_PROPERTIES = [
   'context'
 ]
 
+export const STATE_PROPERTIES = [
+  'ref',
+  'parent',
+  '__element',
+  '__depends',
+  '__ref',
+  '__children',
+  'root'
+]
+
 export const STATE_METHODS = [
   'update',
   'parse',

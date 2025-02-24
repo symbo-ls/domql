@@ -2,16 +2,13 @@
 
 import { triggerEventOn } from '@domql/event'
 import {
+  addProtoToArray,
+  applyDependentState,
+  checkForStateTypes,
   checkIfInherits,
   createInheritedState,
-  deepClone,
-  exec,
-  is,
   isArray,
-  isFunction,
-  isObject,
-  isUndefined,
-  STATE_METHODS
+  isUndefined
 } from '@domql/utils'
 
 import {
@@ -48,7 +45,7 @@ export const createState = async function (element, parent, options) {
 }
 
 export const applyInitialState = async function (element, parent, options) {
-  const objectizeState = await checkForTypes(element)
+  const objectizeState = await checkForStateTypes(element)
   if (objectizeState === false) return parent.state || {}
   else element.state = objectizeState
 
@@ -72,63 +69,6 @@ export const applyInitialState = async function (element, parent, options) {
   triggerEventOn('stateCreated', element)
 
   return element.state
-}
-
-const applyDependentState = (element, state) => {
-  const { __ref, ref, __element } = state //
-  const origState = exec(__ref || ref || __element?.state, element)
-  if (!origState) return
-  const dependentState = deepClone(origState, STATE_METHODS)
-  const newDepends = { [element.key]: dependentState }
-
-  const __depends = isObject(origState.__depends)
-    ? { ...origState.__depends, ...newDepends }
-    : newDepends
-
-  if (Array.isArray(origState)) {
-    addProtoToArray(origState, {
-      ...Object.getPrototypeOf(origState),
-      __depends
-    })
-  } else {
-    Object.setPrototypeOf(origState, {
-      ...Object.getPrototypeOf(origState),
-      __depends
-    })
-  }
-
-  return dependentState
-}
-
-const checkForTypes = async element => {
-  const { state: orig, props, __ref: ref } = element
-  const state = props?.state || orig
-  if (isFunction(state)) {
-    ref.__state = state
-    return await exec(state, element)
-  } else if (is(state)('string', 'number')) {
-    ref.__state = state
-    return { value: state }
-  } else if (state === true) {
-    ref.__state = element.key
-    return {}
-  } else if (state) {
-    ref.__hasRootState = true
-    return state
-  } else {
-    return false
-  }
-}
-
-const addProtoToArray = (state, proto) => {
-  for (const key in proto) {
-    Object.defineProperty(state, key, {
-      value: proto[key],
-      enumerable: false, // Set this to true if you want the method to appear in for...in loops
-      configurable: true, // Set this to true if you want to allow redefining/removing the property later
-      writable: true // Set this to true if you want to allow changing the function later
-    })
-  }
 }
 
 export const applyStateMethods = element => {

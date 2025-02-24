@@ -78,8 +78,8 @@ export const create = async (
   createIfConditionFlag(element, parent)
 
   // if it already HAS a NODE
-  if (element.node && ref.__if) {
-    return assignNode(element, parent, key, attachOptions)
+  if (element.node) {
+    if (ref.__if) return assignNode(element, parent, key, attachOptions)
   }
 
   // apply variants

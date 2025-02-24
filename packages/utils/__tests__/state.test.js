@@ -6,8 +6,84 @@ import {
   createInheritedState,
   checkIfInherits,
   isState,
-  createNestedObjectByKeyPath
+  createNestedObjectByKeyPath,
+  checkForStateTypes,
+  applyDependentState,
+  overwriteState
 } from '../state.js'
+
+describe('checkForStateTypes', () => {
+  it('should handle function state', async () => {
+    const element = {
+      __ref: {},
+      state: () => ({ foo: 'bar' })
+    }
+    const result = await checkForStateTypes(element)
+    expect(result).toEqual({ foo: 'bar' })
+    expect(element.__ref.__state).toBe(element.state)
+  })
+
+  it('should handle primitive string/number state', async () => {
+    const stringElement = {
+      __ref: {},
+      state: 'test'
+    }
+    const numberElement = {
+      __ref: {},
+      state: 42
+    }
+
+    const stringResult = await checkForStateTypes(stringElement)
+    const numberResult = await checkForStateTypes(numberElement)
+
+    expect(stringResult).toEqual({ value: 'test' })
+    expect(numberResult).toEqual({ value: 42 })
+    expect(stringElement.__ref.__state).toBe('test')
+    expect(numberElement.__ref.__state).toBe(42)
+  })
+
+  it('should handle boolean true state', async () => {
+    const element = {
+      __ref: {},
+      key: 'testKey',
+      state: true
+    }
+    const result = await checkForStateTypes(element)
+    expect(result).toEqual({})
+    expect(element.__ref.__state).toBe('testKey')
+  })
+
+  it('should handle object state', async () => {
+    const element = {
+      __ref: {},
+      state: { foo: 'bar' }
+    }
+    const result = await checkForStateTypes(element)
+    expect(result).toEqual({ foo: 'bar' })
+    expect(element.__ref.__hasRootState).toBe(true)
+  })
+
+  it('should handle falsy state', async () => {
+    const element = {
+      __ref: {},
+      state: null
+    }
+    const result = await checkForStateTypes(element)
+    expect(result).toBe(false)
+  })
+
+  it('should handle state from props', async () => {
+    const element = {
+      __ref: {},
+      props: {
+        state: { foo: 'bar' }
+      }
+    }
+    const result = await checkForStateTypes(element)
+    expect(result).toEqual({ foo: 'bar' })
+    expect(element.__ref.__hasRootState).toBe(true)
+  })
+})
 
 describe('getRootStateInKey', () => {
   it('should return root state when key contains "~/"', () => {
@@ -67,6 +143,7 @@ describe('getParentStateInKey', () => {
 describe('getChildStateInKey', () => {
   it('should traverse down state tree and create missing objects', () => {
     const parentState = {}
+    // eslint-disable-next-line
     const result = getChildStateInKey('a/b/c', parentState)
     expect(parentState).toEqual({ a: { b: { c: {} } } })
   })
@@ -79,6 +156,7 @@ describe('getChildStateInKey', () => {
 
   it('should handle array indices in paths', () => {
     const parentState = { items: [] }
+    // eslint-disable-next-line
     const result = getChildStateInKey('items/0/name', parentState)
     expect(parentState.items[0]).toEqual({ name: {} })
   })
@@ -354,5 +432,169 @@ describe('performance tests', () => {
     })
     const end = performance.now()
     expect(end - start).toBeLessThan(1000) // Should complete in less than 1 second
+  })
+})
+
+describe('applyDependentState', () => {
+  it('should apply dependent state for basic objects', () => {
+    const element = { key: 'child' }
+    const state = {
+      __element: {
+        state: { foo: 'bar' }
+      }
+    }
+
+    const result = applyDependentState(element, state)
+    expect(result).toEqual({ foo: 'bar' })
+    expect(Object.getPrototypeOf(state.__element.state)).toHaveProperty(
+      '__depends'
+    )
+    expect(
+      Object.getPrototypeOf(state.__element.state).__depends
+    ).toHaveProperty('child')
+  })
+
+  it('should merge multiple dependencies', () => {
+    const element = { key: 'second' }
+    const state = {
+      __element: {
+        state: {
+          value: 'test',
+          __depends: {
+            first: { foo: 'bar' }
+          }
+        }
+      }
+    }
+
+    const result = applyDependentState(element, state)
+    expect(result).toEqual({ value: 'test' })
+    expect(Object.getPrototypeOf(state.__element.state).__depends).toEqual({
+      first: { foo: 'bar' },
+      second: { value: 'test' }
+    })
+  })
+
+  it('should return undefined if no element state exists', () => {
+    const element = { key: 'test' }
+    const state = {
+      __element: {}
+    }
+
+    const result = applyDependentState(element, state)
+    expect(result).toBeUndefined()
+  })
+})
+
+describe('overwriteState', () => {
+  let testState
+
+  beforeEach(() => {
+    testState = {
+      foo: 'bar',
+      nested: { prop: 'value' },
+      array: [1, 2, 3]
+    }
+  })
+
+  it('should do nothing when overwrite option is not provided', () => {
+    const original = { ...testState }
+    overwriteState(testState, { new: 'data' }, {})
+    expect(testState).toEqual(original)
+  })
+
+  it('should perform shallow overwrite', () => {
+    const newData = { newProp: 'value', nested: { different: 'prop' } }
+    overwriteState(testState, newData, { overwrite: 'shallow' })
+
+    // Should replace top-level properties
+    expect(testState.newProp).toBe('value')
+    expect(testState.nested).toEqual({ different: 'prop' })
+    expect(testState.foo).toBe('bar')
+    expect(testState.array).toEqual([1, 2, 3])
+  })
+
+  it('should merge objects when overwrite is "merge"', () => {
+    const newData = { newProp: 'value', nested: { additional: 'prop' } }
+    overwriteState(testState, newData, { overwrite: 'merge' })
+
+    // Should preserve existing and add new properties
+    expect(testState).toEqual({
+      foo: 'bar',
+      newProp: 'value',
+      nested: { prop: 'value', additional: 'prop' },
+      array: [1, 2, 3]
+    })
+  })
+
+  it('should perform deep overwrite', () => {
+    const newData = {
+      nested: {
+        prop: 'newValue',
+        deep: { level: 1 }
+      },
+      array: [4, 5, 6]
+    }
+    overwriteState(testState, newData, { overwrite: 'deep' })
+
+    // Should completely replace nested structures
+    expect(testState.nested).toEqual({ prop: 'newValue', deep: { level: 1 } })
+    expect(testState.array).toEqual([4, 5, 6])
+    expect(testState.foo).toBe('bar')
+  })
+
+  it('should preserve special state methods during overwrite', () => {
+    const stateWithMethods = {
+      data: { value: 1 },
+      update: () => {},
+      parse: () => {},
+      clean: () => {}
+    }
+
+    const newData = { data: { value: 2 } }
+    overwriteState(stateWithMethods, newData, { overwrite: 'deep' })
+
+    expect(stateWithMethods.data.value).toBe(2)
+    expect(stateWithMethods.update).toBeDefined()
+    expect(stateWithMethods.parse).toBeDefined()
+    expect(stateWithMethods.clean).toBeDefined()
+  })
+
+  it('should handle arrays with nested objects', () => {
+    const complexState = {
+      items: [
+        { id: 1, data: { value: 'old' } },
+        { id: 2, data: { value: 'old' } }
+      ]
+    }
+
+    const newData = {
+      items: [
+        { id: 1, data: { value: 'new' } },
+        { id: 3, data: { value: 'new' } }
+      ]
+    }
+
+    overwriteState(complexState, newData, { overwrite: true })
+    expect(complexState.items).toEqual(newData.items)
+  })
+
+  it('should handle null and undefined values', () => {
+    const state = {
+      nullValue: 'notNull',
+      undefinedValue: 'defined',
+      nested: { prop: 'value' }
+    }
+
+    const newData = {
+      nullValue: null,
+      undefinedValue: undefined,
+      nested: { prop: null }
+    }
+
+    overwriteState(state, newData, { overwrite: 'shallow' })
+    expect(state.nullValue).toBeNull()
+    expect(state.undefinedValue).toBeUndefined()
+    expect(state.nested).toEqual({ prop: null })
   })
 })
