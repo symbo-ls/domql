@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals'
 import { applyEventsOnNode } from '../on'
 
 describe('applyEventsOnNode', () => {

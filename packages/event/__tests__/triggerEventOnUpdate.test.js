@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals'
 import { triggerEventOnUpdate } from '../on'
 
 describe('triggerEventOnUpdate', () => {

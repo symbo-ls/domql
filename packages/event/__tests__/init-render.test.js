@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals'
 import { init, render } from '../legacy'
 
 describe('Element lifecycle functions', () => {

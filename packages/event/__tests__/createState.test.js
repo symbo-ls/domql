@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals'
 import { createState } from '../legacy'
 
 describe('createState', () => {
@@ -6,9 +7,6 @@ describe('createState', () => {
   let mockCreateStateHandler
 
   beforeEach(() => {
-    // Reset mocks
-    jest.clearAllMocks()
-
     // Set up test data
     mockState = { value: 'test' }
     mockCreateStateHandler = jest.fn()

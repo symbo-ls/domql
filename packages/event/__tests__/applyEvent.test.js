@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals'
 import { applyEvent } from '../on'
 
 describe('applyEvent', () => {
