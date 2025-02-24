@@ -12,7 +12,6 @@ import {
  */
 export function text (param, element, node) {
   let prop = exec(param || element.props.text, element)
-  console.log(prop)
   if (element.content) {
     console.log('text', param)
   }

@@ -19,8 +19,10 @@ const createPropsStack = (element, parent) => {
   else if (props) propsStack.push(props)
 
   if (isArray(ref.__extendsStack)) {
-    ref.__extendsStack.forEach(extend => {
-      if (extend.props && extend.props !== props) propsStack.push(extend.props)
+    ref.__extendsStack.forEach(_extends => {
+      if (_extends.props && _extends.props !== props) {
+        propsStack.push(_extends.props)
+      }
     })
   }
 

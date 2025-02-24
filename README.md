@@ -61,7 +61,7 @@ const Link = {
 }
 
 const ListItem = {
-  extend: Link,
+  extends: Link,
   class: 'ui link',
   attr: {
     href: '#'
@@ -86,7 +86,7 @@ As flexible as Javascript.
 const navItems = ['Home', 'About', 'FAQ', 'Contact']
 
 const menu = {
-  extend: ListItem,
+  extends: ListItem,
   ...navItems
 }
 ```
@@ -116,8 +116,8 @@ const Increment = {
 | Property | Type | Description | Default |
 | --- | --- | --- | --- |
 | `key` | `Number` `String` | Defines the key of the Element | The key of the object, or randomly generated name |
-| `extend` | `Object` `Array` | Clones the other element | `undefined` |
-| `childExtends` | `Object` `Array` | Specifies the `extend` for all child elements | `undefined` |
+| `extends` | `Object` `Array` | Clones the other element | `undefined` |
+| `childExtends` | `Object` `Array` | Specifies the `extends` for all child elements | `undefined` |
 | `tag` | `String` | Specifis the HTML tag  | `div` or related HTML tag if the key matches |
 | `class` | `Any` | Specifies the HTML class | `undefined` |
 | `attr` | `Object` | Specifies the set of HTML attributes | `{}` |
@@ -135,7 +135,7 @@ const User = {
 }
 
 const Contact = {
-  extend: User,
+  extends: User,
   username: 'nikoloza'
 }
 ```
@@ -156,7 +156,7 @@ All native DOM events are supported and can be specified inside `on` parameter. 
 key
 tag
 node
-extend
+extends
 on
 class
 text
