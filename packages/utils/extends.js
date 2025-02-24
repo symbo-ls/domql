@@ -65,7 +65,9 @@ export const setHashedExtend = (extend, stack) => {
   if (!isString(extend)) {
     extend.__hash = hash
   }
-  extendStackRegistry[hash] = stack
+  if (!['__proto__', 'constructor', 'prototype'].includes(hash)) {
+    extendStackRegistry[hash] = stack
+  }
   return stack
 }
 
