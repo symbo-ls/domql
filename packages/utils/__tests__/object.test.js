@@ -74,6 +74,42 @@ describe('Object Utils', () => {
       expect(result).toContain('b: {')
       expect(result).toContain('c: 2')
     })
+
+    test('handles non-object input', () => {
+      expect(objectToString(null)).toBe('null')
+      expect(objectToString(undefined)).toBe('{}')
+      expect(objectToString(42)).toBe('42')
+      expect(objectToString('test')).toBe('test')
+    })
+
+    test('handles empty objects', () => {
+      expect(objectToString({})).toBe('{}')
+    })
+
+    test('handles arrays and nested values', () => {
+      const obj = {
+        array: [1, 'test', { nested: 'value' }],
+        nested: { foo: 'bar' },
+        string: 'hello\nworld',
+        quotedString: "I'm quoted"
+      }
+
+      const result = objectToString(obj)
+
+      // Test array formatting
+      expect(result).toContain('array: [\n')
+      expect(result).toContain('    1,\n')
+      expect(result).toContain("    'test',\n")
+      expect(result).toContain("    {\n      nested: 'value',\n    },\n")
+
+      // Test nested object formatting
+      expect(result).toContain('nested: {\n')
+      expect(result).toContain("    foo: 'bar',\n")
+
+      // Test string handling
+      expect(result).toContain('string: `hello\nworld`')
+      expect(result).toContain("quotedString: `I'm quoted`")
+    })
   })
 
   describe('Object inspection', () => {
