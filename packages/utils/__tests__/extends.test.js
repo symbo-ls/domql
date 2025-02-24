@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals'
 import {
   createExtends,
   generateHash,
@@ -7,7 +8,7 @@ import {
   extractArrayExtend,
   deepExtend,
   flattenExtend,
-  deepMergeExtend,
+  deepMergeExtends,
   cloneAndMergeArrayExtend,
   mapStringsWithContextComponents,
   jointStacks,
@@ -17,7 +18,10 @@ import {
   addExtends,
   createElementExtends,
   inheritChildExtends,
-  inheritRecursiveChildExtends
+  inheritRecursiveChildExtends,
+  createExtendsStack,
+  finalizeExtends,
+  applyExtends
 } from '../extends.js'
 
 describe('createExtends', () => {
@@ -148,10 +152,10 @@ describe('Extend stacking', () => {
 })
 
 describe('Merge operations', () => {
-  test('deepMergeExtend merges objects correctly', () => {
+  test('deepMergeExtends merges objects correctly', () => {
     const element = { a: 1, b: { c: 2 } }
     const extend = { b: { d: 3 }, e: 4 }
-    const result = deepMergeExtend(element, extend)
+    const result = deepMergeExtends(element, extend)
     expect(result).toEqual({ a: 1, b: { c: 2, d: 3 }, e: 4 })
   })
 
@@ -161,10 +165,10 @@ describe('Merge operations', () => {
     expect(result).toEqual({ a: 1, b: 2 })
   })
 
-  test('deepMergeExtend handles array to object merge', () => {
+  test('deepMergeExtends handles array to object merge', () => {
     const element = { items: [{ id: 1 }, { id: 2 }] }
     const extend = { items: { length: 2, type: 'list' } }
-    const result = deepMergeExtend(element, extend)
+    const result = deepMergeExtends(element, extend)
     expect(result.items).toEqual({
       0: { id: 1 },
       1: { id: 2 },
@@ -173,13 +177,13 @@ describe('Merge operations', () => {
     })
   })
 
-  test('deepMergeExtend assigns function when property is undefined', () => {
+  test('deepMergeExtends assigns function when property is undefined', () => {
     const element = { existingProp: 'value' }
     const extend = {
       handler: () => 'handled',
       existingProp: () => 'ignored'
     }
-    const result = deepMergeExtend(element, extend)
+    const result = deepMergeExtends(element, extend)
     expect(typeof result.handler).toBe('function')
     expect(result.handler()).toBe('handled')
     expect(result.existingProp).toBe('value') // Should not override existing prop
@@ -276,7 +280,7 @@ describe('Complex extend scenarios', () => {
       f: [4, { j: 5 }],
       k: 6
     }
-    const result = deepMergeExtend(element, extend)
+    const result = deepMergeExtends(element, extend)
     expect(result).toEqual({
       a: 1,
       b: { c: 2, d: { e: 3, h: 4 }, i: 5 },
@@ -587,7 +591,6 @@ describe('createElementExtends', () => {
         __extends: ['Base']
       },
       context: {
-        defaultExtends: ['Default'],
         components: {
           Base: { base: true },
           Child: { child: true },
@@ -603,7 +606,7 @@ describe('createElementExtends', () => {
       childExtendsRecursive: ['Recursive']
     }
     const stack = createElementExtends(element, parent)
-    expect(stack).toEqual(['Base', 'Child', 'Recursive', 'Default'])
+    expect(stack).toEqual(['Base', 'Child', 'Recursive'])
   })
 
   test('maintains extends property in test environment', () => {
@@ -628,6 +631,247 @@ describe('createElementExtends', () => {
     expect(element.extends).toBe('ShouldRemain')
 
     process.env.NODE_ENV = originalEnv
+  })
+})
+
+describe('createExtendsStack', () => {
+  test('creates basic extend stack', () => {
+    const element = {
+      props: {},
+      __ref: {
+        __extends: ['Button']
+      },
+      context: {
+        components: {
+          Button: { base: true }
+        }
+      }
+    }
+    const parent = {}
+    const stack = createExtendsStack(element, parent)
+    expect(stack).toEqual([{ base: true }])
+  })
+
+  test('handles variant mapping', () => {
+    const element = {
+      props: {
+        variant: 'primary'
+      },
+      __ref: {
+        __extends: ['Button']
+      },
+      context: {
+        components: {
+          'Button.primary': { primary: true },
+          Button: { base: true }
+        }
+      }
+    }
+    const parent = {}
+    const stack = createExtendsStack(element, parent)
+    expect(stack).toEqual([{ primary: true }])
+  })
+
+  test('removes duplicate extends', () => {
+    const element = {
+      props: {},
+      __ref: {
+        __extends: ['Button', 'Button']
+      },
+      context: {
+        components: {
+          Button: { base: true }
+        }
+      }
+    }
+    const parent = {}
+    const stack = createExtendsStack(element, parent)
+    expect(stack).toEqual([{ base: true }])
+  })
+
+  test('stores stack in __ref.__extendsStack', () => {
+    const element = {
+      props: {},
+      __ref: {
+        __extends: ['Button']
+      },
+      context: {
+        components: {
+          Button: { base: true }
+        }
+      }
+    }
+    const parent = {}
+    createExtendsStack(element, parent)
+    expect(element.__ref.__extendsStack).toEqual([{ base: true }])
+  })
+
+  test('handles non-existent component references', () => {
+    const element = {
+      props: {},
+      __ref: {
+        __extends: ['NonExistentButton']
+      },
+      context: {
+        components: {}
+      }
+    }
+    const parent = {}
+    const stack = createExtendsStack(element, parent)
+    expect(stack).toEqual([])
+  })
+
+  test('handles multiple extends with variants', () => {
+    const element = {
+      props: {
+        variant: 'success'
+      },
+      __ref: {
+        __extends: ['Button', 'Input']
+      },
+      context: {
+        components: {
+          'Button.success': { success: true, type: 'button' },
+          'Input.success': { success: true, type: 'input' },
+          Button: { base: true, type: 'button' },
+          Input: { base: true, type: 'input' }
+        }
+      }
+    }
+    const stack = createExtendsStack(element, {})
+    expect(stack).toEqual([
+      { success: true, type: 'button' },
+      { base: true, type: 'input' }
+    ])
+  })
+
+  test('handles nested component references', () => {
+    const element = {
+      props: {},
+      __ref: {
+        __extends: ['Form.Input.Text']
+      },
+      context: {
+        components: {
+          'Form.Input.Text': { type: 'text', nested: true },
+          'Form.Input': { input: true },
+          Form: { form: true }
+        }
+      }
+    }
+    const stack = createExtendsStack(element, {})
+    expect(stack).toEqual([{ type: 'text', nested: true }])
+  })
+
+  test('handles extends with options.verbose in development', () => {
+    const originalEnv = process.env.NODE_ENV
+    process.env.NODE_ENV = 'development'
+    const consoleSpy = jest.spyOn(console, 'warn').mockImplementation()
+
+    const element = {
+      props: {},
+      __ref: {
+        __extends: ['NonExistentComponent']
+      },
+      context: {
+        components: {}
+      }
+    }
+    const options = { verbose: true }
+    createExtendsStack(element, {}, options)
+
+    expect(consoleSpy).toHaveBeenCalledWith(
+      'Extend is string but component was not found:',
+      'NonExistentComponent'
+    )
+
+    consoleSpy.mockRestore()
+    process.env.NODE_ENV = originalEnv
+  })
+
+  test('handles smbls prefixed components', () => {
+    const element = {
+      props: {},
+      __ref: {
+        __extends: ['smbls.Button']
+      },
+      context: {
+        components: {
+          'smbls.Button': { framework: true, type: 'button' }
+        }
+      }
+    }
+    const stack = createExtendsStack(element, {})
+    expect(stack).toEqual([{ framework: true, type: 'button' }])
+  })
+
+  test('handles page components starting with slash', () => {
+    const element = {
+      props: {},
+      __ref: {
+        __extends: ['/Home']
+      },
+      context: {
+        pages: {
+          '/Home': { isPage: true, path: '/home' }
+        }
+      }
+    }
+    const stack = createExtendsStack(element, {})
+    expect(stack).toEqual([{ isPage: true, path: '/home' }])
+  })
+
+  test('stores stack in __ref.__extendsStack and returns same reference', () => {
+    const element = {
+      props: {},
+      __ref: {
+        __extends: ['Button']
+      },
+      context: {
+        components: {
+          Button: { base: true }
+        }
+      }
+    }
+    const stack = createExtendsStack(element, {})
+    expect(stack).toBe(element.__ref.__extendsStack)
+    expect(stack).toEqual([{ base: true }])
+  })
+
+  test('handles combination of regular and variant components', () => {
+    const element = {
+      props: {
+        variant: 'primary'
+      },
+      __ref: {
+        __extends: ['Button', 'Icon']
+      },
+      context: {
+        components: {
+          'Button.primary': { primary: true, type: 'button' },
+          Icon: { type: 'icon' }
+        }
+      }
+    }
+    const stack = createExtendsStack(element, {})
+    expect(stack).toEqual([{ primary: true, type: 'button' }, { type: 'icon' }])
+  })
+
+  test('removes duplicates while preserving order', () => {
+    const element = {
+      props: {},
+      __ref: {
+        __extends: ['Button', 'Input', 'Button']
+      },
+      context: {
+        components: {
+          Button: { type: 'button' },
+          Input: { type: 'input' }
+        }
+      }
+    }
+    const stack = createExtendsStack(element, {})
+    expect(stack).toEqual([{ type: 'button' }, { type: 'input' }])
   })
 })
 
@@ -741,5 +985,361 @@ describe('inheritRecursiveChildExtends', () => {
     }
     const result = inheritRecursiveChildExtends(element, parent)
     expect(result).toEqual(['Base', 'Recursive1'])
+  })
+})
+
+describe('finalizeExtends', () => {
+  test('merges extendsStack into element', () => {
+    const element = {
+      prop1: 'original',
+      __ref: {
+        __extendsStack: [{ prop2: 'value2' }, { prop3: 'value3' }]
+      }
+    }
+    const result = finalizeExtends(element, {})
+    expect(result).toEqual({
+      prop1: 'original',
+      prop2: 'value2',
+      prop3: 'value3',
+      __ref: {
+        __extendsStack: [{ prop2: 'value2' }, { prop3: 'value3' }]
+      }
+    })
+  })
+
+  test('handles nested object merging', () => {
+    const element = {
+      nested: {
+        a: 1,
+        b: { x: 1 }
+      },
+      __ref: {
+        __extendsStack: [
+          {
+            nested: {
+              b: { y: 2 },
+              c: 3
+            }
+          }
+        ]
+      }
+    }
+    const result = finalizeExtends(element, {})
+    expect(result.nested).toEqual({
+      a: 1,
+      b: { x: 1, y: 2 },
+      c: 3
+    })
+  })
+
+  test('preserves functions from extends', () => {
+    const handler = () => 'handled'
+    const element = {
+      __ref: {
+        __extendsStack: [{ onClick: handler }]
+      }
+    }
+    const result = finalizeExtends(element, {})
+    expect(result.onClick).toBe(handler)
+    expect(result.onClick()).toBe('handled')
+  })
+
+  test('handles array merging', () => {
+    const element = {
+      items: [1, 2],
+      __ref: {
+        __extendsStack: [{ items: [3, 4] }]
+      }
+    }
+    const result = finalizeExtends(element, {})
+    expect(result.items).toEqual([1, 2, 3, 4])
+  })
+
+  test('handles multiple extends in correct order', () => {
+    const element = {
+      value: 'original',
+      __ref: {
+        __extendsStack: [
+          { value: 'first', extra: 1 },
+          { value: 'second', other: 2 }
+        ]
+      }
+    }
+    const result = finalizeExtends(element, {})
+    expect(result).toEqual({
+      value: 'original',
+      extra: 1,
+      other: 2,
+      __ref: {
+        __extendsStack: [
+          { value: 'first', extra: 1 },
+          { value: 'second', other: 2 }
+        ]
+      }
+    })
+  })
+})
+
+describe('applyExtends', () => {
+  test('applies basic extends to element', () => {
+    const element = {
+      props: {},
+      __ref: {
+        __extends: ['Button']
+      },
+      context: {
+        components: {
+          Button: { type: 'button', color: 'primary' }
+        }
+      }
+    }
+    const result = applyExtends(element, {})
+    expect(result).toEqual({
+      props: {},
+      __ref: {
+        __extends: ['Button'],
+        __extendsStack: [{ type: 'button', color: 'primary' }]
+      },
+      context: {
+        components: {
+          Button: { type: 'button', color: 'primary' }
+        }
+      },
+      type: 'button',
+      color: 'primary'
+    })
+  })
+
+  test('handles complex inheritance chain', () => {
+    const element = {
+      props: {
+        variant: 'primary'
+      },
+      __ref: {
+        __extends: ['BaseButton']
+      },
+      context: {
+        components: {
+          BaseButton: { type: 'button', base: true },
+          'BaseButton.primary': { color: 'blue', primary: true },
+          CustomButton: { custom: true }
+        }
+      }
+    }
+    const parent = {
+      props: {
+        childExtends: ['CustomButton']
+      }
+    }
+
+    const result = applyExtends(element, parent)
+
+    // Check both the extends array and the merged properties
+    expect(result.__ref.__extends).toEqual(['BaseButton', 'CustomButton'])
+    expect(result.__ref.__extendsStack).toBeDefined()
+    expect(result).toMatchObject({
+      color: 'blue',
+      primary: true,
+      custom: true
+    })
+  })
+
+  test('handles extends with context defaultExtends', () => {
+    const element = {
+      props: {},
+      __ref: {
+        __extends: ['Button']
+      },
+      context: {
+        defaultExtends: ['DefaultComponent'],
+        components: {
+          Button: { type: 'button' },
+          DefaultComponent: { theme: 'light' }
+        }
+      }
+    }
+    const result = applyExtends(element, {})
+    expect(result).toMatchObject({
+      type: 'button',
+      theme: 'light'
+    })
+  })
+
+  test('handles recursive child extends', () => {
+    const element = {
+      props: {},
+      __ref: {
+        __extends: ['Input']
+      },
+      context: {
+        components: {
+          Input: { type: 'input' },
+          Themed: { theme: 'dark' }
+        }
+      }
+    }
+    const parent = {
+      childExtendsRecursive: ['Themed']
+    }
+    const result = applyExtends(element, parent)
+    expect(result.__ref.__extends).toEqual(['Input', 'Themed'])
+    expect(result).toMatchObject({
+      props: {},
+      type: 'input',
+      theme: 'dark'
+    })
+  })
+
+  test('respects ignoreChildExtends option', () => {
+    const element = {
+      props: {
+        ignoreChildExtends: true
+      },
+      __ref: {
+        __extends: ['Base']
+      },
+      context: {
+        components: {
+          Base: { base: true }
+        }
+      }
+    }
+    const parent = {
+      props: {
+        childExtends: ['Child']
+      },
+      context: {
+        components: {
+          Child: { child: true }
+        }
+      }
+    }
+    const result = applyExtends(element, parent)
+    expect(result).toMatchObject({
+      base: true
+    })
+    expect(result).not.toHaveProperty('child')
+  })
+
+  test('handles multiple variant extends', () => {
+    const element = {
+      props: {
+        variant: 'success'
+      },
+      __ref: {
+        __extends: ['Button', 'Input']
+      },
+      context: {
+        components: {
+          'Button.success': { color: 'green' },
+          'Input.success': { background: 'lightgreen' },
+          Button: { type: 'button' },
+          Input: { type: 'input' }
+        }
+      }
+    }
+    const result = applyExtends(element, {})
+    expect(result).toMatchObject({
+      color: 'green',
+      type: 'input'
+    })
+  })
+
+  test('maintains original properties while extending', () => {
+    const element = {
+      originalProp: 'stays',
+      props: {},
+      __ref: {
+        __extends: ['Button']
+      },
+      context: {
+        components: {
+          Button: { newProp: 'added' }
+        }
+      }
+    }
+    const result = applyExtends(element, {})
+    expect(result).toMatchObject({
+      originalProp: 'stays',
+      newProp: 'added'
+    })
+  })
+
+  test('handles deep nested properties', () => {
+    const element = {
+      props: {},
+      style: {
+        color: 'red'
+      },
+      __ref: {
+        __extends: ['StyledButton']
+      },
+      context: {
+        components: {
+          StyledButton: {
+            style: {
+              background: 'blue',
+              padding: '10px'
+            }
+          }
+        }
+      }
+    }
+    const result = applyExtends(element, {})
+    expect(result.style).toEqual({
+      color: 'red',
+      background: 'blue',
+      padding: '10px'
+    })
+  })
+
+  test('handles function properties', () => {
+    const baseHandler = () => 'base'
+    const element = {
+      props: {},
+      __ref: {
+        __extends: ['Interactive']
+      },
+      context: {
+        components: {
+          Interactive: {
+            onClick: baseHandler
+          }
+        }
+      }
+    }
+    const result = applyExtends(element, {})
+    expect(result.onClick).toBe(baseHandler)
+    expect(result.onClick()).toBe('base')
+  })
+
+  test('processes entire extend chain in correct order', () => {
+    const element = {
+      props: {},
+      __ref: {
+        __extends: ['Level1']
+      },
+      context: {
+        components: {
+          Level1: {
+            extends: 'Level2',
+            first: true
+          },
+          Level2: {
+            extends: 'Level3',
+            second: true
+          },
+          Level3: {
+            third: true
+          }
+        }
+      }
+    }
+    const result = applyExtends(element, {})
+    expect(result).toMatchObject({
+      first: true,
+      second: true,
+      third: true
+    })
   })
 })

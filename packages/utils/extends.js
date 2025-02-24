@@ -137,9 +137,9 @@ export const flattenExtend = (
   return stack
 }
 
-export const deepMergeExtend = (element, extend) => {
+export const deepMergeExtends = (element, extend) => {
   for (const e in extend) {
-    if (['parent', 'node', '__element'].indexOf(e) > -1) continue
+    if (['parent', 'node', '__ref'].indexOf(e) > -1) continue
     const elementProp = element[e]
     const extendProp = extend[e]
     if (e === '__proto__') continue
@@ -151,12 +151,12 @@ export const deepMergeExtend = (element, extend) => {
         element[e] = extendProp
       }
     } else if (isObject(elementProp) && isObject(extendProp)) {
-      deepMergeExtend(elementProp, extendProp)
+      deepMergeExtends(elementProp, extendProp)
     } else if (isArray(elementProp) && isArray(extendProp)) {
       element[e] = elementProp.concat(extendProp)
     } else if (isArray(elementProp) && isObject(extendProp)) {
-      const obj = deepMergeExtend({}, elementProp)
-      element[e] = deepMergeExtend(obj, extendProp)
+      const obj = deepMergeExtends({}, elementProp)
+      element[e] = deepMergeExtends(obj, extendProp)
     } else if (elementProp === undefined && isFunction(extendProp)) {
       element[e] = extendProp
     }
@@ -166,7 +166,7 @@ export const deepMergeExtend = (element, extend) => {
 
 export const cloneAndMergeArrayExtend = stack => {
   return stack.reduce((a, c) => {
-    return deepMergeExtend(a, deepClone(c))
+    return deepMergeExtends(a, deepClone(c))
   }, {})
 }
 
@@ -255,14 +255,14 @@ export const getExtendsInElement = obj => {
 }
 
 export const createElementExtends = (element, parent, options = {}) => {
-  const { props, __ref: ref, context: elementContext } = element
+  const { props, __ref: ref } = element
 
   if (props.extends) addExtends(props.extends, element)
 
   inheritChildExtends(element, parent, options)
   inheritRecursiveChildExtends(element, parent, options)
 
-  const context = elementContext || parent.context
+  const context = element.context || parent.context
 
   if (element.component) {
     addExtends(exec(element.component, element), element)
@@ -306,15 +306,21 @@ export const inheritRecursiveChildExtends = (element, parent, options = {}) => {
   return ref.__extends
 }
 
-export const createExtendStack = (element, parent, options = {}) => {
-  const { props, context, __ref: ref } = element
+export const createExtendsStack = (element, parent, options = {}) => {
+  const { props, __ref: ref } = element
+  const context = element.context || parent.context
 
   // if (ENV !== 'test' && ENV !== 'development') delete element.extends
   const variant = element.variant || props.variant
 
   const __extends = removeDuplicatesInArray(
-    ref.__extends.map(val => {
-      return mapStringsWithContextComponents(val, context, options, variant)
+    ref.__extends.map((val, i) => {
+      return mapStringsWithContextComponents(
+        val,
+        context,
+        options,
+        i === 0 && variant
+      )
     })
   )
 
@@ -324,25 +330,22 @@ export const createExtendStack = (element, parent, options = {}) => {
   return ref.__extendsStack
 }
 
-export const finalizeExtend = (element, parent, options = {}) => {
+export const finalizeExtends = (element, parent, options = {}) => {
   const { __ref: ref } = element
   const { __extendsStack } = ref
   const flattenExtends = cloneAndMergeArrayExtend(__extendsStack)
 
-  return deepMergeExtend(element, flattenExtends)
+  return deepMergeExtends(element, flattenExtends)
 }
 
-export const applyExtend = (element, parent, options = {}) => {
-  // const { __ref: ref } = element
-
+export const applyExtends = (element, parent, options = {}) => {
   createElementExtends(element, parent, options)
-  createExtendStack(element, parent, options)
-  finalizeExtend(element, parent, options)
-
+  createExtendsStack(element, parent, options)
+  finalizeExtends(element, parent, options)
   return element
 }
 
-// export const applyExtend = (element, parent, options = {}) => {
+// export const applyExtends = (element, parent, options = {}) => {
 //   if (isFunction(element)) element = exec(element, parent)
 
 //   const { props, __ref } = element
@@ -407,9 +410,9 @@ export const applyExtend = (element, parent, options = {}) => {
 //   const component = exec(element.component || mergedExtend.component, element)
 //   if (component && COMPONENTS && COMPONENTS[component]) {
 //     const componentExtend = cloneAndMergeArrayExtend(getExtendsStack(COMPONENTS[component]))
-//     mergedExtend = deepMergeExtend(componentExtend, mergedExtend)
+//     mergedExtend = deepMergeExtends(componentExtend, mergedExtend)
 //   }
 
-//   const merged = deepMergeExtend(element, mergedExtend)
+//   const merged = deepMergeExtends(element, mergedExtend)
 //   return merged
 // }

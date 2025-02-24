@@ -11,7 +11,7 @@ import {
   detectInfiniteLoop,
   redefineProperties,
   createElement,
-  applyExtend
+  applyExtends
 } from '@domql/utils'
 
 import { applyAnimationFrame, triggerEventOn } from '@domql/event'
@@ -46,7 +46,7 @@ export const create = async (
 
   const { key, parent, __ref: ref } = element
 
-  applyExtend(element, parent, options)
+  applyExtends(element, parent, options)
 
   redefineProperties(element, parent)
 
