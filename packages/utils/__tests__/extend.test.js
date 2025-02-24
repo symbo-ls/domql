@@ -14,8 +14,56 @@ import {
   getExtendStack,
   addExtend,
   addAsExtends,
-  getExtendsInElement
+  getExtendsInElement,
+  createExtendsFromKeys
 } from '../extends.js'
+
+describe('createExtends', () => {
+  test('creates extends from key and element extends', () => {
+    const element = { extends: 'BaseComponent' }
+    const parent = {}
+    const key = 'Button+Input'
+
+    const result = createExtends(element, parent, key)
+    expect(result).toEqual(['Button', 'Input', 'BaseComponent'])
+  })
+
+  test('handles element with array extends', () => {
+    const element = { extends: ['Base', 'Mixin'] }
+    const parent = {}
+    const key = 'Component'
+
+    const result = createExtends(element, parent, key)
+    expect(result).toEqual(['Component', 'Base', 'Mixin'])
+  })
+
+  test('handles element without extends', () => {
+    const element = {}
+    const parent = {}
+    const key = 'Simple'
+
+    const result = createExtends(element, parent, key)
+    expect(result).toEqual(['Simple'])
+  })
+
+  test('handles underscore notation in key', () => {
+    const element = {}
+    const parent = {}
+    const key = 'Button_primary'
+
+    const result = createExtends(element, parent, key)
+    expect(result).toEqual(['Button'])
+  })
+
+  test('handles dot notation in key', () => {
+    const element = {}
+    const parent = {}
+    const key = 'Button.label'
+
+    const result = createExtends(element, parent, key)
+    expect(result).toEqual(['Button'])
+  })
+})
 
 describe('Hash functions', () => {
   test('generateHash returns string', () => {
@@ -52,6 +100,25 @@ describe('Hash functions', () => {
     const result = getExtendStackRegistry(extend, stack)
     expect(result).toBe(stack)
     expect(extend.__hash).toBeDefined()
+  })
+})
+
+describe('createExtendsFromKeys', () => {
+  test('extracts component key with + separator', () => {
+    expect(createExtendsFromKeys('Button+Input')).toEqual(['Button', 'Input'])
+  })
+
+  test('extracts component key with _ separator', () => {
+    expect(createExtendsFromKeys('Button_primary')).toEqual(['Button'])
+  })
+
+  test('extracts component key with . separator', () => {
+    expect(createExtendsFromKeys('Button.label')).toEqual(['Button'])
+    expect(createExtendsFromKeys('Button.Label')).toEqual(['Button.Label'])
+  })
+
+  test('returns original key if no separator', () => {
+    expect(createExtendsFromKeys('Button')).toEqual(['Button'])
   })
 })
 
@@ -277,54 +344,5 @@ describe('Complex extend scenarios', () => {
       { custom: true },
       { final: true }
     ])
-  })
-})
-
-describe('createExtends', () => {
-  test('handles element with no extends', () => {
-    const element = { prop: 'value' }
-    const parent = {}
-    const result = createExtends(element, parent, 'key')
-    expect(result).toEqual([])
-  })
-
-  test('handles element with single extend', () => {
-    const element = { extends: { test: true } }
-    const parent = {}
-    const result = createExtends(element, parent, 'key')
-    expect(result).toEqual([{ test: true }])
-  })
-
-  test('handles element with array of extends', () => {
-    const element = { extends: [{ test1: true }, { test2: true }] }
-    const parent = {}
-    const result = createExtends(element, parent, 'key')
-    expect(result).toEqual([{ test1: true }, { test2: true }])
-  })
-
-  test('handles context component extends', () => {
-    const element = {}
-    const parent = {
-      context: {
-        components: {
-          TestComponent: { fromContext: true }
-        }
-      }
-    }
-    const result = createExtends(element, parent, 'TestComponent')
-    expect(result).toEqual([{ fromContext: true }])
-  })
-
-  test('combines context and element extends', () => {
-    const element = { extends: { fromElement: true } }
-    const parent = {
-      context: {
-        components: {
-          TestComponent: { fromContext: true }
-        }
-      }
-    }
-    const result = createExtends(element, parent, 'TestComponent')
-    expect(result).toEqual([{ fromContext: true }, { fromElement: true }])
   })
 })

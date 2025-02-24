@@ -8,29 +8,32 @@ const ENV = process.env.NODE_ENV
 
 export const createExtendsFromKeys = key => {
   if (key.includes('+')) {
-    return key.split('+')
+    return key.split('+').filter(matchesComponentNaming)
   }
 
   if (key.includes('_')) {
-    return [key.split('_')[0]]
+    const [first] = key.split('_')
+    return [first]
   }
 
   if (key.includes('.') && !matchesComponentNaming(key.split('.')[1])) {
-    return [key.split('.')[0]]
+    const [first] = key.split('.')
+    return [first]
   }
 
   return [key]
 }
 
+// Initial extend creation
 export const createExtends = (element, parent, key) => {
-  const __extends = []
+  let __extends = []
   const keyExtends = createExtendsFromKeys(key)
-  if (keyExtends) __extends.push(keyExtends)
+  if (keyExtends) __extends = [...keyExtends]
   const elementExtends = element.extends
   if (elementExtends) {
-    return isArray(elementExtends)
-      ? __extends.concat(elementExtends)
-      : __extends.push(elementExtends)
+    __extends = isArray(elementExtends)
+      ? [...__extends, ...elementExtends]
+      : [...__extends, elementExtends]
   }
   return __extends
 }

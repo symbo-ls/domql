@@ -9,7 +9,9 @@ export const IGNORE_PROPS_PARAMS = ['update', '__element']
 export const createProps = (element, parent, key) => {
   const { props, __ref: ref } = element
   ref.__propsStack = []
+  // if (props !== undefined) ref.__initialProps = props
   if (props) ref.__initialProps = props
+  else return {}
   if (!isObjectLike(props)) {
     ref.__propsStack.push(props)
     return {}
