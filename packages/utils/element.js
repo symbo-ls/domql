@@ -107,11 +107,7 @@ export const addContext = (element, parent, key, options, root) => {
   if (forcedOptionsContext) root.context = options.context
 
   // inherit from parent or root
-  if (!element.context) {
-    return parent.context || options.context || root.context
-  }
-
-  return element.context
+  return options.context || parent.context || root.context || element.context
 }
 
 export const createElement = (passedProps, parentEl, passedKey, opts, root) => {

@@ -1,4 +1,5 @@
 import {
+  createExtends,
   generateHash,
   getHashedExtend,
   setHashedExtend,
@@ -14,7 +15,7 @@ import {
   addExtend,
   addAsExtends,
   getExtendsInElement
-} from '../extend.js'
+} from '../extends.js'
 
 describe('Hash functions', () => {
   test('generateHash returns string', () => {
@@ -276,5 +277,54 @@ describe('Complex extend scenarios', () => {
       { custom: true },
       { final: true }
     ])
+  })
+})
+
+describe('createExtends', () => {
+  test('handles element with no extends', () => {
+    const element = { prop: 'value' }
+    const parent = {}
+    const result = createExtends(element, parent, 'key')
+    expect(result).toEqual([])
+  })
+
+  test('handles element with single extend', () => {
+    const element = { extends: { test: true } }
+    const parent = {}
+    const result = createExtends(element, parent, 'key')
+    expect(result).toEqual([{ test: true }])
+  })
+
+  test('handles element with array of extends', () => {
+    const element = { extends: [{ test1: true }, { test2: true }] }
+    const parent = {}
+    const result = createExtends(element, parent, 'key')
+    expect(result).toEqual([{ test1: true }, { test2: true }])
+  })
+
+  test('handles context component extends', () => {
+    const element = {}
+    const parent = {
+      context: {
+        components: {
+          TestComponent: { fromContext: true }
+        }
+      }
+    }
+    const result = createExtends(element, parent, 'TestComponent')
+    expect(result).toEqual([{ fromContext: true }])
+  })
+
+  test('combines context and element extends', () => {
+    const element = { extends: { fromElement: true } }
+    const parent = {
+      context: {
+        components: {
+          TestComponent: { fromContext: true }
+        }
+      }
+    }
+    const result = createExtends(element, parent, 'TestComponent')
+    expect(result).toEqual([{ fromContext: true }, { fromElement: true }])
   })
 })

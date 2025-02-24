@@ -1,23 +1,30 @@
 'use strict'
 
 import { joinArrays } from './array.js'
-import {
-  matchesComponentNaming,
-  extractComponentKeyFromElementKey
-} from './component.js'
+import { matchesComponentNaming } from './component.js'
 import { deepClone, exec } from './object.js'
 import { isArray, isFunction, isObject, isString } from './types.js'
 const ENV = process.env.NODE_ENV
 
-export function isContextComponent (initialElement, parent, key) {
-  const { context } = parent || {}
-  const extendFromKey = extractComponentKeyFromElementKey(key)[0]
-  return context?.components?.[extendFromKey] || context?.pages?.[extendFromKey]
+export const createExtendsFromKeys = key => {
+  if (key.includes('+')) {
+    return key.split('+')
+  }
+
+  if (key.includes('_')) {
+    return [key.split('_')[0]]
+  }
+
+  if (key.includes('.') && !matchesComponentNaming(key.split('.')[1])) {
+    return [key.split('.')[0]]
+  }
+
+  return [key]
 }
 
 export const createExtends = (element, parent, key) => {
   const __extends = []
-  const keyExtends = isContextComponent(key)
+  const keyExtends = createExtendsFromKeys(key)
   if (keyExtends) __extends.push(keyExtends)
   const elementExtends = element.extends
   if (elementExtends) {

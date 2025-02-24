@@ -3,7 +3,8 @@ import {
   createBasedOnType,
   addCaching,
   addRef,
-  createParent
+  createParent,
+  addContext
 } from '../element.js'
 
 describe('returnValueAsText', () => {
@@ -101,5 +102,41 @@ describe('createParent', () => {
       node: nodeParent
     })
     expect(root.testKey_parent).toBe(result)
+  })
+})
+
+describe('addContext', () => {
+  test('should use options context when forced', () => {
+    const element = {}
+    const parent = {}
+    const options = { context: { test: true } }
+    const root = {}
+
+    const result = addContext(element, parent, 'key', options, root)
+
+    expect(result).toEqual({ test: true })
+    expect(root.context).toEqual({ test: true })
+  })
+
+  test('should inherit context from parent', () => {
+    const element = {}
+    const parent = { context: { fromParent: true } }
+    const options = {}
+    const root = {}
+
+    const result = addContext(element, parent, 'key', options, root)
+
+    expect(result).toEqual({ fromParent: true })
+  })
+
+  test('should prioritize parent context', () => {
+    const element = { context: { fromElement: true } }
+    const parent = { context: { fromParent: true } }
+    const options = { context: { fromOptions: true } }
+    const root = { context: { fromRoot: true } }
+
+    const result = addContext(element, parent, 'key', options, root)
+
+    expect(result).toEqual({ fromOptions: true })
   })
 })
