@@ -62,7 +62,7 @@ export const updateState = async function (
   return state
 }
 
-const hoistStateUpdate = async (state, obj, options) => {
+export const hoistStateUpdate = async (state, obj, options) => {
   const element = state.__element
   const { parent, __ref: ref } = element
 

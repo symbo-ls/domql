@@ -182,3 +182,109 @@ describe('State Methods', () => {
     })
   })
 })
+
+describe('applyStateMethods', () => {
+  let mockElement
+  let state
+
+  beforeEach(() => {
+    state = { testKey: 'testValue' }
+    mockElement = {
+      state,
+      key: 'testElement',
+      parent: {
+        state: { parentKey: 'parentValue' }
+      },
+      __ref: {
+        root: {
+          state: { rootKey: 'rootValue' }
+        }
+      }
+    }
+    methods.applyStateMethods(mockElement)
+  })
+
+  test('adds all state methods to the object', () => {
+    const expectedMethods = [
+      'clean',
+      'parse',
+      'destroy',
+      'update',
+      'rootUpdate',
+      'parentUpdate',
+      'create',
+      'add',
+      'toggle',
+      'remove',
+      'apply',
+      'applyReplace',
+      'applyFunction',
+      'set',
+      'quietUpdate',
+      'replace',
+      'quietReplace',
+      'reset',
+      'setByPath',
+      'setPathCollection',
+      'removeByPath',
+      'removePathCollection',
+      'getByPath',
+      'keys',
+      'values'
+    ]
+
+    expectedMethods.forEach(method => {
+      expect(typeof state[method]).toBe('function')
+    })
+  })
+
+  test('sets correct references', () => {
+    expect(state.__element).toBe(mockElement)
+    expect(state.parent).toBe(mockElement.parent.state)
+    expect(state.root).toBe(mockElement.__ref.root.state)
+    expect(state.__children).toEqual({})
+  })
+
+  test('handles array states', () => {
+    const arrayState = ['item1', 'item2']
+    const arrayElement = {
+      state: arrayState,
+      key: 'arrayElement',
+      parent: {
+        state: { parentKey: 'parentValue' }
+      },
+      __ref: {
+        root: {
+          state: { rootKey: 'rootValue' }
+        }
+      }
+    }
+
+    methods.applyStateMethods(arrayElement)
+
+    expect(Array.isArray(arrayElement.state)).toBe(true)
+    expect(typeof arrayElement.state.update).toBe('function')
+    expect(arrayElement.state.__element).toBe(arrayElement)
+  })
+
+  test('connects parent-child relationship', () => {
+    const childState = { childKey: 'childValue' }
+    const childElement = {
+      state: childState,
+      key: 'childElement',
+      parent: {
+        state
+      },
+      __ref: {
+        root: {
+          state: { rootKey: 'rootValue' }
+        }
+      }
+    }
+
+    methods.applyStateMethods(childElement)
+
+    expect(state.__children[childElement.key]).toBe(childState)
+    expect(childState.parent).toBe(state)
+  })
+})
