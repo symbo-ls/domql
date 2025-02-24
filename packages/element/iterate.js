@@ -7,11 +7,11 @@ import {
   isNumber,
   isString,
   matchesComponentNaming,
-  isContextComponent
+  isContextComponent,
+  isMethod
 } from '@domql/utils'
 
 import { METHODS_EXL, overwrite } from './utils/index.js'
-import { isMethod } from './methods/index.js'
 
 export const throughInitialExec = (element, exclude = {}) => {
   const { __ref: ref } = element

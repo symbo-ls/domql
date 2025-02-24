@@ -11,14 +11,15 @@ import {
   detectInfiniteLoop,
   propertizeElement,
   createElement,
-  applyExtends
+  applyExtends,
+  createScope,
+  isMethod
 } from '@domql/utils'
 
 import { applyAnimationFrame, triggerEventOn } from '@domql/event'
 import { assignNode } from '@domql/render'
 import { createState } from '@domql/state'
 
-import { isMethod } from './methods/index.js'
 import { createProps } from './props/index.js'
 import { REGISTRY, registry } from './mixins/index.js'
 import { addMethods } from './methods/set.js'
@@ -50,8 +51,6 @@ export const create = async (
 
   propertizeElement(element, parent)
 
-  element.key = key
-
   await triggerEventOn('start', element, options)
 
   if (options.onlyResolveExtends) {
@@ -79,8 +78,8 @@ export const create = async (
   createIfConditionFlag(element, parent)
 
   // if it already HAS a NODE
-  if (element.node && ref.__if) {
-    return assignNode(element, parent, key, attachOptions)
+  if (element.node) {
+    if (ref.__if) return assignNode(element, parent, key, attachOptions)
   }
 
   // apply variants
@@ -202,13 +201,6 @@ const renderElement = async (element, parent, options, attachOptions) => {
 
   // run `on.done`
   await triggerEventOn('create', element, options)
-}
-
-// Create scope - shared object across the elements to the own or the nearest parent
-const createScope = (element, parent) => {
-  const { __ref: ref } = element
-  // If the element doesn't have a scope, initialize it using the parent's scope or the root's scope.
-  if (!element.scope) element.scope = parent.scope || ref.root.scope || {}
 }
 
 const createIfConditionFlag = (element, parent) => {

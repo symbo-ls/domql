@@ -1,42 +1,35 @@
 'use strict'
 
-import { deepClone } from './object.js'
-import { is, isObjectLike, isUndefined } from './types.js'
+import { addProtoToArray } from './array.js'
+import { STATE_METHODS } from './keys.js'
+import {
+  deepClone,
+  deepMerge,
+  exec,
+  overwriteDeep,
+  overwriteShallow
+} from './object.js'
+import { is, isFunction, isObject, isObjectLike, isUndefined } from './types.js'
 
-export const IGNORE_STATE_PARAMS = [
-  'update',
-  'parse',
-  'clean',
-  'create',
-  'destroy',
-  'add',
-  'toggle',
-  'remove',
-  'apply',
-  'set',
-  'reset',
-  'replace',
-  'quietReplace',
-  'quietUpdate',
-  'applyReplace',
-  'applyFunction',
-  'keys',
-  'values',
-  'ref',
-  'rootUpdate',
-  'parentUpdate',
-  'parent',
-  '__element',
-  '__depends',
-  '__ref',
-  '__children',
-  'root',
-  'setByPath',
-  'setPathCollection',
-  'removeByPath',
-  'removePathCollection',
-  'getByPath'
-]
+export const checkForStateTypes = async element => {
+  const { state: orig, props, __ref: ref } = element
+  const state = props?.state || orig
+  if (isFunction(state)) {
+    ref.__state = state
+    return await exec(state, element)
+  } else if (is(state)('string', 'number')) {
+    ref.__state = state
+    return { value: state }
+  } else if (state === true) {
+    ref.__state = element.key
+    return {}
+  } else if (state) {
+    ref.__hasRootState = true
+    return state
+  } else {
+    return false
+  }
+}
 
 export const getRootStateInKey = (stateKey, parentState) => {
   if (!stateKey.includes('~/')) return
@@ -104,7 +97,7 @@ export const createInheritedState = (element, parent) => {
   if (isUndefined(inheritedState)) return element.state
 
   if (is(inheritedState)('object', 'array')) {
-    return deepClone(inheritedState, { exclude: IGNORE_STATE_PARAMS })
+    return deepClone(inheritedState, { exclude: STATE_METHODS })
   } else if (is(inheritedState)('string', 'number', 'boolean')) {
     ref.__stateType = typeof inheritedState
     return { value: inheritedState }
@@ -114,9 +107,8 @@ export const createInheritedState = (element, parent) => {
 }
 
 export const checkIfInherits = element => {
-  const ref = element.__ref
+  const { __ref: ref } = element
   const stateKey = ref.__state
-
   if (stateKey && is(stateKey)('number', 'string', 'boolean')) return true
   return false
 }
@@ -150,7 +142,6 @@ export const isState = function (state) {
       state.__element &&
       state.__children
   )
-  // return arrayContainsOtherArray(keys, ['update', 'parse', 'clean', 'create', 'parent', 'rootUpdate'])
 }
 
 export const createNestedObjectByKeyPath = (path, value) => {
@@ -165,4 +156,46 @@ export const createNestedObjectByKeyPath = (path, value) => {
     ref = ref[key]
   })
   return obj
+}
+
+export const applyDependentState = (element, state) => {
+  const { __element } = state //
+  const origState = exec(__element?.state, element)
+  if (!origState) return
+  const dependentState = deepClone(origState, STATE_METHODS)
+  const newDepends = { [element.key]: dependentState }
+
+  const __depends = isObject(origState.__depends)
+    ? { ...origState.__depends, ...newDepends }
+    : newDepends
+
+  if (Array.isArray(origState)) {
+    addProtoToArray(origState, {
+      ...Object.getPrototypeOf(origState),
+      __depends
+    })
+  } else {
+    Object.setPrototypeOf(origState, {
+      ...Object.getPrototypeOf(origState),
+      __depends
+    })
+  }
+
+  return dependentState
+}
+
+export const overwriteState = (state, obj, options = {}) => {
+  const { overwrite } = options
+  if (!overwrite) return
+
+  const shallow = overwrite === 'shallow'
+  const merge = overwrite === 'merge'
+
+  if (merge) {
+    deepMerge(state, obj, STATE_METHODS)
+    return
+  }
+
+  const overwriteFunc = shallow ? overwriteShallow : overwriteDeep
+  overwriteFunc(state, obj, STATE_METHODS)
 }

@@ -142,3 +142,14 @@ export const removeDuplicatesInArray = arr => {
   if (!isArray(arr)) return arr
   return [...new Set(arr)]
 }
+
+export const addProtoToArray = (state, proto) => {
+  for (const key in proto) {
+    Object.defineProperty(state, key, {
+      value: proto[key],
+      enumerable: false, // Set this to true if you want the method to appear in for...in loops
+      configurable: true, // Set this to true if you want to allow redefining/removing the property later
+      writable: true // Set this to true if you want to allow changing the function later
+    })
+  }
+}

@@ -5,14 +5,12 @@ import { triggerEventOnUpdate } from '@domql/event'
 import {
   checkIfInherits,
   createNestedObjectByKeyPath,
-  deepMerge,
   findInheritedState,
   getParentStateInKey,
   getRootStateInKey,
-  IGNORE_STATE_PARAMS,
   merge,
   overwriteDeep,
-  overwriteShallow
+  overwriteState
 } from '@domql/utils'
 
 const STATE_UPDATE_OPTIONS = {
@@ -49,8 +47,8 @@ export const updateState = async function (
     if (beforeStateUpdateReturns === false) return element
   }
 
-  applyOverwrite(state, obj, options)
-  const updateIsHoisted = hoistStateUpdate(state, obj, options)
+  overwriteState(state, obj, options)
+  const updateIsHoisted = await hoistStateUpdate(state, obj, options)
   if (updateIsHoisted) return state
 
   updateDependentState(state, obj, options)
@@ -64,24 +62,7 @@ export const updateState = async function (
   return state
 }
 
-const applyOverwrite = (state, obj, options) => {
-  const { overwrite } = options
-  if (!overwrite) return
-
-  const shallow = overwrite === 'shallow' || overwrite === 'shallow-once'
-  const merge = overwrite === 'merge'
-
-  if (merge) {
-    deepMerge(state, obj, IGNORE_STATE_PARAMS)
-    return
-  }
-
-  const overwriteFunc = shallow ? overwriteShallow : overwriteDeep
-  if (options.overwrite === 'shallow-once') options.overwrite = true
-  overwriteFunc(state, obj, IGNORE_STATE_PARAMS)
-}
-
-const hoistStateUpdate = (state, obj, options) => {
+export const hoistStateUpdate = async (state, obj, options) => {
   const element = state.__element
   const { parent, __ref: ref } = element
 
@@ -117,7 +98,7 @@ const hoistStateUpdate = (state, obj, options) => {
   const hasNotUpdated =
     options.preventUpdate !== true || !options.preventHoistElementUpdate
   if (!options.preventStateUpdateListener && hasNotUpdated) {
-    triggerEventOnUpdate('stateUpdate', obj, element, options)
+    await triggerEventOnUpdate('stateUpdate', obj, element, options)
   }
   return true
 }

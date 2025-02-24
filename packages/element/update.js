@@ -13,13 +13,14 @@ import {
   overwriteDeep,
   createSnapshotId,
   deepClone,
-  propertizeElement
+  propertizeElement,
+  isMethod,
+  findInheritedState
 } from '@domql/utils'
 
 import { applyEvent, triggerEventOn, triggerEventOnUpdate } from '@domql/event'
-import { isMethod } from './methods/index.js'
 import { updateProps } from './props/index.js'
-import { createState, findInheritedState } from '@domql/state'
+import { createState } from '@domql/state'
 
 import { create } from './create.js'
 import {
@@ -202,12 +203,12 @@ export const update = async function (params = {}, opts) {
       lazyLoad
         ? window.requestAnimationFrame(() => {
             // eslint-disable-line
-          childUpdateCall()
-          // handle lazy load
-          if (!options.preventUpdateListener) {
-            triggerEventOn('lazyLoad', element, options)
-          }
-        })
+            childUpdateCall()
+            // handle lazy load
+            if (!options.preventUpdateListener) {
+              triggerEventOn('lazyLoad', element, options)
+            }
+          })
         : childUpdateCall()
     }
   }

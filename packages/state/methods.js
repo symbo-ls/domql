@@ -13,21 +13,25 @@ import {
   getInObjectByPath,
   removeNestedKeyByPath,
   setInObjectByPath,
-  IGNORE_STATE_PARAMS
+  STATE_METHODS,
+  addProtoToArray
 } from '@domql/utils'
+
+import { updateState } from './updateState.js'
+import { createState } from './create.js'
 
 export const parse = function () {
   const state = this
   if (isObject(state)) {
     const obj = {}
     for (const param in state) {
-      if (!IGNORE_STATE_PARAMS.includes(param)) {
+      if (!STATE_METHODS.includes(param)) {
         obj[param] = state[param]
       }
     }
     return obj
   } else if (isArray(state)) {
-    return state.filter(item => !IGNORE_STATE_PARAMS.includes(item))
+    return state.filter(item => !STATE_METHODS.includes(item))
   }
 }
 
@@ -35,7 +39,7 @@ export const clean = function (options = {}) {
   const state = this
   for (const param in state) {
     if (
-      !IGNORE_STATE_PARAMS.includes(param) &&
+      !STATE_METHODS.includes(param) &&
       Object.hasOwnProperty.call(state, param)
     ) {
       delete state[param]
@@ -236,4 +240,53 @@ export const keys = function (obj, options = {}) {
 export const values = function (obj, options = {}) {
   const state = this
   return Object.values(state)
+}
+
+export const applyStateMethods = element => {
+  const state = element.state
+  const ref = element.__ref
+
+  const proto = {
+    clean: clean.bind(state),
+    parse: parse.bind(state),
+    destroy: destroy.bind(state),
+    update: updateState.bind(state),
+    rootUpdate: rootUpdate.bind(state),
+    parentUpdate: parentUpdate.bind(state),
+    create: createState.bind(state),
+    add: add.bind(state),
+    toggle: toggle.bind(state),
+    remove: remove.bind(state),
+    apply: apply.bind(state),
+    applyReplace: applyReplace.bind(state),
+    applyFunction: applyFunction.bind(state),
+    set: set.bind(state),
+    quietUpdate: quietUpdate.bind(state),
+    replace: replace.bind(state),
+    quietReplace: quietReplace.bind(state),
+    reset: reset.bind(state),
+    parent: element.parent.state || state,
+
+    setByPath: setByPath.bind(state),
+    setPathCollection: setPathCollection.bind(state),
+    removeByPath: removeByPath.bind(state),
+    removePathCollection: removePathCollection.bind(state),
+    getByPath: getByPath.bind(state),
+
+    keys: keys.bind(state),
+    values: values.bind(state),
+    __element: element,
+    __children: {},
+    root: ref.root ? ref.root.state : state
+  }
+
+  if (isArray(state)) {
+    addProtoToArray(state, proto)
+  } else {
+    Object.setPrototypeOf(state, proto)
+  }
+
+  if (state.parent && state.parent.__children) {
+    state.parent.__children[element.key] = state
+  }
 }

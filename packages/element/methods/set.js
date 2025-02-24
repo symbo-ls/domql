@@ -27,7 +27,7 @@ import {
   variables,
   verbose,
   warn
-} from './index.js'
+} from '@domql/utils/methods'
 
 export const addMethods = (element, parent, options = {}) => {
   const proto = {
@@ -57,6 +57,8 @@ export const addMethods = (element, parent, options = {}) => {
     error,
     call
   }
-  if (element.context.methods) (options.strict ? merge : overwrite)(proto, element.context.methods)
+  if (element.context.methods) {
+    ;(options.strict ? merge : overwrite)(proto, element.context.methods)
+  }
   Object.setPrototypeOf(element, proto)
 }
