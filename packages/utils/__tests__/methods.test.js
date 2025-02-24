@@ -454,6 +454,33 @@ describe('Logging Methods', () => {
       verbose.call(mockElement)
       expect(console.groupCollapsed).toHaveBeenCalledWith('test')
     })
+
+    test('should log formatted properties when args provided', () => {
+      const mockElement = {
+        key: 'test',
+        testProp: 'testValue',
+        anotherProp: 123,
+        __ref: { path: ['root'] }
+      }
+      verbose.call(mockElement, 'testProp', 'anotherProp')
+
+      // First call logs the path
+      expect(console.log).toHaveBeenNthCalledWith(1, ['root'])
+
+      // Then logs the formatted properties
+      expect(console.log).toHaveBeenNthCalledWith(
+        4,
+        '%ctestProp:\n',
+        'font-weight: bold',
+        'testValue'
+      )
+      expect(console.log).toHaveBeenNthCalledWith(
+        5,
+        '%canotherProp:\n',
+        'font-weight: bold',
+        123
+      )
+    })
   })
 
   describe('logging functions', () => {
