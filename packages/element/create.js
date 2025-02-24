@@ -50,8 +50,6 @@ export const create = async (
 
   propertizeElement(element, parent)
 
-  element.key = key
-
   await triggerEventOn('start', element, options)
 
   if (options.onlyResolveExtends) {
