@@ -13,7 +13,8 @@ import {
   reorderArrayByValues,
   arraysEqual,
   filterArrays,
-  checkIfStringIsInArray
+  checkIfStringIsInArray,
+  removeDuplicatesInArray
 } from '../array.js'
 
 describe('Array Utils', () => {
@@ -194,6 +195,30 @@ describe('Array Utils', () => {
         b: 2,
         c: 4
       })
+    })
+  })
+
+  describe('removeDuplicatesInArray', () => {
+    it('should remove duplicate values from array', () => {
+      expect(removeDuplicatesInArray([1, 2, 2, 3, 3, 4])).toEqual([1, 2, 3, 4])
+      expect(removeDuplicatesInArray(['a', 'b', 'b', 'c'])).toEqual([
+        'a',
+        'b',
+        'c'
+      ])
+    })
+
+    it('should handle array with no duplicates', () => {
+      expect(removeDuplicatesInArray([1, 2, 3])).toEqual([1, 2, 3])
+    })
+
+    it('should handle empty array', () => {
+      expect(removeDuplicatesInArray([])).toEqual([])
+    })
+
+    it('should handle non-array input', () => {
+      expect(removeDuplicatesInArray('not an array')).toBe('not an array')
+      expect(removeDuplicatesInArray(null)).toBe(null)
     })
   })
 })

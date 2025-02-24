@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals'
 import { createElement } from '../element.js'
 
 describe('createElement', () => {
@@ -77,5 +78,104 @@ describe('createElement', () => {
     const result = createElement(null, {}, 'key', {}, {})
 
     expect(result).toBeUndefined()
+  })
+
+  it('should handle complex nested elements', () => {
+    const element = {
+      props: {
+        className: 'parent',
+        childProps: { tag: 'div' }
+      },
+      children: {
+        child1: {
+          props: { className: 'child' }
+        },
+        child2: 'text content'
+      }
+    }
+    const result = createElement(element, {}, 'parent', {}, {})
+
+    expect(result).toMatchObject({
+      props: {
+        className: 'parent',
+        childProps: { tag: 'div' }
+      },
+      key: 'parent',
+      __ref: expect.any(Object)
+    })
+  })
+
+  it('should properly handle element with extends', () => {
+    const baseProps = { __hash: 'base', props: { base: true } }
+    const element = { __hash: 'test', extends: [baseProps] }
+    const result = createElement(element, {}, 'extended', {}, {})
+
+    expect(result).toMatchObject({
+      extends: [element],
+      key: 'extended',
+      __ref: expect.any(Object)
+    })
+  })
+
+  it('should handle multi-level context inheritance', () => {
+    const root = { context: { theme: 'root' } }
+    const parent = createElement(
+      { context: { level: 'parent' } },
+      {},
+      'parent',
+      {},
+      root
+    )
+    const child = createElement({}, parent, 'child', {}, root)
+    const grandChild = createElement({}, child, 'grandChild', {}, root)
+
+    expect(grandChild.context).toEqual({ theme: 'root' })
+  })
+
+  it('should warn on undefined elements in development', () => {
+    const consoleSpy = jest.spyOn(console, 'warn').mockImplementation()
+    process.env.NODE_ENV = 'development'
+
+    createElement(undefined, { __ref: { path: ['parent'] } }, 'test', {}, {})
+
+    expect(consoleSpy).toHaveBeenCalledWith('test', 'element is undefined in', [
+      'parent'
+    ])
+
+    consoleSpy.mockRestore()
+    process.env.NODE_ENV = 'test'
+  })
+
+  it('should handle complex path creation', () => {
+    const root = {}
+    const parent = createElement({ key: 'parent' }, {}, 'parent', {}, root)
+    const child = createElement({ key: 'child' }, parent, 'child', {}, root)
+    const grandChild = createElement(
+      { key: 'grandChild' },
+      child,
+      'grandChild',
+      {},
+      root
+    )
+
+    expect(grandChild.__ref.path).toEqual(['parent', 'child', 'grandChild'])
+  })
+
+  it('should properly merge references and caching', () => {
+    const element = { props: { dynamic: () => 'value' } }
+    const result = createElement(element, {}, 'cached', {}, {})
+
+    expect(result.__ref).toMatchObject({
+      __cached: {},
+      __defineCache: {},
+      __exec: {},
+      __execProps: {},
+      __class: {},
+      __classNames: {},
+      __attr: {},
+      __changes: [],
+      __children: [],
+      origin: element
+    })
   })
 })

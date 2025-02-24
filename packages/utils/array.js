@@ -137,3 +137,8 @@ export const checkIfStringIsInArray = (string, arr) => {
   if (!string) return
   return arr.filter(v => string.includes(v)).length
 }
+
+export const removeDuplicatesInArray = arr => {
+  if (!isArray(arr)) return arr
+  return [...new Set(arr)]
+}
