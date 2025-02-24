@@ -6,13 +6,14 @@ import {
   createInheritedState,
   deepClone,
   exec,
-  IGNORE_STATE_PARAMS,
   is,
   isArray,
   isFunction,
   isObject,
-  isUndefined
+  isUndefined,
+  STATE_METHODS
 } from '@domql/utils'
+
 import {
   add,
   apply,
@@ -38,6 +39,7 @@ import {
   keys,
   values
 } from './methods.js'
+
 import { updateState } from './updateState.js'
 
 export const createState = async function (element, parent, options) {
@@ -76,7 +78,7 @@ const applyDependentState = (element, state) => {
   const { __ref, ref, __element } = state //
   const origState = exec(__ref || ref || __element?.state, element)
   if (!origState) return
-  const dependentState = deepClone(origState, IGNORE_STATE_PARAMS)
+  const dependentState = deepClone(origState, STATE_METHODS)
   const newDepends = { [element.key]: dependentState }
 
   const __depends = isObject(origState.__depends)

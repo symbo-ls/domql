@@ -6,8 +6,8 @@ import {
   isObject,
   deepClone,
   deepMerge,
-  IGNORE_PROPS_PARAMS,
-  inheritParentProps
+  inheritParentProps,
+  PROPS_METHODS
 } from '@domql/utils'
 
 const createPropsStack = (element, parent) => {
@@ -34,7 +34,7 @@ export const syncProps = (props, element, opts) => {
   const mergedProps = {}
 
   props.forEach(v => {
-    if (IGNORE_PROPS_PARAMS.includes(v)) return
+    if (PROPS_METHODS.includes(v)) return
     const execProps = exec(v, element)
     // let execProps
     // try {
@@ -45,8 +45,8 @@ export const syncProps = (props, element, opts) => {
     // it was causing infinite loop at early days
     element.props = deepMerge(
       mergedProps,
-      deepClone(execProps, { ignore: IGNORE_PROPS_PARAMS }),
-      IGNORE_PROPS_PARAMS
+      deepClone(execProps, { ignore: PROPS_METHODS }),
+      PROPS_METHODS
     )
   })
   element.props = mergedProps

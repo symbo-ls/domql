@@ -1,42 +1,8 @@
 'use strict'
 
+import { STATE_METHODS } from './keys.js'
 import { deepClone } from './object.js'
 import { is, isObjectLike, isUndefined } from './types.js'
-
-export const IGNORE_STATE_PARAMS = [
-  'update',
-  'parse',
-  'clean',
-  'create',
-  'destroy',
-  'add',
-  'toggle',
-  'remove',
-  'apply',
-  'set',
-  'reset',
-  'replace',
-  'quietReplace',
-  'quietUpdate',
-  'applyReplace',
-  'applyFunction',
-  'keys',
-  'values',
-  'ref',
-  'rootUpdate',
-  'parentUpdate',
-  'parent',
-  '__element',
-  '__depends',
-  '__ref',
-  '__children',
-  'root',
-  'setByPath',
-  'setPathCollection',
-  'removeByPath',
-  'removePathCollection',
-  'getByPath'
-]
 
 export const getRootStateInKey = (stateKey, parentState) => {
   if (!stateKey.includes('~/')) return
@@ -104,7 +70,7 @@ export const createInheritedState = (element, parent) => {
   if (isUndefined(inheritedState)) return element.state
 
   if (is(inheritedState)('object', 'array')) {
-    return deepClone(inheritedState, { exclude: IGNORE_STATE_PARAMS })
+    return deepClone(inheritedState, { exclude: STATE_METHODS })
   } else if (is(inheritedState)('string', 'number', 'boolean')) {
     ref.__stateType = typeof inheritedState
     return { value: inheritedState }

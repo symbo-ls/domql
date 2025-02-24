@@ -13,7 +13,7 @@ import {
   getInObjectByPath,
   removeNestedKeyByPath,
   setInObjectByPath,
-  IGNORE_STATE_PARAMS
+  STATE_METHODS
 } from '@domql/utils'
 
 export const parse = function () {
@@ -21,13 +21,13 @@ export const parse = function () {
   if (isObject(state)) {
     const obj = {}
     for (const param in state) {
-      if (!IGNORE_STATE_PARAMS.includes(param)) {
+      if (!STATE_METHODS.includes(param)) {
         obj[param] = state[param]
       }
     }
     return obj
   } else if (isArray(state)) {
-    return state.filter(item => !IGNORE_STATE_PARAMS.includes(item))
+    return state.filter(item => !STATE_METHODS.includes(item))
   }
 }
 
@@ -35,7 +35,7 @@ export const clean = function (options = {}) {
   const state = this
   for (const param in state) {
     if (
-      !IGNORE_STATE_PARAMS.includes(param) &&
+      !STATE_METHODS.includes(param) &&
       Object.hasOwnProperty.call(state, param)
     ) {
       delete state[param]

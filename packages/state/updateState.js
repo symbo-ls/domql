@@ -9,10 +9,10 @@ import {
   findInheritedState,
   getParentStateInKey,
   getRootStateInKey,
-  IGNORE_STATE_PARAMS,
   merge,
   overwriteDeep,
-  overwriteShallow
+  overwriteShallow,
+  STATE_METHODS
 } from '@domql/utils'
 
 const STATE_UPDATE_OPTIONS = {
@@ -72,13 +72,13 @@ const applyOverwrite = (state, obj, options) => {
   const merge = overwrite === 'merge'
 
   if (merge) {
-    deepMerge(state, obj, IGNORE_STATE_PARAMS)
+    deepMerge(state, obj, STATE_METHODS)
     return
   }
 
   const overwriteFunc = shallow ? overwriteShallow : overwriteDeep
   if (options.overwrite === 'shallow-once') options.overwrite = true
-  overwriteFunc(state, obj, IGNORE_STATE_PARAMS)
+  overwriteFunc(state, obj, STATE_METHODS)
 }
 
 const hoistStateUpdate = (state, obj, options) => {

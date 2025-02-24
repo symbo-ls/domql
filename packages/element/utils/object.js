@@ -5,8 +5,8 @@ import {
   isObjectLike,
   joinArrays,
   deepClone,
-  IGNORE_STATE_PARAMS,
-  IGNORE_PROPS_PARAMS
+  STATE_METHODS,
+  PROPS_METHODS
 } from '@domql/utils'
 
 // breaks server build
@@ -40,8 +40,8 @@ export const METHODS = [
 export const METHODS_EXL = joinArrays(
   ['node', 'state', 'context', 'extends', '__element'],
   METHODS,
-  IGNORE_STATE_PARAMS,
-  IGNORE_PROPS_PARAMS
+  STATE_METHODS,
+  PROPS_METHODS
 )
 
 export const deepMerge = (element, extend, exclude = METHODS_EXL) => {

@@ -4,8 +4,6 @@ import { addEventFromProps } from './events.js'
 import { DOMQ_PROPERTIES } from './keys.js'
 import { is, isFunction, isObject, isObjectLike } from './types.js'
 
-export const IGNORE_PROPS_PARAMS = ['update', '__element']
-
 export const createProps = (element, parent, key) => {
   const { props, __ref: ref } = element
   ref.__propsStack = []
@@ -94,6 +92,9 @@ export const inheritParentProps = (element, parent) => {
   const { __ref: ref } = element
   const propsStack = ref.__propsStack
   const parentProps = parent.props
+
+  if (!parentProps) return propsStack
+
   const matchParentKeyProps = parentProps[element.key]
   const matchParentChildProps = parentProps.childProps
 

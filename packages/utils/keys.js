@@ -52,3 +52,40 @@ export const PARSED_DOMQ_PROPERTIES = [
   'on',
   'context'
 ]
+
+export const STATE_METHODS = [
+  'update',
+  'parse',
+  'clean',
+  'create',
+  'destroy',
+  'add',
+  'toggle',
+  'remove',
+  'apply',
+  'set',
+  'reset',
+  'replace',
+  'quietReplace',
+  'quietUpdate',
+  'applyReplace',
+  'applyFunction',
+  'keys',
+  'values',
+  'ref',
+  'rootUpdate',
+  'parentUpdate',
+  'parent',
+  '__element',
+  '__depends',
+  '__ref',
+  '__children',
+  'root',
+  'setByPath',
+  'setPathCollection',
+  'removeByPath',
+  'removePathCollection',
+  'getByPath'
+]
+
+export const PROPS_METHODS = ['update', '__element']
