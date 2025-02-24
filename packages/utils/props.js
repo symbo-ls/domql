@@ -177,7 +177,7 @@ export function propertizeElement (element, opts = {}) {
   return element
 }
 
-const objectizeStringProperty = propValue => {
+export const objectizeStringProperty = propValue => {
   if (is(propValue)('string', 'number')) {
     return { inheritedString: propValue }
   }
@@ -185,28 +185,19 @@ const objectizeStringProperty = propValue => {
 }
 
 export const inheritParentProps = (element, parent) => {
-  let propsStack = []
-  const parentProps = exec(parent, parent.state).props
+  const { __ref: ref } = element
+  const propsStack = ref.__propsStack
+  const parentProps = parent.props
+  const matchParentKeyProps = parentProps[element.key]
+  const matchParentChildProps = parentProps.childProps
 
-  const matchParent = parent.props && parentProps[element.key]
-  const matchParentIsString = isString(matchParent)
-  const matchParentChildProps = parentProps && parentProps.childProps
-
-  if (matchParent) {
-    if (matchParentIsString) {
-      const inheritedStringExists = propsStack.filter(v => v.inheritedString)[0]
-      if (inheritedStringExists) {
-        inheritedStringExists.inheritedString = matchParent
-      } else {
-        propsStack = [].concat(objectizeStringProperty(matchParent), propsStack)
-      }
-    } else {
-      propsStack.push(objectizeStringProperty(matchParent))
-    }
+  const ignoreChildProps = element.props
+  if (matchParentChildProps && !ignoreChildProps) {
+    propsStack.push(objectizeStringProperty(matchParentChildProps))
   }
 
-  if (matchParentChildProps && !element?.props?.ignoreChildProps) {
-    propsStack.push(matchParentChildProps)
+  if (matchParentKeyProps) {
+    propsStack.unshift(objectizeStringProperty(matchParentKeyProps))
   }
 
   return propsStack
