@@ -46,12 +46,23 @@ describe('createBasedOnType', () => {
   })
 })
 
+describe('addRef', () => {
+  test('should create ref object with origin', () => {
+    const element = { key: 'test', props: {} }
+    const parent = {}
+    const ref = addRef(element, parent)
+
+    expect(ref.origin).toBe(element)
+    expect(ref.parent).toBe(parent)
+  })
+})
+
 describe('addCaching', () => {
   test('should initialize caching properties', () => {
     const element = { key: 'test', __ref: {} }
     const parent = { __ref: {} }
 
-    addCaching(element, parent)
+    addCaching(element, parent, 'test')
 
     expect(element.__ref.__cached).toBeDefined()
     expect(element.__ref.__defineCache).toBeDefined()
@@ -62,23 +73,11 @@ describe('addCaching', () => {
 
   test('should handle root elements', () => {
     const element = { key: 'test', __ref: {} }
-    const parent = { key: ':root', __ref: {} }
+    const parent = { key: ':root' }
 
-    addCaching(element, parent)
+    addCaching(element, parent, 'test')
 
-    expect(element.__ref.root).toBe(element)
-  })
-})
-
-describe('addRef', () => {
-  test('should create ref object with origin', () => {
-    const element = { key: 'test', props: {} }
-    const parent = {}
-    const ref = addRef(element, parent)
-
-    expect(ref).toEqual({
-      origin: element
-    })
+    expect(Object.is(element.__ref.root, element)).toBe(true)
   })
 })
 

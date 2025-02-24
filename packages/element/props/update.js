@@ -1,7 +1,7 @@
 'use strict'
 
+import { inheritParentProps } from '@domql/utils'
 import { syncProps } from './create.js'
-import { inheritParentProps } from './inherit.js'
 
 export const updateProps = (newProps, element, parent) => {
   const { __ref } = element

@@ -1,6 +1,5 @@
 'use strict'
 
-import { matchesComponentNaming } from './component.js'
 import { createExtends } from './extends.js'
 import { createKey } from './key.js'
 import { isNode } from './node.js'
@@ -47,9 +46,54 @@ export const createBasedOnType = (element, parent, key) => {
   return element
 }
 
-export const addCaching = (element, parent) => {
-  const { __ref: ref, key } = element
+export const addRef = (element, parent) => {
+  const ref = {}
+  ref.origin = element
+  ref.parent = parent
+  return ref
+}
+
+export const createParent = (element, parent, key, options, root) => {
+  if (!parent) return root
+  if (isNode(parent)) {
+    const parentNodeWrapper = { key: ':root', node: parent }
+    root[`${key}_parent`] = parentNodeWrapper
+    return parentNodeWrapper
+  }
+  return parent
+}
+
+export const createRoot = (element, parent) => {
+  const { __ref: ref } = element
+  const { __ref: parentRef } = parent
+
+  const hasRoot = parent && parent.key === ':root'
+  if (!ref?.root) {
+    return hasRoot ? element : parentRef?.root
+  }
+}
+
+export const createPath = (element, parent, key) => {
   let { __ref: parentRef } = parent
+  // set the PATH array
+  if (!parentRef) parentRef = parent.ref = {}
+  if (!parentRef.path) parentRef.path = []
+  return parentRef.path.concat(key)
+}
+
+export const addContext = (element, parent, key, options, root) => {
+  const forcedOptionsContext =
+    options.context && !root.context && !element.context
+  if (forcedOptionsContext) root.context = options.context
+
+  // inherit from parent or root
+  return options.context || parent.context || root.context || element.context
+}
+
+export const addCaching = (element, parent, key) => {
+  const ref = addRef(element, parent)
+
+  element.__ref = ref
 
   // enable CACHING
   if (!ref.__cached) ref.__cached = {}
@@ -72,67 +116,33 @@ export const addCaching = (element, parent) => {
   // enable CHANGES storing
   if (!ref.__children) ref.__children = []
 
-  if (matchesComponentNaming(key)) {
-    ref.__componentKey = key.split('_')[0].split('.')[0].split('+')[0]
-  }
+  ref.__extends = createExtends(element, parent, key)
+  ref.path = createPath(element, parent, key)
+  ref.root = createRoot(element, parent) // Call createRoot after addCaching
 
-  // Add _root element property
-  const hasRoot = parent && parent.key === ':root'
-  if (!ref.root) ref.root = hasRoot ? element : parentRef.root
-
-  // set the PATH array
-  if (!parentRef) parentRef = parent.ref = {}
-  if (!parentRef.path) parentRef.path = []
-  ref.path = parentRef.path.concat(element.key)
-}
-
-export const addRef = (element, parent) => {
-  const ref = {}
-  ref.origin = element
   return ref
 }
 
-export const createParent = (element, parent, key, options, root) => {
-  if (isNode(parent)) {
-    const parentNodeWrapper = { key: ':root', node: parent }
-    root[`${key}_parent`] = parentNodeWrapper
-    return parentNodeWrapper
-  }
-  return parent
-}
-
-export const addContext = (element, parent, key, options, root) => {
-  const forcedOptionsContext =
-    options.context && !root.context && !element.context
-  if (forcedOptionsContext) root.context = options.context
-
-  // inherit from parent or root
-  return options.context || parent.context || root.context || element.context
-}
-
 export const createElement = (passedProps, parentEl, passedKey, opts, root) => {
-  const hashed = passedProps.__hash
+  const hashed = passedProps?.__hash
   const element = hashed
     ? { extends: [passedProps] }
     : createBasedOnType(passedProps, parentEl, passedKey)
+  if (!element) return
 
   const parent = createParent(element, parentEl, passedKey, opts, root)
   const key = createKey(element, parent, passedKey)
 
-  const ref = addRef(element, parent, key)
-  ref.__extends = createExtends(element, parent, key)
-
-  addCaching(element, parent)
+  addCaching(element, parent, key)
 
   const props = createProps(element, parent, key)
   const context = addContext(element, parent, key, opts, root)
 
   return {
     ...element,
+    key,
     props,
     parent,
-    key,
-    context,
-    __ref: ref
+    context
   }
 }

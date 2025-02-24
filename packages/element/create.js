@@ -11,7 +11,6 @@ import {
   detectInfiniteLoop,
   redefineProperties,
   createElement,
-  addCaching,
   applyExtend
 } from '@domql/utils'
 
@@ -43,11 +42,11 @@ export const create = async (
   cacheOptions(options)
 
   const element = createElement(props, parentEl, passedKey, options, ROOT)
+  if (!element) return
+
   const { key, parent, __ref: ref } = element
 
-  if (!ref.__skipCreate) {
-    applyExtend(element, parent, options)
-  }
+  applyExtend(element, parent, options)
 
   redefineProperties(element, parent)
 
@@ -225,33 +224,30 @@ const createIfConditionFlag = (element, parent) => {
 
 const onlyResolveExtends = (element, parent, key, options) => {
   const { __ref: ref } = element
-  if (!ref.__skipCreate) {
-    addCaching(element, parent)
 
-    addMethods(element, parent, options)
+  addMethods(element, parent, options)
 
-    createScope(element, parent)
+  createScope(element, parent)
 
-    createState(element, parent)
-    if (element.scope === 'state') element.scope = element.state
+  createState(element, parent)
+  if (element.scope === 'state') element.scope = element.state
 
-    createIfConditionFlag(element, parent)
+  createIfConditionFlag(element, parent)
 
-    // apply props settings
-    createProps(element, parent, options)
-    if (element.scope === 'props' || element.scope === true) {
-      element.scope = element.props
-    }
-
-    if (element.node && ref.__if) {
-      parent[key || element.key] = element
-    } // Borrowed from assignNode()
-
-    if (!element.props) element.props = {}
-    // applyVariant(element, parent)
-
-    addElementIntoParentChildren(element, parent)
+  // apply props settings
+  createProps(element, parent, options)
+  if (element.scope === 'props' || element.scope === true) {
+    element.scope = element.props
   }
+
+  if (element.node && ref.__if) {
+    parent[key || element.key] = element
+  } // Borrowed from assignNode()
+
+  if (!element.props) element.props = {}
+  // applyVariant(element, parent)
+
+  addElementIntoParentChildren(element, parent)
 
   if (element.tag !== 'string' && element.tag !== 'fragment') {
     throughInitialDefine(element)
