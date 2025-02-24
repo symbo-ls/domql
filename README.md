@@ -14,6 +14,7 @@ You can start with [starter-kit](https://github.com/domql/starter-kit) as a
 boilerplate, or jump into the [playground](https://domql.com/playground/).
 
 [![npm version](https://badge.fury.io/js/domql.svg)](https://badge.fury.io/js/domql)
+[![Coverage Status](https://coveralls.io/repos/github/symbo-ls/domql/badge.svg?branch=feature/extends)](https://coveralls.io/github/symbo-ls/domql?branch=feature/extends)
 
 ## Symbols
 DOMQL is designed to work perfectly with Symbols design system and components. To use it with Symbols please refer relevant docs: [symbols.app/api](https://symbols.app/api)
