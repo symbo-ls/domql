@@ -89,6 +89,15 @@ export const objectizeStringProperty = propValue => {
   return propValue
 }
 
+const propExists = (prop, stack) => {
+  if (!prop || !stack.length) return false
+  const key = isObject(prop) ? JSON.stringify(prop) : prop
+  return stack.some(existing => {
+    const existingKey = isObject(existing) ? JSON.stringify(existing) : existing
+    return existingKey === key
+  })
+}
+
 export const inheritParentProps = (element, parent) => {
   const { __ref: ref } = element
   const propsStack = ref.__propsStack || []
@@ -101,11 +110,17 @@ export const inheritParentProps = (element, parent) => {
 
   const ignoreChildProps = element.props?.ignoreChildProps
   if (matchParentChildProps && !ignoreChildProps) {
-    propsStack.push(objectizeStringProperty(matchParentChildProps))
+    const childProps = objectizeStringProperty(matchParentChildProps)
+    if (!propExists(childProps, propsStack)) {
+      propsStack.unshift(childProps)
+    }
   }
 
   if (matchParentKeyProps) {
-    propsStack.unshift(objectizeStringProperty(matchParentKeyProps))
+    const keyProps = objectizeStringProperty(matchParentKeyProps)
+    if (!propExists(keyProps, propsStack)) {
+      propsStack.unshift(keyProps)
+    }
   }
 
   return propsStack
@@ -121,7 +136,22 @@ export function setPropsPrototype (element) {
   Object.setPrototypeOf(element.props, methods)
 }
 
+export const removeDuplicateProps = propsStack => {
+  const seen = new Set()
+
+  return propsStack.filter(prop => {
+    if (!prop || PROPS_METHODS.includes(prop)) return false
+    const key = isObject(prop) ? JSON.stringify(prop) : prop
+    if (seen.has(key)) return false
+    seen.add(key)
+    return true
+  })
+}
+
 export const syncProps = (propsStack, element, opts) => {
+  // Clean up duplicates from propsStack
+  // const uniquePropsStack = removeDuplicateProps(propsStack)
+  // element.__ref.__propsStack = propsStack // uniquePropsStack
   element.props = propsStack.reduce((mergedProps, v) => {
     if (PROPS_METHODS.includes(v)) return mergedProps
     while (isFunction(v)) v = exec(v, element)
@@ -133,7 +163,8 @@ export const syncProps = (propsStack, element, opts) => {
 
 export const createPropsStack = (element, parent) => {
   const { props, __ref: ref } = element
-  const propsStack = (ref.__propsStack = inheritParentProps(element, parent))
+  const propsStack =
+    (ref.__propsStack = inheritParentProps(element, parent)) || []
 
   if (isObject(props)) propsStack.push(props)
   else if (props === 'inherit' && parent.props) propsStack.push(parent.props)
@@ -152,24 +183,25 @@ export const createPropsStack = (element, parent) => {
   return propsStack
 }
 
+const resetProps = (element, parent) => {
+  const { __ref: ref } = element
+  const propsStack = createPropsStack(element, parent)
+  if (propsStack.length) {
+    ref.__propsStack = propsStack
+    syncProps(propsStack, element)
+  } else {
+    ref.__propsStack = []
+    element.props = {}
+  }
+}
+
 export const initProps = function (element, parent, options) {
   const { __ref: ref } = element
 
-  const applyProps = () => {
-    const propsStack = createPropsStack(element, parent)
-    if (propsStack.length) {
-      ref.__propsStack = propsStack
-      syncProps(propsStack, element)
-    } else {
-      ref.__propsStack = []
-      element.props = {}
-    }
-  }
-
-  if (ref.__if) applyProps()
+  if (ref.__if) resetProps(element, parent)
   else {
     try {
-      applyProps()
+      resetProps(element, parent)
     } catch {
       element.props = {}
       ref.__propsStack = []
@@ -183,19 +215,27 @@ export const initProps = function (element, parent, options) {
 
 export const updateProps = (newProps, element, parent) => {
   const { __ref: ref } = element
-  let propsStack = ref.__propsStack
+  const propsStack = ref.__propsStack || []
 
+  // Create a new array to avoid mutating the original
+  let newStack = [...propsStack]
+
+  // Add parent props first if they exist
   const parentProps = inheritParentProps(element, parent)
   if (parentProps.length) {
-    propsStack = ref.__propsStack = [].concat(parentProps, propsStack)
-  }
-  if (newProps) {
-    propsStack = ref.__propsStack = [].concat(newProps, propsStack)
+    newStack = [...parentProps, ...newStack]
   }
 
-  if (propsStack) {
-    syncProps(propsStack, element)
-    setPropsPrototype(element)
+  // Add new props if they exist
+  if (newProps) {
+    newStack = [newProps, ...newStack]
+  }
+
+  // Clean up duplicates
+  ref.__propsStack = removeDuplicateProps(newStack)
+
+  if (ref.__propsStack.length) {
+    syncProps(ref.__propsStack, element)
   }
 
   return element

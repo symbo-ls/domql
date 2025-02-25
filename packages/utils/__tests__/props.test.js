@@ -2,9 +2,13 @@ import {
   createProps,
   createPropsStack,
   inheritParentProps,
+  initProps,
   objectizeStringProperty,
-  syncProps
+  syncProps,
+  updateProps,
+  removeDuplicateProps
 } from '../props.js'
+import { PROPS_METHODS } from '../keys.js'
 
 describe('createProps', () => {
   it('should handle basic props object', () => {
@@ -496,5 +500,206 @@ describe('createPropsStack', () => {
     const parent = { props: {} }
     const result = createPropsStack(element, parent)
     expect(result).toEqual([{ local: 'value' }, { other: 'value' }])
+  })
+})
+
+describe('initProps', () => {
+  it('should initialize basic props', () => {
+    const element = {
+      props: { foo: 'bar' },
+      __ref: {}
+    }
+    const parent = {}
+    const result = initProps(element, parent)
+    expect(result.props).toEqual({ foo: 'bar' })
+    expect(result.props.__element).toBe(element)
+    expect(typeof result.props.update).toBe('function')
+  })
+
+  it('should handle conditional initialization with __if', () => {
+    const element = {
+      props: { foo: 'bar' },
+      __ref: { __if: true }
+    }
+    const parent = {}
+    const result = initProps(element, parent)
+    expect(result.props).toEqual({ foo: 'bar' })
+  })
+
+  it('should handle failed initialization gracefully', () => {
+    const element = {
+      props: null,
+      __ref: {}
+    }
+    const parent = {}
+    const result = initProps(element, parent)
+    expect(result.props).toEqual({})
+    expect(result.__ref.__propsStack).toEqual([])
+  })
+
+  it('should inherit and merge parent props correctly', () => {
+    const element = {
+      key: 'child',
+      props: { local: 'value' },
+      __ref: {}
+    }
+    const parent = {
+      props: {
+        child: { parent: 'value' },
+        childProps: { shared: 'value' }
+      }
+    }
+    const result = initProps(element, parent)
+
+    // Remove __element and update function before comparison
+    const props = result.props
+    expect(props).toEqual({
+      local: 'value',
+      shared: 'value'
+    })
+
+    // Verify the presence of __element and update
+    expect(result.props.__element).toBe(element)
+    expect(typeof result.props.update).toBe('function')
+  })
+
+  it('should handle empty props', () => {
+    const element = {
+      __ref: {}
+    }
+    const parent = {}
+    const result = initProps(element, parent)
+    expect(result.props).toEqual({})
+    expect(result.__ref.__propsStack).toEqual([])
+  })
+})
+
+describe('updateProps', () => {
+  it('should update props with new values', () => {
+    const element = {
+      props: { initial: 'value' },
+      __ref: { __propsStack: [{ initial: 'value' }] }
+    }
+    const newProps = { updated: 'value' }
+    const result = updateProps(newProps, element, {})
+
+    // Remove __element and update before comparison
+    const { __element, update, ...props } = result.props
+    expect(props).toEqual({
+      initial: 'value',
+      updated: 'value'
+    })
+    expect(__element).toBe(element)
+    expect(typeof update).toBe('function')
+  })
+
+  it('should merge with inherited parent props', () => {
+    const element = {
+      key: 'child',
+      props: { local: 'value' },
+      __ref: { __propsStack: [{ local: 'value' }] }
+    }
+    const parent = {
+      props: {
+        child: { parent: 'value' },
+        childProps: { shared: 'value' }
+      }
+    }
+    const newProps = { updated: 'value' }
+    const result = updateProps(newProps, element, parent)
+
+    const { __element, update, ...props } = result.props
+    expect(props).toEqual({
+      local: 'value',
+      shared: 'value',
+      updated: 'value'
+    })
+  })
+
+  it('should preserve function props', () => {
+    const handler = () => {}
+    const element = {
+      props: { onClick: handler },
+      __ref: { __propsStack: [{ onClick: handler }] }
+    }
+    const newProps = { updated: 'value' }
+    const result = updateProps(newProps, element, {})
+
+    const { __element, update, ...props } = result.props
+    expect(props.onClick).toBe(handler)
+    expect(props.updated).toBe('value')
+  })
+
+  it('should handle empty updates', () => {
+    const element = {
+      props: { existing: 'value' },
+      __ref: { __propsStack: [{ existing: 'value' }] }
+    }
+    const result = updateProps(null, element, {})
+
+    const { __element, update, ...props } = result.props
+    expect(props).toEqual({ existing: 'value' })
+  })
+
+  it('should maintain props stack order', () => {
+    const element = {
+      key: 'child',
+      props: { local: 'original' },
+      __ref: { __propsStack: [{ local: 'original' }] }
+    }
+    const parent = {
+      props: { child: { parent: 'value' } }
+    }
+    const newProps = { local: 'updated' }
+    const result = updateProps(newProps, element, parent)
+
+    expect(result.__ref.__propsStack).toEqual([
+      { local: 'updated' },
+      { parent: 'value' },
+      { local: 'original' }
+    ])
+  })
+})
+
+describe('removeDuplicateProps', () => {
+  test('removes duplicate primitive values', () => {
+    const input = ['a', 'b', 'a', 'c', 'b']
+    expect(removeDuplicateProps(input)).toEqual(['a', 'b', 'c'])
+  })
+
+  test('handles null and undefined values', () => {
+    const input = [null, undefined, 'a', null, 'b', undefined]
+    expect(removeDuplicateProps(input)).toEqual(['a', 'b'])
+  })
+
+  test('removes duplicate objects by value', () => {
+    const input = [{ foo: 1 }, { foo: 1 }, { bar: 2 }]
+    expect(removeDuplicateProps(input)).toEqual([{ foo: 1 }, { bar: 2 }])
+  })
+
+  test('skips PROPS_METHODS', () => {
+    const input = ['method1', { prop: 1 }, 'method2']
+    const methods = ['method1', 'method2']
+    PROPS_METHODS.push(...methods)
+    expect(removeDuplicateProps(input)).toEqual([{ prop: 1 }])
+    // Cleanup
+    methods.forEach(m => {
+      const index = PROPS_METHODS.indexOf(m)
+      if (index > -1) PROPS_METHODS.splice(index, 1)
+    })
+  })
+
+  test('maintains order of first occurrence', () => {
+    const input = [{ first: 1 }, { second: 2 }, { first: 1 }, { third: 3 }]
+    expect(removeDuplicateProps(input)).toEqual([
+      { first: 1 },
+      { second: 2 },
+      { third: 3 }
+    ])
+  })
+
+  test('handles mixed type props', () => {
+    const input = ['string', 42, { obj: true }, 'string', { obj: true }, 42]
+    expect(removeDuplicateProps(input)).toEqual(['string', 42, { obj: true }])
   })
 })
