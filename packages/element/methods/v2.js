@@ -52,7 +52,7 @@ export const log = function (...args) {
   if (args.length) {
     args.forEach(v => console.log(`%c${v}:\n`, 'font-weight: bold', element[v]))
   } else {
-    console.log(__ref.path)
+    console.log(__ref?.path)
     const keys = element.keys()
     keys.forEach(v => console.log(`%c${v}:\n`, 'font-weight: bold', element[v]))
   }
