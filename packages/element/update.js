@@ -95,7 +95,7 @@ export const update = async function (params = {}, opts) {
   if (ref.__if && !options.preventPropsUpdate) {
     const hasParentProps =
       parent.props && (parent.props[key] || parent.props.childProps)
-    const hasFunctionInProps = ref.__props.filter(v => isFunction(v))
+    const hasFunctionInProps = ref.__propsStack.filter(v => isFunction(v))
     const props = params.props || hasParentProps || hasFunctionInProps.length
     if (props) updateProps(props, element, parent)
   }

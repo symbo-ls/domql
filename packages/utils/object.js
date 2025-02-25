@@ -388,7 +388,7 @@ export const overwrite = (element, params, opts = {}) => {
     if (paramsProp !== undefined) {
       element[e] = paramsProp
       if (ref && !preventCaching) {
-        ref.__cache[e] = elementProp
+        ref.__cached[e] = elementProp
       }
     }
   }
