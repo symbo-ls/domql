@@ -28,6 +28,7 @@ describe('parse', () => {
   it('returns basic object structure', () => {
     const result = parse.call(element)
     expect(result).toEqual({
+      __ref: {},
       props: { publicProp: 'publicValue' },
       normalKey: 'normalValue'
     })
@@ -36,6 +37,7 @@ describe('parse', () => {
   it('excludes keys in exclusion list', () => {
     const result = parse.call(element, ['state', 'normalKey'])
     expect(result).toEqual({
+      __ref: {},
       props: { publicProp: 'publicValue' }
     })
   })
