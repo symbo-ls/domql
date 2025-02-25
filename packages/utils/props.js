@@ -91,7 +91,7 @@ export const objectizeStringProperty = propValue => {
 
 export const inheritParentProps = (element, parent) => {
   const { __ref: ref } = element
-  const propsStack = ref.__propsStack
+  const propsStack = ref.__propsStack || []
   const parentProps = parent.props
 
   if (!parentProps) return propsStack
@@ -99,7 +99,7 @@ export const inheritParentProps = (element, parent) => {
   const matchParentKeyProps = parentProps[element.key]
   const matchParentChildProps = parentProps.childProps
 
-  const ignoreChildProps = element.props
+  const ignoreChildProps = element.props?.ignoreChildProps
   if (matchParentChildProps && !ignoreChildProps) {
     propsStack.push(objectizeStringProperty(matchParentChildProps))
   }

@@ -1,5 +1,6 @@
 import {
   createProps,
+  createPropsStack,
   inheritParentProps,
   objectizeStringProperty,
   syncProps
@@ -415,5 +416,85 @@ describe('syncProps', () => {
     expect(result).toEqual({
       handler: namedFunction
     })
+  })
+})
+
+describe('createPropsStack', () => {
+  it('should create basic props stack', () => {
+    const element = {
+      props: { foo: 'bar' },
+      __ref: { __propsStack: [] }
+    }
+    const parent = { props: {} }
+    const result = createPropsStack(element, parent)
+    expect(result).toEqual([{ foo: 'bar' }])
+  })
+
+  it('should handle string "inherit" prop', () => {
+    const element = {
+      props: 'inherit',
+      __ref: { __propsStack: [] }
+    }
+    const parent = {
+      props: { parentProp: 'value' }
+    }
+    const result = createPropsStack(element, parent)
+    expect(result).toEqual([{ parentProp: 'value' }])
+  })
+
+  it('should handle extends stack', () => {
+    const element = {
+      props: { local: 'value' },
+      __ref: {
+        __propsStack: [],
+        __extendsStack: [
+          { props: { extended1: 'value1' } },
+          { props: { extended2: 'value2' } }
+        ]
+      }
+    }
+    const parent = { props: {} }
+    const result = createPropsStack(element, parent)
+    expect(result).toEqual([
+      { local: 'value' },
+      { extended1: 'value1' },
+      { extended2: 'value2' }
+    ])
+  })
+
+  it('should inherit parent props correctly', () => {
+    const element = {
+      key: 'child',
+      props: { local: 'value' },
+      __ref: {
+        __propsStack: []
+      }
+    }
+    const parent = {
+      props: {
+        child: { specific: 'value' },
+        childProps: { shared: 'common' }
+      }
+    }
+    const result = createPropsStack(element, parent)
+    expect(result).toEqual([
+      { specific: 'value' },
+      { shared: 'common' },
+      { local: 'value' }
+    ])
+  })
+
+  it('should skip duplicate props from extends', () => {
+    const props = { local: 'value' }
+    const element = {
+      props,
+      __ref: {
+        __propsStack: [],
+        __extendsStack: [{ props }, { props: { other: 'value' } }]
+      }
+    }
+    const parent = { props: {} }
+    const result = createPropsStack(element, parent)
+    expect(result).toEqual([{ local: 'value' }, { other: 'value' }])
   })
 })
