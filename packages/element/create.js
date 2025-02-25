@@ -21,7 +21,7 @@ import { assignNode } from '@domql/render'
 import { createState } from '@domql/state'
 
 import { createProps } from './props/index.js'
-import { REGISTRY, registry } from './mixins/index.js'
+import { REGISTRY } from './mixins/index.js'
 import { addMethods } from './methods/set.js'
 import { assignKeyAsClassname } from './mixins/classList.js'
 import { throughInitialExec, throughInitialDefine } from './iterate.js'
@@ -111,7 +111,7 @@ const cacheOptions = options => {
 
 const switchDefaultOptions = (element, parent, options) => {
   if (Object.keys(options).length) {
-    registry.defaultOptions = options
+    REGISTRY.defaultOptions = options
     if (options.ignoreChildExtends) delete options.ignoreChildExtends
   }
 }
@@ -249,7 +249,7 @@ const onlyResolveExtends = (element, parent, key, options) => {
       if (
         isUndefined(element[k]) ||
         isMethod(k, element) ||
-        isObject((registry.default || registry)[k])
+        isObject(REGISTRY[k])
       ) {
         continue
       }
