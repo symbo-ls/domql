@@ -1,7 +1,6 @@
 'use strict'
 
-import { matchesComponentNaming } from '@domql/utils'
-import { REGISTRY } from '../mixins/index.js'
+import { DOMQ_PROPERTIES, matchesComponentNaming } from '@domql/utils'
 
 export const createValidDomqlObjectFromSugar = (el, parent, key, options) => {
   const newElem = {
@@ -14,8 +13,7 @@ export const createValidDomqlObjectFromSugar = (el, parent, key, options) => {
   for (const k in el) {
     const value = el[k]
     const isComponent = matchesComponentNaming(k)
-    const isRegistry = REGISTRY[k]
-    if (isComponent || isRegistry || allowedKeys.includes(k)) {
+    if (isComponent || DOMQ_PROPERTIES.includes(k) || allowedKeys.includes(k)) {
       newElem[k] = value
     } else {
       newElem.props[k] = value

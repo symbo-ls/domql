@@ -20,7 +20,6 @@ export const REGISTRY = {
   class: classList,
   state,
   scope,
-
   deps: (param, el) => param || el.parent.deps,
 
   extends: {},
@@ -40,8 +39,6 @@ export const REGISTRY = {
   parent: {},
   node: {},
   variables: {},
-  keys: {},
-  log: {},
   on: {},
   component: {},
   context: {}

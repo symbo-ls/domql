@@ -10,9 +10,7 @@ import { text } from './text.js'
 import { state } from './state.js'
 import { scope } from './scope.js'
 // import { children } from './children.js'
-import { REGISTRY } from './registry.js'
 
-export { REGISTRY as registry }
 export { applyClasslist as classList }
 export { setContent as content }
 

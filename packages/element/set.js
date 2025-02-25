@@ -1,12 +1,11 @@
 'use strict'
 
-import { deepContains, setContentKey } from '@domql/utils'
+import { deepContains, OPTIONS, setContentKey } from '@domql/utils'
 
-import { OPTIONS } from './cache/options.js'
 import { create } from './create.js'
 import { removeContent } from './mixins/content.js'
 import { triggerEventOn, triggerEventOnUpdate } from '@domql/event'
-import REGISTRY from './mixins/registry.js'
+import { REGISTRY } from './mixins/registry.js'
 
 export const resetElement = async (params, element, options) => {
   if (!options.preventRemove) removeContent(element, options)

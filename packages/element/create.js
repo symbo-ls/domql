@@ -13,7 +13,8 @@ import {
   createElement,
   applyExtends,
   createScope,
-  isMethod
+  isMethod,
+  OPTIONS
 } from '@domql/utils'
 
 import { applyAnimationFrame, triggerEventOn } from '@domql/event'
@@ -25,8 +26,6 @@ import { REGISTRY } from './mixins/index.js'
 import { addMethods } from './methods/set.js'
 import { assignKeyAsClassname } from './mixins/classList.js'
 import { throughInitialExec, throughInitialDefine } from './iterate.js'
-
-import { OPTIONS } from './cache/options.js'
 
 const ENV = process.env.NODE_ENV
 

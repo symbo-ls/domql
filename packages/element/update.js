@@ -16,7 +16,8 @@ import {
   propertizeElement,
   isMethod,
   findInheritedState,
-  deepMerge
+  deepMerge,
+  OPTIONS
 } from '@domql/utils'
 
 import { applyEvent, triggerEventOn, triggerEventOnUpdate } from '@domql/event'
@@ -31,7 +32,6 @@ import {
 } from './iterate.js'
 import { REGISTRY } from './mixins/index.js'
 import { applyParam } from './utils/applyParam.js'
-import { OPTIONS } from './cache/options.js'
 import { METHODS_EXL } from './utils/index.js' // old utils (current)
 
 const snapshot = {
@@ -44,7 +44,7 @@ const UPDATE_DEFAULT_OPTIONS = {
   preventRecursive: false,
   currentSnapshot: false,
   calleeElement: false,
-  excludes: METHODS_EXL
+  exclude: METHODS_EXL
 }
 
 export const update = async function (params = {}, opts) {
@@ -58,7 +58,7 @@ export const update = async function (params = {}, opts) {
   options.calleeElement = calleeElementCache
   const element = this
   const { parent, node, key } = element
-  const { excludes, preventInheritAtCurrentState } = options
+  const { exclude, preventInheritAtCurrentState } = options
 
   let ref = element.__ref
   if (!ref) ref = element.__ref = {}
@@ -78,7 +78,7 @@ export const update = async function (params = {}, opts) {
   ) {
     return
   }
-  if (!excludes) merge(options, UPDATE_DEFAULT_OPTIONS)
+  if (!exclude) merge(options, UPDATE_DEFAULT_OPTIONS)
 
   if (isString(params) || isNumber(params)) {
     params = { text: params }
@@ -201,16 +201,16 @@ export const update = async function (params = {}, opts) {
           calleeElement
         })
 
-      lazyLoad
-        ? window.requestAnimationFrame(() => {
-            // eslint-disable-line
+      if (lazyLoad) {
+        window.requestAnimationFrame(() => {
+          // eslint-disable-line
           childUpdateCall()
           // handle lazy load
           if (!options.preventUpdateListener) {
             triggerEventOn('lazyLoad', element, options)
           }
         })
-        : childUpdateCall()
+      } else childUpdateCall()
     }
   }
 
