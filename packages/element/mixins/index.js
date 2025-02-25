@@ -11,16 +11,14 @@ import { state } from './state.js'
 import { scope } from './scope.js'
 // import { children } from './children.js'
 
-export { applyClasslist as classList }
-export { setContent as content }
-
 export {
+  applyClasslist as classList,
+  setContent as content,
   attr,
   data,
   style,
   text,
   html,
-  // children,
   state,
   scope
 }

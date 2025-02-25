@@ -1,18 +1,21 @@
 'use strict'
 
-import { deepContains, OPTIONS, setContentKey } from '@domql/utils'
+import {
+  deepContains,
+  OPTIONS,
+  removeContent,
+  setContentKey
+} from '@domql/utils'
 
 import { create } from './create.js'
-import { removeContent } from './mixins/content.js'
 import { triggerEventOn, triggerEventOnUpdate } from '@domql/event'
-import { REGISTRY } from './mixins/registry.js'
 
 export const resetElement = async (params, element, options) => {
   if (!options.preventRemove) removeContent(element, options)
   const { __ref: ref } = element
   await create(params, element, ref.contentElementKey || 'content', {
     ignoreChildExtends: true,
-    ...REGISTRY.defaultOptions,
+    ...OPTIONS.defaultOptions,
     ...OPTIONS.create,
     ...options
   })
@@ -22,7 +25,7 @@ export const reset = options => {
   const element = this
   create(element, element.parent, undefined, {
     ignoreChildExtends: true,
-    ...REGISTRY.defaultOptions,
+    ...OPTIONS.defaultOptions,
     ...OPTIONS.create,
     ...options
   })

@@ -1,11 +1,11 @@
 'use strict'
 
-import { merge, overwrite } from '@domql/utils'
+import { merge, overwrite, removeContent } from '@domql/utils'
 
 import { set, reset } from '../set.js'
 import { update } from '../update.js'
 
-import { removeContent, updateContent } from '../mixins/content.js'
+import { updateContent } from '../mixins/content.js'
 import {
   call,
   error,

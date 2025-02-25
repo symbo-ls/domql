@@ -5,7 +5,6 @@ import { ROOT } from './tree.js'
 
 import {
   isObject,
-  isFunction,
   exec,
   isUndefined,
   detectInfiniteLoop,
@@ -26,6 +25,7 @@ import { REGISTRY } from './mixins/index.js'
 import { addMethods } from './methods/set.js'
 import { assignKeyAsClassname } from './mixins/classList.js'
 import { throughInitialExec, throughInitialDefine } from './iterate.js'
+import { createIfConditionFlag } from '../utils/if.js'
 
 const ENV = process.env.NODE_ENV
 
@@ -110,7 +110,7 @@ const cacheOptions = options => {
 
 const switchDefaultOptions = (element, parent, options) => {
   if (Object.keys(options).length) {
-    REGISTRY.defaultOptions = options
+    OPTIONS.defaultOptions = options
     if (options.ignoreChildExtends) delete options.ignoreChildExtends
   }
 }
@@ -200,17 +200,6 @@ const renderElement = async (element, parent, options, attachOptions) => {
 
   // run `on.done`
   await triggerEventOn('create', element, options)
-}
-
-const createIfConditionFlag = (element, parent) => {
-  const { __ref: ref } = element
-
-  if (
-    isFunction(element.if) &&
-    !element.if(element, element.state, element.context)
-  ) {
-    delete ref.__if
-  } else ref.__if = true
 }
 
 const onlyResolveExtends = (element, parent, key, options) => {
