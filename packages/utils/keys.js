@@ -1,5 +1,7 @@
 'use strict'
 
+import { joinArrays } from './array'
+
 export const DOMQ_PROPERTIES = [
   'attr',
   'style',
@@ -99,3 +101,39 @@ export const STATE_METHODS = [
 ]
 
 export const PROPS_METHODS = ['update', '__element']
+
+export const METHODS = [
+  'set',
+  'reset',
+  'update',
+  'remove',
+  'updateContent',
+  'removeContent',
+  'lookup',
+  'lookdown',
+  'lookdownAll',
+  'getRef',
+  'getPath',
+  'setNodeStyles',
+  'spotByPath',
+  'keys',
+  'parse',
+  'setProps',
+  'parseDeep',
+  'variables',
+  'if',
+  'log',
+  'verbose',
+  'warn',
+  'error',
+  'call',
+  'nextElement',
+  'previousElement'
+]
+
+export const METHODS_EXL = [
+  ...['node', 'context', 'extends', '__element', '__ref'],
+  ...METHODS,
+  ...STATE_METHODS,
+  ...PROPS_METHODS
+]

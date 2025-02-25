@@ -22,9 +22,9 @@ import {
   variables,
   call,
   isMethod,
-  METHODS,
   defineSetter
 } from '../methods.js'
+import { METHODS } from '../keys.js'
 
 // Mock console methods
 global.console = {

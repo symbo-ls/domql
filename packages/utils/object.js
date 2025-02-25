@@ -14,6 +14,7 @@ import {
 import { unstackArrayOfObjects } from './array.js'
 import { stringIncludesAny } from './string.js'
 import { isDOMNode } from './node.js'
+import { METHODS_EXL } from './keys.js'
 
 const ENV = process.env.NODE_ENV
 
@@ -50,7 +51,7 @@ export const merge = (element, obj, excludeFrom = []) => {
   return element
 }
 
-export const deepMerge = (element, extend, excludeFrom = []) => {
+export const deepMerge = (element, extend, excludeFrom = METHODS_EXL) => {
   for (const e in extend) {
     const hasOwnProperty = Object.prototype.hasOwnProperty.call(extend, e)
     if (!hasOwnProperty || excludeFrom.includes(e) || e.startsWith('__')) {

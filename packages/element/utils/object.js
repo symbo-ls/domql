@@ -1,62 +1,9 @@
 'use strict'
 
-import {
-  isObject,
-  isObjectLike,
-  joinArrays,
-  deepClone,
-  STATE_METHODS,
-  PROPS_METHODS
-} from '@domql/utils'
+import { isObjectLike, deepClone, METHODS_EXL, deepMerge } from '@domql/utils'
 
 // breaks server build
 // import { METHODS } from '../methods'
-
-export const METHODS = [
-  'set',
-  'reset',
-  'update',
-  'remove',
-  'updateContent',
-  'removeContent',
-  'lookup',
-  'lookdown',
-  'lookdownAll',
-  'getRef',
-  'getPath',
-  'setNodeStyles',
-  'spotByPath',
-  'keys',
-  'parse',
-  'setProps',
-  'parseDeep',
-  'variables',
-  'if',
-  'log',
-  'nextElement',
-  'previousElement'
-]
-
-export const METHODS_EXL = joinArrays(
-  ['node', 'state', 'context', 'extends', '__element'],
-  METHODS,
-  STATE_METHODS,
-  PROPS_METHODS
-)
-
-export const deepMerge = (element, extend, exclude = METHODS_EXL) => {
-  for (const e in extend) {
-    if (exclude.includes(e)) continue
-    const elementProp = element[e]
-    const extendProp = extend[e]
-    if (elementProp === undefined) {
-      element[e] = extendProp
-    } else if (isObjectLike(elementProp) && isObject(extendProp)) {
-      deepMerge(elementProp, extendProp)
-    }
-  }
-  return element
-}
 
 export const clone = (obj, exclude = METHODS_EXL) => {
   const o = {}

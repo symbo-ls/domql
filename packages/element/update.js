@@ -15,7 +15,8 @@ import {
   deepClone,
   propertizeElement,
   isMethod,
-  findInheritedState
+  findInheritedState,
+  deepMerge
 } from '@domql/utils'
 
 import { applyEvent, triggerEventOn, triggerEventOnUpdate } from '@domql/event'
@@ -31,7 +32,7 @@ import {
 import { REGISTRY } from './mixins/index.js'
 import { applyParam } from './utils/applyParam.js'
 import { OPTIONS } from './cache/options.js'
-import { METHODS_EXL, deepMerge } from './utils/index.js' // old utils (current)
+import { METHODS_EXL } from './utils/index.js' // old utils (current)
 
 const snapshot = {
   snapshotId: createSnapshotId
@@ -203,12 +204,12 @@ export const update = async function (params = {}, opts) {
       lazyLoad
         ? window.requestAnimationFrame(() => {
             // eslint-disable-line
-            childUpdateCall()
-            // handle lazy load
-            if (!options.preventUpdateListener) {
-              triggerEventOn('lazyLoad', element, options)
-            }
-          })
+          childUpdateCall()
+          // handle lazy load
+          if (!options.preventUpdateListener) {
+            triggerEventOn('lazyLoad', element, options)
+          }
+        })
         : childUpdateCall()
     }
   }
