@@ -8,10 +8,9 @@ import {
   isString,
   matchesComponentNaming,
   isContextComponent,
-  isMethod
+  isMethod,
+  overwrite
 } from '@domql/utils'
-
-import { METHODS_EXL, overwrite } from './utils/index.js'
 
 export const throughInitialExec = (element, exclude = {}) => {
   const { __ref: ref } = element
@@ -25,10 +24,7 @@ export const throughInitialExec = (element, exclude = {}) => {
   }
 }
 
-export const throughUpdatedExec = (
-  element,
-  options = { excludes: METHODS_EXL }
-) => {
+export const throughUpdatedExec = (element, options = {}) => {
   const { __ref: ref } = element
   const changes = {}
 
@@ -42,7 +38,7 @@ export const throughUpdatedExec = (
     const execReturnsString = isString(newExec) || isNumber(newExec)
     // if (prop && prop.node && execReturnsString) {
     if (prop && prop.node && execReturnsString) {
-      overwrite(prop, { text: newExec }, options)
+      overwrite(prop, { text: newExec })
     } else if (newExec !== prop) {
       if (matchesComponentNaming(param)) {
         const { extends: extend, ...newElem } = isContextComponent(
@@ -50,9 +46,7 @@ export const throughUpdatedExec = (
           element,
           param
         )
-        overwrite(prop, newElem, options)
-        // } else {
-        //   overwrite(prop, newExec, options)
+        overwrite(prop, newElem)
       } else {
         ref.__cached[param] = changes[param] = prop
         element[param] = newExec

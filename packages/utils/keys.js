@@ -1,7 +1,5 @@
 'use strict'
 
-import { joinArrays } from './array'
-
 export const DOMQ_PROPERTIES = [
   'attr',
   'style',
