@@ -121,37 +121,19 @@ export function setPropsPrototype (element) {
   Object.setPrototypeOf(element.props, methods)
 }
 
-export const syncProps = (props, element, opts) => {
-  element.props = {}
-  const mergedProps = {}
-
-  props.forEach(v => {
-    if (PROPS_METHODS.includes(v)) return
-    const execProps = exec(v, element)
-    // let execProps
-    // try {
-    // execProps = exec(v, element)
-    // } catch (e) { element.error(e, opts) }
-    // TODO: check if this failing the function props merge
-    // if (isObject(execProps) && execProps.__element) return
-    // it was causing infinite loop at early days
-    element.props = deepMerge(
-      mergedProps,
-      deepClone(execProps, { exclude: PROPS_METHODS }),
-      PROPS_METHODS
-    )
-  })
-
-  element.props = mergedProps
-
+export const syncProps = (propsStack, element, opts) => {
+  element.props = propsStack.reduce((mergedProps, v) => {
+    if (PROPS_METHODS.includes(v)) return mergedProps
+    while (isFunction(v)) v = exec(v, element)
+    return deepMerge(mergedProps, deepClone(v, { exclude: PROPS_METHODS }))
+  }, {})
   setPropsPrototype(element)
-
   return element.props
 }
 
 export const createPropsStack = (element, parent) => {
   const { props, __ref: ref } = element
-  const propsStack = (ref.__props = inheritParentProps(element, parent))
+  const propsStack = (ref.__propsStack = inheritParentProps(element, parent))
 
   if (isObject(props)) propsStack.push(props)
   else if (props === 'inherit' && parent.props) propsStack.push(parent.props)
@@ -165,7 +147,7 @@ export const createPropsStack = (element, parent) => {
     })
   }
 
-  ref.__props = propsStack
+  ref.__propsStack = propsStack
 
   return propsStack
 }
@@ -174,12 +156,12 @@ export const initProps = function (element, parent, options) {
   const { __ref: ref } = element
 
   const applyProps = () => {
-    const propsStack = options.cachedProps || createPropsStack(element, parent)
+    const propsStack = createPropsStack(element, parent)
     if (propsStack.length) {
-      ref.__props = propsStack
+      ref.__propsStack = propsStack
       syncProps(propsStack, element)
     } else {
-      ref.__props = options.cachedProps || []
+      ref.__propsStack = []
       element.props = {}
     }
   }
@@ -190,7 +172,7 @@ export const initProps = function (element, parent, options) {
       applyProps()
     } catch {
       element.props = {}
-      ref.__props = options.cachedProps || []
+      ref.__propsStack = []
     }
   }
 
@@ -200,14 +182,16 @@ export const initProps = function (element, parent, options) {
 }
 
 export const updateProps = (newProps, element, parent) => {
-  const { __ref } = element
-  let propsStack = __ref.__props
+  const { __ref: ref } = element
+  let propsStack = ref.__propsStack
 
   const parentProps = inheritParentProps(element, parent)
   if (parentProps.length) {
-    propsStack = __ref.__props = [].concat(parentProps, propsStack)
+    propsStack = ref.__propsStack = [].concat(parentProps, propsStack)
   }
-  if (newProps) propsStack = __ref.__props = [].concat(newProps, propsStack)
+  if (newProps) {
+    propsStack = ref.__propsStack = [].concat(newProps, propsStack)
+  }
 
   if (propsStack) {
     syncProps(propsStack, element)

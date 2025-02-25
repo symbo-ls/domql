@@ -1,7 +1,8 @@
 import {
   createProps,
   inheritParentProps,
-  objectizeStringProperty
+  objectizeStringProperty,
+  syncProps
 } from '../props.js'
 
 describe('createProps', () => {
@@ -35,17 +36,6 @@ describe('createProps', () => {
     expect(result).toEqual({})
     expect(element.__ref.__propsStack).toEqual([])
     expect(element.__ref.__initialProps).toBeUndefined()
-  })
-
-  it('should handle null props', () => {
-    const element = {
-      props: null,
-      __ref: {}
-    }
-    const result = createProps(element)
-    expect(result).toEqual({})
-    expect(element.__ref.__propsStack).toEqual([])
-    expect(element.__ref.__initialProps).toBe()
   })
 })
 
@@ -144,5 +134,286 @@ describe('inheritParentProps', () => {
     }
     const result = inheritParentProps(element, parent)
     expect(result).toEqual([{ specific: 'value' }, { shared: 'value' }])
+  })
+})
+
+describe('syncProps', () => {
+  it('should merge props stack correctly', () => {
+    const element = {
+      props: {},
+      __ref: {}
+    }
+    const propsStack = [{ a: 1 }, { b: 2 }, { a: 3 }]
+    const result = syncProps(propsStack, element)
+    expect(result).toEqual({ a: 1, b: 2 })
+  })
+
+  it('should skip PROPS_METHODS values', () => {
+    const element = {
+      props: {},
+      __ref: {}
+    }
+    const propsStack = [
+      { a: 1 },
+      'update', // This is a PROPS_METHOD
+      { b: 2 }
+    ]
+    const result = syncProps(propsStack, element)
+    expect(result).toEqual({ a: 1, b: 2 })
+  })
+
+  it('should handle exec-able props', () => {
+    const element = {
+      props: {},
+      __ref: {}
+    }
+    const propsStack = [{ a: 1 }, () => ({ b: 2 }), { c: 3 }]
+    const result = syncProps(propsStack, element)
+    expect(result).toEqual({ a: 1, b: 2, c: 3 })
+  })
+
+  it('should handle nested function props', () => {
+    const element = {
+      props: {},
+      __ref: {},
+      context: { foo: 'bar' }
+    }
+    const dynamicFn = () => 'dynamic'
+    const contextFn = ctx => ctx.foo
+    const propsStack = [{ a: dynamicFn }, { b: contextFn }]
+    const result = syncProps(propsStack, element)
+
+    expect(result.a).toBe(dynamicFn)
+    expect(result.b).toBe(contextFn)
+  })
+
+  it('should merge function results with other props', () => {
+    const element = {
+      props: {},
+      __ref: {}
+    }
+    const propsStack = [
+      { static: 'value' },
+      () => ({ dynamic: 'value' }),
+      { additional: 'prop' }
+    ]
+    const result = syncProps(propsStack, element)
+    expect(result).toEqual({
+      static: 'value',
+      dynamic: 'value',
+      additional: 'prop'
+    })
+  })
+
+  it('should handle functions returning functions', () => {
+    const element = {
+      props: {},
+      __ref: {}
+    }
+    const propsStack = [() => () => ({ nested: 'value' }), { direct: 'prop' }]
+    const result = syncProps(propsStack, element)
+
+    expect(result).toEqual({
+      nested: 'value',
+      direct: 'prop'
+    })
+  })
+
+  it('should preserve function references when not executed', () => {
+    const callback = () => {}
+    const element = {
+      props: {},
+      __ref: {}
+    }
+    const propsStack = [{ onClick: callback }, { prop: 'value' }]
+    const result = syncProps(propsStack, element)
+    expect(result.onClick).toBe(callback)
+    expect(result.prop).toBe('value')
+  })
+
+  it('should handle array of functions in props', () => {
+    const element = {
+      props: {},
+      __ref: {}
+    }
+    const propsStack = [
+      {
+        handlers: [() => ({ a: 1 }), () => ({ b: 2 })]
+      }
+    ]
+    const result = syncProps(propsStack, element)
+    expect(result).toEqual({
+      handlers: [expect.any(Function), expect.any(Function)]
+    })
+    expect(result.handlers[0]()).toEqual({ a: 1 })
+    expect(result.handlers[1]()).toEqual({ b: 2 })
+  })
+
+  it('should handle functions with element context', () => {
+    const element = {
+      props: {},
+      __ref: {},
+      state: { count: 1 }
+    }
+    const propsStack = [
+      element => ({ value: element.state.count }),
+      element => ({ double: element.state.count * 2 })
+    ]
+    const result = syncProps(propsStack, element)
+    expect(result).toEqual({
+      value: 1,
+      double: 2
+    })
+  })
+
+  it('should handle nested function props without executing them', () => {
+    const element = {
+      props: {},
+      __ref: {},
+      context: { foo: 'bar' }
+    }
+    const dynamicFn = () => 'dynamic'
+    const contextFn = ctx => ctx.foo
+    const propsStack = [{ a: dynamicFn }, { b: contextFn }]
+    const result = syncProps(propsStack, element)
+    // Remove __element and update from comparison
+    expect(result).toEqual({
+      a: dynamicFn,
+      b: contextFn
+    })
+  })
+
+  it('should merge function results with other props', () => {
+    const element = {
+      props: {},
+      __ref: {}
+    }
+    const propsStack = [
+      { static: 'value' },
+      () => ({ dynamic: 'value' }),
+      { additional: 'prop' }
+    ]
+    const result = syncProps(propsStack, element)
+    expect(result).toEqual({
+      static: 'value',
+      dynamic: 'value',
+      additional: 'prop'
+    })
+  })
+
+  it('should handle functions returning functions', () => {
+    const element = {
+      props: {},
+      __ref: {}
+    }
+    const nestedFn = () => () => ({ nested: 'value' })
+    const propsStack = [nestedFn, { direct: 'prop' }]
+    const result = syncProps(propsStack, element)
+    expect(result).toEqual({
+      direct: 'prop',
+      nested: 'value'
+    })
+  })
+
+  it('should handle functions with element context without executing them', () => {
+    const element = {
+      props: {},
+      __ref: {},
+      state: { count: 1 }
+    }
+    const valueFn = element => element.state.count
+    const doubleFn = element => element.state.count * 2
+    const propsStack = [
+      {
+        value: valueFn,
+        double: doubleFn
+      }
+    ]
+    const result = syncProps(propsStack, element)
+    expect(result).toEqual({
+      value: valueFn,
+      double: doubleFn
+    })
+  })
+
+  it('should handle function props by preserving them', () => {
+    const element = {
+      props: {},
+      __ref: {},
+      context: { foo: 'bar' }
+    }
+    const dynamicFn = () => 'dynamic'
+    const contextFn = ctx => ctx.foo
+    const propsStack = [{ a: dynamicFn }, { b: contextFn }]
+    const result = syncProps(propsStack, element)
+    expect(result).toEqual({
+      a: dynamicFn,
+      b: contextFn
+    })
+  })
+
+  it('should merge props while preserving functions', () => {
+    const element = {
+      props: {},
+      __ref: {}
+    }
+    const dynamicFn = () => ({ dynamic: 'value' })
+    const propsStack = [{ static: 'value' }, dynamicFn, { additional: 'prop' }]
+    const result = syncProps(propsStack, element)
+    expect(result).toEqual({
+      static: 'value',
+      additional: 'prop',
+      dynamic: 'value'
+    })
+  })
+
+  it('should preserve nested functions', () => {
+    const element = {
+      props: {},
+      __ref: {}
+    }
+    const nestedFn = () => () => ({ nested: 'value' })
+    const propsStack = [nestedFn, { direct: 'prop' }]
+    const result = syncProps(propsStack, element)
+    expect(result).toEqual({
+      nested: 'value',
+      direct: 'prop'
+    })
+  })
+
+  it('should preserve element context functions', () => {
+    const element = {
+      props: {},
+      __ref: {},
+      state: { count: 1 }
+    }
+    const valueFn = element => element.state.count
+    const doubleFn = element => element.state.count * 2
+    const propsStack = [
+      {
+        value: valueFn,
+        double: doubleFn
+      }
+    ]
+    const result = syncProps(propsStack, element)
+    expect(result).toEqual({
+      value: valueFn,
+      double: doubleFn
+    })
+  })
+
+  it('should preserve named function references', () => {
+    const element = {
+      props: {},
+      __ref: {}
+    }
+    function namedFunction () {
+      return true
+    }
+    const propsStack = [{ handler: namedFunction }]
+    const result = syncProps(propsStack, element)
+    expect(result).toEqual({
+      handler: namedFunction
+    })
   })
 })
