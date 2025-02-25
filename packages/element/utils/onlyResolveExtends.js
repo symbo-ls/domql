@@ -1,12 +1,18 @@
 'use strict'
 
-import { exec, isFunction, isMethod, isObject, isUndefined } from '@domql/utils'
+import {
+  exec,
+  initProps,
+  isFunction,
+  isMethod,
+  isObject,
+  isUndefined
+} from '@domql/utils'
 import { create } from '..'
 import { REGISTRY } from '../mixins/index.js'
 import { addMethods } from '../methods/set'
 import { createState } from '@domql/state'
 import { detectTag } from '@domql/render'
-import { createProps } from '../props'
 import { throughInitialDefine, throughInitialExec } from '../iterate'
 
 export const onlyResolveExtends = (element, parent, key, options) => {
@@ -69,7 +75,7 @@ export const onlyResolveExtends = (element, parent, key, options) => {
     parent[key || element.key] = element
   } // Borrowed from assignNode()
 
-  createProps(element, parent, options)
+  initProps(element, parent, options)
 
   if (element.tag !== 'string' && element.tag !== 'fragment') {
     throughInitialDefine(element)
@@ -110,7 +116,7 @@ export const onlyResolveExtends = (element, parent, key, options) => {
   delete element.update
   delete element.__element
 
-  // added by createProps
+  // added by initProps
   if (element.props) {
     delete element.props.update
     delete element.props.__element

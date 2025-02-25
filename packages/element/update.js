@@ -17,11 +17,11 @@ import {
   isMethod,
   findInheritedState,
   deepMerge,
-  OPTIONS
+  OPTIONS,
+  updateProps
 } from '@domql/utils'
 
 import { applyEvent, triggerEventOn, triggerEventOnUpdate } from '@domql/event'
-import { updateProps } from './props/index.js'
 import { createState } from '@domql/state'
 
 import { create } from './create.js'

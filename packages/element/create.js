@@ -14,14 +14,14 @@ import {
   applyExtends,
   createScope,
   isMethod,
-  OPTIONS
+  OPTIONS,
+  initProps
 } from '@domql/utils'
 
 import { applyAnimationFrame, triggerEventOn } from '@domql/event'
 import { assignNode } from '@domql/render'
 import { createState } from '@domql/state'
 
-import { createProps } from './props/index.js'
 import { REGISTRY } from './mixins/index.js'
 import { addMethods } from './methods/set.js'
 import { assignKeyAsClassname } from './mixins/classList.js'
@@ -68,7 +68,7 @@ export const create = async (
   createIfConditionFlag(element, parent)
 
   // apply props settings
-  createProps(element, parent, options)
+  initProps(element, parent, options)
   if (element.scope === 'props' || element.scope === true) {
     element.scope = element.props
   }
@@ -226,7 +226,7 @@ const onlyResolveExtends = (element, parent, key, options) => {
   createIfConditionFlag(element, parent)
 
   // apply props settings
-  createProps(element, parent, options)
+  initProps(element, parent, options)
   if (element.scope === 'props' || element.scope === true) {
     element.scope = element.props
   }
@@ -276,7 +276,7 @@ const onlyResolveExtends = (element, parent, key, options) => {
   delete element.update
   delete element.__element
 
-  // added by createProps
+  // added by initProps
   if (element.props) {
     delete element.props.update
     delete element.props.__element
