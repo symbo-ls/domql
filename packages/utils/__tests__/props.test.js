@@ -6,7 +6,9 @@ import {
   objectizeStringProperty,
   syncProps,
   updateProps,
-  removeDuplicateProps
+  removeDuplicateProps,
+  applyProps,
+  propExists
 } from '../props.js'
 import { PROPS_METHODS } from '../keys.js'
 
@@ -551,16 +553,18 @@ describe('initProps', () => {
     }
     const result = initProps(element, parent)
 
-    // Remove __element and update function before comparison
-    const props = result.props
+    // Extract props for comparison, excluding special properties
+    const { __element, update, ...props } = result.props
+
+    // Test regular props
     expect(props).toEqual({
       local: 'value',
       shared: 'value'
     })
 
-    // Verify the presence of __element and update
-    expect(result.props.__element).toBe(element)
-    expect(typeof result.props.update).toBe('function')
+    // Test special properties separately
+    expect(__element).toBe(element)
+    expect(typeof update).toBe('function')
   })
 
   it('should handle empty props', () => {
@@ -701,5 +705,111 @@ describe('removeDuplicateProps', () => {
   test('handles mixed type props', () => {
     const input = ['string', 42, { obj: true }, 'string', { obj: true }, 42]
     expect(removeDuplicateProps(input)).toEqual(['string', 42, { obj: true }])
+  })
+})
+
+describe('propExists', () => {
+  test('should handle primitive values', () => {
+    const stack = ['a', 'b', 'c']
+    expect(propExists('a', stack)).toBe(true)
+    expect(propExists('d', stack)).toBe(false)
+  })
+
+  test('should handle null and undefined', () => {
+    const stack = [null, 'a', undefined]
+    expect(propExists(null, stack)).toBe(false)
+    expect(propExists(undefined, stack)).toBe(false)
+  })
+
+  test('should handle empty stack', () => {
+    expect(propExists({ foo: 'bar' }, [])).toBe(false)
+  })
+
+  test('should compare objects by value', () => {
+    const stack = [{ foo: 1 }, { bar: 2 }]
+    expect(propExists({ foo: 1 }, stack)).toBe(true)
+    expect(propExists({ baz: 3 }, stack)).toBe(false)
+  })
+
+  test('should handle identical object references', () => {
+    const obj = { foo: 'bar' }
+    const stack = [obj]
+    expect(propExists(obj, stack)).toBe(true)
+  })
+})
+
+describe('applyProps', () => {
+  test('should not reset props with new propsStack', () => {
+    const element = {
+      props: { old: 'value' },
+      __ref: { __propsStack: [{ old: 'value' }] }
+    }
+    const parent = {
+      props: { childProps: { new: 'value' } }
+    }
+
+    applyProps(element, parent)
+    expect(element.__ref.__propsStack).toEqual([
+      { new: 'value' },
+      { old: 'value' }
+    ])
+
+    // Extract regular props for comparison
+    const { __element, update, ...props } = element.props
+    expect(props).toEqual({ new: 'value', old: 'value' })
+
+    // Verify special properties
+    expect(__element).toBe(element)
+    expect(typeof update).toBe('function')
+  })
+
+  test('should handle empty props case', () => {
+    const element = {
+      props: {},
+      __ref: { __propsStack: [] }
+    }
+    const parent = {}
+
+    applyProps(element, parent)
+    expect(element.__ref.__propsStack).toEqual([{}])
+    expect(element.props).toEqual({})
+  })
+
+  test('should inherit parent props correctly', () => {
+    const element = {
+      key: 'child',
+      props: { local: 'value' },
+      __ref: { __propsStack: [] }
+    }
+    const parent = {
+      props: {
+        child: { specific: 'value' },
+        childProps: { shared: 'value' }
+      }
+    }
+
+    applyProps(element, parent)
+    expect(element.__ref.__propsStack).toEqual([
+      { specific: 'value' },
+      { shared: 'value' },
+      { local: 'value' }
+    ])
+  })
+
+  test('should handle extends stack', () => {
+    const element = {
+      props: { base: 'value' },
+      __ref: {
+        __propsStack: [],
+        __extendsStack: [{ props: { extended: 'value' } }]
+      }
+    }
+    const parent = {}
+
+    applyProps(element, parent)
+    expect(element.__ref.__propsStack).toEqual([
+      { base: 'value' },
+      { extended: 'value' }
+    ])
   })
 })

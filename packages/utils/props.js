@@ -89,7 +89,7 @@ export const objectizeStringProperty = propValue => {
   return propValue
 }
 
-const propExists = (prop, stack) => {
+export const propExists = (prop, stack) => {
   if (!prop || !stack.length) return false
   const key = isObject(prop) ? JSON.stringify(prop) : prop
   return stack.some(existing => {
@@ -108,19 +108,16 @@ export const inheritParentProps = (element, parent) => {
   const matchParentKeyProps = parentProps[element.key]
   const matchParentChildProps = parentProps.childProps
 
+  // Order matters: key-specific props should be added after childProps
   const ignoreChildProps = element.props?.ignoreChildProps
   if (matchParentChildProps && !ignoreChildProps) {
     const childProps = objectizeStringProperty(matchParentChildProps)
-    if (!propExists(childProps, propsStack)) {
-      propsStack.unshift(childProps)
-    }
+    propsStack.unshift(childProps)
   }
 
   if (matchParentKeyProps) {
     const keyProps = objectizeStringProperty(matchParentKeyProps)
-    if (!propExists(keyProps, propsStack)) {
-      propsStack.unshift(keyProps)
-    }
+    propsStack.unshift(keyProps)
   }
 
   return propsStack
@@ -163,13 +160,22 @@ export const syncProps = (propsStack, element, opts) => {
 
 export const createPropsStack = (element, parent) => {
   const { props, __ref: ref } = element
-  const propsStack =
-    (ref.__propsStack = inheritParentProps(element, parent)) || []
 
+  // Start with parent props
+  let propsStack = ref.__propsStack || []
+
+  // Get parent props
+  if (parent && parent.props) {
+    const parentStack = inheritParentProps(element, parent)
+    propsStack = [...parentStack]
+  }
+
+  // Add current props
   if (isObject(props)) propsStack.push(props)
-  else if (props === 'inherit' && parent.props) propsStack.push(parent.props)
+  else if (props === 'inherit' && parent?.props) propsStack.push(parent.props)
   else if (props) propsStack.push(props)
 
+  // Add extends props
   if (isArray(ref.__extendsStack)) {
     ref.__extendsStack.forEach(_extends => {
       if (_extends.props && _extends.props !== props) {
@@ -178,16 +184,19 @@ export const createPropsStack = (element, parent) => {
     })
   }
 
-  ref.__propsStack = propsStack
-
-  return propsStack
+  // Remove duplicates and update reference
+  ref.__propsStack = removeDuplicateProps(propsStack)
+  return ref.__propsStack
 }
 
-const resetProps = (element, parent) => {
+export const applyProps = (element, parent) => {
   const { __ref: ref } = element
+
+  // Create a fresh props stack
   const propsStack = createPropsStack(element, parent)
+
+  // Update the element
   if (propsStack.length) {
-    ref.__propsStack = propsStack
     syncProps(propsStack, element)
   } else {
     ref.__propsStack = []
@@ -198,10 +207,10 @@ const resetProps = (element, parent) => {
 export const initProps = function (element, parent, options) {
   const { __ref: ref } = element
 
-  if (ref.__if) resetProps(element, parent)
+  if (ref.__if) applyProps(element, parent)
   else {
     try {
-      resetProps(element, parent)
+      applyProps(element, parent)
     } catch {
       element.props = {}
       ref.__propsStack = []
