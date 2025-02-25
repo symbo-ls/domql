@@ -1,4 +1,4 @@
-import { cache } from '../../cache/index'
+import { cache } from '../cache'
 
 describe('cache', () => {
   beforeEach(() => {

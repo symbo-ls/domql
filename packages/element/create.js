@@ -5,7 +5,6 @@ import { ROOT } from './tree.js'
 
 import {
   isObject,
-  isFunction,
   exec,
   isUndefined,
   detectInfiniteLoop,
@@ -13,20 +12,20 @@ import {
   createElement,
   applyExtends,
   createScope,
-  isMethod
+  isMethod,
+  OPTIONS,
+  initProps
 } from '@domql/utils'
 
 import { applyAnimationFrame, triggerEventOn } from '@domql/event'
 import { assignNode } from '@domql/render'
 import { createState } from '@domql/state'
 
-import { createProps } from './props/index.js'
-import { REGISTRY, registry } from './mixins/index.js'
+import { REGISTRY } from './mixins/index.js'
 import { addMethods } from './methods/set.js'
 import { assignKeyAsClassname } from './mixins/classList.js'
 import { throughInitialExec, throughInitialDefine } from './iterate.js'
-
-import { OPTIONS } from './cache/options.js'
+import { createIfConditionFlag } from '../utils/if.js'
 
 const ENV = process.env.NODE_ENV
 
@@ -69,7 +68,7 @@ export const create = async (
   createIfConditionFlag(element, parent)
 
   // apply props settings
-  createProps(element, parent, options)
+  initProps(element, parent, options)
   if (element.scope === 'props' || element.scope === true) {
     element.scope = element.props
   }
@@ -111,7 +110,7 @@ const cacheOptions = options => {
 
 const switchDefaultOptions = (element, parent, options) => {
   if (Object.keys(options).length) {
-    registry.defaultOptions = options
+    OPTIONS.defaultOptions = options
     if (options.ignoreChildExtends) delete options.ignoreChildExtends
   }
 }
@@ -203,17 +202,6 @@ const renderElement = async (element, parent, options, attachOptions) => {
   await triggerEventOn('create', element, options)
 }
 
-const createIfConditionFlag = (element, parent) => {
-  const { __ref: ref } = element
-
-  if (
-    isFunction(element.if) &&
-    !element.if(element, element.state, element.context)
-  ) {
-    delete ref.__if
-  } else ref.__if = true
-}
-
 const onlyResolveExtends = (element, parent, key, options) => {
   const { __ref: ref } = element
 
@@ -227,7 +215,7 @@ const onlyResolveExtends = (element, parent, key, options) => {
   createIfConditionFlag(element, parent)
 
   // apply props settings
-  createProps(element, parent, options)
+  initProps(element, parent, options)
   if (element.scope === 'props' || element.scope === true) {
     element.scope = element.props
   }
@@ -249,7 +237,7 @@ const onlyResolveExtends = (element, parent, key, options) => {
       if (
         isUndefined(element[k]) ||
         isMethod(k, element) ||
-        isObject((registry.default || registry)[k])
+        isObject(REGISTRY[k])
       ) {
         continue
       }
@@ -277,7 +265,7 @@ const onlyResolveExtends = (element, parent, key, options) => {
   delete element.update
   delete element.__element
 
-  // added by createProps
+  // added by initProps
   if (element.props) {
     delete element.props.update
     delete element.props.__element

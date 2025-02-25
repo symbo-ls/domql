@@ -1,4 +1,4 @@
-import { OPTIONS } from '../../cache/options'
+import { OPTIONS } from '../cache'
 
 describe('OPTIONS', () => {
   it('is an empty object by default', () => {

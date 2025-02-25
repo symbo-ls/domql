@@ -1,7 +1,6 @@
 'use strict'
 
 import { isDefined, isFunction, isObjectLike } from '@domql/utils'
-import { parseFilters, REGISTRY } from '../mixins/index.js'
 
 export const defineSetter = (element, key, get, set) =>
   Object.defineProperty(element, key, { get, set })
@@ -10,9 +9,7 @@ export const keys = function () {
   const element = this
   const keys = []
   for (const param in element) {
-    if (REGISTRY[param] && !parseFilters.elementKeys.includes(param)) {
-      continue
-    }
+    // if (REGISTRY[param] && !parseFilters.elementKeys.includes(param)) { continue }
     keys.push(param)
   }
   return keys

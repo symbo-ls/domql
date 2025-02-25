@@ -1,7 +1,7 @@
 'use strict'
 
 import { triggerEventOn } from '@domql/event'
-import { DOMQ_PROPERTIES, PARSED_DOMQ_PROPERTIES } from './keys.js'
+import { DOMQ_PROPERTIES, METHODS, PARSED_DOMQ_PROPERTIES } from './keys.js'
 import { isDefined, isFunction, isObject, isObjectLike } from './types.js'
 import { deepClone } from './object.js'
 import { isProduction } from './env.js'
@@ -309,35 +309,6 @@ export function call (fnKey, ...args) {
     context.snippets[fnKey]
   )?.call(this, ...args)
 }
-
-export const METHODS = [
-  'set',
-  'reset',
-  'update',
-  'remove',
-  'updateContent',
-  'removeContent',
-  'lookup',
-  'lookdown',
-  'lookdownAll',
-  'getRef',
-  'getPath',
-  'setNodeStyles',
-  'spotByPath',
-  'keys',
-  'parse',
-  'setProps',
-  'parseDeep',
-  'variables',
-  'if',
-  'log',
-  'verbose',
-  'warn',
-  'error',
-  'call',
-  'nextElement',
-  'previousElement'
-]
 
 export function isMethod (param, element) {
   return Boolean(METHODS.includes(param) || element?.context?.methods?.[param])

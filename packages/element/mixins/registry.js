@@ -20,7 +20,6 @@ export const REGISTRY = {
   class: classList,
   state,
   scope,
-
   deps: (param, el) => param || el.parent.deps,
 
   extends: {},
@@ -40,25 +39,9 @@ export const REGISTRY = {
   parent: {},
   node: {},
   variables: {},
-  keys: {},
-  log: {},
   on: {},
   component: {},
   context: {}
 }
 
 export default REGISTRY
-
-// List of keys for .parse() and .parseDeep() to include in the result.
-// Keys not in the array are excluded.
-export const parseFilters = {
-  elementKeys: [
-    'tag', 'text', 'style', 'attr', 'class', 'state', 'props',
-    'data', 'content', 'html', 'on', 'key', 'extends', 'childExtends',
-    'childExtendsRecursive', 'scope', 'query', 'children'
-  ],
-  propsKeys: ['__element', 'update'],
-  stateKeys: []
-}
-
-export const collectionFilters = ['$collection', '$stateCollection', '$propsCollection']
