@@ -24,7 +24,7 @@
     "build": "rimraf -I dist; npm run build:cjs; npm run build:esm",
     "prepublish": "npm run build; npm run copy:package:cjs"
   },
-  "gitHead": "e5952db705e332f062e2e78113d620bd48ba16d9",
+  "gitHead": "1ed593a20606d40162e0d0c8a1d9bfd1af0a3f0d",
   "devDependencies": {
     "@babel/core": "^7.12.0"
   }

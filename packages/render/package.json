@@ -29,5 +29,5 @@
     "build": "rimraf -I dist; npm run build:cjs; npm run build:esm",
     "prepublish": "rimraf -I dist && npm run build && npm run copy:package:cjs"
   },
-  "gitHead": "8c45cc75c8e80a64423ca336d7f29cf3d101e526"
+  "gitHead": "1ed593a20606d40162e0d0c8a1d9bfd1af0a3f0d"
 }
