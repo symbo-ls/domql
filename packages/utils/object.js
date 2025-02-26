@@ -727,7 +727,7 @@ export const createNestedObject = (arr, lastValue) => {
     if (!obj[value]) {
       obj[value] = {}
     }
-    if (index === arr.length - 1 && lastValue) {
+    if (index === arr.length - 1 && lastValue !== undefined) {
       obj[value] = lastValue
     }
     return obj[value]
