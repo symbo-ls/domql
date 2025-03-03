@@ -127,12 +127,10 @@ export const throughUpdatedDefine = element => {
       )
     }
     const cached = exec(ref.__defineCache[param], element)
-    const newExecParam = obj[param](
-      cached,
-      element,
-      element.state,
-      element.context
-    )
+    const newExecParam =
+      typeof obj[param] === 'function'
+        ? obj[param](cached, element, element.state, element.context)
+        : undefined
     if (newExecParam) element[param] = newExecParam
   }
   return changes

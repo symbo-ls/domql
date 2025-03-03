@@ -265,7 +265,7 @@ export const applyStateMethods = element => {
     replace: replace.bind(state),
     quietReplace: quietReplace.bind(state),
     reset: reset.bind(state),
-    parent: element.parent.state || state,
+    parent: element.parent?.state || state,
 
     setByPath: setByPath.bind(state),
     setPathCollection: setPathCollection.bind(state),
@@ -277,7 +277,7 @@ export const applyStateMethods = element => {
     values: values.bind(state),
     __element: element,
     __children: {},
-    root: ref.root ? ref.root.state : state
+    root: ref?.root ? ref.root.state : state
   }
 
   if (isArray(state)) {
