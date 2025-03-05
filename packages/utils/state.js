@@ -97,7 +97,7 @@ export const createInheritedState = (element, parent) => {
   if (isUndefined(inheritedState)) return element.state
 
   if (is(inheritedState)('object', 'array')) {
-    return deepClone(inheritedState, { exclude: STATE_METHODS })
+    return deepClone(inheritedState)
   } else if (is(inheritedState)('string', 'number', 'boolean')) {
     ref.__stateType = typeof inheritedState
     return { value: inheritedState }

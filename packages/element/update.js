@@ -89,7 +89,7 @@ export const update = async function (params = {}, opts) {
   const inheritState = await inheritStateUpdates(element, options)
   if (inheritState === false) return
 
-  const ifFails = checkIfOnUpdate(element, parent, options)
+  const ifFails = await checkIfOnUpdate(element, parent, options)
   if (ifFails) return
 
   if (ref.__if && !options.preventPropsUpdate) {
@@ -119,7 +119,7 @@ export const update = async function (params = {}, opts) {
   throughUpdatedDefine(element)
 
   if (!options.isForced && !options.preventListeners) {
-    triggerEventOn('beforeClassAssign', element, options)
+    await triggerEventOn('beforeClassAssign', element, options)
   }
 
   if (!ref.__if) return false
@@ -214,7 +214,7 @@ export const update = async function (params = {}, opts) {
     }
   }
 
-  if (!preventUpdateListener) triggerEventOn('update', element, options)
+  if (!preventUpdateListener) await triggerEventOn('update', element, options)
 }
 
 const captureSnapshot = (element, options) => {
@@ -237,7 +237,7 @@ const captureSnapshot = (element, options) => {
   return [snapshotOnCallee, calleeElement]
 }
 
-const checkIfOnUpdate = (element, parent, options) => {
+const checkIfOnUpdate = async (element, parent, options) => {
   if ((!isFunction(element.if) && !isFunction(element.props?.if)) || !parent) {
     return
   }
@@ -274,11 +274,7 @@ const checkIfOnUpdate = (element, parent, options) => {
 
       const contentKey = ref.contentElementKey
 
-      if (
-        element.$collection ||
-        element.$stateCollection ||
-        element.$propsCollection
-      ) {
+      if (element.children) {
         element.removeContent()
       } else if (element[contentKey]?.parseDeep) {
         element[contentKey] = element[contentKey].parseDeep()
@@ -300,7 +296,7 @@ const checkIfOnUpdate = (element, parent, options) => {
 
       delete element.__ref
       delete element.parent
-      const createdElement = create(
+      const createdElement = await create(
         element,
         parent,
         element.key,
@@ -313,7 +309,11 @@ const checkIfOnUpdate = (element, parent, options) => {
         element.on &&
         isFunction(element.on.update)
       ) {
-        applyEvent(element.on.update, createdElement, createdElement.state)
+        await applyEvent(
+          element.on.update,
+          createdElement,
+          createdElement.state
+        )
       }
       return createdElement
     }

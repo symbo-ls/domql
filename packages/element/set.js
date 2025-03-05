@@ -21,9 +21,9 @@ export const resetElement = async (params, element, options) => {
   })
 }
 
-export const reset = options => {
+export const reset = async options => {
   const element = this
-  create(element, element.parent, undefined, {
+  await create(element, element.parent, undefined, {
     ignoreChildExtends: true,
     ...OPTIONS.defaultOptions,
     ...OPTIONS.create,
@@ -75,11 +75,11 @@ export const set = async function (params, options = {}, el) {
     }
 
     if (lazyLoad) {
-      window.requestAnimationFrame(() => {
-        resetElement(params, element, options)
+      window.requestAnimationFrame(async () => {
+        await resetElement(params, element, options)
         // handle lazy load
         if (!options.preventUpdateListener) {
-          triggerEventOn('lazyLoad', element, options)
+          await triggerEventOn('lazyLoad', element, options)
         }
       })
     } else await resetElement(params, element, options)

@@ -50,6 +50,17 @@ export const addExtends = (newExtends, element) => {
   return __extends
 }
 
+export const concatAddExtends = (newExtend, element) => {
+  if (!newExtend) return element
+  const { extend: elementExtend } = element
+  const originalArray = isArray(elementExtend) ? elementExtend : [elementExtend]
+  const receivedArray = isArray(newExtend) ? newExtend : [newExtend]
+  return {
+    ...element,
+    extends: joinArrays(receivedArray, originalArray)
+  }
+}
+
 export const generateHash = () => Math.random().toString(36).substring(2)
 
 // hashing

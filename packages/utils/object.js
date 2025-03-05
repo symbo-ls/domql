@@ -18,9 +18,9 @@ import { METHODS_EXL } from './keys.js'
 
 const ENV = process.env.NODE_ENV
 
-export const exec = (param, element, state, context) => {
+export const exec = async (param, element, state, context) => {
   if (isFunction(param)) {
-    return param.call(
+    return await param.call(
       element,
       element,
       state || element.state,
@@ -122,8 +122,8 @@ export const deepClone = (obj, options = {}) => {
       ? new targetWindow.Array()
       : new targetWindow.Object()
     : isArray(obj)
-      ? []
-      : {}
+    ? []
+    : {}
 
   // Store the clone to handle circular references
   visited.set(obj, clone)

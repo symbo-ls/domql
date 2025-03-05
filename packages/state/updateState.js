@@ -51,9 +51,9 @@ export const updateState = async function (
   const updateIsHoisted = await hoistStateUpdate(state, obj, options)
   if (updateIsHoisted) return state
 
-  updateDependentState(state, obj, options)
+  await updateDependentState(state, obj, options)
 
-  applyElementUpdate(state, obj, options)
+  await applyElementUpdate(state, obj, options)
 
   if (!options.preventStateUpdateListener) {
     await triggerEventOnUpdate('stateUpdate', obj, element, options)
@@ -88,7 +88,7 @@ export const hoistStateUpdate = async (state, obj, options) => {
   const changesValue = createNestedObjectByKeyPath(stateKey, passedValue)
   const targetParent = findRootState || findGrandParentState || parent.state
   if (options.replace) overwriteDeep(targetParent, changesValue || value) // check with createNestedObjectByKeyPath
-  targetParent.update(changesValue, {
+  await targetParent.update(changesValue, {
     execStateFunction: false,
     isHoisted: true,
     preventUpdate: options.preventHoistElementUpdate,
@@ -103,18 +103,19 @@ export const hoistStateUpdate = async (state, obj, options) => {
   return true
 }
 
-const updateDependentState = (state, obj, options) => {
+const updateDependentState = async (state, obj, options) => {
   if (!state.__depends) return
   for (const el in state.__depends) {
     const dependentState = state.__depends[el]
-    dependentState.clean().update(state.parse(), options)
+    const cleanState = await dependentState.clean()
+    await cleanState.update(state.parse(), options)
   }
 }
 
-const applyElementUpdate = (state, obj, options) => {
+const applyElementUpdate = async (state, obj, options) => {
   const element = state.__element
   if (options.preventUpdate !== true) {
-    element.update(
+    await element.update(
       {},
       {
         ...options,
@@ -122,7 +123,7 @@ const applyElementUpdate = (state, obj, options) => {
       }
     )
   } else if (options.preventUpdate === 'recursive') {
-    element.update(
+    await element.update(
       {},
       {
         ...options,

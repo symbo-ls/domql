@@ -71,18 +71,19 @@ export const createNode = async (element, options) => {
       continue
     }
 
-    const isElement = applyParam(param, element, options)
+    const isElement = await applyParam(param, element, options)
     if (isElement) {
       const { hasDefine, hasContextDefine } = isElement
       if (element[param] && !hasDefine && !hasContextDefine) {
         const createAsync = async () => {
-          await create(exec(value, element), element, param, options)
+          await create(await exec(value, element), element, param, options)
         }
 
+        // TODO: test this with promise
+        // handle lazy load
         if ((element.props && element.props.lazyLoad) || options.lazyLoad) {
-          window.requestAnimationFrame(async () => {
-            await createAsync()
-            // handle lazy load
+          window.requestAnimationFrame(() => {
+            createAsync()
             if (!options.preventUpdateListener) {
               triggerEventOn('lazyLoad', element, options)
             }

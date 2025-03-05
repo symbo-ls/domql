@@ -13,37 +13,37 @@ export const render = (param, element, state) => {
 //   param(element, state)
 // }
 
-export const createState = (state, element) => {
+export const createState = async (state, element) => {
   const { on, ...el } = element
   if (on && isFunction(on.createState)) {
-    on.createState(state, el)
+    await on.createState(state, el)
   }
 }
 
-export const updateStateInit = (changes, element) => {
+export const updateStateInit = async (changes, element) => {
   const { state, on, ...el } = element
   if (on && isFunction(on.updateStateInit)) {
-    on.updateStateInit(changes, state, el)
+    await on.updateStateInit(changes, state, el)
   }
 }
 
-export const updateState = (changes, element) => {
+export const updateState = async (changes, element) => {
   const { state, on } = element
   if (on && isFunction(on.updateState)) {
-    on.updateState(changes, state, element)
+    await on.updateState(changes, state, element)
   }
 }
 
-export const propsUpdated = (element) => {
+export const propsUpdated = async element => {
   const { props, state, on } = element
   if (on && isFunction(on.propsUpdated)) {
-    on.propsUpdated(props, state, element)
+    await on.propsUpdated(props, state, element)
   }
 }
 
-export const update = (params, element, state) => {
+export const update = async (params, element, state) => {
   if (element.on && isFunction(element.on.update)) {
-    element.on.update(element, state)
+    await element.on.update(element, state)
   }
   return params
 }

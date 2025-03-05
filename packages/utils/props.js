@@ -123,11 +123,12 @@ export const inheritParentProps = (element, parent) => {
   return propsStack
 }
 
-export function update (props, options) {
+export async function update (props, options) {
   const element = this.__element
-  element.update({ props }, options)
+  await element.update({ props }, options)
 }
 
+// TODO: check bind with promise
 export function setPropsPrototype (element) {
   const methods = { update: update.bind(element.props), __element: element }
   Object.setPrototypeOf(element.props, methods)
@@ -146,9 +147,6 @@ export const removeDuplicateProps = propsStack => {
 }
 
 export const syncProps = (propsStack, element, opts) => {
-  // Clean up duplicates from propsStack
-  // const uniquePropsStack = removeDuplicateProps(propsStack)
-  // element.__ref.__propsStack = propsStack // uniquePropsStack
   element.props = propsStack.reduce((mergedProps, v) => {
     if (PROPS_METHODS.includes(v)) return mergedProps
     while (isFunction(v)) v = exec(v, element)
