@@ -132,9 +132,8 @@ export const remove = async function (key, options = {}) {
 export const set = async function (val, options = {}) {
   const state = this
   const value = deepClone(val)
-  return await state
-    .clean({ preventStateUpdate: true, ...options })
-    .update(value, { replace: true, ...options })
+  const cleanState = await state.clean({ preventStateUpdate: true, ...options })
+  return await cleanState.update(value, { replace: true, ...options })
 }
 
 export const setByPath = async function (path, val, options = {}) {

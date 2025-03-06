@@ -6,9 +6,8 @@ import { exec } from '@domql/utils'
  * Appends raw HTML as content
  * an original one as a child
  */
-export async function html (param, element, node) {
-  const prop =
-    (await exec(param, element)) || (await exec(element?.props?.html, element))
+export function html (param, element, node) {
+  const prop = exec(param, element) || exec(element?.props?.html, element)
   const { __ref } = element
   if (prop !== __ref.__html) {
     // const parser = new window.DOMParser()

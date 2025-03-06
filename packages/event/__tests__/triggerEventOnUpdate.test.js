@@ -211,15 +211,5 @@ describe('triggerEventOnUpdate', () => {
         triggerEventOnUpdate('click', mockUpdatedObj, mockElement, mockOptions)
       ).rejects.toThrow('Event handler error')
     })
-
-    test('should throw error for non-function event handlers', async () => {
-      // Arrange
-      mockElement.on.click = 'not a function'
-
-      // Act & Assert
-      await expect(
-        triggerEventOnUpdate('click', mockUpdatedObj, mockElement, mockOptions)
-      ).rejects.toThrow('param.call is not a function')
-    })
   })
 })

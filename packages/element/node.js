@@ -1,6 +1,12 @@
 'use strict'
 
-import { exec, isFunction, isMethod, isObject, isUndefined } from '@domql/utils'
+import {
+  execPromise,
+  isFunction,
+  isMethod,
+  isObject,
+  isUndefined
+} from '@domql/utils'
 import { applyEventsOnNode, triggerEventOn } from '@domql/event'
 import { cacheNode } from '@domql/render'
 import { create } from './create.js'
@@ -76,7 +82,12 @@ export const createNode = async (element, options) => {
       const { hasDefine, hasContextDefine } = isElement
       if (element[param] && !hasDefine && !hasContextDefine) {
         const createAsync = async () => {
-          await create(await exec(value, element), element, param, options)
+          await create(
+            await execPromise(value, element),
+            element,
+            param,
+            options
+          )
         }
 
         // TODO: test this with promise

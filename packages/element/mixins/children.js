@@ -3,7 +3,7 @@
 import {
   concatAddExtends,
   deepClone,
-  exec,
+  execPromise,
   getChildStateInKey,
   isArray,
   isNot,
@@ -22,9 +22,9 @@ export async function children (param, element, node) {
   const { __ref: ref, state } = element
   const { childrenAs, childExtends } = element.props || {}
   const children =
-    (param && (await exec(param, element, state))) ||
+    (param && (await execPromise(param, element, state))) ||
     (element.props.children &&
-      (await exec(element.props.children, element, state)))
+      (await execPromise(element.props.children, element, state)))
 
   const childrenAsDefault = childrenAs
 
@@ -98,8 +98,7 @@ export async function children (param, element, node) {
     if (value) obj[key] = isObjectLike(value) ? value : { value }
   }
 
-  element.removeContent()
-  element.content = obj
+  return obj
 }
 
 export default children

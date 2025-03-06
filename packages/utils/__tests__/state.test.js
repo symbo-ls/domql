@@ -436,7 +436,7 @@ describe('performance tests', () => {
 })
 
 describe('applyDependentState', () => {
-  it('should apply dependent state for basic objects', () => {
+  it('should apply dependent state for basic objects', async () => {
     const element = { key: 'child' }
     const state = {
       __element: {
@@ -444,7 +444,7 @@ describe('applyDependentState', () => {
       }
     }
 
-    const result = applyDependentState(element, state)
+    const result = await applyDependentState(element, state)
     expect(result).toEqual({ foo: 'bar' })
     expect(Object.getPrototypeOf(state.__element.state)).toHaveProperty(
       '__depends'
@@ -454,7 +454,7 @@ describe('applyDependentState', () => {
     ).toHaveProperty('child')
   })
 
-  it('should merge multiple dependencies', () => {
+  it('should merge multiple dependencies', async () => {
     const element = { key: 'second' }
     const state = {
       __element: {
@@ -467,7 +467,7 @@ describe('applyDependentState', () => {
       }
     }
 
-    const result = applyDependentState(element, state)
+    const result = await applyDependentState(element, state)
     expect(result).toEqual({ value: 'test' })
     expect(Object.getPrototypeOf(state.__element.state).__depends).toEqual({
       first: { foo: 'bar' },
@@ -475,13 +475,13 @@ describe('applyDependentState', () => {
     })
   })
 
-  it('should return undefined if no element state exists', () => {
+  it('should return undefined if no element state exists', async () => {
     const element = { key: 'test' }
     const state = {
       __element: {}
     }
 
-    const result = applyDependentState(element, state)
+    const result = await applyDependentState(element, state)
     expect(result).toBeUndefined()
   })
 })

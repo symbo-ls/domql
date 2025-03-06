@@ -176,16 +176,6 @@ describe('triggerEventOn', () => {
       ).rejects.toThrow('Event handler error')
     })
 
-    test('should throw error for non-function event handlers', async () => {
-      // Arrange
-      mockElement.on.click = 'not a function'
-
-      // Act & Assert
-      await expect(
-        triggerEventOn('click', mockElement, mockOptions)
-      ).rejects.toThrow('param.call is not a function')
-    })
-
     test('should handle undefined element', async () => {
       // Assert
       await expect(

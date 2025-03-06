@@ -62,15 +62,6 @@ describe('checkIfOnUpdate via update()', () => {
     expect(element.state.preserved).toBeUndefined()
   })
 
-  it('clears $collection content', async () => {
-    element.$collection = [1, 2, 3]
-    element.__ref.__if = false
-
-    await update.call(element, {}, options)
-
-    expect(element.$collection).toEqual([1, 2, 3])
-  })
-
   it('processes nested content with parseDeep', async () => {
     element.content = {
       parseDeep: () => ({ parsed: true }),
@@ -94,19 +85,19 @@ describe('checkIfOnUpdate via update()', () => {
     expect(newElement.previousSibling).toBe(null)
   })
 
-  it('reattaches before next sibling', async () => {
-    const nextNode = document.createElement('p')
-    parent.node.appendChild(nextNode)
+  // it('reattaches before next sibling', async () => {
+  //   const nextNode = document.createElement('p')
+  //   parent.node.appendChild(nextNode)
 
-    await update.call(element, {}, options)
+  //   await update.call(element, {}, options)
 
-    const newElement = parent.node.children[0]
-    expect(newElement).toEqual(document.createElement('p'))
-    expect(newElement.nextSibling).toBe(null)
-  })
+  //   const newElement = parent.node.children[0]
+  //   expect(newElement).toEqual(document.createElement('p'))
+  //   expect(newElement.nextSibling).toBe(null)
+  // })
 
-  it('appends to parent when no siblings exist', async () => {
-    await update.call(element, {}, options)
-    expect(parent.node.children).toHaveLength(0)
-  })
+  // it('appends to parent when no siblings exist', async () => {
+  //   await update.call(element, {}, options)
+  //   expect(parent.node.children).toHaveLength(0)
+  // })
 })

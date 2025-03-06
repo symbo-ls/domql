@@ -1,6 +1,6 @@
 'use strict'
 
-import { exec, setContentKey } from '@domql/utils'
+import { execPromise, setContentKey } from '@domql/utils'
 import { set } from '../set.js'
 
 export const updateContent = async function (params, options) {
@@ -21,7 +21,9 @@ export const updateContent = async function (params, options) {
  */
 export async function setContent (param, element, node, opts) {
   const contentElementKey = setContentKey(element, opts)
-  const content = await exec(param, element)
+  const content = element.children
+    ? await execPromise(element.children, element)
+    : await execPromise(param, element)
 
   if (content && element) {
     if (element[contentElementKey].update) {

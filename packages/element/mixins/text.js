@@ -8,7 +8,7 @@ import { exec, isString } from '@domql/utils'
  * an original one as a child
  */
 export async function text (param, element, node) {
-  let prop = await exec(param || element.props.text, element)
+  let prop = exec(param || element.props.text, element)
   if (isString(prop) && prop.includes('{{')) {
     prop = element.call('replaceLiteralsWithObjectFields', prop)
   }

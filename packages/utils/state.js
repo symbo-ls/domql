@@ -5,7 +5,7 @@ import { STATE_METHODS } from './keys.js'
 import {
   deepClone,
   deepMerge,
-  exec,
+  execPromise,
   overwriteDeep,
   overwriteShallow
 } from './object.js'
@@ -16,7 +16,7 @@ export const checkForStateTypes = async element => {
   const state = props?.state || orig
   if (isFunction(state)) {
     ref.__state = state
-    return await exec(state, element)
+    return await execPromise(state, element)
   } else if (is(state)('string', 'number')) {
     ref.__state = state
     return { value: state }
@@ -158,9 +158,9 @@ export const createNestedObjectByKeyPath = (path, value) => {
   return obj
 }
 
-export const applyDependentState = (element, state) => {
+export const applyDependentState = async (element, state) => {
   const { __element } = state //
-  const origState = exec(__element?.state, element)
+  const origState = await execPromise(__element?.state, element)
   if (!origState) return
   const dependentState = deepClone(origState, STATE_METHODS)
   const newDepends = { [element.key]: dependentState }

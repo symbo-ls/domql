@@ -10,6 +10,7 @@ const getOnOrPropsEvent = (param, element) => {
 }
 
 export const applyEvent = async (param, element, state, context, options) => {
+  if (!isFunction(param)) return
   return await param.call(
     element,
     element,
@@ -23,7 +24,7 @@ export const triggerEventOn = async (param, element, options) => {
   if (!element) {
     throw new Error('Element is required')
   }
-  const appliedFunction = await getOnOrPropsEvent(param, element)
+  const appliedFunction = getOnOrPropsEvent(param, element)
   if (appliedFunction) {
     const { state, context } = element
     return await applyEvent(appliedFunction, element, state, context, options)
@@ -38,6 +39,7 @@ export const applyEventUpdate = async (
   context,
   options
 ) => {
+  if (!isFunction(param)) return
   return await param.call(
     element,
     updatedObj,
