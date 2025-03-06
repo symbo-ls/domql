@@ -9,7 +9,14 @@ import {
   overwriteDeep,
   overwriteShallow
 } from './object.js'
-import { is, isFunction, isObject, isObjectLike, isUndefined } from './types.js'
+import {
+  is,
+  isFunction,
+  isObject,
+  isObjectLike,
+  isString,
+  isUndefined
+} from './types.js'
 
 export const checkForStateTypes = async element => {
   const { state: orig, props, __ref: ref } = element
@@ -49,7 +56,7 @@ export const getParentStateInKey = (stateKey, parentState) => {
 }
 
 export const getChildStateInKey = (stateKey, parentState, options = {}) => {
-  const arr = stateKey.split('/')
+  const arr = isString(stateKey) ? stateKey.split('/') : [stateKey]
   const arrLength = arr.length - 1
   for (let i = 0; i < arrLength; i++) {
     const childKey = arr[i]

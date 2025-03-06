@@ -12,9 +12,7 @@ import {
 import { applyStateMethods } from './methods'
 
 export const createState = async function (element, parent, options) {
-  console.log(element.state)
   element.state = await applyInitialState(element, parent, options)
-  console.log(element.state)
   return element.state
 }
 

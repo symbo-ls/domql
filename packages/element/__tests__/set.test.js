@@ -6,7 +6,7 @@ describe('set', () => {
   beforeEach(() => {
     ref = {
       contentElementKey: 'content',
-      __noCollectionDifference: false,
+      __noChildrenDifference: false,
       __cached: {}
     }
     element = {
@@ -29,7 +29,7 @@ describe('set', () => {
 
   // 2. Deep Equality Checks
   it('skips update when deepContains matches existing content', async () => {
-    ref.__noCollectionDifference = true
+    ref.__noChildrenDifference = true
     const originalProps = { ...element.props }
     await set.call(element, { props: { id: 'same' } })
     expect(element.props).toEqual(originalProps)
@@ -74,7 +74,7 @@ describe('set', () => {
 
   // 8. Event Blocking
   it('preserves state when beforeUpdate returns false', async () => {
-    ref.__noCollectionDifference = true
+    ref.__noChildrenDifference = true
     const originalState = { ...element.state }
 
     // Simulate beforeUpdate rejection by not changing state

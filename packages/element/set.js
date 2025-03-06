@@ -43,7 +43,7 @@ export const set = async function (params, options = {}, el) {
   if (options.preventContentUpdate === true && !hasChildren) return
 
   if (
-    ref.__noCollectionDifference ||
+    ref.__noChildrenDifference ||
     (__contentRef && __contentRef.__cached && deepContains(params, content))
   ) {
     if (!options.preventBeforeUpdateListener && !options.preventListeners) {

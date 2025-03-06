@@ -6,12 +6,14 @@ import {
   execPromise,
   getChildStateInKey,
   isArray,
+  isDefined,
   isNot,
   isNumber,
   isObject,
   isObjectLike,
   isState,
-  isString
+  isString,
+  matchesComponentNaming
 } from '@domql/utils'
 
 /**
@@ -19,86 +21,95 @@ import {
  * this should only work if `showOnNode: true` is passed
  */
 export async function children (param, element, node) {
-  const { __ref: ref, state } = element
-  const { childrenAs, childExtends } = element.props || {}
-  const children =
-    (param && (await execPromise(param, element, state))) ||
-    (element.props.children &&
-      (await execPromise(element.props.children, element, state)))
+  let { children, __ref: ref, state, childExtends } = element
 
-  const childrenAsDefault = childrenAs
+  let { childrenAs, childProps } = element.props || {}
+  children =
+    (await execPromise(param, element, state)) ||
+    (await execPromise(children, element, state))
 
   if (children) {
+    if (isState(children)) children = children.parse()
+
+    if (isString(children) || isNumber(children)) {
+      if (children === 'state') children = state.parse()
+      else {
+        const pathInState = getChildStateInKey(children, state)
+        if (pathInState) {
+          childrenAs = 'state'
+          children = getChildStateInKey(children, state) || { value: children }
+        } else {
+          children = { text: children }
+        }
+      }
+    }
+
+    if (isObject(children) || isArray(children)) {
+      children = deepClone(children)
+    }
+
     if (isObject(children)) {
       if (children.$$typeof) {
         return element.call('renderReact', children, element)
       }
-      param = deepClone(children)
-      param = Object.keys(param).map(v => {
-        const val = param[v]
-        return concatAddExtends(v, val)
+      children = Object.keys(children).map(v => {
+        const val = children[v]
+        if (matchesComponentNaming(v)) return concatAddExtends(v, val)
+        return val
       })
-    } else if (isArray(children)) {
-      param = deepClone(children)
-      if (childrenAsDefault || childrenAsDefault !== 'element') {
-        param = param.map(v => ({
-          extends: childExtends,
-          [childrenAsDefault]:
-            (isObjectLike(v) && v) || childrenAsDefault === 'state'
-              ? { value: v }
-              : { text: v }
-        }))
-      }
-    } else if (isString(children) || isNumber(children)) {
-      element.removeContent()
-      element.content = { text: param }
-      return
     }
   }
 
-  if (!param) return
+  if (!children || isNot(children)('array', 'object')) return
 
-  const filterReact = param.filter(v => !v.$$typeof)
-  if (filterReact.length !== param.length) {
-    const extractedReactComponents = param.filter(v => v.$$typeof)
-    element.call('renderReact', extractedReactComponents, element)
+  if (isArray(children) && children.find(v => v?.$$typeof)) {
+    const filterReact = children.filter(v => !v?.$$typeof)
+    if (filterReact.length !== children.length) {
+      const extractedReactComponents = children.filter(v => v?.$$typeof)
+      element.call('renderReact', extractedReactComponents, element)
+    }
+    children = filterReact
   }
-  param = filterReact
-
-  if (isString(param)) {
-    if (param === 'state') param = state.parse()
-    else param = getChildStateInKey(param, state)
-  }
-  if (isState(param)) param = param.parse()
-  if (isNot(param)('array', 'object')) return
-
-  param = deepClone(param)
 
   if (ref.__childrenCache) {
-    const equals = JSON.stringify(param) === JSON.stringify(ref.__childrenCache)
+    const equals =
+      JSON.stringify(children) === JSON.stringify(ref.__childrenCache) // make smarter diff
     if (equals) {
-      ref.__noCollectionDifference = true
-      return
+      ref.__noChildrenDifference = true
     } else {
-      ref.__childrenCache = deepClone(param)
-      delete ref.__noCollectionDifference
+      ref.__childrenCache = deepClone(children)
+      delete ref.__noChildrenDifference
     }
   } else {
-    ref.__childrenCache = deepClone(param)
+    ref.__childrenCache = deepClone(children)
   }
 
-  const obj = {
-    tag: 'fragment',
-    ignoreChildProps: true,
-    childProps: element.props && element.props.childProps
+  const content = { tag: 'fragment' }
+
+  if (childExtends) {
+    content.ignoreChildExtends = true
+    content.childExtends = childExtends
   }
 
-  for (const key in param) {
-    const value = param[key]
-    if (value) obj[key] = isObjectLike(value) ? value : { value }
+  if (childProps) {
+    content.ignoreChildProps = true
+    content.childProps = childProps
   }
 
-  return obj
+  for (const key in children) {
+    const value = Object.hasOwnProperty.call(children, key) && children[key]
+    if (isDefined(value) && value !== null && value !== false) {
+      content[key] = isObjectLike(value)
+        ? childrenAs
+          ? { [childrenAs]: value }
+          : value
+        : childrenAs
+        ? { [childrenAs]: childrenAs === 'state' ? { value } : { text: value } }
+        : { text: value }
+    }
+  }
+
+  return content
 }
 
 export default children
