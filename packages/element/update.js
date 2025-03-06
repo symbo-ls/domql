@@ -395,9 +395,9 @@ const inheritStateUpdates = async (element, options) => {
   }
 }
 
-const createStateUpdate = (element, parent, options) => {
+const createStateUpdate = async (element, parent, options) => {
   const __stateChildren = element.state.__children
-  const newState = createState(element, parent)
+  const newState = await createState(element, parent)
   element.state = newState
   for (const child in __stateChildren) {
     // check this for inherited states
