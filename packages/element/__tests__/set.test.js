@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals'
 import { set } from '../set'
 
 describe('set', () => {
@@ -117,5 +118,57 @@ describe('set', () => {
     element.props = { preserveMe: true }
     await set.call(element, null)
     expect(element.props.preserveMe).toBe(true)
+  })
+
+  // 14. Content Removal
+  it('removes content correctly when calling removeContent', async () => {
+    const content = document.createElement('div')
+    element.content = {
+      node: content,
+      tag: 'div',
+      remove: jest.fn()
+    }
+    element.node.appendChild(content)
+    await set.call(element, { props: { new: true } })
+    expect(element.content.__ref).toBeDefined()
+    expect(element.node.contains(content)).toBeFalsy()
+  })
+
+  // 15. Lazy Loading
+  it('handles lazy loading with requestAnimationFrame', async () => {
+    jest.useFakeTimers()
+    element.props = { lazyLoad: true }
+    const params = { props: { test: true } }
+
+    await set.call(element, params)
+    jest.runAllTimers()
+
+    setTimeout(() => {
+      expect(element.content).toBeDefined()
+    }, 35)
+    jest.useRealTimers()
+  })
+
+  // 16. Event Triggers
+  it('triggers update event after successful update', async () => {
+    const updateCallback = jest.fn()
+    element.on = { update: updateCallback }
+
+    element.__ref.__noChildrenDifference = true
+    await set.call(element, { props: { new: true } })
+    expect(updateCallback).toHaveBeenCalled()
+  })
+
+  // 17. Fragment Content
+  it('handles fragment content removal correctly', async () => {
+    element.content = {
+      tag: 'fragment',
+      parent: element,
+      node: element.node
+    }
+    element.node.innerHTML = '<span>test</span>'
+
+    await set.call(element, { props: { new: true } })
+    expect(element.node.innerHTML).toBe('<div key="content"></div>')
   })
 })

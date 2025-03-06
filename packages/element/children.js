@@ -20,10 +20,10 @@ import {
  * Apply data parameters on the DOM nodes
  * this should only work if `showOnNode: true` is passed
  */
-export async function children (param, element, node) {
-  let { children, __ref: ref, state, childExtends } = element
+export async function setChildren (param, element) {
+  let { children, __ref: ref, state } = element
 
-  let { childrenAs, childProps } = element.props || {}
+  let { childrenAs } = element.props || {}
   children =
     (await execPromise(param, element, state)) ||
     (await execPromise(children, element, state))
@@ -42,10 +42,6 @@ export async function children (param, element, node) {
           children = { text: children }
         }
       }
-    }
-
-    if (isObject(children) || isArray(children)) {
-      children = deepClone(children)
     }
 
     if (isObject(children)) {
@@ -84,17 +80,11 @@ export async function children (param, element, node) {
     ref.__childrenCache = deepClone(children)
   }
 
+  if (isObject(children) || isArray(children)) {
+    children = deepClone(children)
+  }
+
   const content = { tag: 'fragment' }
-
-  if (childExtends) {
-    content.ignoreChildExtends = true
-    content.childExtends = childExtends
-  }
-
-  if (childProps) {
-    content.ignoreChildProps = true
-    content.childProps = childProps
-  }
 
   for (const key in children) {
     const value = Object.hasOwnProperty.call(children, key) && children[key]
@@ -109,7 +99,7 @@ export async function children (param, element, node) {
     }
   }
 
-  return content
+  element.content = content
 }
 
-export default children
+export default setChildren

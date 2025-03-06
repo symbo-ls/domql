@@ -1,12 +1,6 @@
 'use strict'
 
-import {
-  execPromise,
-  isFunction,
-  isMethod,
-  isObject,
-  isUndefined
-} from '@domql/utils'
+import { isFunction, isMethod, isObject, isUndefined } from '@domql/utils'
 import { applyEventsOnNode, triggerEventOn } from '@domql/event'
 import { cacheNode } from '@domql/render'
 import { create } from './create.js'
@@ -18,6 +12,8 @@ import {
 } from './iterate.js'
 import { REGISTRY } from './mixins/index.js'
 import { applyParam } from './utils/applyParam.js'
+import setChildren from './children.js'
+import { setContent } from './set.js'
 // import { defineSetter } from './methods'
 
 const ENV = process.env.NODE_ENV
@@ -26,12 +22,12 @@ export const createNode = async (element, options) => {
   // create and assign a node
   let { node, tag, __ref: ref } = element
 
+  if (!ref.__if) return element
+
   let isNewNode
 
   if (!node) {
     isNewNode = true
-
-    if (!ref.__if) return element
 
     if (tag === 'shadow') {
       node = element.node = element.parent.node.attachShadow({ mode: 'open' })
@@ -56,12 +52,14 @@ export const createNode = async (element, options) => {
   // iterate through exec
   await throughInitialExec(element)
 
-  if (element.tag !== 'string' && element.tag !== 'fragment') {
-    // propagateEventsFromProps(element)
+  await applyEventsOnNode(element, { isNewNode, ...options })
 
-    if (isNewNode && isObject(element.on)) {
-      await applyEventsOnNode(element, options)
-    }
+  const content = element.children
+    ? await setChildren(element.children, element)
+    : element.content || element.content
+
+  if (content) {
+    await setContent(content, element, options)
   }
 
   for (const param in element) {
@@ -82,21 +80,16 @@ export const createNode = async (element, options) => {
       const { hasDefine, hasContextDefine } = isElement
       if (element[param] && !hasDefine && !hasContextDefine) {
         const createAsync = async () => {
-          await create(
-            await execPromise(value, element),
-            element,
-            param,
-            options
-          )
+          await create(value, element, param, options)
         }
 
         // TODO: test this with promise
         // handle lazy load
         if ((element.props && element.props.lazyLoad) || options.lazyLoad) {
-          window.requestAnimationFrame(() => {
-            createAsync()
+          window.requestAnimationFrame(async () => {
+            await createAsync()
             if (!options.preventUpdateListener) {
-              triggerEventOn('lazyLoad', element, options)
+              await triggerEventOn('lazyLoad', element, options)
             }
           })
         } else await createAsync()

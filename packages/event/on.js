@@ -1,6 +1,6 @@
 'use strict'
 
-import { isFunction } from '@domql/utils'
+import { DOMQL_EVENTS, isFunction } from '@domql/utils'
 
 const getOnOrPropsEvent = (param, element) => {
   const onEvent = element.on?.[param]
@@ -73,25 +73,7 @@ export const triggerEventOnUpdate = async (
 export const applyEventsOnNode = (element, options) => {
   const { node, on } = element
   for (const param in on) {
-    if (
-      param === 'init' ||
-      param === 'beforeClassAssign' ||
-      param === 'render' ||
-      param === 'renderRouter' ||
-      param === 'attachNode' ||
-      param === 'stateInit' ||
-      param === 'stateCreated' ||
-      param === 'beforeStateUpdate' ||
-      param === 'stateUpdate' ||
-      param === 'beforeUpdate' ||
-      param === 'done' ||
-      param === 'create' ||
-      param === 'complete' ||
-      param === 'frame' ||
-      param === 'update'
-    ) {
-      continue
-    }
+    if (DOMQL_EVENTS.includes(param)) continue
 
     const appliedFunction = getOnOrPropsEvent(param, element)
     if (isFunction(appliedFunction)) {

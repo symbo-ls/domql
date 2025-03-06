@@ -1,6 +1,6 @@
-import { resetElement } from '../set'
+import { resetContent } from '../set'
 
-describe('resetElement', () => {
+describe('resetContent', () => {
   let element, ref
 
   beforeEach(() => {
@@ -20,27 +20,27 @@ describe('resetElement', () => {
     const originalContent = element.content
     const options = { preventRemove: false }
 
-    await resetElement({}, element, options)
+    await resetContent({}, element, options)
 
     expect(element.content).not.toBe(originalContent)
     expect(element.content).toBeDefined()
   })
 
   it('should not preserve existing content when preventRemove is true', async () => {
-    await resetElement({}, element, { preventRemove: true })
+    await resetContent({}, element, { preventRemove: true })
 
     expect(element.content).toBe(element.content)
   })
 
   it('should update contentElementKey from options', async () => {
-    await resetElement({}, element, { contentElementKey: 'mainContent' })
+    await resetContent({}, element, { contentElementKey: 'mainContent' })
 
     expect(ref.contentElementKey).toBe('mainContent')
     expect(element.mainContent).toBeDefined()
   })
 
   it('should merge options correctly', async () => {
-    await resetElement({}, element, { customOption: true })
+    await resetContent({}, element, { customOption: true })
 
     expect(element.content).toEqual(
       expect.objectContaining({
@@ -54,7 +54,7 @@ describe('resetElement', () => {
     element.content.tag = 'fragment'
     element.content.parent = { node: document.createElement('div') }
 
-    await resetElement({}, element, {})
+    await resetContent({}, element, {})
 
     expect(element.content).toBeDefined()
   })
@@ -65,7 +65,7 @@ describe('resetElement', () => {
       parent: { node: document.createElement('div') }
     }
 
-    await resetElement({}, element, {})
+    await resetContent({}, element, {})
 
     expect(ref.__cached.content).toEqual({
       parent: { node: document.createElement('div') },
@@ -76,14 +76,14 @@ describe('resetElement', () => {
   it('should maintain context through reset', async () => {
     const originalContext = element.context
 
-    await resetElement({}, element, {})
+    await resetContent({}, element, {})
 
     expect(element.context).toBe(originalContext)
     expect(element.content.context).toBe(originalContext)
   })
 
   it('should handle empty params gracefully', async () => {
-    await resetElement(null, element, {})
+    await resetContent(null, element, {})
 
     expect(element.content).toBeUndefined()
   })

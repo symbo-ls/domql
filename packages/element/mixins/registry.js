@@ -1,9 +1,7 @@
 'use strict'
 
 import attr from './attr.js'
-import children from './children.js'
 import { classList } from './classList.js'
-import content from './content.js'
 import data from './data.js'
 import html from './html.js'
 import scope from './scope.js'
@@ -16,15 +14,15 @@ export const REGISTRY = {
   style,
   text,
   html,
-  content,
   data,
   class: classList,
   state,
   scope,
-  children,
   deps: (param, el) => param || el.parent.deps,
 
   extends: {},
+  children: {},
+  content: {},
   childExtends: {},
   childExtendsRecursive: {},
   props: {},

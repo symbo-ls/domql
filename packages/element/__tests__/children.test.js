@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals'
-import { children } from '../../mixins/children'
+import { children } from '../children'
 
 describe('children', () => {
   let element, node

@@ -56,7 +56,7 @@ export const create = async (
     return onlyResolveExtends(element, parent, key, options)
   }
 
-  switchDefaultOptions(element, parent, options)
+  resetOptions(element, parent, options)
 
   addMethods(element, parent, options)
 
@@ -108,7 +108,7 @@ const cacheOptions = options => {
   }
 }
 
-const switchDefaultOptions = (element, parent, options) => {
+const resetOptions = (element, parent, options) => {
   if (Object.keys(options).length) {
     OPTIONS.defaultOptions = options
     if (options.ignoreChildExtends) delete options.ignoreChildExtends

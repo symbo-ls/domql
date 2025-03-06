@@ -33,6 +33,8 @@ import {
 import { REGISTRY } from './mixins/index.js'
 import { applyParam } from './utils/applyParam.js'
 import { METHODS_EXL } from './utils/index.js' // old utils (current)
+import { setContent } from './set.js'
+import setChildren from './children.js'
 
 const snapshot = {
   snapshotId: createSnapshotId
@@ -150,6 +152,16 @@ export const update = async function (params = {}, opts) {
     } else options.preventUpdateAfterCount++
   }
 
+  if (!preventContentUpdate) {
+    const content = params.children
+      ? await setChildren(params.children, element)
+      : params.content || element.content
+
+    if (content) {
+      await setContent(content, element, options)
+    }
+  }
+
   for (const param in element) {
     const prop = element[param]
 
@@ -160,18 +172,12 @@ export const update = async function (params = {}, opts) {
     const isInPreventDefineUpdate =
       isArray(preventDefineUpdate) && preventDefineUpdate.includes(param)
 
-    const hasCollection =
-      element.$collection ||
-      element.$stateCollection ||
-      element.$propsCollection
-
     if (
       isUndefined(prop) ||
       isInPreventUpdate ||
       isInPreventDefineUpdate ||
       preventDefineUpdate === true ||
       preventDefineUpdate === param ||
-      (preventContentUpdate && param === 'content' && !hasCollection) ||
       (preventStateUpdate && param) === 'state' ||
       isMethod(param, element) ||
       isObject(REGISTRY[param])
@@ -181,7 +187,7 @@ export const update = async function (params = {}, opts) {
 
     if (preventStateUpdate === 'once') options.preventStateUpdate = false
 
-    const isElement = applyParam(param, element, options)
+    const isElement = await applyParam(param, element, options)
     if (isElement) {
       const { hasDefine, hasContextDefine } = isElement
       const canUpdate =
@@ -194,27 +200,29 @@ export const update = async function (params = {}, opts) {
         options.onEachUpdate(param, element, element.state, element.context)
       }
 
-      const childUpdateCall = () =>
-        update.call(prop, params[prop], {
+      const childUpdateCall = async () =>
+        await update.call(prop, params[prop], {
           ...options,
           currentSnapshot: snapshotOnCallee,
           calleeElement
         })
 
       if (lazyLoad) {
-        window.requestAnimationFrame(() => {
+        window.requestAnimationFrame(async () => {
           // eslint-disable-line
-          childUpdateCall()
+          await childUpdateCall()
           // handle lazy load
           if (!options.preventUpdateListener) {
-            triggerEventOn('lazyLoad', element, options)
+            await triggerEventOn('lazyLoad', element, options)
           }
         })
-      } else childUpdateCall()
+      } else await childUpdateCall()
     }
   }
 
-  if (!preventUpdateListener) await triggerEventOn('update', element, options)
+  if (!preventUpdateListener) {
+    await triggerEventOn('update', element, options)
+  }
 }
 
 const captureSnapshot = (element, options) => {

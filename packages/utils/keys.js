@@ -135,3 +135,21 @@ export const METHODS_EXL = [
   ...STATE_METHODS,
   ...PROPS_METHODS
 ]
+
+export const DOMQL_EVENTS = [
+  'init',
+  'beforeClassAssign',
+  'render',
+  'renderRouter',
+  'attachNode',
+  'stateInit',
+  'stateCreated',
+  'beforeStateUpdate',
+  'stateUpdate',
+  'beforeUpdate',
+  'done',
+  'create',
+  'complete',
+  'frame',
+  'update'
+]

@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals'
-import { removeContent, setContentKey } from '../content'
+import { removeContent, setContentKey } from '../set'
 
 describe('setContentKey', () => {
   test('should set default content key', () => {
