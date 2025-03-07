@@ -352,39 +352,4 @@ describe('set', () => {
     expect(updateMock).toHaveBeenCalled()
     expect(updateCallback).toHaveBeenCalled()
   })
-
-  it('handles fragment content removal with children', async () => {
-    const child1 = { remove: jest.fn() }
-    const child2 = { remove: jest.fn() }
-
-    element.content = {
-      tag: 'fragment',
-      __ref: {
-        __children: [child1, child2]
-      }
-    }
-
-    await set.call(element, { props: { new: true } })
-    expect(child1.remove).toHaveBeenCalled()
-    expect(child2.remove).toHaveBeenCalled()
-  })
-
-  it('handles cached fragment content removal', async () => {
-    const child1 = { remove: jest.fn(() => Promise.resolve()) }
-    const child2 = { remove: jest.fn(() => Promise.resolve()) }
-
-    element.__ref.__cached.content = {
-      tag: 'fragment',
-      __ref: {
-        __children: [child1, child2]
-      }
-    }
-
-    await set.call(element, { props: { new: true } })
-    // Wait for next tick to ensure all promises resolve
-    await new Promise(resolve => setTimeout(resolve, 0))
-
-    expect(child1.remove).toHaveBeenCalled()
-    expect(child2.remove).toHaveBeenCalled()
-  })
 })

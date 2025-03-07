@@ -88,32 +88,39 @@ export const removeContent = function (el, opts = {}) {
     opts.contentElementKey = 'content'
   }
 
-  // Store cached content before removal
-  const tempCached = ref.__cached ? { ...ref.__cached } : {}
-
   // Handle cached content
   const { __cached } = ref
   if (__cached && __cached[contentElementKey]) {
     const cachedContent = __cached[contentElementKey]
+    if (cachedContent.tag === 'fragment' && cachedContent.__ref?.__children) {
+      // Remove all fragment children
+      cachedContent.__ref.__children.forEach(child => {
+        if (typeof child.remove === 'function') child.remove()
+      })
+    }
     if (cachedContent && isFunction(cachedContent.remove)) {
       if (cachedContent.node?.parentNode) {
         cachedContent.node.parentNode.removeChild(cachedContent.node)
       }
       cachedContent.remove()
     }
+    delete __cached[contentElementKey]
   }
 
   const content = element[contentElementKey]
   if (!content) return
+
+  if (content.tag === 'fragment' && content.__ref?.__children) {
+    content.__ref.__children.forEach(child => {
+      if (typeof child.remove === 'function') child.remove()
+    })
+  }
 
   if (content.node && content.node.parentNode) {
     content.node.parentNode.removeChild(content.node)
   }
 
   delete element[contentElementKey]
-
-  // Restore cached content
-  ref.__cached = tempCached
 }
 
 export const set = async function (params, options = {}, el) {
