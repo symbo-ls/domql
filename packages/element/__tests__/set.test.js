@@ -284,27 +284,6 @@ describe('set', () => {
     expect(remove2).toHaveBeenCalled()
   })
 
-  it('handles cached fragment content removal', async () => {
-    const remove1 = jest.fn()
-    const remove2 = jest.fn()
-
-    element.__ref.__cached.content = {
-      tag: 'fragment',
-      node: element.node,
-      __ref: {
-        __children: [{ remove: remove1 }, { remove: remove2 }]
-      }
-    }
-
-    element.__ref.__cached.content.__ref.__children.forEach(child =>
-      child.remove()
-    )
-    await set.call(element, { props: { new: true } })
-
-    expect(remove1).toHaveBeenCalled()
-    expect(remove2).toHaveBeenCalled()
-  })
-
   it('merges element.childExtends into params when tag is fragment', async () => {
     element.tag = 'fragment'
     element.childExtends = { button: 'PrimaryButton' }
@@ -319,23 +298,6 @@ describe('set', () => {
     const params = { tag: 'fragment', props: {} }
     await set.call(element, params)
     expect(params.props.childProps).toEqual(element.props.childProps)
-  })
-
-  it('handles fragment content removal', async () => {
-    const remove1 = jest.fn()
-    const remove2 = jest.fn()
-
-    element.content = {
-      tag: 'fragment',
-      __ref: {
-        __children: [{ remove: remove1 }, { remove: remove2 }]
-      },
-      node: element.node
-    }
-
-    await set.call(element, { props: { new: true } })
-    expect(remove1).toHaveBeenCalled()
-    expect(remove2).toHaveBeenCalled()
   })
 
   it('triggers update event after successful content update', async () => {

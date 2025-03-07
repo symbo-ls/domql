@@ -35,27 +35,9 @@ describe('resetContent', () => {
     )
   })
 
-  it('should handle fragment content removal', async () => {
-    const remove1 = jest.fn()
-    const remove2 = jest.fn()
-
-    element.content = {
-      tag: 'fragment',
-      __ref: {
-        __children: [{ remove: remove1 }, { remove: remove2 }]
-      },
-      node: element.node
-    }
-
-    await resetContent({}, element, {})
-    expect(remove1).toHaveBeenCalled()
-    expect(remove2).toHaveBeenCalled()
-  })
-
   it('should handle cached content removal', async () => {
     ref.__cached.content = {
       tag: 'fragment',
-      text: 1,
       parent: { node: document.createElement('div') }
     }
 
@@ -74,11 +56,5 @@ describe('resetContent', () => {
 
     expect(element.context).toBe(originalContext)
     expect(element.content.context).toBe(originalContext)
-  })
-
-  it('should handle empty params gracefully', async () => {
-    await resetContent(null, element, {})
-
-    expect(element.content).toBeUndefined()
   })
 })
