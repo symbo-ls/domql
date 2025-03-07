@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals'
-import { children } from '../children'
+import { setChildren } from '../children'
 
 describe('children', () => {
   let element, node
@@ -17,43 +17,40 @@ describe('children', () => {
   })
 
   it('handles null/undefined params', async () => {
-    const result = await children(null, element, node)
+    const result = await setChildren(null, element, node)
     expect(result).toBeUndefined()
   })
 
   it('handles direct string children', async () => {
-    const result = await children('Hello World', element, node)
+    const result = await setChildren('Hello World', element, node)
     expect(result).toEqual({ tag: 'fragment', 0: { text: 'Hello World' } })
   })
 
   it('handles numeric children', async () => {
-    const result = await children(42, element, node)
+    const result = await setChildren(42, element, node)
     expect(result).toEqual({ tag: 'fragment', 0: { text: 42 } })
   })
 
   it('handles array of primitive values with childrenAs prop', async () => {
-    element.props.childrenAs = 'state'
-    element.childExtends = 'button'
-    const result = await children(['one', 'two'], element, node)
+    const result = await setChildren(['one', 'two'], element, node)
 
     expect(result).toEqual({
       tag: 'fragment',
-      ignoreChildExtends: true,
-      childExtends: 'button',
+      0: { text: 'one' },
+      1: { text: 'two' }
+    })
+  })
+
+  it('handles array of primitive values with childrenAs state', async () => {
+    element.props.childrenAs = 'state'
+    const result = await setChildren(['one', 'two'], element, node)
+
+    expect(result).toEqual({
+      tag: 'fragment',
       0: { state: { value: 'one' } },
       1: { state: { value: 'two' } }
     })
   })
-
-  // it('handles object with React components', async () => {
-  //   const reactComponent = { $$typeof: Symbol('react') }
-  //   await children({ comp: reactComponent }, element, node)
-  //   expect(element.call).toHaveBeenCalledWith(
-  //     'renderReact',
-  //     reactComponent,
-  //     element
-  //   )
-  // })
 
   it('caches children and detects changes', async () => {
     const children1 = [{ id: 1 }, { id: 2 }]
@@ -61,16 +58,16 @@ describe('children', () => {
     const children3 = [{ id: 1 }, { id: 3 }]
 
     // First call
-    await children(children1, element, node)
+    await setChildren(children1, element, node)
     expect(element.__ref.__childrenCache).toEqual(children1)
     expect(element.__ref.__noChildrenDifference).toBeUndefined()
 
     // Same content, different reference
-    await children(children2, element, node)
+    await setChildren(children2, element, node)
     expect(element.__ref.__noChildrenDifference).toBe(true)
 
     // Different content
-    await children(children3, element, node)
+    await setChildren(children3, element, node)
     expect(element.__ref.__noChildrenDifference).toBeUndefined()
     expect(element.__ref.__childrenCache).toEqual(children3)
   })
@@ -82,7 +79,7 @@ describe('children', () => {
       { type: 'span', text: 'Another' }
     ]
 
-    await children(mixedChildren, element, node)
+    await setChildren(mixedChildren, element, node)
 
     expect(element.call).toHaveBeenCalledWith(
       'renderReact',
@@ -97,7 +94,7 @@ describe('children', () => {
       parse: () => ['parsed a', 'parsed b']
     }
 
-    const result = await children('state', element, node)
+    const result = await setChildren('state', element, node)
     expect(result).toEqual({
       tag: 'fragment',
       0: { text: 'parsed a' },
@@ -105,16 +102,9 @@ describe('children', () => {
     })
   })
 
-  it('handles childProps inheritance', async () => {
-    element.props.childProps = { class: 'child' }
-    const result = await children([{ text: 'test' }], element, node)
-
-    expect(result.childProps).toEqual({ class: 'child' })
-  })
-
   it('handles async function parameters', async () => {
     const asyncParam = async () => ['async1', 'async2']
-    const result = await children(asyncParam, element, node)
+    const result = await setChildren(asyncParam, element, node)
 
     expect(result).toEqual({
       tag: 'fragment',
@@ -131,7 +121,7 @@ describe('children', () => {
       }
     }
 
-    const result = await children(nestedChildren, element, node)
+    const result = await setChildren(nestedChildren, element, node)
     expect(result).toEqual({
       tag: 'fragment',
       0: { text: 'Title' },
@@ -140,32 +130,19 @@ describe('children', () => {
   })
 
   it('handles empty arrays and objects', async () => {
-    let result = await children([], element, node)
+    let result = await setChildren([], element, node)
     expect(result).toEqual({
       tag: 'fragment'
     })
 
-    result = await children({}, element, node)
+    result = await setChildren({}, element, node)
     expect(result).toEqual({
       tag: 'fragment'
     })
-  })
-
-  it('ignores ignoreChildProps flag if childProps is not present', async () => {
-    element.props.ignoreChildProps = true
-    const result = await children([{ text: 'test' }], element, node)
-    expect(result.ignoreChildProps).toBeUndefined()
-  })
-
-  it('respects ignoreChildProps flag if childProps is present', async () => {
-    element.props.childProps = {}
-    element.props.ignoreChildProps = true
-    const result = await children([{ text: 'test' }], element, node)
-    expect(result.ignoreChildProps).toBe(true)
   })
 
   it('handles falsy values in arrays', async () => {
-    const result = await children(
+    const result = await setChildren(
       [null, undefined, false, 0, ''],
       element,
       node
@@ -186,7 +163,7 @@ describe('children', () => {
       false
     ]
 
-    await children(mixedChildren, element, node)
+    await setChildren(mixedChildren, element, node)
 
     expect(element.call).toHaveBeenCalledWith(
       'renderReact',
@@ -203,7 +180,7 @@ describe('children', () => {
     }
     element.state.nested.__proto__.parse = () => ['parsed c', 'parsed d']
 
-    const result = await children('nested', element, node)
+    const result = await setChildren('nested', element, node)
     expect(result).toEqual({
       tag: 'fragment',
       0: { state: ['c', 'd'] }
@@ -216,7 +193,7 @@ describe('children', () => {
       footer: { parse: () => 'Footer' }
     }
 
-    const result = await children(
+    const result = await setChildren(
       {
         header: 'header',
         content: { text: 'Content' },
@@ -231,24 +208,6 @@ describe('children', () => {
       0: { text: 'header' },
       1: { text: 'Content' },
       2: { text: 'footer' }
-    })
-  })
-
-  it('inherits childExtends in nested structures', async () => {
-    element.childExtends = 'list'
-    const result = await children(
-      {
-        items: [{ text: 'item 1' }, { text: 'item 2' }]
-      },
-      element,
-      node
-    )
-
-    expect(result).toEqual({
-      tag: 'fragment',
-      ignoreChildExtends: true,
-      childExtends: 'list',
-      0: [{ text: 'item 1' }, { text: 'item 2' }]
     })
   })
 })

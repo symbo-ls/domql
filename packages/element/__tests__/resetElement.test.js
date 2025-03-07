@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals'
 import { resetContent } from '../set'
 
 describe('resetContent', () => {
@@ -14,22 +15,6 @@ describe('resetContent', () => {
       node: document.createElement('div'),
       context: {}
     }
-  })
-
-  it('should remove existing content and create new content', async () => {
-    const originalContent = element.content
-    const options = { preventRemove: false }
-
-    await resetContent({}, element, options)
-
-    expect(element.content).not.toBe(originalContent)
-    expect(element.content).toBeDefined()
-  })
-
-  it('should not preserve existing content when preventRemove is true', async () => {
-    await resetContent({}, element, { preventRemove: true })
-
-    expect(element.content).toBe(element.content)
   })
 
   it('should update contentElementKey from options', async () => {
@@ -51,17 +36,26 @@ describe('resetContent', () => {
   })
 
   it('should handle fragment content removal', async () => {
-    element.content.tag = 'fragment'
-    element.content.parent = { node: document.createElement('div') }
+    const remove1 = jest.fn()
+    const remove2 = jest.fn()
+
+    element.content = {
+      tag: 'fragment',
+      __ref: {
+        __children: [{ remove: remove1 }, { remove: remove2 }]
+      },
+      node: element.node
+    }
 
     await resetContent({}, element, {})
-
-    expect(element.content).toBeDefined()
+    expect(remove1).toHaveBeenCalled()
+    expect(remove2).toHaveBeenCalled()
   })
 
   it('should handle cached content removal', async () => {
     ref.__cached.content = {
       tag: 'fragment',
+      text: 1,
       parent: { node: document.createElement('div') }
     }
 

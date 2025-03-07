@@ -15,8 +15,19 @@ export const reset = async options => {
 }
 
 export const resetContent = async (params, element, options) => {
-  if (!options.preventRemove) removeContent(element, options)
   const { __ref: ref } = element
+
+  // Handle fragment content first
+  if (element[ref.contentElementKey]?.tag === 'fragment') {
+    const content = element[ref.contentElementKey]
+    if (content.__ref?.__children) {
+      content.__ref.__children.forEach(child => {
+        if (typeof child.remove === 'function') child.remove()
+      })
+    }
+  }
+
+  removeContent(element, options)
   await create(params, element, ref.contentElementKey || 'content', {
     ignoreChildExtends: true,
     ...OPTIONS.defaultOptions,
@@ -77,34 +88,32 @@ export const removeContent = function (el, opts = {}) {
     opts.contentElementKey = 'content'
   }
 
-  const content = element[contentElementKey]
-  if (!content) return
+  // Store cached content before removal
+  const tempCached = ref.__cached ? { ...ref.__cached } : {}
 
-  const contentNode = content.node
-  if (contentNode && element.node) {
-    if (content.tag === 'fragment') {
-      content.__ref.__children.forEach(element => {
-        element.remove()
-      })
-      // element.node.innerHTML = ''
-    } else if (contentNode.parentNode === element.node) {
-      element.node.removeChild(contentNode)
-    }
-  }
-
+  // Handle cached content
   const { __cached } = ref
   if (__cached && __cached[contentElementKey]) {
     const cachedContent = __cached[contentElementKey]
-    if (cachedContent.tag === 'fragment') {
-      cachedContent.__ref?.__children?.forEach(element => {
-        element.remove()
-      })
-    } else if (cachedContent && isFunction(cachedContent.remove)) {
+    if (cachedContent && isFunction(cachedContent.remove)) {
+      if (cachedContent.node?.parentNode) {
+        cachedContent.node.parentNode.removeChild(cachedContent.node)
+      }
       cachedContent.remove()
     }
   }
 
+  const content = element[contentElementKey]
+  if (!content) return
+
+  if (content.node && content.node.parentNode) {
+    content.node.parentNode.removeChild(content.node)
+  }
+
   delete element[contentElementKey]
+
+  // Restore cached content
+  ref.__cached = tempCached
 }
 
 export const set = async function (params, options = {}, el) {
@@ -145,17 +154,19 @@ export const set = async function (params, options = {}, el) {
 
   if (!params) return element
 
-  let { childExtends, props } = params
+  let { childExtends, props, tag } = params
   if (!props) props = params.props = {}
 
-  if (!childExtends && element.childExtends) {
-    params.childExtends = element.childExtends
-    props.ignoreChildExtends = true
-  }
+  if (tag === 'fragment') {
+    if (!childExtends && element.childExtends) {
+      params.childExtends = element.childExtends
+      props.ignoreChildExtends = true
+    }
 
-  if (!props?.childProps && element.props?.childProps) {
-    props.childProps = element.props.childProps
-    props.ignoreChildProps = true
+    if (!props?.childProps && element.props?.childProps) {
+      props.childProps = element.props.childProps
+      props.ignoreChildProps = true
+    }
   }
 
   if (lazyLoad) {

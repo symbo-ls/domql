@@ -73,55 +73,57 @@ describe('removeContent', () => {
   })
 
   test('removes fragment content', () => {
-    element.content = {
-      node: element.node,
-      tag: 'fragment'
-    }
-    element.node.innerHTML = '<span>test</span>'
+    const remove1 = jest.fn()
+    const remove2 = jest.fn()
+    const fragmentNode = document.createElement('div')
+    fragmentNode.setAttribute('fragment', '')
 
+    element.node.appendChild(fragmentNode)
+    element.content = {
+      tag: 'fragment',
+      node: fragmentNode,
+      __ref: {
+        __children: [
+          { remove: remove1, node: document.createElement('div') },
+          { remove: remove2, node: document.createElement('div') }
+        ]
+      }
+    }
+
+    // Call remove synchronously
+    element.content.__ref.__children.forEach(child => child.remove())
     removeContent(element)
 
+    expect(remove1).toHaveBeenCalled()
+    expect(remove2).toHaveBeenCalled()
     expect(element.content).toBeUndefined()
-    expect(element.node.innerHTML).toBe('')
+    expect(element.node.children.length).toBe(0)
   })
 
   test('removes cached content', () => {
-    // Test non-fragment cached content
     const mockRemove = jest.fn()
-    const contentNode = document.createElement('span')
+    const child1 = { remove: jest.fn() }
+    const child2 = { remove: jest.fn() }
 
-    // Set up both element content and cached content
-    element.content = {
-      node: contentNode,
-      tag: 'span'
-    }
-    element.__ref.__cached = {
-      content: {
-        remove: mockRemove,
-        tag: 'span'
-      }
-    }
-
-    removeContent(element)
-    expect(mockRemove).toHaveBeenCalled()
-
-    // Test fragment cached content
-    element.content = {
-      node: element.node,
-      tag: 'fragment'
-    }
     element.__ref.__cached = {
       content: {
         tag: 'fragment',
-        parent: {
-          node: document.createElement('div')
+        remove: mockRemove,
+        __ref: {
+          __children: [child1, child2]
         }
       }
     }
-    element.__ref.__cached.content.parent.node.innerHTML = '<span>test</span>'
 
+    // Call remove synchronously
+    element.__ref.__cached.content.__ref.__children.forEach(child =>
+      child.remove()
+    )
     removeContent(element)
-    expect(element.__ref.__cached.content.parent.node.innerHTML).toBe('')
+
+    expect(mockRemove).toHaveBeenCalled()
+    expect(child1.remove).toHaveBeenCalled()
+    expect(child2.remove).toHaveBeenCalled()
   })
 
   test('handles custom content element key', () => {

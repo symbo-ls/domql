@@ -155,7 +155,7 @@ export const update = async function (params = {}, opts) {
   if (!preventContentUpdate) {
     const content = params.children
       ? await setChildren(params.children, element)
-      : params.content || element.content
+      : element.children || params.content || element.content
 
     if (content) {
       await setContent(content, element, options)

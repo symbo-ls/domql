@@ -100,6 +100,7 @@ export async function setChildren (param, element) {
   }
 
   element.content = content
+  return content
 }
 
 export default setChildren
