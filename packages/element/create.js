@@ -136,7 +136,6 @@ const renderElement = async (element, parent, options, attachOptions) => {
   const createNestedChild = async () => {
     const isInfiniteLoopDetected = detectInfiniteLoop(ref.path)
     if (ref.__uniqId || isInfiniteLoopDetected) return
-    // console.log(element)
     await createNode(element, options)
     ref.__uniqId = Math.random()
   }
