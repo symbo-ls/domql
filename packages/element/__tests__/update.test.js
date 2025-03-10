@@ -9,8 +9,10 @@ describe('update()', () => {
         __execProps: {},
         __exec: {},
         __defineCache: {},
-        __props: []
+        __props: [],
+        __state: 'state'
       },
+      state: 'string',
       props: {},
       parent: {
         props: {}
@@ -21,7 +23,13 @@ describe('update()', () => {
       on: {},
       update
     }
-    opts = {}
+    opts = {
+      preventUpdate: [],
+      preventDefineUpdate: [],
+      preventBeforeStateUpdateListener: false,
+      preventListeners: false,
+      preventStateUpdateListener: false
+    }
     params = {}
   })
 
@@ -33,7 +41,12 @@ describe('update()', () => {
       currentSnapshot: false,
       exclude: [],
       preventRecursive: false,
-      stackChanges: false
+      stackChanges: false,
+      preventUpdate: [],
+      preventDefineUpdate: [],
+      preventBeforeStateUpdateListener: false,
+      preventListeners: false,
+      preventStateUpdateListener: false
     })
   })
 
@@ -84,7 +97,12 @@ describe('update()', () => {
       currentSnapshot: false,
       exclude: [],
       preventRecursive: false,
-      stackChanges: false
+      preventUpdate: [],
+      preventDefineUpdate: [],
+      stackChanges: false,
+      preventBeforeStateUpdateListener: false,
+      preventListeners: false,
+      preventStateUpdateListener: false
     })
   })
 
@@ -112,7 +130,12 @@ describe('update()', () => {
       currentSnapshot: false,
       exclude: [],
       preventRecursive: false,
-      stackChanges: false
+      stackChanges: false,
+      preventUpdate: [],
+      preventDefineUpdate: [],
+      preventBeforeStateUpdateListener: false,
+      preventListeners: false,
+      preventStateUpdateListener: false
     })
   })
 
@@ -181,6 +204,30 @@ describe('update()', () => {
 
   it('skips props update when preventPropsUpdate=true', async () => {
     opts.preventPropsUpdate = true
+    opts.preventUpdateAfter = true
+    element.parent.props.testKey = { shouldExist: true }
+    await element.update({}, opts)
+    expect(element.props.shouldExist).toBeUndefined()
+  })
+
+  it('should not skips props update when preventPropsUpdate=false', async () => {
+    opts.preventPropsUpdate = false
+    opts.lazyLoad = true
+    opts.onEachUpdate = () => {
+      return true
+    }
+    element.parent.props.testKey = { shouldExist: true }
+    element.__ref.__propsStack = []
+    element.__ref.__if = true
+    element.off = { text: 'off' }
+    await element.update({}, opts)
+    expect(element.props.shouldExist).toBeUndefined()
+  })
+
+  it('should set preventUpdateAfterCount to 1 when is not a number', async () => {
+    opts.preventPropsUpdate = true
+    opts.preventUpdateAfter = 2
+    opts.preventUpdateAfterCount = undefined
     element.parent.props.testKey = { shouldExist: true }
     await element.update({}, opts)
     expect(element.props.shouldExist).toBeUndefined()
