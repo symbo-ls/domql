@@ -79,13 +79,26 @@ export const removeContent = function (el, opts = {}) {
   const content = element[contentElementKey]
   if (!content) return
 
-  if (content.node && content.node.parentNode) {
-    content.node.parentNode.removeChild(content.node)
-  }
-
-  // Only call remove if it exists
-  if (isFunction(content.remove)) {
-    content.remove()
+  // Handle fragment removal
+  if (content.tag === 'fragment') {
+    // Remove all child nodes if they exist
+    Object.values(content.__ref.__children).forEach(key => {
+      const child = content[key]
+      if (child.node && child.node.parentNode) {
+        child.node.parentNode.removeChild(child.node)
+      }
+      if (isFunction(child.remove)) {
+        child.remove()
+      }
+    })
+  } else {
+    // Handle regular element removal
+    if (content.node && content.node.parentNode) {
+      content.node.parentNode.removeChild(content.node)
+    }
+    if (isFunction(content.remove)) {
+      content.remove()
+    }
   }
 
   delete element[contentElementKey]
