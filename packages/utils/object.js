@@ -105,7 +105,7 @@ export const clone = (obj, excludeFrom = []) => {
  * @param {boolean} options.cleanNull - Remove null values
  * @param {Window} options.window - Window object for cross-frame cloning
  * @param {WeakMap} options.visited - WeakMap for tracking circular references
- * @param {boolean} options.handleExtend - Whether to handle 'extends' arrays specially
+ * @param {boolean} options.handleExtends - Whether to handle 'extends' arrays specially
  * @returns {any} Cloned object
  */
 export const deepClone = (obj, options = {}) => {
@@ -115,7 +115,7 @@ export const deepClone = (obj, options = {}) => {
     cleanNull = false,
     window: targetWindow,
     visited = new WeakMap(),
-    handleExtend = false
+    handleExtends = false
   } = options
 
   // Handle non-object types and special cases
@@ -166,7 +166,7 @@ export const deepClone = (obj, options = {}) => {
     }
 
     // Handle 'extends' array if enabled
-    if (handleExtend && key === 'extends' && isArray(value)) {
+    if (handleExtends && key === 'extends' && isArray(value)) {
       clone[key] = unstackArrayOfObjects(value, exclude)
       continue
     }

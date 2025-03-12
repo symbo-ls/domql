@@ -11,14 +11,14 @@ import {
   isUndefined,
   merge,
   overwriteDeep,
-  createSnapshotId,
   deepClone,
   propertizeElement,
   isMethod,
   findInheritedState,
   deepMerge,
   OPTIONS,
-  updateProps
+  updateProps,
+  captureSnapshot
 } from '@domql/utils'
 
 import { applyEvent, triggerEventOn, triggerEventOnUpdate } from '@domql/event'
@@ -35,10 +35,6 @@ import { applyParam } from './utils/applyParam.js'
 import { METHODS_EXL } from './utils/index.js' // old utils (current)
 import { setContent } from './set.js'
 import setChildren from './children.js'
-
-const snapshot = {
-  snapshotId: createSnapshotId
-}
 
 const UPDATE_DEFAULT_OPTIONS = {
   stackChanges: false,
@@ -59,8 +55,6 @@ export const update = async function (params = {}, opts) {
   )
   options.calleeElement = calleeElementCache
   const element = this
-  const { parent, node, key } = element
-  const { exclude, preventInheritAtCurrentState } = options
 
   let ref = element.__ref
   if (!ref) ref = element.__ref = {}
@@ -68,11 +62,15 @@ export const update = async function (params = {}, opts) {
     element,
     options
   )
+
   if (snapshotHasUpdated) return
 
   if (!options.preventListeners) {
     await triggerEventOnUpdate('startUpdate', params, element, options)
   }
+
+  const { parent, node, key } = element
+  const { exclude, preventInheritAtCurrentState } = options
 
   if (
     preventInheritAtCurrentState &&
@@ -86,7 +84,7 @@ export const update = async function (params = {}, opts) {
     params = { text: params }
   }
 
-  propertizeElement(params)
+  params = propertizeElement(params)
 
   const inheritState = await inheritStateUpdates(element, options)
   if (inheritState === false) return
@@ -225,26 +223,6 @@ export const update = async function (params = {}, opts) {
   }
 }
 
-const captureSnapshot = (element, options) => {
-  const ref = element.__ref
-
-  const { currentSnapshot, calleeElement } = options
-  const isCallee = calleeElement === element
-  if (!calleeElement || isCallee) {
-    const createdStanpshot = snapshot.snapshotId()
-    ref.__currentSnapshot = createdStanpshot
-    return [createdStanpshot, element]
-  }
-
-  const snapshotOnCallee = calleeElement.__ref.__currentSnapshot
-
-  if (currentSnapshot < snapshotOnCallee) {
-    return [snapshotOnCallee, calleeElement, true]
-  }
-
-  return [snapshotOnCallee, calleeElement]
-}
-
 const checkIfOnUpdate = async (element, parent, options) => {
   if ((!isFunction(element.if) && !isFunction(element.props?.if)) || !parent) {
     return
@@ -332,7 +310,7 @@ const checkIfOnUpdate = async (element, parent, options) => {
 }
 
 /**
- * Inherit state updates for a given element based on the specified options.
+ * Inherit state updates for a given element when state is inherited.
  *
  * @param {Object} element - The element to inherit state updates for.
  * @param {Object} options - Configuration options for state update inheritance.
