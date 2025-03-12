@@ -1,14 +1,20 @@
-import { jest } from '@jest/globals'
-import { captureSnapshot } from '../update'
-import { createSnapshotId } from '../key'
+/**
+ * @jest-environment node
+ */
 
-jest.mock('../key', () => ({
-  createSnapshotId: jest.fn().mockReturnValue(123)
+import { jest } from '@jest/globals'
+
+// Must mock before importing
+jest.unstable_mockModule('../key', () => ({
+  createSnapshotId: jest.fn(() => 123)
 }))
+
+const { createSnapshotId } = await import('../key')
+const { captureSnapshot } = await import('../update')
 
 describe('captureSnapshot', () => {
   beforeEach(() => {
-    createSnapshotId.mockClear()
+    jest.mocked(createSnapshotId).mockClear()
   })
 
   it('should create new snapshot for regular element', () => {

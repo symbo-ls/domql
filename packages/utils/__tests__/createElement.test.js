@@ -42,7 +42,6 @@ describe('createElement', () => {
     const result = createElement({}, {}, 'key', {}, {})
 
     expect(result.__ref).toMatchObject({
-      __cached: {},
       __defineCache: {},
       __exec: {},
       __class: {},
@@ -166,7 +165,6 @@ describe('createElement', () => {
     const result = createElement(element, {}, 'cached', {}, {})
 
     expect(result.__ref).toMatchObject({
-      __cached: {},
       __defineCache: {},
       __exec: {},
       __execProps: {},

@@ -64,7 +64,6 @@ describe('addCaching', () => {
 
     addCaching(element, parent, 'test')
 
-    expect(element.__ref.__cached).toBeDefined()
     expect(element.__ref.__defineCache).toBeDefined()
     expect(element.__ref.__exec).toBeDefined()
     expect(element.__ref.__class).toBeDefined()

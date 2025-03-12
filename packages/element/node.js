@@ -18,7 +18,7 @@ import { setContent } from './set.js'
 
 const ENV = process.env.NODE_ENV
 
-export const createNode = async (element, options) => {
+export const createNode = async (element, opts) => {
   // create and assign a node
   let { node, tag, __ref: ref } = element
 
@@ -34,11 +34,11 @@ export const createNode = async (element, options) => {
     } else node = element.node = cacheNode(element)
 
     // trigger `on.attachNode`
-    await triggerEventOn('attachNode', element, options)
+    await triggerEventOn('attachNode', element, opts)
   }
   // node.dataset // .key = element.key
 
-  if (ENV === 'test' || ENV === 'development' || options.alowRefReference) {
+  if (ENV === 'test' || ENV === 'development' || opts.alowRefReference) {
     node.ref = element
     if (isFunction(node.setAttribute)) node.setAttribute('key', element.key)
   }
@@ -52,22 +52,21 @@ export const createNode = async (element, options) => {
   // iterate through exec
   await throughInitialExec(element)
 
-  await applyEventsOnNode(element, { isNewNode, ...options })
+  await applyEventsOnNode(element, { isNewNode, ...opts })
 
   const content = element.children
-    ? await setChildren(element.children, element)
+    ? await setChildren(element.children, element, opts)
     : element.content || element.content
 
   if (content) {
-    await setContent(content, element, options)
+    await setContent(content, element, opts)
   }
 
   for (const param in element) {
     const value = element[param]
 
-    if (!Object.hasOwnProperty.call(element, param)) continue
-
     if (
+      !Object.hasOwnProperty.call(element, param) ||
       isUndefined(value) ||
       isMethod(param, element) ||
       isObject(REGISTRY[param])
@@ -75,21 +74,21 @@ export const createNode = async (element, options) => {
       continue
     }
 
-    const isElement = await applyParam(param, element, options)
+    const isElement = await applyParam(param, element, opts)
     if (isElement) {
       const { hasDefine, hasContextDefine } = isElement
       if (element[param] && !hasDefine && !hasContextDefine) {
         const createAsync = async () => {
-          await create(value, element, param, options)
+          await create(value, element, param, opts)
         }
 
         // TODO: test this with promise
         // handle lazy load
-        if ((element.props && element.props.lazyLoad) || options.lazyLoad) {
+        if ((element.props && element.props.lazyLoad) || opts.lazyLoad) {
           window.requestAnimationFrame(async () => {
             await createAsync()
-            if (!options.preventUpdateListener) {
-              await triggerEventOn('lazyLoad', element, options)
+            if (!opts.preventUpdateListener) {
+              await triggerEventOn('lazyLoad', element, opts)
             }
           })
         } else await createAsync()

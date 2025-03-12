@@ -44,7 +44,7 @@ export const assignNode = (element, parent, key, attachOptions) => {
     throw new Error('Element is required')
   }
   if (!parent) {
-    throw new Error('Element is required')
+    throw new Error('Parent is required')
   }
   parent[key || element.key] = element
   if (element.tag !== 'shadow') {

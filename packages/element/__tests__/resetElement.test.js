@@ -1,4 +1,3 @@
-import { jest } from '@jest/globals'
 import { resetContent } from '../set'
 
 describe('resetContent', () => {
@@ -6,8 +5,7 @@ describe('resetContent', () => {
 
   beforeEach(() => {
     ref = {
-      contentElementKey: 'content',
-      __cached: {}
+      contentElementKey: 'content'
     }
     element = {
       __ref: ref,
@@ -33,20 +31,6 @@ describe('resetContent', () => {
         // (this assertion pattern would need actual create() implementation details)
       })
     )
-  })
-
-  it('should handle cached content removal', async () => {
-    ref.__cached.content = {
-      tag: 'fragment',
-      parent: { node: document.createElement('div') }
-    }
-
-    await resetContent({}, element, {})
-
-    expect(ref.__cached.content).toEqual({
-      parent: { node: document.createElement('div') },
-      tag: 'fragment'
-    })
   })
 
   it('should maintain context through reset', async () => {

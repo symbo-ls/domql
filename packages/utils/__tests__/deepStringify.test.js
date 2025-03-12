@@ -41,7 +41,7 @@ describe('deepStringify', () => {
     const expected = {
       a: 1,
       b: `function () {
-        return 'test';
+        return 'test'
       }`
     }
     expect(deepStringify(obj)).toEqual(expected)
@@ -86,8 +86,8 @@ describe('deepStringify', () => {
         1,
         2,
         `function () {
-        return 'test';
-      }`
+          return 'test'
+        }`
       ]
     }
     expect(deepStringify(obj)).toEqual(expected)
@@ -105,7 +105,7 @@ describe('deepStringify', () => {
         }
       },
       h: `function () {
-    console.log('test');
+    console.log('test')
   }`
     }
     expect(deepStringify(testObject1)).toEqual(expected)
@@ -123,7 +123,7 @@ describe('deepStringify', () => {
         zip: '12345'
       },
       sayHello: `function () {
-    return 'Hello';
+    return 'Hello'
   }`
     }
     expect(deepStringify(testObject2)).toEqual(expected)

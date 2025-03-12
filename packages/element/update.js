@@ -111,7 +111,7 @@ export const update = async function (params = {}, opts) {
   }
 
   // apply new updates
-  overwriteDeep(element, params, { exclude: METHODS_EXL })
+  overwriteDeep(element, params)
 
   // exec updates
   throughExecProps(element)
@@ -151,11 +151,14 @@ export const update = async function (params = {}, opts) {
   }
 
   if (!preventContentUpdate) {
-    const content = params.children
-      ? await setChildren(params.children, element)
-      : element.children || params.content || element.content
+    const children = params.children || element.children
+    const content = children
+      ? await setChildren(children, element, opts)
+      : element.children || params.content
 
     if (content) {
+      console.log(ref.path)
+      console.warn('iscontent', content)
       await setContent(content, element, options)
     }
   }

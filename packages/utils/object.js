@@ -386,22 +386,16 @@ export const makeObjectWithoutPrototype = () => Object.create(null)
  * Overwrites object properties with another
  */
 export const overwrite = (element, params, opts = {}) => {
-  const { __ref: ref } = element
   const excl = opts.exclude || []
   const allowUnderscore = opts.preventUnderscore
-  const preventCaching = opts.preventCaching
 
   for (const e in params) {
     if (excl.includes(e) || (!allowUnderscore && e.startsWith('__'))) continue
 
-    const elementProp = element[e]
     const paramsProp = params[e]
 
     if (paramsProp !== undefined) {
       element[e] = paramsProp
-      if (ref && !preventCaching) {
-        ref.__cached[e] = elementProp
-      }
     }
   }
 

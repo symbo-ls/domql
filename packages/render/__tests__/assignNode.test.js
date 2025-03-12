@@ -32,7 +32,7 @@ describe('assignNode', () => {
   test('should throw error when parent is null', () => {
     expect(() => {
       assignNode(element, null)
-    }).toThrow('Element is required')
+    }).toThrow('Parent is required')
   })
 
   test('should assign element to parent using element key', () => {

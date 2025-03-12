@@ -20,7 +20,7 @@ import {
  * Apply data parameters on the DOM nodes
  * this should only work if `showOnNode: true` is passed
  */
-export async function setChildren (param, element) {
+export async function setChildren (param, element, opts) {
   let { children, __ref: ref, state } = element
 
   let { childrenAs } = element.props || {}
@@ -99,7 +99,6 @@ export async function setChildren (param, element) {
     }
   }
 
-  element.content = content
   return content
 }
 

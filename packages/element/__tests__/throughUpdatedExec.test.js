@@ -6,8 +6,7 @@ describe('throughUpdatedExec', () => {
   beforeEach(() => {
     ref = {
       __exec: {},
-      __defineCache: {},
-      __cached: {}
+      __defineCache: {}
     }
     element = {
       __ref: ref,
@@ -35,7 +34,6 @@ describe('throughUpdatedExec', () => {
 
     expect(element.testParam).toBe('new value')
     expect(changes).toEqual({ testParam: 'old value' })
-    expect(ref.__cached.testParam).toBe('old value')
   })
 
   it('should overwrite text property for nodes when exec returns string or number', () => {
@@ -62,7 +60,6 @@ describe('throughUpdatedExec', () => {
       prop: 'value'
     })
     expect(changes).toEqual({})
-    expect(ref.__cached.TestComponent).toBeUndefined()
   })
 
   it('should not update element properties when newExec matches current value', () => {
@@ -73,7 +70,6 @@ describe('throughUpdatedExec', () => {
 
     expect(element.testParam).toBe('same value')
     expect(changes).toEqual({})
-    expect(ref.__cached).not.toHaveProperty('testParam')
   })
 
   it('should handle non-string/non-number exec returns for non-node properties', () => {
@@ -85,7 +81,6 @@ describe('throughUpdatedExec', () => {
 
     expect(element.testParam).toBe(newValue)
     expect(changes).toEqual({ testParam: 'old value' })
-    expect(ref.__cached.testParam).toBe('old value')
   })
 
   it('should return an empty changes object when no updates occur', () => {
@@ -108,10 +103,6 @@ describe('throughUpdatedExec', () => {
     expect(element.param1).toBe('new value 1')
     expect(element.param2).toBe('new value 2')
     expect(changes).toEqual({
-      param1: 'old value 1',
-      param2: 'old value 2'
-    })
-    expect(ref.__cached).toEqual({
       param1: 'old value 1',
       param2: 'old value 2'
     })

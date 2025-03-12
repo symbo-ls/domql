@@ -1,13 +1,14 @@
-const path = require('path')
-const { lstatSync, readdirSync } = require('fs')
-const basePath = path.resolve(__dirname, 'packages')
+import path from 'path'
+import { lstatSync, readdirSync } from 'fs'
+
+const basePath = path.resolve(process.cwd(), 'packages')
 const packages = readdirSync(basePath).filter(name => {
   return lstatSync(path.join(basePath, name)).isDirectory()
 })
 
-module.exports = {
+export default {
   verbose: true,
-  testEnvironment: 'jsdom',
+  testEnvironment: 'node',
   moduleDirectories: ['node_modules', 'packages'],
   roots: ['<rootDir>/packages'],
   collectCoverage: true,
@@ -32,9 +33,7 @@ module.exports = {
       statements: 80
     }
   },
-  transform: {
-    '^.+\\.js$': ['babel-jest', { configFile: './babel.config.json' }]
-  },
+  transform: {},
   moduleNameMapper: {
     ...packages.reduce(
       (acc, name) => ({
@@ -42,6 +41,7 @@ module.exports = {
         [`@domql/${name}(.*)$`]: `<rootDir>/packages/${name}/$1`
       }),
       {}
-    )
+    ),
+    '^(\\.{1,2}/.*)\\.js$': '$1'
   }
 }

@@ -4,6 +4,15 @@ import { deepContains, execPromise, isFunction, OPTIONS } from '@domql/utils'
 import { create } from './create.js'
 import { triggerEventOn, triggerEventOnUpdate } from '@domql/event'
 
+export const setContentKey = (element, opts = {}) => {
+  const { __ref: ref } = element
+  const contentElementKey = opts.contentElementKey
+  if (!ref.contentElementKey || contentElementKey !== ref.contentElementKey) {
+    ref.contentElementKey = contentElementKey || 'content'
+  }
+  return ref.contentElementKey
+}
+
 export const reset = async options => {
   const element = this
   await create(element, element.parent, undefined, {
@@ -14,27 +23,32 @@ export const reset = async options => {
   })
 }
 
-export const resetContent = async (params, element, options) => {
-  const { __ref: ref } = element
-
-  removeContent(element, options)
-  await create(params, element, ref.contentElementKey || 'content', {
-    ignoreChildExtends: true,
-    ...OPTIONS.defaultOptions,
-    ...OPTIONS.create,
-    ...options
-  })
+export const resetContent = async (params, element, opts) => {
+  const contentElementKey = setContentKey(element, opts)
+  console.log('remove')
+  removeContent(element, opts)
+  console.log(params)
+  const contentElem = await create(
+    params,
+    element,
+    contentElementKey || 'content',
+    {
+      ignoreChildExtends: true,
+      ...OPTIONS.defaultOptions,
+      ...OPTIONS.create,
+      ...opts
+    }
+  )
+  if (contentElementKey !== 'content') opts.contentElementKey = 'content' // reset to default
+  return contentElem
 }
 
-export const updateContent = async function (params, options) {
+export const updateContent = async function (params, opts) {
   const element = this
-  const ref = element.__ref
-
-  const contentKey = ref.contentElementKey
-
-  if (!element[contentKey]) return
-  if (element[contentKey].update) {
-    await element[contentKey].update(params, options)
+  const contentElementKey = setContentKey(element, opts)
+  if (!element[contentElementKey]) return
+  if (element[contentElementKey].update) {
+    await element[contentElementKey].update(params, opts)
   }
 }
 
@@ -46,51 +60,20 @@ export async function setContent (param, element, opts) {
   const contentElementKey = setContentKey(element, opts)
   const content = await execPromise(param, element)
 
-  if (content && element) {
-    if (element[contentElementKey].update) {
-      await element[contentElementKey].update({}, opts)
-    } else {
-      await set.call(element, content, opts)
-    }
-  }
-}
+  console.log(contentElementKey)
+  console.log(element[contentElementKey])
 
-export const setContentKey = (el, opts = {}) => {
-  const { __ref: ref } = el
-  const contentElementKey = opts.contentElementKey
-  if (
-    (contentElementKey !== 'content' &&
-      contentElementKey !== ref.contentElementKey) ||
-    !ref.contentElementKey
-  ) {
-    ref.contentElementKey = contentElementKey || 'content'
-  } else ref.contentElementKey = 'content'
-  if (contentElementKey !== 'content') opts.contentElementKey = 'content'
-  return ref.contentElementKey
+  if (content && element) {
+    set.call(element, content, opts)
+  }
 }
 
 export const removeContent = function (el, opts = {}) {
   const element = el || this
-  const { __ref: ref } = element
 
   const contentElementKey = setContentKey(element, opts)
   if (opts.contentElementKey !== 'content') {
     opts.contentElementKey = 'content'
-  }
-
-  // Store cached content before removal
-  const tempCached = ref.__cached ? { ...ref.__cached } : {}
-
-  // Handle cached content
-  const { __cached } = ref
-  if (__cached && __cached[contentElementKey]) {
-    const cachedContent = __cached[contentElementKey]
-    if (cachedContent && isFunction(cachedContent.remove)) {
-      if (cachedContent.node?.parentNode) {
-        cachedContent.node.parentNode.removeChild(cachedContent.node)
-      }
-      cachedContent.remove()
-    }
   }
 
   const content = element[contentElementKey]
@@ -106,9 +89,6 @@ export const removeContent = function (el, opts = {}) {
   }
 
   delete element[contentElementKey]
-
-  // Restore cached content
-  ref.__cached = tempCached
 }
 
 export const set = async function (params, options = {}, el) {
@@ -127,10 +107,10 @@ export const set = async function (params, options = {}, el) {
   const childrenIsDifferentFromCache =
     childHasChanged &&
     __contentRef &&
-    __contentRef.__cached &&
+    Object.keys(params).length === Object.keys(content).length &&
     deepContains(params, content)
 
-  if (content?.update && (childHasChanged || childrenIsDifferentFromCache)) {
+  if (content?.update && !childHasChanged && !childrenIsDifferentFromCache) {
     if (!options.preventBeforeUpdateListener && !options.preventListeners) {
       const beforeUpdateReturns = await triggerEventOnUpdate(
         'beforeUpdate',
@@ -140,7 +120,7 @@ export const set = async function (params, options = {}, el) {
       )
       if (beforeUpdateReturns === false) return element
     }
-    await content.update()
+    await content.update(params)
     if (!options.preventUpdateListener && !options.preventListeners) {
       await triggerEventOn('update', element, options)
     }
@@ -172,9 +152,9 @@ export const set = async function (params, options = {}, el) {
         await triggerEventOn('lazyLoad', element, options)
       }
     })
-  } else await resetContent(params, element, options)
-
-  return element
+  } else {
+    await resetContent(params, element, options)
+  }
 }
 
 export default set

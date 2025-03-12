@@ -7,7 +7,6 @@ describe('onlyResolveExtends', () => {
     element = {
       context: {},
       __ref: {
-        __cached: {},
         _state: {},
         __if: () => true
       },

@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals'
-import { set } from '../set'
+import { removeContent, set, setContentKey } from '../set'
 
 describe('set', () => {
   let element, ref
@@ -7,8 +7,7 @@ describe('set', () => {
   beforeEach(() => {
     ref = {
       contentElementKey: 'content',
-      __noChildrenDifference: false,
-      __cached: {}
+      __noChildrenDifference: false
     }
     element = {
       __ref: ref,
@@ -43,13 +42,6 @@ describe('set', () => {
     await set.call(element, params)
     expect(params.childExtends).toEqual({ button: 'PrimaryButton' })
     expect(params.props.ignoreChildExtends).toBe(true)
-  })
-
-  // 5. Content Key Management
-  it('updates ref.contentElementKey from options', async () => {
-    await set.call(element, {}, { contentElementKey: 'main' })
-    expect(ref.contentElementKey).toBe('content')
-    expect(element.main).toBeUndefined()
   })
 
   // 6. Prevent Content Update
@@ -88,13 +80,6 @@ describe('set', () => {
     const newNode = document.createElement('section')
     await set.call(element, { node: newNode })
     expect(element.node.tagName).toBe('DIV')
-  })
-
-  // 10. Cache Invalidation
-  it('clears cached content on reset', async () => {
-    ref.__cached.content = { old: 'data' }
-    await set.call(element, { props: { new: 'data' } })
-    expect(element.content.__ref.__cached).toEqual({})
   })
 
   // 11. Context Component Resolution
@@ -149,22 +134,6 @@ describe('set', () => {
     jest.useRealTimers()
   })
 
-  // 16. Event Triggers
-  it('triggers update event after successful update', async () => {
-    const updateCallback = jest.fn()
-    const updateMock = jest.fn()
-    element.content = {
-      update: updateMock,
-      __ref: { __cached: {} }
-    }
-    element.on = { update: updateCallback }
-    element.__ref.__noChildrenDifference = false
-
-    await set.call(element, { props: { new: true } })
-    expect(updateMock).toHaveBeenCalled()
-    expect(updateCallback).toHaveBeenCalled()
-  })
-
   // 17. Fragment Content
   it('handles fragment content removal correctly', async () => {
     const remove1 = jest.fn(() => Promise.resolve())
@@ -192,77 +161,6 @@ describe('set', () => {
 
     expect(remove1).toHaveBeenCalled()
     expect(remove2).toHaveBeenCalled()
-  })
-
-  it('handles cached fragment content removal', async () => {
-    const remove1 = jest.fn(() => Promise.resolve())
-    const remove2 = jest.fn(() => Promise.resolve())
-
-    element.__ref.__cached.content = {
-      tag: 'fragment',
-      __ref: {
-        __children: [
-          { node: document.createElement('div'), remove: remove1 },
-          { node: document.createElement('div'), remove: remove2 }
-        ]
-      }
-    }
-
-    const removePromises = []
-    element.__ref.__cached.content.__ref.__children.forEach(child => {
-      removePromises.push(child.remove())
-    })
-
-    await set.call(element, { props: { new: true } })
-    await Promise.all(removePromises)
-
-    expect(remove1).toHaveBeenCalled()
-    expect(remove2).toHaveBeenCalled()
-  })
-
-  // Update existing tests to match implementation
-
-  it('handles content updates through update method if available', async () => {
-    const updateMock = jest.fn(() => Promise.resolve())
-    element.content = {
-      update: updateMock,
-      __ref: {
-        __cached: {},
-        __children: []
-      }
-    }
-    element.__ref.__noChildrenDifference = false
-
-    await set.call(element, { props: { new: true } })
-    await Promise.resolve() // Wait for promises to resolve
-
-    expect(updateMock).toHaveBeenCalled()
-  })
-
-  it('handles fragment content correctly', async () => {
-    element.tag = 'fragment'
-    element.childExtends = { button: 'CustomButton' }
-    const params = { tag: 'fragment', props: {}, __ref: {} }
-    element.__ref.__cached = {}
-
-    await set.call(element, params)
-    expect(params.childExtends).toEqual(element.childExtends)
-    expect(params.props.ignoreChildExtends).toBe(true)
-  })
-
-  it('respects preventBeforeUpdateListener option', async () => {
-    element.content = {
-      update: jest.fn(),
-      __ref: { __cached: {} }
-    }
-    ref.__noChildrenDifference = false
-
-    await set.call(
-      element,
-      { props: {} },
-      { preventBeforeUpdateListener: true }
-    )
-    expect(element.content.update).toHaveBeenCalled()
   })
 
   it('handles fragment content removal with children', async () => {
@@ -299,19 +197,116 @@ describe('set', () => {
     await set.call(element, params)
     expect(params.props.childProps).toEqual(element.props.childProps)
   })
+})
 
-  it('triggers update event after successful content update', async () => {
-    const updateCallback = jest.fn()
-    const updateMock = jest.fn()
-    element.content = {
-      update: updateMock,
-      __ref: { __cached: {} }
+describe('setContentKey', () => {
+  test('should set default content key', () => {
+    const element = {
+      __ref: {}
     }
-    element.on = { update: updateCallback }
-    element.__ref.__noChildrenDifference = false
+    const result = setContentKey(element)
+    expect(result).toBe('content')
+    expect(element.__ref.contentElementKey).toBe('content')
+  })
 
-    await set.call(element, { props: { new: true } })
-    expect(updateMock).toHaveBeenCalled()
-    expect(updateCallback).toHaveBeenCalled()
+  test('should set custom content key', () => {
+    const element = {
+      __ref: {}
+    }
+    const opts = { contentElementKey: 'customContent' }
+    const result = setContentKey(element, opts)
+    expect(result).toBe('customContent')
+    expect(element.__ref.contentElementKey).toBe('customContent')
+  })
+
+  test('should not override existing content key if same value', () => {
+    const element = {
+      __ref: {
+        contentElementKey: 'content'
+      }
+    }
+    const result = setContentKey(element)
+    expect(result).toBe('content')
+    expect(element.__ref.contentElementKey).toBe('content')
+  })
+
+  test('should override existing content key if different value', () => {
+    const element = {
+      __ref: {
+        contentElementKey: 'oldContent'
+      }
+    }
+    const opts = { contentElementKey: 'newContent' }
+    const result = setContentKey(element, opts)
+    expect(result).toBe('newContent')
+    expect(element.__ref.contentElementKey).toBe('newContent')
+  })
+})
+
+describe('removeContent', () => {
+  let element
+
+  beforeEach(() => {
+    // Setup basic element structure
+    element = {
+      node: document.createElement('div'),
+      __ref: {}
+    }
+  })
+
+  test('removes basic content', () => {
+    const contentNode = document.createElement('span')
+    element.content = {
+      node: contentNode,
+      tag: 'span'
+    }
+    element.node.appendChild(contentNode)
+
+    removeContent(element)
+
+    expect(element.content).toBeUndefined()
+    expect(element.node.children.length).toBe(0)
+  })
+
+  test('removes fragment content', () => {
+    const remove1 = jest.fn()
+    const remove2 = jest.fn()
+    const fragmentNode = document.createElement('div')
+    fragmentNode.setAttribute('fragment', '')
+
+    element.node.appendChild(fragmentNode)
+    element.content = {
+      tag: 'fragment',
+      node: fragmentNode,
+      __ref: {
+        __children: [
+          { remove: remove1, node: document.createElement('div') },
+          { remove: remove2, node: document.createElement('div') }
+        ]
+      }
+    }
+
+    // Call remove synchronously
+    element.content.__ref.__children.forEach(child => child.remove())
+    removeContent(element)
+
+    expect(remove1).toHaveBeenCalled()
+    expect(remove2).toHaveBeenCalled()
+    expect(element.content).toBeUndefined()
+    expect(element.node.children.length).toBe(0)
+  })
+
+  test('handles custom content element key', () => {
+    const contentNode = document.createElement('span')
+    element.customContent = {
+      node: contentNode,
+      tag: 'span'
+    }
+    element.node.appendChild(contentNode)
+
+    removeContent(element, { contentElementKey: 'customContent' })
+
+    expect(element.customContent).toBeUndefined()
+    expect(element.node.children.length).toBe(0)
   })
 })

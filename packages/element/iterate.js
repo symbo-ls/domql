@@ -48,7 +48,7 @@ export const throughUpdatedExec = (element, options = {}) => {
         )
         overwrite(prop, newElem)
       } else {
-        ref.__cached[param] = changes[param] = prop
+        changes[param] = prop
         element[param] = newExec
       }
     }

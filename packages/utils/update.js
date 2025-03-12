@@ -1,6 +1,6 @@
 'use strict'
 
-import { createSnapshotId } from './key'
+import { createSnapshotId } from './key.js'
 
 const snapshot = {
   snapshotId: createSnapshotId

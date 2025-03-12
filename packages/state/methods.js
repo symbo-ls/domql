@@ -147,18 +147,23 @@ export const setByPath = async function (path, val, options = {}) {
 
 export const setPathCollection = async function (changes, options = {}) {
   const state = this
-  const update = changes.reduce(async (acc, change) => {
+  const update = await changes.reduce(async (promise, change) => {
+    const acc = await promise
     if (change[0] === 'update') {
       const result = setByPath.call(state, change[1], change[2], {
         preventStateUpdate: true
       })
       return overwriteDeep(acc, result)
     } else if (change[0] === 'delete') {
-      await removeByPath.call(state, change[1], options)
+      await removeByPath.call(state, change[1], {
+        ...options,
+        preventUpdate: true
+      })
     }
     return acc
-  }, {})
-  return await state.update(update, options)
+  }, Promise.resolve({}))
+
+  return state.update(update, options)
 }
 
 export const removeByPath = async function (path, options = {}) {

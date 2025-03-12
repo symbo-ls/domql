@@ -96,7 +96,6 @@ export const addCaching = (element, parent, key) => {
   element.__ref = ref
 
   // enable CACHING
-  if (!ref.__cached) ref.__cached = {}
   if (!ref.__defineCache) ref.__defineCache = {}
 
   // enable EXEC
