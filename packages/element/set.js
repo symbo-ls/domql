@@ -25,9 +25,7 @@ export const reset = async options => {
 
 export const resetContent = async (params, element, opts) => {
   const contentElementKey = setContentKey(element, opts)
-  console.log('remove')
-  removeContent(element, opts)
-  console.log(params)
+  if (element[contentElementKey]?.node) removeContent(element, opts)
   const contentElem = await create(
     params,
     element,
@@ -57,11 +55,7 @@ export const updateContent = async function (params, opts) {
  * an original one as a child
  */
 export async function setContent (param, element, opts) {
-  const contentElementKey = setContentKey(element, opts)
   const content = await execPromise(param, element)
-
-  console.log(contentElementKey)
-  console.log(element[contentElementKey])
 
   if (content && element) {
     set.call(element, content, opts)

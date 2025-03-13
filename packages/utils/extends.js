@@ -97,6 +97,7 @@ export const extractArrayExtend = (
   processed = new Set()
 ) => {
   for (const each of extend) {
+    console.log(each, extend)
     if (isArray(each)) {
       extractArrayExtend(each, stack, context, processed)
     } else {
@@ -138,11 +139,9 @@ export const flattenExtend = (
 
   processed.add(extend)
 
-  // Process extends first if they exist
+  console.log(extend)
   if (extend.extends) {
     deepExtend(extend, stack, context, processed)
-  } else if (extend.props?.extends) {
-    deepExtend(extend.props?.extends, stack, context, processed)
   } else {
     stack.push(extend)
   }
@@ -204,10 +203,10 @@ export const mapStringsWithContextComponents = (
       if (options.verbose && (ENV === 'test' || ENV === 'development')) {
         console.warn('Extend is string but component was not found:', extend)
       }
-      return
+      return {}
     }
   }
-  return extend
+  return extend || {}
 }
 
 // joint stacks
@@ -306,8 +305,8 @@ export const inheritChildExtends = (element, parent, options = {}) => {
   const ignoreChildExtends =
     options.ignoreChildExtends || props.ignoreChildExtends
   if (!ignoreChildExtends) {
-    if (parent.props?.childExtends) {
-      addExtends(parent.props.childExtends, element)
+    if (parent.childExtends) {
+      addExtends(parent.childExtends, element)
     }
     if (parent.childExtends) addExtends(parent.childExtends, element)
   }

@@ -12,6 +12,7 @@ export const DOMQ_PROPERTIES = [
   'scope',
   'deps',
   'extends',
+  'routes',
   'children',
   'childExtends',
   'childExtendsRecursive',
