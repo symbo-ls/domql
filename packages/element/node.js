@@ -54,14 +54,6 @@ export const createNode = async (element, opts) => {
 
   await applyEventsOnNode(element, { isNewNode, ...opts })
 
-  const content = element.children
-    ? await setChildren(element.children, element, opts)
-    : element.content || element.content
-
-  if (content) {
-    await setContent(content, element, opts)
-  }
-
   for (const param in element) {
     const value = element[param]
 
@@ -94,6 +86,14 @@ export const createNode = async (element, opts) => {
         } else await createAsync()
       }
     }
+  }
+
+  const content = element.children
+    ? await setChildren(element.children, element, opts)
+    : element.content || element.content
+
+  if (content) {
+    await setContent(content, element, opts)
   }
 
   // node.dataset.key = key

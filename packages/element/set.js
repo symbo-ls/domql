@@ -74,10 +74,9 @@ export const removeContent = function (el, opts = {}) {
   if (!content) return
 
   // Handle fragment removal
-  if (content.tag === 'fragment') {
-    // Remove all child nodes if they exist
-    Object.values(content.__ref.__children).forEach(key => {
-      const child = content[key]
+  if (content.tag === 'fragment' && content.__ref?.__children) {
+    // Remove all child nodes
+    content.__ref.__children.forEach(child => {
       if (child.node && child.node.parentNode) {
         child.node.parentNode.removeChild(child.node)
       }

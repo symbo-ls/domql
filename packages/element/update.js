@@ -150,19 +150,6 @@ export const update = async function (params = {}, opts) {
     } else options.preventUpdateAfterCount++
   }
 
-  if (!preventContentUpdate) {
-    const children = params.children || element.children
-    const content = children
-      ? await setChildren(children, element, opts)
-      : element.children || params.content
-
-    if (content) {
-      console.log(ref.path)
-      console.warn('iscontent', content)
-      await setContent(content, element, options)
-    }
-  }
-
   for (const param in element) {
     const prop = element[param]
 
@@ -218,6 +205,19 @@ export const update = async function (params = {}, opts) {
           }
         })
       } else await childUpdateCall()
+    }
+  }
+
+  if (!preventContentUpdate) {
+    const children = params.children || element.children
+    const content = children
+      ? await setChildren(children, element, opts)
+      : element.children || params.content
+
+    if (content) {
+      console.log(ref.path)
+      console.warn('iscontent', content)
+      await setContent(content, element, options)
     }
   }
 

@@ -138,6 +138,8 @@ describe('set', () => {
   it('handles fragment content removal correctly', async () => {
     const remove1 = jest.fn(() => Promise.resolve())
     const remove2 = jest.fn(() => Promise.resolve())
+    const node1 = document.createElement('div')
+    const node2 = document.createElement('div')
 
     element.tag = 'fragment'
     element.content = {
@@ -145,19 +147,16 @@ describe('set', () => {
       node: element.node,
       __ref: {
         __children: [
-          { node: document.createElement('div'), remove: remove1 },
-          { node: document.createElement('div'), remove: remove2 }
+          { node: node1, remove: remove1 },
+          { node: node2, remove: remove2 }
         ]
       }
     }
 
-    const removePromises = []
-    element.content.__ref.__children.forEach(child => {
-      removePromises.push(child.remove())
-    })
+    element.node.appendChild(node1)
+    element.node.appendChild(node2)
 
     await set.call(element, { props: { new: true } })
-    await Promise.all(removePromises)
 
     expect(remove1).toHaveBeenCalled()
     expect(remove2).toHaveBeenCalled()
@@ -166,16 +165,23 @@ describe('set', () => {
   it('handles fragment content removal with children', async () => {
     const remove1 = jest.fn()
     const remove2 = jest.fn()
+    const node1 = document.createElement('div')
+    const node2 = document.createElement('div')
 
     element.content = {
       tag: 'fragment',
       node: element.node,
       __ref: {
-        __children: [{ remove: remove1 }, { remove: remove2 }]
+        __children: [
+          { node: node1, remove: remove1 },
+          { node: node2, remove: remove2 }
+        ]
       }
     }
 
-    element.content.__ref.__children.forEach(child => child.remove())
+    element.node.appendChild(node1)
+    element.node.appendChild(node2)
+
     await set.call(element, { props: { new: true } })
 
     expect(remove1).toHaveBeenCalled()
@@ -271,23 +277,24 @@ describe('removeContent', () => {
   test('removes fragment content', () => {
     const remove1 = jest.fn()
     const remove2 = jest.fn()
+    const node1 = document.createElement('div')
+    const node2 = document.createElement('div')
     const fragmentNode = document.createElement('div')
     fragmentNode.setAttribute('fragment', '')
 
-    element.node.appendChild(fragmentNode)
+    element.node.appendChild(node1)
+    element.node.appendChild(node2)
     element.content = {
       tag: 'fragment',
       node: fragmentNode,
       __ref: {
         __children: [
-          { remove: remove1, node: document.createElement('div') },
-          { remove: remove2, node: document.createElement('div') }
+          { node: node1, remove: remove1 },
+          { node: node2, remove: remove2 }
         ]
       }
     }
 
-    // Call remove synchronously
-    element.content.__ref.__children.forEach(child => child.remove())
     removeContent(element)
 
     expect(remove1).toHaveBeenCalled()

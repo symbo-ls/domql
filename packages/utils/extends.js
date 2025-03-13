@@ -97,7 +97,6 @@ export const extractArrayExtend = (
   processed = new Set()
 ) => {
   for (const each of extend) {
-    console.log(each, extend)
     if (isArray(each)) {
       extractArrayExtend(each, stack, context, processed)
     } else {
@@ -304,11 +303,10 @@ export const inheritChildExtends = (element, parent, options = {}) => {
   const { props, __ref: ref } = element
   const ignoreChildExtends =
     options.ignoreChildExtends || props.ignoreChildExtends
-  if (!ignoreChildExtends) {
-    if (parent.childExtends) {
-      addExtends(parent.childExtends, element)
-    }
-    if (parent.childExtends) addExtends(parent.childExtends, element)
+
+  if (!ignoreChildExtends && parent.childExtends) {
+    // Use else if to avoid double-adding
+    addExtends(parent.childExtends, element)
   }
   return ref.__extends
 }
