@@ -146,11 +146,10 @@ describe('set', () => {
       tag: 'fragment',
       node: element.node,
       __ref: {
-        __children: [
-          { node: node1, remove: remove1 },
-          { node: node2, remove: remove2 }
-        ]
-      }
+        __children: ['child1', 'child2']
+      },
+      child1: { node: node1, remove: remove1 },
+      child2: { node: node2, remove: remove2 }
     }
 
     element.node.appendChild(node1)
@@ -172,11 +171,10 @@ describe('set', () => {
       tag: 'fragment',
       node: element.node,
       __ref: {
-        __children: [
-          { node: node1, remove: remove1 },
-          { node: node2, remove: remove2 }
-        ]
-      }
+        __children: ['child1', 'child2']
+      },
+      child1: { node: node1, remove: remove1 },
+      child2: { node: node2, remove: remove2 }
     }
 
     element.node.appendChild(node1)
@@ -288,11 +286,10 @@ describe('removeContent', () => {
       tag: 'fragment',
       node: fragmentNode,
       __ref: {
-        __children: [
-          { node: node1, remove: remove1 },
-          { node: node2, remove: remove2 }
-        ]
-      }
+        __children: ['child1', 'child2']
+      },
+      child1: { node: node1, remove: remove1 },
+      child2: { node: node2, remove: remove2 }
     }
 
     removeContent(element)

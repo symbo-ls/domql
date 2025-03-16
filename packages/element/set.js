@@ -25,6 +25,7 @@ export const reset = async options => {
 
 export const resetContent = async (params, element, opts) => {
   const contentElementKey = setContentKey(element, opts)
+  console.log(element[contentElementKey])
   if (element[contentElementKey]?.node) removeContent(element, opts)
   const contentElem = await create(
     params,
@@ -58,6 +59,7 @@ export async function setContent (param, element, opts) {
   const content = await execPromise(param, element)
 
   if (content && element) {
+    console.log(content)
     set.call(element, content, opts)
   }
 }
@@ -76,7 +78,8 @@ export const removeContent = function (el, opts = {}) {
   // Handle fragment removal
   if (content.tag === 'fragment' && content.__ref?.__children) {
     // Remove all child nodes
-    content.__ref.__children.forEach(child => {
+    content.__ref.__children.forEach(key => {
+      const child = content[key]
       if (child.node && child.node.parentNode) {
         child.node.parentNode.removeChild(child.node)
       }

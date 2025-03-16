@@ -414,9 +414,7 @@ describe('addExtends', () => {
 describe('createElementExtends', () => {
   test('handles props.extends and adds them to element', () => {
     const element = {
-      props: {
-        extends: 'ButtonBase'
-      },
+      extends: 'ButtonBase',
       __ref: {
         __extends: ['Button']
       },

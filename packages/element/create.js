@@ -56,6 +56,8 @@ export const create = async (
     return onlyResolveExtends(element, parent, key, options)
   }
 
+  console.log(element)
+
   resetOptions(element, parent, options)
 
   addMethods(element, parent, options)

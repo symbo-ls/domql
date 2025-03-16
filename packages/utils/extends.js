@@ -138,7 +138,6 @@ export const flattenExtend = (
 
   processed.add(extend)
 
-  console.log(extend)
   if (extend.extends) {
     deepExtend(extend, stack, context, processed)
   } else {
@@ -266,9 +265,12 @@ export const getExtendsInElement = obj => {
 }
 
 export const createElementExtends = (element, parent, options = {}) => {
-  const { props, __ref: ref } = element
+  const { __ref: ref } = element
 
-  if (props.extends) addExtends(props.extends, element)
+  // Add the extends property from element if it exists
+  if (element.extends) {
+    addExtends(element.extends, element)
+  }
 
   inheritChildPropsExtends(element, parent, options)
   inheritChildExtends(element, parent, options)
@@ -290,10 +292,10 @@ export const createElementExtends = (element, parent, options = {}) => {
 export const inheritChildPropsExtends = (element, parent, options = {}) => {
   const { props, __ref: ref } = element
   const ignoreChildExtends =
-    options.ignoreChildExtends || props.ignoreChildExtends
+    options.ignoreChildExtends || props?.ignoreChildExtends
   if (!ignoreChildExtends) {
     if (parent.props?.childProps?.extends) {
-      addExtends(parent.props.childProps.extends, element)
+      addExtends(parent.props?.childProps.extends, element)
     }
   }
   return ref.__extends
@@ -302,7 +304,7 @@ export const inheritChildPropsExtends = (element, parent, options = {}) => {
 export const inheritChildExtends = (element, parent, options = {}) => {
   const { props, __ref: ref } = element
   const ignoreChildExtends =
-    options.ignoreChildExtends || props.ignoreChildExtends
+    options.ignoreChildExtends || props?.ignoreChildExtends
 
   if (!ignoreChildExtends && parent.childExtends) {
     // Use else if to avoid double-adding
@@ -316,11 +318,11 @@ export const inheritRecursiveChildExtends = (element, parent, options = {}) => {
   const childExtendsRecursive =
     parent.childExtendsRecursive || parent.props?.childExtendsRecursive
   const ignoreChildExtendsRecursive =
-    options.ignoreChildExtendsRecursive || props.ignoreChildExtendsRecursive
+    options.ignoreChildExtendsRecursive || props?.ignoreChildExtendsRecursive
   const isText = element.key === '__text'
   if (childExtendsRecursive && !isText && !ignoreChildExtendsRecursive) {
     if (parent.props?.childExtendsRecursive) {
-      addExtends(parent.props.childExtendsRecursive, element)
+      addExtends(parent.props?.childExtendsRecursive, element)
     }
     if (parent.childExtendsRecursive) {
       addExtends(parent.childExtendsRecursive, element)
@@ -334,7 +336,7 @@ export const createExtendsStack = (element, parent, options = {}) => {
   const context = element.context || parent.context
 
   // if (ENV !== 'test' && ENV !== 'development') delete element.extends
-  const variant = element.variant || props.variant
+  const variant = element.variant || props?.variant
 
   const __extends = removeDuplicatesInArray(
     ref.__extends.map((val, i) => {
