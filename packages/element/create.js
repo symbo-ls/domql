@@ -53,6 +53,10 @@ export const create = async (
 
   applyExtends(element, parent, options)
 
+  if (element.key === 'BannerHgroup') {
+    console.warn(deepClone(element))
+  }
+
   propertizeElement(element, parent)
 
   await triggerEventOn('start', element, options)

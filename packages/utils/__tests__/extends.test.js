@@ -169,12 +169,7 @@ describe('Merge operations', () => {
     const element = { items: [{ id: 1 }, { id: 2 }] }
     const extend = { items: { length: 2, type: 'list' } }
     const result = deepMergeExtends(element, extend)
-    expect(result.items).toEqual({
-      0: { id: 1 },
-      1: { id: 2 },
-      length: 2,
-      type: 'list'
-    })
+    expect(result.items).toEqual([{ id: 1 }, { id: 2 }])
   })
 
   test('deepMergeExtends assigns function when property is undefined', () => {
@@ -200,7 +195,9 @@ describe('String extend handling', () => {
     expect(mapStringsWithContextComponents('test', context)).toEqual({
       prop: 'value'
     })
-    expect(mapStringsWithContextComponents('nonexistent', context)).toEqual({}) // Updated: returns empty object instead of undefined
+    expect(
+      mapStringsWithContextComponents('nonexistent', context)
+    ).toBeUndefined()
   })
 })
 
@@ -282,7 +279,7 @@ describe('Complex extend scenarios', () => {
     expect(result).toEqual({
       a: 1,
       b: { c: 2, d: { e: 3, h: 4 }, i: 5 },
-      f: [1, 2, { g: 3 }, 4, { j: 5 }],
+      f: [1, 2, { g: 3 }],
       k: 6
     })
   })
@@ -336,9 +333,9 @@ describe('Complex extend scenarios', () => {
     // Should process each extend exactly once
     expect(stack).toHaveLength(3)
     expect(stack).toEqual([
-      { name: 'C', value: 3 },
+      { name: 'A', value: 1 },
       { name: 'B', value: 2 },
-      { name: 'A', value: 1 }
+      { name: 'C', value: 3 }
     ])
   })
 
@@ -359,10 +356,10 @@ describe('Complex extend scenarios', () => {
 
     const result = getExtendsStack('FinalComponent', context)
     expect(result).toEqual([
-      { base: true, method: expect.any(Function) },
+      { final: true },
       { extended: true },
-      { custom: true },
-      { final: true }
+      { base: true, method: expect.any(Function) },
+      { custom: true }
     ])
   })
 })
@@ -430,12 +427,29 @@ describe('createElementExtends', () => {
 
   test('handles variant in props when mapping components', () => {
     const element = {
+      extends: ['Button'],
       props: {
         variant: 'primary'
       },
-      __ref: {
-        __extends: ['Button']
+      __ref: { __extends: [] },
+      context: {
+        components: {
+          'Button.primary': { primary: true },
+          Button: { base: true }
+        }
+      }
+    }
+    const result = createElementExtends(element, {})
+    expect(result).toEqual(['Button.primary'])
+  })
+
+  test('handles default variant in props when mapping components', () => {
+    const element = {
+      extends: ['Button'],
+      props: {
+        variant: 'secondary'
       },
+      __ref: { __extends: [] },
       context: {
         components: {
           'Button.primary': { primary: true },
@@ -465,11 +479,12 @@ describe('createElementExtends', () => {
     expect(result).toEqual(['Button'])
   })
 
-  test('filters out non-object extends after mapping', () => {
+  test('filters out duplicated extends', () => {
     const element = {
+      key: 'Button',
       props: {},
       __ref: {
-        __extends: ['Button', 'NonExistent']
+        __extends: ['Button', 'Button']
       },
       context: {
         components: {
@@ -478,7 +493,7 @@ describe('createElementExtends', () => {
       }
     }
     const result = createElementExtends(element, {})
-    expect(result).toEqual(['Button', 'NonExistent']) // Updated: keeps non-existent components
+    expect(result).toEqual(['Button'])
   })
 
   test('creates basic extend stack', () => {
@@ -491,7 +506,7 @@ describe('createElementExtends', () => {
     }
     const parent = {}
     const stack = createElementExtends(element, parent)
-    expect(stack).toEqual(['Button']) // Updated: returns component names instead of objects
+    expect(stack).toEqual(['Button'])
   })
 
   test('incorporates context defaultExtends', () => {
@@ -527,12 +542,10 @@ describe('createElementExtends', () => {
       }
     }
     const parent = {
-      props: {
-        childExtends: ['Child']
-      }
+      childExtends: ['Child']
     }
     const stack = createElementExtends(element, parent)
-    expect(stack).toEqual(['Base'])
+    expect(stack).toEqual(['Base', 'Child'])
   })
 
   test('handles recursive child extends', () => {
@@ -595,13 +608,11 @@ describe('createElementExtends', () => {
       }
     }
     const parent = {
-      props: {
-        childExtends: ['Child']
-      },
+      childExtends: ['Child'],
       childExtendsRecursive: ['Recursive']
     }
     const stack = createElementExtends(element, parent)
-    expect(stack).toEqual(['Base', 'Recursive']) // Updated: includes recursive extends
+    expect(stack).toEqual(['Base', 'Child', 'Recursive']) // Updated: includes recursive extends
   })
 })
 
@@ -689,7 +700,7 @@ describe('createExtendsStack', () => {
     }
     const parent = {}
     const stack = createExtendsStack(element, parent)
-    expect(stack).toEqual([{}])
+    expect(stack).toEqual([])
   })
 
   test('handles multiple extends with variants', () => {
@@ -819,6 +830,7 @@ describe('createExtendsStack', () => {
       },
       context: {
         components: {
+          Button: { justButton: true },
           'Button.primary': { primary: true, type: 'button' },
           Icon: { type: 'icon' }
         }
@@ -847,22 +859,6 @@ describe('createExtendsStack', () => {
 })
 
 describe('inheritChildExtends', () => {
-  test('inherits childExtends from parent props', () => {
-    const element = {
-      props: {},
-      __ref: {
-        __extends: ['Base']
-      }
-    }
-    const parent = {
-      props: {
-        childExtends: ['Child1', 'Child2']
-      }
-    }
-    const result = inheritChildExtends(element, parent)
-    expect(result).toEqual(['Base'])
-  })
-
   test('inherits childExtends from parent object', () => {
     const element = {
       props: {},
@@ -903,9 +899,7 @@ describe('inheritRecursiveChildExtends', () => {
       }
     }
     const parent = {
-      props: {
-        childExtendsRecursive: ['Recursive1']
-      }
+      childExtendsRecursive: ['Recursive1']
     }
     const result = inheritRecursiveChildExtends(element, parent)
     expect(result).toEqual(['Base', 'Recursive1'])
@@ -1020,7 +1014,7 @@ describe('finalizeExtends', () => {
       }
     }
     const result = finalizeExtends(element, {})
-    expect(result.items).toEqual([1, 2, 3, 4])
+    expect(result.items).toEqual([1, 2])
   })
 
   test('handles multiple extends in correct order', () => {
@@ -1307,6 +1301,199 @@ describe('applyExtends', () => {
       first: true,
       second: true,
       third: true
+    })
+  })
+
+  test('handles nested component inheritance with deep extends', () => {
+    const element = {
+      zIndex: 99,
+      __ref: {
+        __extends: ['BannerHgroup']
+      },
+      context: {
+        components: {
+          BannerHgroup: {
+            extends: 'Hgroup',
+            alignItems: 'center',
+            H: {
+              tag: 'h1',
+              text: 'Symbols. ',
+              Span: {
+                text: 'Canvas where the code meets design.'
+              }
+            },
+            P: {
+              text: 'Work seamlessly with your team or clients in real-time. Build, test, and document apps with our streamlined platform, designed for developers.'
+            }
+          },
+          Hgroup: {
+            extends: ['Flex'],
+            tag: 'hgroup',
+            flow: 'y',
+            H: {
+              tag: 'h3',
+              text: 'Heading',
+              margin: '0'
+            },
+            P: {
+              text: 'Paragraph',
+              color: 'paragraph'
+            }
+          }
+        }
+      }
+    }
+
+    const result = applyExtends(element, {})
+
+    expect(result).toMatchObject({
+      zIndex: 99,
+      tag: 'hgroup',
+      H: {
+        tag: 'h1',
+        text: 'Symbols. ',
+        Span: {
+          text: 'Canvas where the code meets design.'
+        }
+      },
+      P: {
+        text: 'Work seamlessly with your team or clients in real-time. Build, test, and document apps with our streamlined platform, designed for developers.',
+        color: 'paragraph'
+      }
+    })
+
+    expect(result.__ref.__extends).toEqual(['BannerHgroup'])
+    expect(result.__ref.__extendsStack).toBeDefined()
+  })
+
+  test('handles multi-level component inheritance with theme variants', () => {
+    const element = {
+      color: 'title',
+      __ref: {
+        __extends: ['Logo']
+      },
+      context: {
+        components: {
+          Logo: {
+            extends: ['Link', 'SquareButton'],
+            icon: 'logo',
+            '@dark': {
+              color: 'white'
+            },
+            '@light': {
+              color: 'black'
+            },
+            Span: {
+              text: 'BETA'
+            }
+          },
+          SquareButton: {
+            extends: 'Button',
+            icon: 'smile'
+          },
+          Button: {
+            extends: ['IconText'],
+            tag: 'button'
+          },
+          Link: { tag: 'a' },
+          IconText: {
+            extends: 'Flex',
+            align: 'center center',
+            Icon: {
+              icon: el => el.call('exec', el.parent.props.icon, el.parent)
+            },
+            text: ({ props }) => props.text
+          },
+          Flex: {
+            display: 'flex'
+          }
+        }
+      }
+    }
+
+    const result = applyExtends(element, {})
+
+    // Check extends chain
+    expect(result.__ref.__extends).toEqual(['Logo'])
+
+    // Test basic inheritance chain
+    expect(result).toMatchObject({
+      color: 'title', // Original property preserved
+      display: 'flex', // From Flex
+      align: 'center center', // From IconText
+      icon: 'logo', // From Logo, overrides SquareButton's 'smile'
+      tag: 'a',
+      '@dark': {
+        color: 'white'
+      },
+      '@light': {
+        color: 'black'
+      },
+      Span: {
+        text: 'BETA'
+      }
+    })
+
+    // Check if Icon component inherited correctly
+    expect(result.Icon).toBeDefined()
+    expect(typeof result.Icon.icon).toBe('function')
+
+    // Verify text function was inherited
+    expect(typeof result.text).toBe('function')
+  })
+
+  test('handles Logo theme variants with specific props', () => {
+    const element = {
+      color: 'title',
+      props: {
+        theme: 'dark'
+      },
+      __ref: {
+        __extends: ['Logo']
+      },
+      context: {
+        components: {
+          Logo: {
+            extends: ['Link', 'SquareButton'],
+            icon: 'logo',
+            '@dark': {
+              color: 'white'
+            },
+            '@light': {
+              color: 'black'
+            }
+          },
+          SquareButton: {
+            extends: 'Button',
+            icon: 'smile'
+          },
+          Button: {
+            extends: ['IconText']
+          },
+          IconText: {
+            extends: 'Flex',
+            align: 'center center'
+          },
+          Flex: {
+            display: 'flex'
+          }
+        }
+      }
+    }
+
+    const result = applyExtends(element, {})
+
+    expect(result).toMatchObject({
+      color: 'title',
+      display: 'flex',
+      align: 'center center',
+      icon: 'logo',
+      '@dark': {
+        color: 'white'
+      },
+      '@light': {
+        color: 'black'
+      }
     })
   })
 })

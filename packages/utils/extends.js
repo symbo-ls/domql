@@ -41,8 +41,26 @@ export const createExtends = (element, parent, key) => {
 export const addExtends = (newExtends, element) => {
   const { __ref: ref } = element
   let { __extends } = ref
-  if (newExtends && !__extends.includes(newExtends)) {
-    __extends = isArray(newExtends)
+
+  if (!newExtends) return __extends
+
+  // Check if the first extend has a variant in components
+  const variant = element.props?.variant
+  const context = element.context
+  if (
+    variant &&
+    context?.components &&
+    !Array.isArray(newExtends) &&
+    typeof newExtends === 'string'
+  ) {
+    const variantKey = `${newExtends}.${variant}`
+    if (context.components[variantKey]) {
+      newExtends = variantKey
+    }
+  }
+
+  if (!__extends.includes(newExtends)) {
+    __extends = Array.isArray(newExtends)
       ? [...__extends, ...newExtends]
       : [...__extends, newExtends]
     ref.__extends = __extends
@@ -108,14 +126,14 @@ export const extractArrayExtend = (
 
 export const deepExtend = (extend, stack, context, processed = new Set()) => {
   const extendOflattenExtend = extend.extends
-  if (extendOflattenExtend) {
-    flattenExtend(extendOflattenExtend, stack, context, processed)
-  }
   // Remove extends property before adding to stack
   const cleanExtend = { ...extend }
   delete cleanExtend.extends
   if (Object.keys(cleanExtend).length > 0) {
     stack.push(cleanExtend)
+  }
+  if (extendOflattenExtend) {
+    flattenExtend(extendOflattenExtend, stack, context, processed)
   }
   return stack
 }
@@ -132,13 +150,14 @@ export const flattenExtend = (
   if (isArray(extend)) {
     return extractArrayExtend(extend, stack, context, processed)
   }
+
   if (isString(extend)) {
     extend = mapStringsWithContextComponents(extend, context)
   }
 
   processed.add(extend)
 
-  if (extend.extends) {
+  if (extend?.extends) {
     deepExtend(extend, stack, context, processed)
   } else {
     stack.push(extend)
@@ -148,35 +167,50 @@ export const flattenExtend = (
 }
 
 export const deepMergeExtends = (element, extend) => {
+  // Clone extend to prevent mutations
+  extend = deepClone(extend)
+
   for (const e in extend) {
     if (['parent', 'node', '__ref'].indexOf(e) > -1) continue
+    if (e === '__proto__') continue
+
     const elementProp = element[e]
     const extendProp = extend[e]
-    if (e === '__proto__') continue
-    if (elementProp === undefined) {
-      if (
-        Object.prototype.hasOwnProperty.call(extend, e) &&
-        !['__proto__', 'constructor', 'prototype'].includes(e)
-      ) {
-        element[e] = extendProp
+
+    // Skip if the property is undefined in the extend object
+    if (extendProp === undefined) continue
+
+    // Handle only properties that exist in the extend object
+    if (
+      Object.prototype.hasOwnProperty.call(extend, e) &&
+      !['__proto__', 'constructor', 'prototype'].includes(e)
+    ) {
+      if (elementProp === undefined) {
+        // For undefined properties in element, copy from extend
+        element[e] = isObject(extendProp) ? deepClone(extendProp) : extendProp
+      } else if (isObject(elementProp) && isObject(extendProp)) {
+        // For objects, merge based on type
+        if (matchesComponentNaming(e)) {
+          // For components, override base properties with extended ones
+          element[e] = deepMergeExtends(elementProp, deepClone(extendProp))
+        } else {
+          // For other objects, merge normally
+          deepMergeExtends(elementProp, extendProp)
+        }
       }
-    } else if (isObject(elementProp) && isObject(extendProp)) {
-      deepMergeExtends(elementProp, extendProp)
-    } else if (isArray(elementProp) && isArray(extendProp)) {
-      element[e] = elementProp.concat(extendProp)
-    } else if (isArray(elementProp) && isObject(extendProp)) {
-      const obj = deepMergeExtends({}, elementProp)
-      element[e] = deepMergeExtends(obj, extendProp)
-    } else if (elementProp === undefined && isFunction(extendProp)) {
-      element[e] = extendProp
+      // If elementProp is defined and not an object, keep it (don't override)
+      // This preserves properties from earlier in the extend chain
     }
   }
   return element
 }
 
 export const cloneAndMergeArrayExtend = stack => {
-  return stack.reduce((a, c) => {
-    return deepMergeExtends(a, deepClone(c))
+  return stack.reduce((acc, current) => {
+    // Clone current extend to avoid mutations
+    const cloned = deepClone(current)
+    // Merge into accumulator, giving priority to current extend
+    return deepMergeExtends(acc, cloned)
   }, {})
 }
 
@@ -201,10 +235,10 @@ export const mapStringsWithContextComponents = (
       if (options.verbose && (ENV === 'test' || ENV === 'development')) {
         console.warn('Extend is string but component was not found:', extend)
       }
-      return {}
+      return
     }
   }
-  return extend || {}
+  return extend
 }
 
 // joint stacks
@@ -266,17 +300,43 @@ export const getExtendsInElement = obj => {
 
 export const createElementExtends = (element, parent, options = {}) => {
   const { __ref: ref } = element
+  const context = element.context || parent.context
+  const variant = element.props?.variant
 
   // Add the extends property from element if it exists
   if (element.extends) {
-    addExtends(element.extends, element)
+    if (Array.isArray(element.extends) && element.extends.length > 0) {
+      // Handle first item in array specially for variant
+      const [firstExtend, ...restExtends] = element.extends
+      if (typeof firstExtend === 'string' && variant && context?.components) {
+        const variantKey = `${firstExtend}.${variant}`
+        if (context.components[variantKey]) {
+          addExtends([variantKey, ...restExtends], element)
+        } else {
+          addExtends(element.extends, element)
+        }
+      } else {
+        addExtends(element.extends, element)
+      }
+    } else if (
+      typeof element.extends === 'string' &&
+      variant &&
+      context?.components
+    ) {
+      const variantKey = `${element.extends}.${variant}`
+      if (context.components[variantKey]) {
+        addExtends(variantKey, element)
+      } else {
+        addExtends(element.extends, element)
+      }
+    } else {
+      addExtends(element.extends, element)
+    }
   }
 
   inheritChildPropsExtends(element, parent, options)
   inheritChildExtends(element, parent, options)
   inheritRecursiveChildExtends(element, parent, options)
-
-  const context = element.context || parent.context
 
   if (element.component) {
     addExtends(exec(element.component, element), element)
@@ -315,18 +375,12 @@ export const inheritChildExtends = (element, parent, options = {}) => {
 
 export const inheritRecursiveChildExtends = (element, parent, options = {}) => {
   const { props, __ref: ref } = element
-  const childExtendsRecursive =
-    parent.childExtendsRecursive || parent.props?.childExtendsRecursive
+  const childExtendsRecursive = parent.childExtendsRecursive
   const ignoreChildExtendsRecursive =
     options.ignoreChildExtendsRecursive || props?.ignoreChildExtendsRecursive
   const isText = element.key === '__text'
   if (childExtendsRecursive && !isText && !ignoreChildExtendsRecursive) {
-    if (parent.props?.childExtendsRecursive) {
-      addExtends(parent.props?.childExtendsRecursive, element)
-    }
-    if (parent.childExtendsRecursive) {
-      addExtends(parent.childExtendsRecursive, element)
-    }
+    addExtends(childExtendsRecursive, element)
   }
   return ref.__extends
 }
