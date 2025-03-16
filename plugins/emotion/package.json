@@ -1,11 +1,11 @@
 {
   "name": "@domql/emotion",
-  "version": "2.5.187",
+  "version": "3.0.0",
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
     "@domql/classlist": "latest",
-    "@domql/utils": "^2.5.187"
+    "@domql/utils": "^3.0.0"
   },
   "peerDependencies": {
     "@emotion/css": "*"
