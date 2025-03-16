@@ -215,8 +215,6 @@ export const update = async function (params = {}, opts) {
       : element.children || params.content
 
     if (content) {
-      console.log(ref.path)
-      console.warn('iscontent', content)
       await setContent(content, element, options)
     }
   }

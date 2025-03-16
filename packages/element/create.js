@@ -15,7 +15,8 @@ import {
   isMethod,
   OPTIONS,
   initProps,
-  createIfConditionFlag
+  createIfConditionFlag,
+  deepClone
 } from '@domql/utils'
 
 import { applyAnimationFrame, triggerEventOn } from '@domql/event'
@@ -46,6 +47,10 @@ export const create = async (
 
   const { key, parent, __ref: ref } = element
 
+  if (element.key === 'BannerHgroup') {
+    console.warn(deepClone(element))
+  }
+
   applyExtends(element, parent, options)
 
   propertizeElement(element, parent)
@@ -56,7 +61,9 @@ export const create = async (
     return onlyResolveExtends(element, parent, key, options)
   }
 
-  console.log(element)
+  if (element.key === 'BannerHgroup') {
+    console.warn(element)
+  }
 
   resetOptions(element, parent, options)
 
