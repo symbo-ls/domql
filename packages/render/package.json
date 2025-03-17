@@ -1,6 +1,6 @@
 {
   "name": "@domql/render",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "license": "MIT",
   "type": "module",
   "module": "index.js",
@@ -18,9 +18,9 @@
     "dist"
   ],
   "dependencies": {
-    "@domql/event": "^3.0.0",
+    "@domql/event": "^3.0.1",
     "@domql/report": "^3.0.0",
-    "@domql/utils": "^3.0.0"
+    "@domql/utils": "^3.0.1"
   },
   "scripts": {
     "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
