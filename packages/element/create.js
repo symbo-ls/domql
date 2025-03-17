@@ -50,15 +50,7 @@ export const create = async (
 
   createRoot(element, parent) // Call createRoot after addCaching
 
-  if (element.key === 'BannerHgroup') {
-    console.warn(deepClone(element))
-  }
-
   applyExtends(element, parent, options)
-
-  if (element.key === 'BannerHgroup') {
-    console.warn(deepClone(element))
-  }
 
   propertizeElement(element, parent)
 
@@ -66,10 +58,6 @@ export const create = async (
 
   if (options.onlyResolveExtends) {
     return onlyResolveExtends(element, parent, key, options)
-  }
-
-  if (element.key === 'BannerHgroup') {
-    console.warn(element)
   }
 
   resetOptions(element, parent, options)
