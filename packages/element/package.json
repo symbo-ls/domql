@@ -21,8 +21,8 @@
   ],
   "scripts": {
     "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
-    "build:esm": "npx esbuild *.js **/*.js --target=es2019 --format=esm --outdir=dist/esm",
-    "build:cjs": "npx esbuild *.js **/*.js --target=node16 --format=cjs --outdir=dist/cjs",
+    "build:esm": "npx esbuild *.js **/*.js --ignore-pattern=\"**/__tests__/**\" --target=es2019 --format=esm --outdir=dist/esm",
+    "build:cjs": "npx esbuild *.js **/*.js --ignore-pattern=\"**/__tests__/**\" --target=node16 --format=cjs --outdir=dist/cjs",
     "build": "rimraf -I dist; npm run build:cjs; npm run build:esm",
     "prepublish": "rimraf -I dist && npm run build && npm run copy:package:cjs"
   },
