@@ -2,8 +2,8 @@
 
 // import DOM from '../../src'
 import { isObjectLike, isString, isNumber, isBoolean, exec, isObject, isEqualDeep, isProduction } from '@domql/utils'
-import { applyClassListOnNode } from '@domql/classlist'
 import createEmotion from '@emotion/css/create-instance'
+import { applyClassListOnNode } from './classList'
 
 export const transformEmotionStyle = (emotion) => {
   return (params, element, state) => {
