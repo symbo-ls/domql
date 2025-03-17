@@ -4,7 +4,8 @@ import {
   addCaching,
   addRef,
   createParent,
-  addContext
+  addContext,
+  createRoot
 } from '../element.js'
 
 describe('returnValueAsText', () => {
@@ -74,7 +75,7 @@ describe('addCaching', () => {
     const element = { key: 'test', __ref: {} }
     const parent = { key: ':root' }
 
-    addCaching(element, parent, 'test')
+    createRoot(element, parent)
 
     expect(Object.is(element.__ref.root, element)).toBe(true)
   })

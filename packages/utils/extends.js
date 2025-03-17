@@ -3,7 +3,7 @@
 import { joinArrays, removeDuplicatesInArray } from './array.js'
 import { matchesComponentNaming } from './component.js'
 import { deepClone, exec } from './object.js'
-import { isArray, isFunction, isObject, isString } from './types.js'
+import { isArray, isObject, isString } from './types.js'
 const ENV = process.env.NODE_ENV
 
 export const createExtendsFromKeys = key => {
@@ -159,7 +159,7 @@ export const flattenExtend = (
 
   if (extend?.extends) {
     deepExtend(extend, stack, context, processed)
-  } else {
+  } else if (extend) {
     stack.push(extend)
   }
 

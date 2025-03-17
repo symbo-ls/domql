@@ -16,7 +16,8 @@ import {
   OPTIONS,
   initProps,
   createIfConditionFlag,
-  deepClone
+  deepClone,
+  createRoot
 } from '@domql/utils'
 
 import { applyAnimationFrame, triggerEventOn } from '@domql/event'
@@ -46,6 +47,8 @@ export const create = async (
   if (!element) return
 
   const { key, parent, __ref: ref } = element
+
+  createRoot(element, parent) // Call createRoot after addCaching
 
   if (element.key === 'BannerHgroup') {
     console.warn(deepClone(element))

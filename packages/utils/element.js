@@ -69,7 +69,7 @@ export const createRoot = (element, parent) => {
 
   const hasRoot = parent && parent.key === ':root'
   if (!ref?.root) {
-    return hasRoot ? element : parentRef?.root
+    ref.root = hasRoot ? element : parentRef?.root
   }
 }
 
@@ -117,7 +117,6 @@ export const addCaching = (element, parent, key) => {
 
   ref.__extends = createExtends(element, parent, key)
   ref.path = createPath(element, parent, key)
-  ref.root = createRoot(element, parent) // Call createRoot after addCaching
 
   return ref
 }
