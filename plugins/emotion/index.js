@@ -5,26 +5,36 @@ import { isObjectLike, isString, isNumber, isBoolean, exec } from '@domql/utils'
 import { applyClassListOnNode } from '@domql/classlist'
 import createEmotion from '@emotion/css/create-instance'
 
-export const transformEmotionStyle = (emotion) => {
+export const transformEmotionStyle = emotion => {
   return (params, element, state) => {
     const execParams = exec(params, element)
     if (params) {
-      if (isObjectLike(element.class)) element.class.elementStyle = execParams
-      else element.class = { elementStyle: execParams }
+      if (isObjectLike(element.classlist))
+        element.classlist.elementStyle = execParams
+      else element.classlist = { elementStyle: execParams }
     }
-    transformEmotionClass(emotion)(element.class, element, element.state, true)
+    transformEmotionClass(emotion)(
+      element.classlist,
+      element,
+      element.state,
+      true
+    )
   }
 }
 
-export const transformEmotionClass = (emotion) => {
+export const transformEmotionClass = emotion => {
   return (params, element, state, flag) => {
     if (element.style && !flag) return
     const { __ref } = element
     const { __class, __classNames } = __ref
 
     if (!isObjectLike(params)) return
-    if (element.props.class) { __classNames.classProps = element.props.class }
-    if (element.attr?.class) { __classNames.class = element.attr.class }
+    if (element.props.class) {
+      __classNames.classProps = element.props.class
+    }
+    if (element.attr?.class) {
+      __classNames.class = element.attr.class
+    }
 
     // for (const key in params) {
     //   const prop = exec(params[key], element)
@@ -58,7 +68,7 @@ export const transformDOMQLEmotion = (emotion, options) => {
   if (!emotion) emotion = createEmotion(options || { key: 'smbls' })
 
   return {
-    style: transformEmotionStyle(emotion),
-    class: transformEmotionClass(emotion)
+    styles: transformEmotionStyle(emotion),
+    classlist: transformEmotionClass(emotion)
   }
 }

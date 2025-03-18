@@ -171,8 +171,7 @@ export const deepMergeExtends = (element, extend) => {
   extend = deepClone(extend)
 
   for (const e in extend) {
-    if (['parent', 'node', '__ref'].indexOf(e) > -1) continue
-    if (e === '__proto__') continue
+    if (['parent', 'node', '__ref', '__proto__'].indexOf(e) > -1) continue
 
     const elementProp = element[e]
     const extendProp = extend[e]
@@ -187,21 +186,35 @@ export const deepMergeExtends = (element, extend) => {
     ) {
       if (elementProp === undefined) {
         // For undefined properties in element, copy from extend
-        element[e] = isObject(extendProp) ? deepClone(extendProp) : extendProp
+        element[e] = extendProp
       } else if (isObject(elementProp) && isObject(extendProp)) {
         // For objects, merge based on type
         if (matchesComponentNaming(e)) {
           // For components, override base properties with extended ones
-          element[e] = deepMergeExtends(elementProp, deepClone(extendProp))
+          element[e] = deepMergeExtends(elementProp, extendProp)
         } else {
           // For other objects, merge normally
           deepMergeExtends(elementProp, extendProp)
+        }
+      }
+
+      if (
+        e === 'extends' ||
+        e === 'childExtends' ||
+        e === 'childExtendsRecursive'
+      ) {
+        if (isArray(elementProp) && isArray(extendProp)) {
+          element[e] = elementProp.concat(extendProp)
+        } else if (isArray(elementProp) && isObject(extendProp)) {
+          const obj = deepMergeExtends({}, elementProp)
+          element[e] = deepMergeExtends(obj, extendProp)
         }
       }
       // If elementProp is defined and not an object, keep it (don't override)
       // This preserves properties from earlier in the extend chain
     }
   }
+
   return element
 }
 

@@ -16,7 +16,6 @@ import {
   OPTIONS,
   initProps,
   createIfConditionFlag,
-  deepClone,
   createRoot
 } from '@domql/utils'
 

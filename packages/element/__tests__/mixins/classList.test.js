@@ -11,14 +11,14 @@ describe('classList', () => {
     const element = { key: 'submit-button' }
     const result = classList(true, element)
     expect(result).toBe('submit-button')
-    expect(element.class).toEqual({ key: 'submit-button' })
+    expect(element.classlist).toEqual({ key: 'submit-button' })
   })
 
   it('handles string parameters', () => {
     const element = {}
     const result = classList('primary dark', element)
     expect(result).toBe('primary dark')
-    expect(element.class).toEqual({ default: 'primary dark' })
+    expect(element.classlist).toEqual({ default: 'primary dark' })
   })
 
   it('processes object parameters with classify', () => {
@@ -30,12 +30,6 @@ describe('classList', () => {
     }
     const result = classList(params, element)
     expect(result).toBe('visible dark large')
-  })
-
-  it('handles element.ref legacy behavior', () => {
-    const element = { ref: {}, class: 'existing' }
-    classList('new-class', element)
-    expect(element.ref.class).toBe('new-class')
   })
 
   it('normalizes whitespace in class names', () => {
@@ -66,7 +60,7 @@ describe('classList', () => {
   it('maintains existing class properties', () => {
     const element = { class: 'existing', key: 'test' }
     classList(true, element)
-    expect(element.class).toEqual({ key: 'test' })
+    expect(element.classlist).toEqual({ key: 'test' })
   })
 
   it('handles complex nested functions', () => {

@@ -70,11 +70,12 @@ describe('propertizeElement', () => {
     propertizeElement(element)
 
     expect(element).toEqual({
-      style: { color: 'red' },
       NestedComponent: {
         data: { nested: true }
       },
-      props: {}
+      props: {
+        style: { color: 'red' }
+      }
     })
   })
 })
@@ -334,12 +335,12 @@ describe('pickupPropsFromElement', () => {
 
     expect(result).toEqual({
       props: {
-        normalProp: 'value'
+        normalProp: 'value',
+        style: { color: 'red' }
       },
       on: {},
       CapitalComponent: {},
-      extends: 'something',
-      style: { color: 'red' }
+      extends: 'something'
     })
   })
 
@@ -382,13 +383,13 @@ describe('pickupElementFromProps', () => {
 
     expect(result).toEqual({
       props: {
-        normalProp: 'value'
+        normalProp: 'value',
+        style: { color: 'red' }
       },
       on: {
         click: expect.any(Function)
       },
-      CapitalComponent: {},
-      style: { color: 'red' }
+      CapitalComponent: {}
     })
   })
 

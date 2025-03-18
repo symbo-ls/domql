@@ -58,7 +58,7 @@ export async function setContent (param, element, opts) {
   const content = await execPromise(param, element)
 
   if (content && element) {
-    set.call(element, content, opts)
+    await set.call(element, content, opts)
   }
 }
 

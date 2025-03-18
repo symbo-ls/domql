@@ -2,12 +2,12 @@
 
 export const DOMQ_PROPERTIES = [
   'attr',
-  'style',
+  'styles',
   'text',
   'html',
   'content',
   'data',
-  'class',
+  'classlist',
   'state',
   'scope',
   'deps',
