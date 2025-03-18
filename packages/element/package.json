@@ -23,8 +23,8 @@
     "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
     "build:esm": "npx esbuild *.js **/*.js --target=es2019 --format=esm --outdir=dist/esm",
     "build:cjs": "npx esbuild *.js **/*.js --target=node16 --format=cjs --outdir=dist/cjs",
-    "build": "rimraf -I dist; npm run build:cjs; npm run build:esm",
-    "prepublish": "rimraf -I dist && npm run build && npm run copy:package:cjs"
+    "build": "npx rimraf -I dist; npm run build:cjs; npm run build:esm",
+    "prepublish": "npx rimraf -I dist && npm run build && npm run copy:package:cjs"
   },
   "dependencies": {
     "@domql/event": "^2.5.202",
@@ -32,7 +32,7 @@
     "@domql/state": "^2.5.202",
     "@domql/utils": "^2.5.202"
   },
-  "gitHead": "1ed593a20606d40162e0d0c8a1d9bfd1af0a3f0d",
+  "gitHead": "c8cb6d1eca72c650f8659cca47937fe0e613b43b",
   "devDependencies": {
     "@babel/core": "^7.12.0"
   }
