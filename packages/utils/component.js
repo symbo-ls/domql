@@ -157,7 +157,7 @@ export const applyComponentFromContext = (element, parent, options) => {
     const componentExists = components[execExtend] || components['smbls.' + execExtend]
     if (componentExists) element.extend = componentExists
     else {
-      if ((ENV === 'test' || ENV === 'development') && options.verbose) {
+      if ((ENV === 'testing' || ENV === 'development') && options.verbose) {
         console.warn(execExtend, 'is not in library', components, element)
         console.warn('replacing with ', {})
       }

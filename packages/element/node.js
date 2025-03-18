@@ -38,7 +38,7 @@ export const createNode = async (element, options) => {
   }
   // node.dataset // .key = element.key
 
-  if (ENV === 'test' || ENV === 'development' || options.alowRefReference) {
+  if (ENV === 'testing' || ENV === 'development' || options.alowRefReference) {
     node.ref = element
     if (isFunction(node.setAttribute)) node.setAttribute('key', element.key)
   }

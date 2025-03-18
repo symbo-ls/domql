@@ -128,13 +128,13 @@ export const create = async (element, parent, key, options = OPTIONS.create || {
 const createBasedOnType = (element, parent, key, options) => {
   // if ELEMENT is not given
   if (element === undefined) {
-    if (ENV === 'test' || ENV === 'development') {
+    if (ENV === 'testing' || ENV === 'development') {
       console.warn(key, 'element is undefined in', parent && parent.__ref && parent.__ref.path)
     }
     return {}
   }
   if (isString(key) && key.slice(0, 2 === '__')) {
-    if (ENV === 'test' || ENV === 'development') {
+    if (ENV === 'testing' || ENV === 'development') {
       console.warn(key, 'seems like to be in __ref')
     }
   }
@@ -215,7 +215,7 @@ const addElementIntoParentChildren = (element, parent) => {
 const visitedElements = new WeakMap()
 const renderElement = async (element, parent, options, attachOptions) => {
   if (visitedElements.has(element)) {
-    if (ENV === 'test' || ENV === 'development') console.warn('Cyclic rendering detected:', element.__ref.path)
+    if (ENV === 'testing' || ENV === 'development') console.warn('Cyclic rendering detected:', element.__ref.path)
   }
 
   visitedElements.set(element, true)
@@ -230,7 +230,7 @@ const renderElement = async (element, parent, options, attachOptions) => {
   }
 
   // CREATE a real NODE
-  if (ENV === 'test' || ENV === 'development') {
+  if (ENV === 'testing' || ENV === 'development') {
     await createNestedChild()
   } else {
     try {
@@ -344,7 +344,7 @@ const addCaching = (element, parent) => {
   if (!ref.root) ref.root = hasRoot ? element : parentRef.root
 
   // set the PATH array
-  // if (ENV === 'test' || ENV === 'development') {
+  // if (ENV === 'testing' || ENV === 'development') {
   if (!parentRef) parentRef = parent.ref = {}
   if (!parentRef.path) parentRef.path = []
   ref.path = parentRef.path.concat(element.key)

@@ -815,7 +815,7 @@ export const detectInfiniteLoop = arr => {
 
       // If the pattern repeats more than `maxRepeats`, throw a warning
       if (repeatCount >= maxRepeats * 2) {
-        if (ENV === 'test' || ENV === 'development') {
+        if (ENV === 'testing' || ENV === 'development') {
           console.warn('Warning: Potential infinite loop detected due to repeated sequence:', pattern)
         }
         return true

@@ -205,19 +205,19 @@ export function verbose (...args) {
 }
 
 export function log (...params) {
-  if (ENV === 'test' || ENV === 'development') {
+  if (ENV === 'testing' || ENV === 'development') {
     console.log(...params)
   }
 }
 
 export function warn (...params) {
-  if (ENV === 'test' || ENV === 'development') {
+  if (ENV === 'testing' || ENV === 'development') {
     console.warn(...params)
   }
 }
 
 export function error (...params) {
-  if (ENV === 'test' || ENV === 'development') {
+  if (ENV === 'testing' || ENV === 'development') {
     if (params[params.length - 1]?.debugger) debugger // eslint-disable-line
     if (params[params.length - 1]?.verbose) verbose.call(this)
     throw new Error(...params)
