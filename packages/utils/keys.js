@@ -2,7 +2,7 @@
 
 export const DOMQ_PROPERTIES = [
   'attr',
-  'styles',
+  'style',
   'text',
   'html',
   'content',

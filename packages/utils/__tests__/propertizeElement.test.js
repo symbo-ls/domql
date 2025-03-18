@@ -73,9 +73,8 @@ describe('propertizeElement', () => {
       NestedComponent: {
         data: { nested: true }
       },
-      props: {
-        style: { color: 'red' }
-      }
+      style: { color: 'red' },
+      props: {}
     })
   })
 })
@@ -335,9 +334,9 @@ describe('pickupPropsFromElement', () => {
 
     expect(result).toEqual({
       props: {
-        normalProp: 'value',
-        style: { color: 'red' }
+        normalProp: 'value'
       },
+      style: { color: 'red' },
       on: {},
       CapitalComponent: {},
       extends: 'something'
@@ -383,9 +382,9 @@ describe('pickupElementFromProps', () => {
 
     expect(result).toEqual({
       props: {
-        normalProp: 'value',
-        style: { color: 'red' }
+        normalProp: 'value'
       },
+      style: { color: 'red' },
       on: {
         click: expect.any(Function)
       },

@@ -9,9 +9,8 @@ export const transformEmotionStyle = emotion => {
   return (params, element, state) => {
     const execParams = exec(params, element)
     if (params) {
-      if (isObjectLike(element.classlist))
-        element.classlist.elementStyle = execParams
-      else element.classlist = { elementStyle: execParams }
+      const { __ref: ref } = element
+      ref.__class.style = execParams
     }
     transformEmotionClass(emotion)(
       element.classlist,
@@ -68,7 +67,7 @@ export const transformDOMQLEmotion = (emotion, options) => {
   if (!emotion) emotion = createEmotion(options || { key: 'smbls' })
 
   return {
-    styles: transformEmotionStyle(emotion),
+    style: transformEmotionStyle(emotion),
     classlist: transformEmotionClass(emotion)
   }
 }
