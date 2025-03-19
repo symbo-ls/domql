@@ -133,7 +133,7 @@ export const update = async function (params = {}, opts) {
 
     if (preventStateUpdate === 'once') options.preventStateUpdate = false
 
-    const isElement = applyParam(param, element, options)
+    const isElement = await applyParam(param, element, options)
     if (isElement) {
       const { hasDefine, hasContextDefine } = isElement
       const canUpdate = isObject(prop) && !hasDefine && !hasContextDefine && !preventRecursive
@@ -145,19 +145,19 @@ export const update = async function (params = {}, opts) {
         options.onEachUpdate(param, element, element.state, element.context)
       }
 
-      const childUpdateCall = () => update.call(prop, params[prop], {
+      const childUpdateCall = async () => await update.call(prop, params[prop], {
         ...options,
         currentSnapshot: snapshotOnCallee,
         calleeElement
       })
 
       lazyLoad ? window.requestAnimationFrame(() => { // eslint-disable-line
-        childUpdateCall()
+        await childUpdateCall()
         // handle lazy load
         if (!options.preventUpdateListener) {
           triggerEventOn('lazyLoad', element, options)
         }
-      }) : childUpdateCall()
+      }) : await childUpdateCall()
     }
   }
 

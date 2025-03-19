@@ -3,7 +3,7 @@
 import { isFunction } from '@domql/utils'
 import { REGISTRY } from '../mixins/index.js'
 
-export const applyParam = (param, element, options) => {
+export const applyParam = async (param, element, options) => {
   const { node, context, __ref: ref } = element
   const prop = element[param]
 
@@ -22,7 +22,7 @@ export const applyParam = (param, element, options) => {
 
   if (isGlobalTransformer && !hasContextDefine && hasOnlyUpdate) {
     if (isFunction(isGlobalTransformer)) {
-      isGlobalTransformer(prop, element, node, options)
+      await isGlobalTransformer(prop, element, node, options)
       return
     }
   }

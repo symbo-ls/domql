@@ -41,13 +41,13 @@ export const removeContent = function (el, opts = {}) {
  * Appends anything as content
  * an original one as a child
  */
-export function setContent (param, element, node, opts) {
+export async function setContent (param, element, node, opts) {
   const contentElementKey = setContentKey(element, opts)
   if (param && element) {
     if (element[contentElementKey].update) {
       element[contentElementKey].update({}, opts)
     } else {
-      set.call(element, param, opts)
+      await set.call(element, param, opts)
     }
   }
 }

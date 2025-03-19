@@ -19,9 +19,9 @@ export const resetElement = async (params, element, options) => {
   })
 }
 
-export const reset = (options) => {
+export const reset = async (options) => {
   const element = this
-  create(element, element.parent, undefined, {
+  await create(element, element.parent, undefined, {
     ignoreChildExtend: true,
     ...registry.defaultOptions,
     ...OPTIONS.create,
@@ -45,7 +45,7 @@ export const set = async function (params, options = {}, el) {
       const beforeUpdateReturns = await triggerEventOnUpdate('beforeUpdate', params, element, options)
       if (beforeUpdateReturns === false) return element
     }
-    if (content?.update) content.update()
+    if (content?.update) await content.update()
     if (!options.preventUpdateListener) await triggerEventOn('update', element, options)
     return
   }
