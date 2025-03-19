@@ -67,7 +67,7 @@ export const set = async function (params, options = {}, el) {
         await resetElement(params, element, options)
         // handle lazy load
         if (!options.preventUpdateListener) {
-          triggerEventOn('lazyLoad', element, options)
+          await triggerEventOn('lazyLoad', element, options)
         }
       })
     } else await resetElement(params, element, options)

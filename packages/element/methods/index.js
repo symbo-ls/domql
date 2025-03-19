@@ -101,7 +101,7 @@ export function setNodeStyles (params = {}) {
   return el
 }
 
-export function remove (opts) {
+export async function remove (opts) {
   const element = this
   const beforeRemoveReturns = triggerEventOn('beforeRemove', element, opts)
   if (beforeRemoveReturns === false) return element
@@ -112,7 +112,7 @@ export function remove (opts) {
   }
   delete element.parent[element.key]
   if (element.parent.__ref) element.parent.__ref.__children = removeValueFromArray(element.parent.__ref.__children, element.key)
-  triggerEventOn('remove', element, opts)
+  await triggerEventOn('remove', element, opts)
 }
 
 export function get (param) {

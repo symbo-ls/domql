@@ -90,7 +90,7 @@ export const update = async function (params = {}, opts) {
   throughUpdatedDefine(element)
 
   if (!options.isForced && !options.preventListeners) {
-    triggerEventOn('beforeClassAssign', element, options)
+    await triggerEventOn('beforeClassAssign', element, options)
   }
 
   if (!ref.__if) return false
@@ -155,7 +155,7 @@ export const update = async function (params = {}, opts) {
         await childUpdateCall()
         // handle lazy load
         if (!options.preventUpdateListener) {
-          triggerEventOn('lazyLoad', element, options)
+          await triggerEventOn('lazyLoad', element, options)
         }
       }) : await childUpdateCall()
     }

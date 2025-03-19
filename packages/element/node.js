@@ -85,7 +85,7 @@ export const createNode = async (element, options) => {
             await createAsync()
             // handle lazy load
             if (!options.preventUpdateListener) {
-              triggerEventOn('lazyLoad', element, options)
+              await triggerEventOn('lazyLoad', element, options)
             }
           })
         } else await createAsync()

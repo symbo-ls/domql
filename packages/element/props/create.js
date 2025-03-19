@@ -24,7 +24,7 @@ const createPropsStack = (element, parent) => {
   return propsStack
 }
 
-export const syncProps = (props, element, opts) => {
+export const syncProps = async (props, element, opts) => {
   element.props = {}
   const mergedProps = {}
 
@@ -45,7 +45,7 @@ export const syncProps = (props, element, opts) => {
   })
   element.props = mergedProps
 
-  const methods = { update: update.bind(element.props), __element: element }
+  const methods = { update: await update.bind(element.props), __element: element }
   Object.setPrototypeOf(element.props, methods)
 
   return element.props
@@ -81,7 +81,7 @@ export const createProps = function (element, parent, options) {
   return element
 }
 
-function update (props, options) {
+async function update (props, options) {
   const element = this.__element
-  element.update({ props }, options)
+  await element.update({ props }, options)
 }

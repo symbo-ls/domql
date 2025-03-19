@@ -109,7 +109,7 @@ export const create = async (element, parent, key, options = OPTIONS.create || {
   const onInit = await triggerEventOn('init', element, options)
   if (onInit === false) return element
 
-  triggerEventOn('beforeClassAssign', element, options)
+  await triggerEventOn('beforeClassAssign', element, options)
 
   // generate a CLASS name
   assignKeyAsClassname(element)
