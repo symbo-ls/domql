@@ -151,7 +151,7 @@ export const update = async function (params = {}, opts) {
         calleeElement
       })
 
-      lazyLoad ? window.requestAnimationFrame(() => { // eslint-disable-line
+      lazyLoad ? window.requestAnimationFrame(async () => { // eslint-disable-line
         await childUpdateCall()
         // handle lazy load
         if (!options.preventUpdateListener) {
@@ -161,7 +161,7 @@ export const update = async function (params = {}, opts) {
     }
   }
 
-  if (!preventUpdateListener) triggerEventOn('update', element, options)
+  if (!preventUpdateListener) await triggerEventOn('update', element, options)
 }
 
 const captureSnapshot = (element, options) => {
