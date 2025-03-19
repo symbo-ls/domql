@@ -2,7 +2,7 @@
 
 // import DOM from '../../src'
 import { isObjectLike, isString, isNumber, isBoolean, exec } from '@domql/utils'
-import { applyClassListOnNode } from '@domql/classlist'
+import { applyClassListOnNode } from './classList'
 import createEmotion from '@emotion/css/create-instance'
 
 export const transformEmotionStyle = emotion => {
