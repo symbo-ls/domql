@@ -41,7 +41,7 @@ export const applyInitialState = async function (element, parent, options) {
   if (objectizeState === false) return parent.state || {}
   else element.state = objectizeState
 
-  const whatInitReturns = triggerEventOn('stateInit', element, options)
+  const whatInitReturns = await triggerEventOn('stateInit', element, options)
   if (whatInitReturns === false) return element.state
 
   if (checkIfInherits(element)) {
@@ -55,7 +55,7 @@ export const applyInitialState = async function (element, parent, options) {
   applyMethods(element)
 
   // trigger `on.stateCreated`
-  triggerEventOn('stateCreated', element)
+  await triggerEventOn('stateCreated', element)
 
   return element.state
 }

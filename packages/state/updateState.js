@@ -33,12 +33,12 @@ export const updateState = async function (obj, options = STATE_UPDATE_OPTIONS) 
   }
 
   applyOverwrite(state, obj, options)
-  const updateIsHoisted = hoistStateUpdate(state, obj, options)
+  const updateIsHoisted = await hoistStateUpdate(state, obj, options)
   if (updateIsHoisted) return state
 
-  updateDependentState(state, obj, options)
+  await updateDependentState(state, obj, options)
 
-  applyElementUpdate(state, obj, options)
+  await applyElementUpdate(state, obj, options)
 
   if (!options.preventStateUpdateListener) {
     await triggerEventOnUpdate('stateUpdate', obj, element, options)
@@ -64,7 +64,7 @@ const applyOverwrite = (state, obj, options) => {
   overwriteFunc(state, obj, IGNORE_STATE_PARAMS)
 }
 
-const hoistStateUpdate = (state, obj, options) => {
+const hoistStateUpdate = async (state, obj, options) => {
   const element = state.__element
   const { parent, __ref: ref } = element
 
@@ -86,7 +86,7 @@ const hoistStateUpdate = (state, obj, options) => {
   const changesValue = createNestedObjectByKeyPath(stateKey, passedValue)
   const targetParent = findRootState || findGrandParentState || parent.state
   if (options.replace) overwriteDeep(targetParent, changesValue || value) // check with createNestedObjectByKeyPath
-  targetParent.update(changesValue, {
+  await targetParent.update(changesValue, {
     execStateFunction: false,
     isHoisted: true,
     preventUpdate: options.preventHoistElementUpdate,
@@ -95,28 +95,28 @@ const hoistStateUpdate = (state, obj, options) => {
   })
   const hasNotUpdated = options.preventUpdate !== true || !options.preventHoistElementUpdate
   if (!options.preventStateUpdateListener && hasNotUpdated) {
-    triggerEventOnUpdate('stateUpdate', obj, element, options)
+    await triggerEventOnUpdate('stateUpdate', obj, element, options)
   }
   return true
 }
 
-const updateDependentState = (state, obj, options) => {
+const updateDependentState = async (state, obj, options) => {
   if (!state.__depends) return
   for (const el in state.__depends) {
     const dependentState = state.__depends[el]
-    dependentState.clean().update(state.parse(), options)
+    await dependentState.clean().update(state.parse(), options)
   }
 }
 
-const applyElementUpdate = (state, obj, options) => {
+const applyElementUpdate = async (state, obj, options) => {
   const element = state.__element
   if (options.preventUpdate !== true) {
-    element.update({}, {
+    await element.update({}, {
       ...options,
       updateByState: true
     })
   } else if (options.preventUpdate === 'recursive') {
-    element.update({}, {
+    await element.update({}, {
       ...options,
       isHoisted: false,
       updateByState: true,

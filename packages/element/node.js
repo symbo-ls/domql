@@ -34,10 +34,11 @@ export const createNode = async (element, options) => {
     } else node = element.node = cacheNode(element)
 
     // trigger `on.attachNode`
-    triggerEventOn('attachNode', element, options)
+    await triggerEventOn('attachNode', element, options)
   }
   // node.dataset // .key = element.key
 
+  console.log('Env in DOMQL', ENV)
   if (ENV === 'testing' || ENV === 'development' || options.alowRefReference) {
     node.ref = element
     if (isFunction(node.setAttribute)) node.setAttribute('key', element.key)
@@ -72,7 +73,7 @@ export const createNode = async (element, options) => {
       isObject(REGISTRY[param])
     ) continue
 
-    const isElement = applyParam(param, element, options)
+    const isElement = await applyParam(param, element, options)
     if (isElement) {
       const { hasDefine, hasContextDefine } = isElement
       if (element[param] && !hasDefine && !hasContextDefine) {
