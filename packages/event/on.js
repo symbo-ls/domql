@@ -1,6 +1,7 @@
 'use strict'
 
-import { DOMQL_EVENTS, isFunction } from '@domql/utils'
+import { DOMQL_EVENTS } from './keys.js'
+import { isFunction } from './types.js'
 
 const getOnOrPropsEvent = (param, element) => {
   const onEvent = element.on?.[param]

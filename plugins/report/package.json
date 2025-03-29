@@ -1,6 +1,6 @@
 {
   "name": "@domql/report",
-  "version": "3.0.0",
+  "version": "3.0.111",
   "license": "MIT",
   "type": "module",
   "module": "index.js",
@@ -22,8 +22,8 @@
     "build:esm": "npx esbuild *.js --target=es2017 --format=esm --outdir=dist/esm",
     "build:cjs": "npx esbuild *.js --target=node16 --format=cjs --outdir=dist/cjs",
     "build:iife": "npx esbuild *.js --target=node16 --format=iife --outdir=dist/iife",
-    "build": "rimraf -I dist; npm run build:cjs; npm run build:esm",
-    "prepublish": "rimraf -I dist && npm run build && npm run copy:package:cjs"
+    "build": "npx rimraf -I dist; npm run build:cjs; npm run build:esm",
+    "prepublish": "npx rimraf -I dist && npm run build && npm run copy:package:cjs"
   },
-  "gitHead": "c867d7db9e2450d67e97a15ffc7b61692713c234"
+  "gitHead": "1e749ee3ef95b5a4a618c4eda1961f7c3011beff"
 }

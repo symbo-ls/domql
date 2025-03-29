@@ -5,8 +5,8 @@ export const NODE_ENV = process.env.NODE_ENV
 export const isProduction = (env = NODE_ENV) =>
   env === 'production' ||
   env === 'prod' ||
-  (env !== 'development' && env !== 'dev' && env !== 'test')
-export const isTest = (env = NODE_ENV) => env === 'test'
+  (env !== 'development' && env !== 'dev' && env !== 'testing')
+export const isTest = (env = NODE_ENV) => env === 'testing'
 export const isDevelopment = (env = NODE_ENV) =>
   env === 'development' || env === 'dev'
 

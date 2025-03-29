@@ -1,6 +1,6 @@
 {
   "name": "@domql/utils",
-  "version": "3.0.7",
+  "version": "3.0.111",
   "license": "MIT",
   "type": "module",
   "module": "index.js",
@@ -21,10 +21,10 @@
     "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
     "build:esm": "npx esbuild *.js --target=es2017 --format=esm --outdir=dist/esm",
     "build:cjs": "npx esbuild *.js --target=node16 --format=cjs --outdir=dist/cjs",
-    "build": "rimraf -I dist; npm run build:cjs; npm run build:esm",
+    "build": "npx rimraf -I dist; npm run build:cjs; npm run build:esm",
     "prepublish": "npm run build; npm run copy:package:cjs"
   },
-  "gitHead": "e5952db705e332f062e2e78113d620bd48ba16d9",
+  "gitHead": "1e749ee3ef95b5a4a618c4eda1961f7c3011beff",
   "devDependencies": {
     "@babel/core": "^7.12.0"
   }

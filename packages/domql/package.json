@@ -1,6 +1,6 @@
 {
   "name": "domql",
-  "version": "3.0.7",
+  "version": "3.0.111",
   "license": "MIT",
   "type": "module",
   "module": "index.js",
@@ -21,15 +21,15 @@
     "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
     "build:esm": "npx esbuild *.js --target=es2017 --format=esm --outdir=dist/esm",
     "build:cjs": "npx esbuild *.js --target=node16 --format=cjs --outdir=dist/cjs",
-    "build": "rimraf -I dist; npm run build:cjs; npm run build:esm",
-    "prepublish": "rimraf -I dist && npm run build && npm run copy:package:cjs"
+    "build": "npx rimraf -I dist; npm run build:cjs; npm run build:esm",
+    "prepublish": "npx rimraf -I dist && npm run build && npm run copy:package:cjs"
   },
   "dependencies": {
-    "@domql/element": "^3.0.7",
-    "@domql/event": "^3.0.7",
-    "@domql/render": "^3.0.7",
-    "@domql/state": "^3.0.7",
-    "@domql/utils": "^3.0.7"
+    "@domql/element": "^3.0.111",
+    "@domql/event": "^3.0.111",
+    "@domql/render": "^3.0.111",
+    "@domql/state": "^3.0.111",
+    "@domql/utils": "^3.0.111"
   },
-  "gitHead": "103086176c2a6fd9efded8e3d84883066cae7f85"
+  "gitHead": "1e749ee3ef95b5a4a618c4eda1961f7c3011beff"
 }
