@@ -84,7 +84,7 @@ export const update = async function (params = {}, opts) {
     params = { text: params }
   }
 
-  params = propertizeElement(params)
+  params = propertizeElement.call(element, params)
 
   const inheritState = await inheritStateUpdates(element, options)
   if (inheritState === false) return
