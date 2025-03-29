@@ -5,5 +5,6 @@
     "plugins/*"
   ],
   "npmClient": "npm",
-  "version": "2.5.208"
+  "version": "2.5.208",
+  "$schema": "node_modules/lerna/schemas/lerna-schema.json"
 }
