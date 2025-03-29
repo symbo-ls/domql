@@ -220,7 +220,7 @@ export function error (...params) {
   if (ENV === 'testing' || ENV === 'development') {
     if (params[params.length - 1]?.debugger) debugger // eslint-disable-line
     if (params[params.length - 1]?.verbose) verbose.call(this)
-    throw new Error(...params)
+    console.error(...params, this)
   }
 }
 
