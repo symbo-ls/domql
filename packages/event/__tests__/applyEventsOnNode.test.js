@@ -59,7 +59,7 @@ describe('applyEventsOnNode', () => {
       mockElement.on = {
         click: mockEventHandler,
         mouseover: mockEventHandler,
-        submit: mockEventHandler
+        onSubmit: mockEventHandler
       }
 
       // Act

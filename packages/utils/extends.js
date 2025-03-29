@@ -70,7 +70,7 @@ export const addExtends = (newExtends, element) => {
 
 export const concatAddExtends = (newExtend, element) => {
   if (!newExtend) return element
-  const { extend: elementExtend } = element
+  const { extends: elementExtend } = element
   const originalArray = isArray(elementExtend) ? elementExtend : [elementExtend]
   const receivedArray = isArray(newExtend) ? newExtend : [newExtend]
   return {

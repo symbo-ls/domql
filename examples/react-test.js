@@ -18,7 +18,7 @@ import { create } from '@domql/element'
 
 //   if (!DOMQLElement) {
 //     const el = create({
-//       extend: component,
+//       extends: component,
 //       node: current.DOMQLElement,
 //       state: state,
 //       props: props,
@@ -74,7 +74,7 @@ const renderReact = (element, key) => {
 // }
 
 // const createCompoonent = (extnds, props, state) => {
-//   return create({extend: extnds, props, state}, {
+//   return create({extends: extnds, props, state}, {
 //     transform: {
 //       react: transformReact
 //     },

@@ -11,20 +11,16 @@ const Button = {
 const increment = {
   extends: Button,
   text: 'Increment',
-  on: {
-    click: e => {
-      val.text++
-    }
+  onClick: e => {
+    val.text++
   }
 }
 
 const decrement = {
   extends: Button,
   text: 'Decrement',
-  on: {
-    click: e => {
-      val.text--
-    }
+  onClick: e => {
+    val.text--
   }
 }
 
