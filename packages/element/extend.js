@@ -29,7 +29,7 @@ export const applyExtend = (element, parent, options = {}) => {
 
   const extendStack = getExtendStack(extend, context)
 
-  if (ENV !== 'test' || ENV !== 'development') delete element.extend
+  if (ENV !== 'testing' || ENV !== 'development') delete element.extend
 
   let childExtendStack = []
   if (parent) {

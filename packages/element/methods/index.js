@@ -186,22 +186,22 @@ export function parseDeep (excl = []) {
   return obj
 }
 
-export function verbose (...args) {
-  if (ENV !== 'test' && ENV !== 'development') return
+export function verbose (element, ...args) {
+  if (ENV !== 'testing' && ENV !== 'development') return
 
-  const element = this
-  const { __ref: ref } = element
-  console.groupCollapsed(element.key)
+  const parent = this
+  const { __ref: ref } = parent
+  console.groupCollapsed(parent.key)
   if (args.length) {
-    args.forEach(v => console.log(`%c${v}:\n`, 'font-weight: bold', element[v]))
+    args.forEach(v => console.log(`%c${v}:\n`, 'font-weight: bold', parent[v]))
   } else {
     console.log(ref.path)
-    const keys = element.keys()
-    keys.forEach(v => console.log(`%c${v}:`, 'font-weight: bold', element[v]))
+    const keys = parent.keys()
+    keys.forEach(v => console.log(`%c${v}:`, 'font-weight: bold', parent[v]))
   }
-  console.log(element)
-  console.groupEnd(element.key)
-  return element
+  console.log(parent)
+  console.groupEnd(parent.key)
+  return parent
 }
 
 export function log (...params) {
@@ -219,7 +219,7 @@ export function warn (...params) {
 export function error (...params) {
   if (ENV === 'testing' || ENV === 'development') {
     if (params[params.length - 1]?.debugger) debugger // eslint-disable-line
-    if (params[params.length - 1]?.verbose) verbose.call(this)
+    if (params[params.length - 1]?.verbose) verbose.call(this, ...params)
     console.error(...params, this)
   }
 }

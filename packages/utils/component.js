@@ -46,7 +46,7 @@ export const checkIfSugar = (element, parent, key) => {
   const hasComponentAttrs = extend || childExtend || props || on || $collection || $stateCollection || $propsCollection
   if (hasComponentAttrs && (childProps || extendProps || children || childExtends)) {
     const logErr = (parent || element)?.error
-    if (logErr) logErr.call(element, 'Sugar component includes params for builtin components', { verbose: true })
+    if (logErr) logErr.call(parent, element, 'Sugar component includes params for builtin components', { verbose: true })
   }
   return !hasComponentAttrs || childProps || extendProps || children || childExtends
 }
