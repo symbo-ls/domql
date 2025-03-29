@@ -1,6 +1,6 @@
 {
   "name": "@domql/report",
-  "version": "2.5.203",
+  "version": "2.25.0",
   "license": "MIT",
   "type": "module",
   "module": "index.js",
