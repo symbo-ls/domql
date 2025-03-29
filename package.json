@@ -1,4 +1,5 @@
 {
+  "name": "domql-root",
   "private": true,
   "version": "0.0.1",
   "repository": "https://github.com/domql/domql",
