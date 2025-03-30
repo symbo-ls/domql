@@ -24,14 +24,14 @@ export function pickupPropsFromElement (element, opts = {}) {
   for (const key in element) {
     const value = element[key]
 
-    const hasDefine = isObject(this.define?.[key])
-    const hasGlobalDefine = isObject(this.context?.define?.[key])
+    const hasDefine = isObject(element.define?.[key])
+    const hasGlobalDefine = isObject(element.context?.define?.[key])
     const isElement = /^[A-Z]/.test(key) || /^\d+$/.test(key)
     const isBuiltin = DOMQ_PROPERTIES.includes(key)
 
     // If it's not a special case, move to props
     if (!isElement && !isBuiltin && !hasDefine && !hasGlobalDefine) {
-      this.props[key] = value
+      element.props[key] = value
       delete element[key]
       cachedKeys.push(key)
     }
@@ -44,15 +44,15 @@ export function pickupElementFromProps (element, opts) {
   const cachedKeys = opts.cachedKeys || []
 
   for (const key in element) {
-    const value = this.props[key]
+    const value = element[key]
 
     // Handle event handlers
     const isEvent = key.startsWith('on') && key.length > 2
     const isFn = isFunction(value)
 
     if (isEvent && isFn) {
-      addEventFromProps(key, this)
-      if (this.props) delete this.props[key]
+      addEventFromProps(key, element)
+      delete element.props[key]
       continue
     }
 
@@ -66,7 +66,8 @@ export function pickupElementFromProps (element, opts) {
 
     // Move qualifying properties back to element root
     if (isElement || isBuiltin || hasDefine || hasGlobalDefine) {
-      this[key] = value
+      element[key] = value
+
       if (element.props) delete element.props[key]
     }
   }
@@ -77,9 +78,15 @@ export function pickupElementFromProps (element, opts) {
 // Helper function to maintain compatibility with original propertizeElement
 export function propertizeElement (element) {
   const cachedKeys = []
-  pickupPropsFromElement.call(this, element, { cachedKeys })
-  pickupElementFromProps.call(this, element, { cachedKeys })
-  return this
+  pickupPropsFromElement(element, { cachedKeys })
+  pickupElementFromProps(element, { cachedKeys })
+  return element
+}
+
+export function propertizeUpdate (props = {}) {
+  const obj = { on: {}, props: {}, ...props }
+  propertizeElement.call(obj)
+  return obj
 }
 
 export const objectizeStringProperty = propValue => {

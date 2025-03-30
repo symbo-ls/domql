@@ -18,7 +18,8 @@ import {
   deepMerge,
   OPTIONS,
   updateProps,
-  captureSnapshot
+  captureSnapshot,
+  propertizeUpdate
 } from '@domql/utils'
 
 import { applyEvent, triggerEventOn, triggerEventOnUpdate } from '@domql/event'
@@ -84,7 +85,7 @@ export const update = async function (params = {}, opts) {
     params = { text: params }
   }
 
-  params = propertizeElement.call(element, params)
+  params = propertizeUpdate(params, element)
 
   const inheritState = await inheritStateUpdates(element, options)
   if (inheritState === false) return

@@ -9,17 +9,18 @@ import {
   matchesComponentNaming,
   isContextComponent,
   isMethod,
-  overwrite
+  overwrite,
+  execPromise
 } from '@domql/utils'
 
-export const throughInitialExec = (element, exclude = {}) => {
+export const throughInitialExec = async (element, exclude = {}) => {
   const { __ref: ref } = element
   for (const param in element) {
     if (exclude[param]) continue
     const prop = element[param]
     if (isFunction(prop) && !isMethod(param, element)) {
       ref.__exec[param] = prop
-      element[param] = prop(element, element.state, element.context)
+      element[param] = await prop(element, element.state, element.context)
     }
   }
 }
@@ -57,7 +58,7 @@ export const throughUpdatedExec = (element, options = {}) => {
   return changes
 }
 
-export const throughExecProps = element => {
+export const throughExecProps = async element => {
   const { __ref: ref } = element
   const { props } = element
   for (const k in props) {
@@ -65,17 +66,17 @@ export const throughExecProps = element => {
       k.startsWith('is') || k.startsWith('has') || k.startsWith('use')
     const cachedExecProp = ref.__execProps[k]
     if (isFunction(cachedExecProp)) {
-      props[k] = exec(cachedExecProp, element)
+      props[k] = await execPromise(cachedExecProp, element)
     } else if (isDefine && isFunction(props[k])) {
       ref.__execProps[k] = props[k]
-      props[k] = exec(props[k], element)
+      props[k] = await execPromise(props[k], element)
     }
   }
 }
 
 export const isPropertyInDefines = (key, element) => {}
 
-export const throughInitialDefine = element => {
+export const throughInitialDefine = async element => {
   const { define, context, __ref: ref } = element
 
   let defineObj = {}
@@ -88,7 +89,7 @@ export const throughInitialDefine = element => {
 
     if (isFunction(elementProp) && !isMethod(param, element)) {
       ref.__exec[param] = elementProp
-      const execParam = (elementProp = exec(elementProp, element))
+      const execParam = (elementProp = await execPromise(elementProp, element))
 
       if (execParam) {
         elementProp = element[param] = execParam.parse
@@ -98,7 +99,7 @@ export const throughInitialDefine = element => {
       }
     }
 
-    const execParam = defineObj[param](
+    const execParam = await defineObj[param](
       elementProp,
       element,
       element.state,
@@ -109,7 +110,7 @@ export const throughInitialDefine = element => {
   return element
 }
 
-export const throughUpdatedDefine = element => {
+export const throughUpdatedDefine = async element => {
   const { context, define, __ref: ref } = element
   const changes = {}
 
@@ -120,13 +121,13 @@ export const throughUpdatedDefine = element => {
   for (const param in obj) {
     const execParam = ref.__exec[param]
     if (execParam) {
-      ref.__defineCache[param] = execParam(
+      ref.__defineCache[param] = await execParam(
         element,
         element.state,
         element.context
       )
     }
-    const cached = exec(ref.__defineCache[param], element)
+    const cached = await execPromise(ref.__defineCache[param], element)
     const newExecParam =
       typeof obj[param] === 'function'
         ? obj[param](cached, element, element.state, element.context)

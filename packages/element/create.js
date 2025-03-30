@@ -51,7 +51,7 @@ export const create = async (
 
   applyExtends(element, parent, options)
 
-  propertizeElement.call(element, element)
+  propertizeElement(element)
 
   await triggerEventOn('start', element, options)
 

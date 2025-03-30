@@ -134,6 +134,7 @@ export const createElement = (passedProps, parentEl, passedKey, opts, root) => {
   addCaching(element, parent, key)
 
   const props = createProps(element, parent, key)
+  console.log(props)
   const context = addContext(element, parent, key, opts, root)
   const on = element.on || {}
 
