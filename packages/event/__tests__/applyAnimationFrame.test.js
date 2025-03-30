@@ -74,19 +74,6 @@ describe('applyAnimationFrame', () => {
       expect(mockFrameListeners.has(mockElement)).toBe(true)
     })
 
-    test('should add element to frameListeners when props.onFrame exists', () => {
-      // Arrange
-      mockElement.props.onFrame = () => {}
-      expect(mockFrameListeners.size).toBe(0)
-
-      // Act
-      applyAnimationFrame(mockElement)
-
-      // Assert
-      expect(mockFrameListeners.size).toBe(1)
-      expect(mockFrameListeners.has(mockElement)).toBe(true)
-    })
-
     test('should not modify frameListeners when neither on.frame nor props.onFrame exist', () => {
       // Arrange
       expect(mockFrameListeners.size).toBe(0)
@@ -111,10 +98,9 @@ describe('applyAnimationFrame', () => {
       expect(mockElement.__ref.root.data.frameListeners).toBeUndefined()
     })
 
-    test('should add element to frameListeners only once when both on.frame and props.onFrame exist', () => {
+    test('should add element to frameListeners only once when both on.frame exist', () => {
       // Arrange
       mockElement.on.frame = () => {}
-      mockElement.props.onFrame = () => {}
       expect(mockFrameListeners.size).toBe(0)
 
       // Act

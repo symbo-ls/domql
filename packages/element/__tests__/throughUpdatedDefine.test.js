@@ -16,54 +16,54 @@ describe('throughUpdatedDefine', () => {
     }
   })
 
-  it('should merge local and global define objects', () => {
+  it('should merge local and global define objects', async () => {
     element.define = { localProp: () => 'local' }
     element.context.define = { globalProp: () => 'global' }
 
-    throughUpdatedDefine(element)
+    await throughUpdatedDefine(element)
 
     expect(element.localProp).toBe('local')
     expect(element.globalProp).toBe('global')
   })
 
-  it('should update element properties using cached exec functions', () => {
+  it('should update element properties using cached exec functions', async () => {
     ref.__exec.testProp = () => 'cached value'
     element.define.testProp = cached => `updated ${cached}`
 
-    throughUpdatedDefine(element)
+    await throughUpdatedDefine(element)
 
     expect(element.testProp).toBe('updated cached value')
     expect(ref.__defineCache.testProp).toBe('cached value')
   })
 
-  it('should handle non-function cached values', () => {
+  it('should handle non-function cached values', async () => {
     ref.__defineCache.testProp = 'static value'
     element.define.testProp = cached => `updated ${cached}`
 
-    throughUpdatedDefine(element)
+    await throughUpdatedDefine(element)
 
     expect(element.testProp).toBe('updated static value')
   })
 
-  it('should skip updates for undefined or null results', () => {
+  it('should skip updates for undefined or null results', async () => {
     ref.__exec.testProp = () => 'cached value'
     element.define.testProp = () => null
     element.testProp = 'original value'
 
-    throughUpdatedDefine(element)
+    await throughUpdatedDefine(element)
 
     expect(element.testProp).toBe('original value')
   })
 
-  it('should handle empty define objects', () => {
+  it('should handle empty define objects', async () => {
     const originalElement = { ...element }
 
-    throughUpdatedDefine(element)
+    await throughUpdatedDefine(element)
 
     expect(element).toEqual(originalElement)
   })
 
-  it('should pass correct arguments to define functions', () => {
+  it('should pass correct arguments to define functions', async () => {
     element.define.testProp = (cached, el, state, context) => ({
       cachedMatch: cached === 'cached value',
       elMatch: el === element,
@@ -72,7 +72,7 @@ describe('throughUpdatedDefine', () => {
     })
     ref.__defineCache.testProp = 'cached value'
 
-    throughUpdatedDefine(element)
+    await throughUpdatedDefine(element)
 
     expect(element.testProp).toEqual({
       cachedMatch: true,
@@ -82,10 +82,10 @@ describe('throughUpdatedDefine', () => {
     })
   })
 
-  it('should return an empty changes object', () => {
+  it('should return an empty changes object', async () => {
     element.define.testProp = () => 'updated value'
 
-    const changes = throughUpdatedDefine(element)
+    const changes = await throughUpdatedDefine(element)
 
     expect(changes).toEqual({})
   })

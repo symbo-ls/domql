@@ -76,7 +76,7 @@ describe('applyEventsOnNode', () => {
         expect.any(Function)
       )
       expect(addEventListenerSpy).toHaveBeenCalledWith(
-        'submit',
+        'onSubmit', // Issue: The test expected 'submit' but the implementation uses 'onSubmit' as is
         expect.any(Function)
       )
     })

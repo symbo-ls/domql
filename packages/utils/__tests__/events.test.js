@@ -10,14 +10,14 @@ describe('addEventFromProps', () => {
       }
     }
 
-    addEventFromProps('onClick', element)
+    addEventFromProps.call(element, 'onClick', element)
 
     expect(element.on).toBeDefined()
     expect(typeof element.on.click).toBe('function')
     expect(element.on.click()).toBe('clicked')
   })
 
-  test('should combine existing and new event handlers', () => {
+  test('should combine existing and new event handlers', async () => {
     const handler1Called = jest.fn()
     const handler2Called = jest.fn()
 
@@ -30,14 +30,14 @@ describe('addEventFromProps', () => {
       }
     }
 
-    addEventFromProps('onClick', element)
-    element.on.click()
+    addEventFromProps.call(element, 'onClick', element)
+    await element.on.click()
 
     expect(handler1Called).toHaveBeenCalled()
     expect(handler2Called).toHaveBeenCalled()
   })
 
-  test('should not call new handler if existing returns false', () => {
+  test('should not call new handler if existing returns false', async () => {
     const handler2Called = jest.fn()
 
     const element = {
@@ -49,8 +49,8 @@ describe('addEventFromProps', () => {
       }
     }
 
-    addEventFromProps('onClick', element)
-    element.on.click()
+    addEventFromProps.call(element, 'onClick', element)
+    await element.on.click()
 
     expect(handler2Called).not.toHaveBeenCalled()
   })

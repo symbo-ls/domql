@@ -21,13 +21,13 @@ describe('Environment Utils', () => {
     it('should return false for development and test environments', () => {
       expect(isProduction('development')).toBe(false)
       expect(isProduction('dev')).toBe(false)
-      expect(isProduction('test')).toBe(false)
+      expect(isProduction('testing')).toBe(false)
     })
   })
 
   describe('isTest', () => {
     it('should return true for test environment', () => {
-      expect(isTest('test')).toBe(true)
+      expect(isTest('testing')).toBe(true)
     })
 
     it('should return false for non-test environments', () => {
@@ -44,7 +44,7 @@ describe('Environment Utils', () => {
 
     it('should return false for non-development environments', () => {
       expect(isDevelopment('production')).toBe(false)
-      expect(isDevelopment('test')).toBe(false)
+      expect(isDevelopment('testing')).toBe(false)
     })
   })
 

@@ -16,47 +16,47 @@ describe('throughInitialDefine', () => {
     }
   })
 
-  it('should merge local and global define objects', () => {
+  it('should merge local and global define objects', async () => {
     element.define = { localProp: () => 'local' }
     element.context.define = { globalProp: () => 'global' }
 
-    throughInitialDefine(element)
+    await throughInitialDefine(element)
 
     expect(element.localProp).toBe('local')
     expect(element.globalProp).toBe('global')
   })
 
-  it('should cache and execute define functions', () => {
+  it('should cache and execute define functions', async () => {
     element.define.testProp = value => 'defined value'
     element.testProp = () => 'initial value'
 
-    throughInitialDefine(element)
+    await throughInitialDefine(element)
 
     expect(element.testProp).toBe('defined value')
     expect(ref.__exec.testProp).toBeInstanceOf(Function)
     expect(ref.__defineCache.testProp).toBe('initial value')
   })
 
-  it('should skip execution for method properties', () => {
+  it('should skip execution for method properties', async () => {
     element.define.update = value => 'should not execute'
     element.update = () => 'built-in method'
 
-    throughInitialDefine(element)
+    await throughInitialDefine(element)
 
     expect(ref.__exec).not.toHaveProperty('update')
     expect(ref.__defineCache).not.toHaveProperty('update')
   })
 
-  it('should handle parse method in execution result', () => {
+  it('should handle parse method in execution result', async () => {
     element.define.testProp = () => ({ parse: () => 'parsed value' })
     element.testProp = () => 'initial value'
 
-    throughInitialDefine(element)
+    await throughInitialDefine(element)
 
     expect(ref.__defineCache.testProp).toBe('initial value')
   })
 
-  it('should pass correct arguments to define functions', () => {
+  it('should pass correct arguments to define functions', async () => {
     element.define.testProp = (value, el, state, context) => ({
       valueMatch: value === 'initial value',
       elMatch: el === element,
@@ -65,7 +65,7 @@ describe('throughInitialDefine', () => {
     })
     element.testProp = 'initial value'
 
-    throughInitialDefine(element)
+    await throughInitialDefine(element)
 
     expect(element.testProp).toEqual({
       valueMatch: true,
@@ -75,17 +75,17 @@ describe('throughInitialDefine', () => {
     })
   })
 
-  it('should handle non-function element properties', () => {
+  it('should handle non-function element properties', async () => {
     element.define.testProp = value => 'defined value'
     element.testProp = 'non-function value'
 
-    throughInitialDefine(element)
+    await throughInitialDefine(element)
 
     expect(element.testProp).toBe('defined value')
   })
 
-  it('should handle empty define objects', () => {
-    throughInitialDefine(element)
+  it('should handle empty define objects', async () => {
+    await throughInitialDefine(element)
 
     expect(element).toEqual({
       ...element,
@@ -93,11 +93,11 @@ describe('throughInitialDefine', () => {
     })
   })
 
-  it('should handle null or undefined define properties', () => {
+  it('should handle null or undefined define properties', async () => {
     element.define.testProp = () => null
     element.testProp = 'initial value'
 
-    throughInitialDefine(element)
+    await throughInitialDefine(element)
 
     expect(element.testProp).toBe('initial value')
   })

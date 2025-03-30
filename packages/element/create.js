@@ -51,7 +51,7 @@ export const create = async (
 
   applyExtends(element, parent, options)
 
-  propertizeElement(element)
+  propertizeElement.call(element, element)
 
   await triggerEventOn('start', element, options)
 
@@ -166,15 +166,6 @@ const renderElement = async (element, parent, options, attachOptions) => {
       element.error(e, options)
       if (element.on?.error) {
         element.on.error(e, element, element.state, element.context, options)
-      }
-      if (element.props?.onError) {
-        element.props.onError(
-          e,
-          element,
-          element.state,
-          element.context,
-          options
-        )
       }
     }
   }

@@ -55,7 +55,7 @@ describe('update() with inheritStateUpdates', () => {
 
   // Test 4: Block updates via beforeStateUpdate event
   it('preserves state when beforeStateUpdate rejects', async () => {
-    element.props.onBeforeStateUpdate = () => false
+    element.onBeforeStateUpdate = () => false
     await update.call(element, { props: { shouldChange: true } }, options)
     expect(element.state).toEqual({ baseState: true })
     expect(element.props.shouldChange).toBe(true)

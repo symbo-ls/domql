@@ -6,9 +6,11 @@ describe('update()', () => {
   beforeEach(() => {
     element = {
       __ref: {
+        __if: true,
         __execProps: {},
         __exec: {},
         __defineCache: {},
+        __propsStack: [],
         __props: [],
         __state: 'state'
       },
@@ -17,6 +19,7 @@ describe('update()', () => {
       parent: {
         props: {}
       },
+      context: {},
       define: {},
       node: document.createElement('div'),
       key: 'testElement',
@@ -233,21 +236,21 @@ describe('update()', () => {
     expect(element.props.shouldExist).toBeUndefined()
   })
 
-  it('returns element when beforeUpdate rejects', async () => {
-    // Simulate beforeUpdate rejection
-    element.props.onBeforeUpdate = () => false
-    const result = await element.update({}, opts)
-    expect(result).toBe(element)
-  })
-
   it('processes parent.childProps', async () => {
     element.parent.props.childProps = { global: true }
     await element.update({}, opts)
-    expect(element.props.global).toBeUndefined()
+    expect(element.props.global).toBe(true)
   })
 
   it('processes function props', async () => {
     await element.update({ props: { calc: () => 42 } }, opts)
     expect(element.props.calc()).toBe(42)
+  })
+
+  it('returns element when beforeUpdate rejects', async () => {
+    // Simulate beforeUpdate rejection
+    element.on.beforeUpdate = () => false
+    const result = await element.update({}, opts)
+    expect(result).toBe(element)
   })
 })

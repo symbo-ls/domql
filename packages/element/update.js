@@ -12,7 +12,6 @@ import {
   merge,
   overwriteDeep,
   deepClone,
-  propertizeElement,
   isMethod,
   findInheritedState,
   deepMerge,
@@ -85,7 +84,8 @@ export const update = async function (params = {}, opts) {
     params = { text: params }
   }
 
-  params = propertizeUpdate(params, element)
+  // apply new updates
+  params = propertizeUpdate.call(element, params)
 
   const inheritState = await inheritStateUpdates(element, options)
   if (inheritState === false) return
@@ -102,10 +102,11 @@ export const update = async function (params = {}, opts) {
   }
 
   if (!options.preventBeforeUpdateListener && !options.preventListeners) {
+    const simulate = { ...params, ...element }
     const beforeUpdateReturns = await triggerEventOnUpdate(
       'beforeUpdate',
       params,
-      element,
+      simulate,
       options
     )
     if (beforeUpdateReturns === false) return element

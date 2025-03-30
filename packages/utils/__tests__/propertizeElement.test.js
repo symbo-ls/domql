@@ -12,7 +12,7 @@ describe('propertizeElement', () => {
       }
     }
 
-    propertizeElement(element)
+    propertizeElement.call(element)
 
     expect(element).toEqual({
       NestedComponent: {
@@ -27,7 +27,7 @@ describe('propertizeElement', () => {
       1: { content: 'Second' }
     }
 
-    propertizeElement(element)
+    propertizeElement.call(element)
 
     expect(element).toEqual({
       0: { content: 'First' },
@@ -45,7 +45,7 @@ describe('propertizeElement', () => {
       Hello: {}
     }
 
-    propertizeElement(element)
+    propertizeElement.call(element)
 
     expect(element).toEqual({
       props: {
@@ -67,7 +67,7 @@ describe('propertizeElement', () => {
       }
     }
 
-    propertizeElement(element)
+    propertizeElement.call(element)
 
     expect(element).toEqual({
       NestedComponent: {
@@ -101,7 +101,7 @@ describe('Complex component structures', () => {
   }
 
   it('should handle complex nested components with extends', () => {
-    const result = propertizeElement(element)
+    const result = propertizeElement.call(element)
 
     expect(result).toEqual({
       extends: 'Flex',
@@ -127,7 +127,7 @@ describe('Complex component structures', () => {
   it('should handle complex nested components with extends', () => {
     if (!element.Flex.props) element.Flex.props = {}
 
-    const result = propertizeElement(element.Flex)
+    const result = propertizeElement.call(element, element.Flex)
 
     expect(result).toEqual({
       props: {
@@ -217,15 +217,17 @@ describe('Complex recursive component structures', () => {
     const recursive = el => {
       if (!el.on) el.on = {}
       if (!el.props) el.props = {}
+      if (!el.define) el.define = {}
       for (const key in el) {
         const isElement = /^[A-Z]/.test(key) || /^\d+$/.test(key)
         if (isElement) {
           if (!el[key].on) el[key].on = {}
           if (!el[key].props) el[key].props = {}
+          if (!el[key].define) el[key].define = {}
           el[key] = recursive(el[key])
         }
       }
-      return propertizeElement(el)
+      return propertizeElement.call(el, el)
     }
 
     const result = recursive(component)
@@ -234,6 +236,7 @@ describe('Complex recursive component structures', () => {
       on: {
         stateUpdate
       },
+      define: {},
       extends: 'Flex',
 
       props: {
@@ -249,13 +252,19 @@ describe('Complex recursive component structures', () => {
         key: 'titleState',
 
         props: {},
+        define: {},
         on: {},
         Title: {
+          define: {},
           props: {},
           on: {},
           text: 'Title'
         },
-        Input: { on: {}, props: { placeholder: 'Title of the state' } }
+        Input: {
+          define: {},
+          on: {},
+          props: { placeholder: 'Title of the state' }
+        }
       },
 
       GroupField: {
@@ -263,9 +272,11 @@ describe('Complex recursive component structures', () => {
           width: '100%'
         },
         on: {},
+        define: {},
 
         Title: {
           text: 'Connect to a custom URL',
+          define: {},
           props: {},
           on: {}
         },
@@ -283,9 +294,11 @@ describe('Complex recursive component structures', () => {
           },
 
           on: {},
+          define: {},
 
           SelectField: {
             props: {},
+            define: {},
             on: {},
             Select: {
               props: {
@@ -298,6 +311,7 @@ describe('Complex recursive component structures', () => {
                   value: 'GET'
                 },
                 text: 'Get',
+                define: {},
                 on: {}
               },
               Post: {
@@ -305,9 +319,11 @@ describe('Complex recursive component structures', () => {
                   value: 'POST'
                 },
                 text: 'Post',
+                define: {},
                 on: {}
               },
 
+              define: {},
               on: {
                 change
               }
@@ -330,7 +346,9 @@ describe('pickupPropsFromElement', () => {
       style: { color: 'red' }
     }
 
-    const result = pickupPropsFromElement(element, { cachedKeys: [] })
+    const result = pickupPropsFromElement.call(element, element, {
+      cachedKeys: []
+    })
 
     expect(result).toEqual({
       props: {
@@ -353,7 +371,9 @@ describe('pickupPropsFromElement', () => {
       customProp: 'test'
     }
 
-    const result = pickupPropsFromElement(element, { cachedKeys: [] })
+    const result = pickupPropsFromElement.call(element, element, {
+      cachedKeys: []
+    })
 
     expect(result).toEqual({
       props: {},
@@ -378,7 +398,9 @@ describe('pickupElementFromProps', () => {
       }
     }
 
-    const result = pickupElementFromProps(element, { cachedKeys: [] })
+    const result = pickupElementFromProps.call(element, element, {
+      cachedKeys: []
+    })
 
     expect(result).toEqual({
       props: {
@@ -401,7 +423,7 @@ describe('pickupElementFromProps', () => {
       }
     }
 
-    const result = pickupElementFromProps(element, {
+    const result = pickupElementFromProps.call(element, element, {
       cachedKeys: ['preserveMe']
     })
 
@@ -424,7 +446,9 @@ describe('pickupElementFromProps', () => {
       }
     }
 
-    const result = pickupElementFromProps(element, { cachedKeys: [] })
+    const result = pickupElementFromProps.call(element, element, {
+      cachedKeys: []
+    })
 
     expect(result).toEqual({
       props: {},

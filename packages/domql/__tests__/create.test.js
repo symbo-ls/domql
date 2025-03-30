@@ -17,12 +17,10 @@ describe('create', () => {
     expect(element.state.ranComplete).toBe(true)
   })
 
-  it('should execute props.onComplete and modify context', async () => {
+  it('should execute onComplete and modify context', async () => {
     const element = {
-      props: {
-        onComplete: async (el, state, context) => {
-          context.ranPropsComplete = true
-        }
+      onComplete: async (el, state, context) => {
+        context.ranPropsComplete = true
       },
       state: {},
       context: {}
@@ -74,10 +72,8 @@ describe('create', () => {
           el.ordered += '2'
         }
       },
-      props: {
-        onComplete: async el => {
-          el.ordered += '3'
-        }
+      onComplete: async el => {
+        el.ordered += '3'
       },
       state: {},
       context: {}

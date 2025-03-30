@@ -27,6 +27,7 @@ describe('initAnimationFrame', () => {
       props: {
         onFrame: mockOnFrame
       },
+      onFrame: mockOnFrame, // Add direct onFrame property to the element
       state: { foo: 'bar' },
       context: { baz: 'qux' }
     }
@@ -72,7 +73,7 @@ describe('initAnimationFrame', () => {
       )
     })
 
-    test('should use on.frame if available instead of props.onFrame', () => {
+    test('should use on.frame if available instead of onFrame', () => {
       // Arrange
       const onFrameHandler = jest.fn()
       mockElement.on = { frame: onFrameHandler }
@@ -106,9 +107,9 @@ describe('initAnimationFrame', () => {
     test('should catch and warn on onFrame errors', () => {
       // Arrange
       const error = new Error('Test error')
-      mockElement.props.onFrame = () => {
+      mockElement.onFrame = jest.fn(() => {
         throw error
-      }
+      })
       frameListeners.add(mockElement)
 
       // Act - trigger a single frame
@@ -125,7 +126,8 @@ describe('initAnimationFrame', () => {
       const mockElement2 = {
         ...mockElement,
         node: document.createElement('div'),
-        props: { onFrame: jest.fn() }
+        props: { onFrame: jest.fn() },
+        onFrame: jest.fn() // Add direct onFrame property to mockElement2
       }
       mockElement.parent.node.appendChild(mockElement2.node)
 
@@ -137,7 +139,7 @@ describe('initAnimationFrame', () => {
 
       // Assert
       expect(mockOnFrame).toHaveBeenCalled()
-      expect(mockElement2.props.onFrame).toHaveBeenCalled()
+      expect(mockElement2.onFrame).toHaveBeenCalled()
       expect(frameListeners.size).toBe(2)
     })
   })

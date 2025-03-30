@@ -18,75 +18,74 @@ export const createProps = (element, parent, key) => {
   return { ...props }
 }
 
-export function pickupPropsFromElement (element, opts = {}) {
+export function pickupPropsFromElement (obj, opts = {}) {
   const cachedKeys = opts.cachedKeys || []
 
-  for (const key in element) {
-    const value = element[key]
+  for (const key in obj) {
+    const value = obj[key]
 
-    const hasDefine = isObject(element.define?.[key])
-    const hasGlobalDefine = isObject(element.context?.define?.[key])
+    const hasDefine = isObject(this.define?.[key])
+    const hasGlobalDefine = isObject(this.context?.define?.[key])
     const isElement = /^[A-Z]/.test(key) || /^\d+$/.test(key)
     const isBuiltin = DOMQ_PROPERTIES.includes(key)
 
     // If it's not a special case, move to props
     if (!isElement && !isBuiltin && !hasDefine && !hasGlobalDefine) {
-      element.props[key] = value
-      delete element[key]
+      obj.props[key] = value
+      delete obj[key]
       cachedKeys.push(key)
     }
   }
 
-  return element
+  return obj
 }
 
-export function pickupElementFromProps (element, opts) {
+export function pickupElementFromProps (obj = this, opts) {
   const cachedKeys = opts.cachedKeys || []
 
-  for (const key in element) {
-    const value = element[key]
+  for (const key in obj.props) {
+    const value = obj.props[key]
 
     // Handle event handlers
     const isEvent = key.startsWith('on') && key.length > 2
     const isFn = isFunction(value)
 
     if (isEvent && isFn) {
-      addEventFromProps(key, element)
-      delete element.props[key]
+      addEventFromProps(key, obj)
+      delete obj.props[key]
       continue
     }
 
-    // Skip if key was originally from element
+    // Skip if key was originally from obj
     if (cachedKeys.includes(key)) continue
 
-    const hasDefine = isObject(element.define?.[key])
-    const hasGlobalDefine = isObject(element.context?.define?.[key])
+    const hasDefine = isObject(this.define?.[key])
+    const hasGlobalDefine = isObject(this.context?.define?.[key])
     const isElement = /^[A-Z]/.test(key) || /^\d+$/.test(key)
     const isBuiltin = DOMQ_PROPERTIES.includes(key)
 
-    // Move qualifying properties back to element root
+    // Move qualifying properties back to obj root
     if (isElement || isBuiltin || hasDefine || hasGlobalDefine) {
-      element[key] = value
+      obj[key] = value
 
-      if (element.props) delete element.props[key]
+      if (obj.props) delete obj.props[key]
     }
   }
 
-  return element
+  return obj
 }
 
 // Helper function to maintain compatibility with original propertizeElement
-export function propertizeElement (element) {
+export function propertizeElement (element = this) {
   const cachedKeys = []
-  pickupPropsFromElement(element, { cachedKeys })
-  pickupElementFromProps(element, { cachedKeys })
+  pickupPropsFromElement.call(this, element, { cachedKeys })
+  pickupElementFromProps.call(this, element, { cachedKeys })
   return element
 }
 
-export function propertizeUpdate (props = {}) {
-  const obj = { on: {}, props: {}, ...props }
-  propertizeElement.call(obj)
-  return obj
+export function propertizeUpdate (params = {}) {
+  const obj = deepMerge({ on: {}, props: {} }, params)
+  return propertizeElement.call(this, obj)
 }
 
 export const objectizeStringProperty = propValue => {
