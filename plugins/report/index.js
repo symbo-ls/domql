@@ -8,39 +8,47 @@ export const ERRORS_REGISTRY = {
     },
     OverwriteToBuiltin: {
       title: 'Overwriting to builtin method',
-      description: 'Overwriting a builtin method in the window define is not possible, please choose different name'
+      description:
+        'Overwriting a builtin method in the window define is not possible, please choose different name'
     },
     BrowserNotDefined: {
-      title: 'Can\'t recognize environment',
-      description: 'Environment should be browser application, that can run Javascript'
+      title: "Can't recognize environment",
+      description:
+        'Environment should be browser application, that can run Javascript'
     },
     SetQuickPreferancesIsNotObject: {
       title: 'Quick preferances object is required',
-      description: 'Please pass a plain object with "lang", "culture" and "area" properties'
+      description:
+        'Please pass a plain object with "lang", "culture" and "area" properties'
     },
     InvalidParams: {
       title: 'Params are invalid',
-      description: 'Please pass a plain object with "lang", "culture" and "area" properties'
+      description:
+        'Please pass a plain object with "lang", "culture" and "area" properties'
     },
     CantCreateWithoutNode: {
       title: 'You must provide node',
-      description: 'Can\'t create DOM element without setting node or text'
+      description: "Can't create DOM element without setting node or text"
     },
     HTMLInvalidTag: {
       title: 'Element tag name (or DOM nodeName) is invalid',
-      description: 'To create element, you must provide valid DOM node. See full list of them at here: http://www.w3schools.com/tags/'
+      description:
+        'To create element, you must provide valid DOM node. See full list of them at here: http://www.w3schools.com/tags/'
     },
     HTMLInvalidAttr: {
       title: 'Attibutes object is invalid',
-      description: 'Please pass a valid plain object to apply as an attributes for a DOM node'
+      description:
+        'Please pass a valid plain object to apply as an attributes for a DOM node'
     },
     HTMLInvalidData: {
       title: 'Data object is invalid',
-      description: 'Please pass a valid plain object to apply as an dataset for a DOM node'
+      description:
+        'Please pass a valid plain object to apply as an dataset for a DOM node'
     },
     HTMLInvalidStyles: {
       title: 'Styles object is invalid',
-      description: 'Please pass a valid plain object to apply as an style for a DOM node'
+      description:
+        'Please pass a valid plain object to apply as an style for a DOM node'
     },
     HTMLInvalidText: {
       title: 'Text string is invalid',

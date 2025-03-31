@@ -1,6 +1,6 @@
 {
   "name": "@domql/report",
-  "version": "2.25.8",
+  "version": "2.27.0",
   "license": "MIT",
   "type": "module",
   "module": "index.js",
@@ -25,5 +25,5 @@
     "build": "npx rimraf -I dist; npm run build:cjs; npm run build:esm",
     "prepublish": "npx rimraf -I dist && npm run build && npm run copy:package:cjs"
   },
-  "gitHead": "5c819d16dda5753c45421c310f1fd97ad58cb6de"
+  "gitHead": "40a924693178a7d7b9e94aac0282b9d31602eca7"
 }

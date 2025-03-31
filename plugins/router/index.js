@@ -27,20 +27,23 @@ const defaultOptions = {
   scrollToOptions: { behavior: 'smooth' }
 }
 
-export const router = async (
-  path,
-  el,
-  state = {},
-  options = {}
-) => {
+export const router = async (path, el, state = {}, options = {}) => {
   const element = el || this
   const win = element.context.window || window
   const doc = element.context.document || document
-  const opts = { ...defaultOptions, ...element.context.routerOptions, ...options }
+  const opts = {
+    ...defaultOptions,
+    ...element.context.routerOptions,
+    ...options
+  }
   lastLevel = opts.lastLevel
   const ref = element.__ref
 
-  if ((opts.contentElementKey !== 'content' && opts.contentElementKey !== ref.contentElementKey) || !ref.contentElementKey) {
+  if (
+    (opts.contentElementKey !== 'content' &&
+      opts.contentElementKey !== ref.contentElementKey) ||
+    !ref.contentElementKey
+  ) {
     ref.contentElementKey = opts.contentElementKey || 'content'
   }
 
@@ -68,36 +71,51 @@ export const router = async (
 
   if (pathChanged || !hashChanged) {
     if (opts.updateState) {
-      await element.state.update({ route, hash, debugging: false }, { preventContentUpdate: true })
+      await element.state.update(
+        { route, hash, debugging: false },
+        { preventContentUpdate: true }
+      )
     }
 
     if (contentElementKey && opts.removeOldElement) {
       element[contentElementKey].remove()
     }
 
-    await element.set({
-      tag: opts.useFragment && 'fragment',
-      extend: content
-    }, { contentElementKey })
+    await element.set(
+      {
+        tag: opts.useFragment && 'fragment',
+        extend: content
+      },
+      { contentElementKey }
+    )
   }
 
   if (opts.scrollToTop) {
     scrollNode.scrollTo({
-      ...(opts.scrollToOptions || {}), top: 0, left: 0
+      ...(opts.scrollToOptions || {}),
+      top: 0,
+      left: 0
     })
   }
   if (opts.scrollToNode) {
     content[contentElementKey].node.scrollTo({
-      ...(opts.scrollToOptions || {}), top: 0, left: 0
+      ...(opts.scrollToOptions || {}),
+      top: 0,
+      left: 0
     })
   }
 
   if (hash) {
     const activeNode = doc.getElementById(hash)
     if (activeNode) {
-      const top = activeNode.getBoundingClientRect().top + rootNode.scrollTop - opts.scrollToOffset || 0
+      const top =
+        activeNode.getBoundingClientRect().top +
+          rootNode.scrollTop -
+          opts.scrollToOffset || 0
       scrollNode.scrollTo({
-        ...(opts.scrollToOptions || {}), top, left: 0
+        ...(opts.scrollToOptions || {}),
+        top,
+        left: 0
       })
     }
   }

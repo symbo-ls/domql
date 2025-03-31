@@ -1,11 +1,20 @@
 'use strict'
 
 // import DOM from '../../src'
-import { isObjectLike, isString, isNumber, isBoolean, exec, isObject, isEqualDeep, isProduction } from '@domql/utils'
+import {
+  isObjectLike,
+  isString,
+  isNumber,
+  isBoolean,
+  exec,
+  isObject,
+  isEqualDeep,
+  isProduction
+} from '@domql/utils'
 import createEmotion from '@emotion/css/create-instance'
 import { applyClassListOnNode } from './classList'
 
-export const transformEmotionStyle = (emotion) => {
+export const transformEmotionStyle = emotion => {
   return (params, element, state) => {
     const execParams = exec(params, element)
     if (params) {
@@ -16,15 +25,19 @@ export const transformEmotionStyle = (emotion) => {
   }
 }
 
-export const transformEmotionClass = (emotion) => {
+export const transformEmotionClass = emotion => {
   return (params, element, state, flag) => {
     if (element.style && !flag) return
     const { __ref } = element
     const { __class, __classNames } = __ref
 
     if (!isObjectLike(params)) return
-    if (element.props.class) { __classNames.classProps = element.props.class }
-    if (element.attr.class) { __classNames.class = element.attr.class }
+    if (element.props.class) {
+      __classNames.classProps = element.props.class
+    }
+    if (element.attr.class) {
+      __classNames.class = element.attr.class
+    }
 
     for (const key in params) {
       const prop = exec(params[key], element)

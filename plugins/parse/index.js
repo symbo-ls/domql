@@ -3,7 +3,7 @@
 import { create } from '@domql/element'
 import { assignNode } from '@domql/render'
 
-export const parse = (element) => {
+export const parse = element => {
   const virtualTree = {
     node: document.createElement('div')
   }
