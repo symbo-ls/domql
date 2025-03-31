@@ -16,7 +16,8 @@
 export function debounce (func, wait, immediate) {
   let timeout
   return function () {
-    const context = this; const args = arguments
+    const context = this
+    const args = arguments
     const later = function () {
       timeout = null
       if (!immediate) func.apply(context, args)
@@ -46,11 +47,13 @@ export const debounceOnContext = (element, func, timeout = 300) => {
   let timer
   return (...args) => {
     clearTimeout(timer)
-    timer = setTimeout(() => { func.apply(element, args) }, timeout)
+    timer = setTimeout(() => {
+      func.apply(element, args)
+    }, timeout)
   }
 }
 
-export const memoize = (fn) => {
+export const memoize = fn => {
   const cache = {}
   return (...args) => {
     const n = args[0]

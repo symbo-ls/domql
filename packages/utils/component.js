@@ -6,14 +6,14 @@ import { isArray, isFunction, isObject, isString } from './types.js'
 
 const ENV = process.env.NODE_ENV
 
-export const checkIfKeyIsComponent = (key) => {
+export const checkIfKeyIsComponent = key => {
   const isFirstKeyString = isString(key)
   if (!isFirstKeyString) return
   const firstCharKey = key.slice(0, 1)
   return /^[A-Z]*$/.test(firstCharKey)
 }
 
-export const checkIfKeyIsProperty = (key) => {
+export const checkIfKeyIsProperty = key => {
   const isFirstKeyString = isString(key)
   if (!isFirstKeyString) return
   const firstCharKey = key.slice(0, 1)
@@ -43,22 +43,40 @@ export const checkIfSugar = (element, parent, key) => {
     $stateCollection,
     $propsCollection
   } = element
-  const hasComponentAttrs = extend || childExtend || props || on || $collection || $stateCollection || $propsCollection
-  if (hasComponentAttrs && (childProps || extendProps || children || childExtends)) {
+  const hasComponentAttrs =
+    extend ||
+    childExtend ||
+    props ||
+    on ||
+    $collection ||
+    $stateCollection ||
+    $propsCollection
+  if (
+    hasComponentAttrs &&
+    (childProps || extendProps || children || childExtends)
+  ) {
     const logErr = (parent || element)?.error
-    if (logErr) logErr.call(parent, element, 'Sugar component includes params for builtin components', { verbose: true })
+    if (logErr)
+      logErr.call(
+        parent,
+        element,
+        'Sugar component includes params for builtin components',
+        { verbose: true }
+      )
   }
-  return !hasComponentAttrs || childProps || extendProps || children || childExtends
+  return (
+    !hasComponentAttrs || childProps || extendProps || children || childExtends
+  )
 }
 
-export const extractComponentKeyFromKey = (key) => {
+export const extractComponentKeyFromKey = key => {
   return key.includes('+')
     ? key.split('+') // get array of componentKeys
     : key.includes('_')
-      ? [key.split('_')[0]] // get component key split _
-      : key.includes('.') && !checkIfKeyIsComponent(key.split('.')[1])
-        ? [key.split('.')[0]] // get component key split .
-        : [key]
+    ? [key.split('_')[0]] // get component key split _
+    : key.includes('.') && !checkIfKeyIsComponent(key.split('.')[1])
+    ? [key.split('.')[0]] // get component key split .
+    : [key]
 }
 
 export const extendizeByKey = (element, parent, key) => {
@@ -122,7 +140,7 @@ export const addChildrenIfNotInOriginal = (element, parent, key) => {
     const childElem = element[childKey]
     const newChild = element.props[childKey]
 
-    const assignChild = (val) => {
+    const assignChild = val => {
       element[childKey] = val
       delete element.props[childKey]
     }
@@ -154,7 +172,8 @@ export const applyComponentFromContext = (element, parent, options) => {
   const { extend } = element
   const execExtend = exec(extend, element)
   if (isString(execExtend)) {
-    const componentExists = components[execExtend] || components['smbls.' + execExtend]
+    const componentExists =
+      components[execExtend] || components['smbls.' + execExtend]
     if (componentExists) element.extend = componentExists
     else {
       if ((ENV === 'testing' || ENV === 'development') && options.verbose) {
@@ -166,14 +185,14 @@ export const applyComponentFromContext = (element, parent, options) => {
   }
 }
 
-export const isVariant = (param) => {
+export const isVariant = param => {
   if (!isString(param)) return
   const firstCharKey = param.slice(0, 1)
   // return (firstCharKey === '.' || firstCharKey === '$')
-  return (firstCharKey === '.')
+  return firstCharKey === '.'
 }
 
-export const hasVariantProp = (element) => {
+export const hasVariantProp = element => {
   const { props } = element
   if (isObject(props) && isString(props.variant)) return true
 }
@@ -187,19 +206,23 @@ export const getChildrenComponentsByKey = (key, el) => {
   if (el.extend) {
     // Add the value of the extend key to the result array
     const foundString = isString(el.extend) && el.extend === key
-    const foundInArray = isArray(el.extend) && el.extend.filter(v => v === key).length
+    const foundInArray =
+      isArray(el.extend) && el.extend.filter(v => v === key).length
     if (foundString || foundInArray) return el
   }
 
   if (el.parent && el.parent.childExtend) {
     // Add the value of the extend key to the result array
-    const foundString = isString(el.parent.childExtend) && el.parent.childExtend === key
-    const foundInArray = isArray(el.parent.childExtend) && el.parent.childExtend.filter(v => v === key).length
+    const foundString =
+      isString(el.parent.childExtend) && el.parent.childExtend === key
+    const foundInArray =
+      isArray(el.parent.childExtend) &&
+      el.parent.childExtend.filter(v => v === key).length
     if (foundString || foundInArray) return el
   }
 }
 
-export const getExtendsInElement = (obj) => {
+export const getExtendsInElement = obj => {
   let result = []
 
   function traverse (o) {
@@ -235,7 +258,11 @@ export const getExtendsInElement = (obj) => {
 export const setContentKey = (el, opts = {}) => {
   const { __ref: ref } = el
   const contentElementKey = opts.contentElementKey
-  if ((contentElementKey !== 'content' && contentElementKey !== ref.contentElementKey) || !ref.contentElementKey) {
+  if (
+    (contentElementKey !== 'content' &&
+      contentElementKey !== ref.contentElementKey) ||
+    !ref.contentElementKey
+  ) {
     ref.contentElementKey = contentElementKey || 'content'
   } else ref.contentElementKey = 'content'
   if (contentElementKey !== 'content') opts.contentElementKey = 'content'

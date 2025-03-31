@@ -1,19 +1,9 @@
 'use strict'
 
 export const HTML_TAGS = {
-  root: [
-    'body',
-    'html'
-  ],
+  root: ['body', 'html'],
 
-  head: [
-    'title',
-    'base',
-    'meta',
-    'style',
-    'noscript',
-    'script'
-  ],
+  head: ['title', 'base', 'meta', 'style', 'noscript', 'script'],
 
   body: [
     'string',

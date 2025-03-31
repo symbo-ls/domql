@@ -4,7 +4,7 @@ import { isHtmlElement, isNode } from './node.js'
 
 export const isObject = arg => {
   if (arg === null) return false
-  return (typeof arg === 'object') && (arg.constructor === Object)
+  return typeof arg === 'object' && arg.constructor === Object
 }
 
 export const isString = arg => typeof arg === 'string'
@@ -24,11 +24,12 @@ export const isDate = d => d instanceof Date
 export const isObjectLike = arg => {
   if (arg === null) return false
   // if (isArray(arg)) return false
-  return (typeof arg === 'object')
+  return typeof arg === 'object'
 }
 
 export const isDefined = arg => {
-  return isObject(arg) ||
+  return (
+    isObject(arg) ||
     isObjectLike(arg) ||
     isString(arg) ||
     isNumber(arg) ||
@@ -38,6 +39,7 @@ export const isDefined = arg => {
     isBoolean(arg) ||
     isDate(arg) ||
     isNull(arg)
+  )
 }
 
 export const isUndefined = arg => {
@@ -59,13 +61,13 @@ export const TYPES = {
   defined: isDefined
 }
 
-export const is = (arg) => {
+export const is = arg => {
   return (...args) => {
     return args.map(val => TYPES[val](arg)).filter(v => v).length > 0
   }
 }
 
-export const isNot = (arg) => {
+export const isNot = arg => {
   return (...args) => {
     return args.map(val => TYPES[val](arg)).filter(v => v).length === 0
   }

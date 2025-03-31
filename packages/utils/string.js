@@ -29,13 +29,19 @@ const brackRegex = {
   3: /\{\{\{\s*((?:\.\.\/)+)?([^}\s]+)\s*\}\}\}/g
 }
 
-export function replaceLiteralsWithObjectFields (str, options = {}, forcedState) {
+export function replaceLiteralsWithObjectFields (
+  str,
+  options = {},
+  forcedState
+) {
   if (!str.includes(options.bracketsLength === 3 ? '{{{' : '{{')) return str
   const reg = brackRegex[options.bracketsLength || 2]
   const obj = forcedState || this?.state || {}
   return str.replace(reg, (_, parentPath, variable) => {
     if (parentPath) {
-      const parentLevels = parentPath.match(options.bracketsLength === 3 ? /\.\.\.\//g : /\.\.\//g).length
+      const parentLevels = parentPath.match(
+        options.bracketsLength === 3 ? /\.\.\.\//g : /\.\.\//g
+      ).length
       let parentState = obj
       for (let i = 0; i < parentLevels; i++) {
         parentState = parentState.parent
@@ -52,7 +58,7 @@ export function replaceLiteralsWithObjectFields (str, options = {}, forcedState)
   })
 }
 
-export const lowercaseFirstLetter = (inputString) => {
+export const lowercaseFirstLetter = inputString => {
   return `${inputString.charAt(0).toLowerCase()}${inputString.slice(1)}`
 }
 
@@ -98,7 +104,10 @@ export const findKeyPosition = (str, key) => {
       // If braceCount is 0 and we find the end of the object/array
       if (braceCount === 0) {
         endLineNumber = i + 1
-        endColumn = lines[i].lastIndexOf('}') !== -1 ? lines[i].lastIndexOf('}') + 2 : lines[i].length + 1
+        endColumn =
+          lines[i].lastIndexOf('}') !== -1
+            ? lines[i].lastIndexOf('}') + 2
+            : lines[i].length + 1
         break
       }
     }
@@ -112,7 +121,7 @@ export const findKeyPosition = (str, key) => {
   }
 }
 
-export const replaceOctalEscapeSequences = (str) => {
+export const replaceOctalEscapeSequences = str => {
   // Regex to match octal escape sequences
   const octalRegex = /\\([0-7]{1,3})/g
 
@@ -126,23 +135,40 @@ export const replaceOctalEscapeSequences = (str) => {
   })
 }
 
-export const encodeNewlines = (str) => {
-  return str.split('\n').join('/////n').split('`').join('/////tilde').split('$').join('/////dlrsgn')
+export const encodeNewlines = str => {
+  return str
+    .split('\n')
+    .join('/////n')
+    .split('`')
+    .join('/////tilde')
+    .split('$')
+    .join('/////dlrsgn')
 }
 
-export const decodeNewlines = (encodedStr) => {
-  return encodedStr.split('/////n').join('\n').split('/////tilde').join('`').split('/////dlrsgn').join('$')
+export const decodeNewlines = encodedStr => {
+  return encodedStr
+    .split('/////n')
+    .join('\n')
+    .split('/////tilde')
+    .join('`')
+    .split('/////dlrsgn')
+    .join('$')
 }
 
-export const customEncodeURIComponent = (str) => {
-  return str.split('').map(char => {
-    if (/[^a-zA-Z0-9\s]/.test(char)) {
-      return '%' + char.charCodeAt(0).toString(16).toUpperCase()
-    }
-    return char
-  }).join('')
+export const customEncodeURIComponent = str => {
+  return str
+    .split('')
+    .map(char => {
+      if (/[^a-zA-Z0-9\s]/.test(char)) {
+        return '%' + char.charCodeAt(0).toString(16).toUpperCase()
+      }
+      return char
+    })
+    .join('')
 }
 
-export const customDecodeURIComponent = (encodedStr) => {
-  return encodedStr.replace(/%[0-9A-Fa-f]{2}/g, match => String.fromCharCode(parseInt(match.slice(1), 16)))
+export const customDecodeURIComponent = encodedStr => {
+  return encodedStr.replace(/%[0-9A-Fa-f]{2}/g, match =>
+    String.fromCharCode(parseInt(match.slice(1), 16))
+  )
 }

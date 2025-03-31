@@ -3,19 +3,18 @@
 import { isUndefined } from './types.js'
 import { document } from './globals.js'
 
-export const isMobile = (() => typeof navigator === 'undefined'
-  ? false
-  : /Mobi/.test(navigator.userAgent))()
+export const isMobile = (() =>
+  typeof navigator === 'undefined' ? false : /Mobi/.test(navigator.userAgent))()
 
 export const setCookie = (cname, cvalue, exdays = 365) => {
   if (isUndefined(document) || isUndefined(document.cookie)) return
   const d = new Date()
-  d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000))
+  d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000)
   const expires = `expires=${d.toUTCString()}`
   document.cookie = `${cname}=${cvalue};${expires};path=/`
 }
 
-export const getCookie = (cname) => {
+export const getCookie = cname => {
   if (isUndefined(document) || isUndefined(document.cookie)) return
   const name = `${cname}=`
   const decodedCookie = decodeURIComponent(document.cookie)
@@ -28,16 +27,16 @@ export const getCookie = (cname) => {
   return ''
 }
 
-export const removeCookie = (cname) => {
+export const removeCookie = cname => {
   if (isUndefined(document) || isUndefined(document.cookie)) return
   document.cookie = cname + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
 }
 
 /**
-   * Load item from the localStorage
-   *
-   * @param key -- string to identify the storage item
-   */
+ * Load item from the localStorage
+ *
+ * @param key -- string to identify the storage item
+ */
 export function getLocalStorage (key) {
   let savedJSON
 
