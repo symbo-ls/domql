@@ -1,7 +1,15 @@
 'use strict'
 
 import { triggerEventOn } from '@domql/event'
-import { isDefined, isObject, isFunction, isObjectLike, isProduction, removeValueFromArray, deepClone } from '@domql/utils'
+import {
+  isDefined,
+  isObject,
+  isFunction,
+  isObjectLike,
+  isProduction,
+  removeValueFromArray,
+  deepClone
+} from '@domql/utils'
 import { TREE } from '../tree.js'
 import { parseFilters, REGISTRY } from '../mixins/index.js'
 const ENV = process.env.NODE_ENV
@@ -12,7 +20,8 @@ export function spotByPath (path) {
   const arr = [].concat(path)
   let active = TREE[arr[0]]
 
-  if (!arr || !arr.length) return console.log(arr, 'on', element.key, 'is undefined')
+  if (!arr || !arr.length)
+    return console.log(arr, 'on', element.key, 'is undefined')
 
   while (active.key === arr[0]) {
     arr.shift()
@@ -30,7 +39,8 @@ export function lookup (param) {
   let { parent } = el
 
   if (isFunction(param)) {
-    if (parent.state && param(parent, parent.state, parent.context)) return parent
+    if (parent.state && param(parent, parent.state, parent.context))
+      return parent
     else if (parent.parent) return parent.lookup(param)
     else return
   }
@@ -111,7 +121,11 @@ export async function remove (opts) {
     element.log()
   }
   delete element.parent[element.key]
-  if (element.parent.__ref) element.parent.__ref.__children = removeValueFromArray(element.parent.__ref.__children, element.key)
+  if (element.parent.__ref)
+    element.parent.__ref.__children = removeValueFromArray(
+      element.parent.__ref.__children,
+      element.key
+    )
   await triggerEventOn('remove', element, opts)
 }
 
@@ -148,7 +162,12 @@ export function keys () {
   const element = this
   const keys = []
   for (const param in element) {
-    if ((REGISTRY[param] && !parseFilters.elementKeys.includes(param)) || !Object.hasOwnProperty.call(element, param)) { continue }
+    if (
+      (REGISTRY[param] && !parseFilters.elementKeys.includes(param)) ||
+      !Object.hasOwnProperty.call(element, param)
+    ) {
+      continue
+    }
     keys.push(param)
   }
   return keys
@@ -164,14 +183,17 @@ export function parse (excl = []) {
     if (v === 'state') {
       if (element.__ref && !element.__ref.__hasRootState) return
       const parsedVal = isFunction(val && val.parse) ? val.parse() : val
-      obj[v] = isFunction(parsedVal) ? parsedVal : JSON.parse(JSON.stringify(parsedVal || {}))
+      obj[v] = isFunction(parsedVal)
+        ? parsedVal
+        : JSON.parse(JSON.stringify(parsedVal || {}))
     } else if (v === 'scope') {
       if (element.__ref && !element.__ref.__hasRootScope) return
       obj[v] = JSON.parse(JSON.stringify(val || {}))
     } else if (v === 'props') {
       const { __element, update, ...props } = element[v]
       obj[v] = props
-    } else if (isDefined(val) && Object.hasOwnProperty.call(element, v)) obj[v] = val
+    } else if (isDefined(val) && Object.hasOwnProperty.call(element, v))
+      obj[v] = val
   })
   return obj
 }
@@ -181,7 +203,9 @@ export function parseDeep (excl = []) {
   const obj = parse.call(element, excl)
   for (const v in obj) {
     if (excl.includes(v)) return
-    if (isObjectLike(obj[v])) { obj[v] = parseDeep.call(obj[v], excl) }
+    if (isObjectLike(obj[v])) {
+      obj[v] = parseDeep.call(obj[v], excl)
+    }
   }
   return obj
 }
@@ -260,8 +284,8 @@ export function variables (obj = {}) {
     }
   }
   return {
-    changed: (cb) => {
-      if (!changed) return
+    changed: cb => {
+      if (!changed || !varCaches) return
       const returns = cb(changes, deepClone(varCaches))
       for (const key in changes) {
         varCaches[key] = changes[key]
@@ -280,7 +304,12 @@ export function variables (obj = {}) {
 
 export function call (fnKey, ...args) {
   const context = this.context
-  return (context.utils[fnKey] || context.functions[fnKey] || context.methods[fnKey] || context.snippets[fnKey])?.call(this, ...args)
+  return (
+    context.utils[fnKey] ||
+    context.functions[fnKey] ||
+    context.methods[fnKey] ||
+    context.snippets[fnKey]
+  )?.call(this, ...args)
 }
 
 export const METHODS = [
