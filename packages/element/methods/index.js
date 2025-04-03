@@ -261,7 +261,7 @@ export function variables (obj = {}) {
   }
   return {
     changed: (cb) => {
-      if (!changed) return
+      if (!changed || !varCaches) return
       const returns = cb(changes, deepClone(varCaches))
       for (const key in changes) {
         varCaches[key] = changes[key]
