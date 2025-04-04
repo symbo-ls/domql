@@ -8,7 +8,8 @@ import {
   isObjectLike,
   isProduction,
   removeValueFromArray,
-  deepClone
+  deepClone,
+  isNotProduction
 } from '@domql/utils'
 import { TREE } from '../tree.js'
 import { parseFilters, REGISTRY } from '../mixins/index.js'
@@ -211,7 +212,7 @@ export function parseDeep (excl = []) {
 }
 
 export function verbose (element, ...args) {
-  if (ENV !== 'testing' && ENV !== 'development') return
+  if (isProduction(ENV)) return
 
   const parent = this
   const { __ref: ref } = parent
@@ -229,19 +230,19 @@ export function verbose (element, ...args) {
 }
 
 export function log (...params) {
-  if (ENV === 'testing' || ENV === 'development') {
+  if (isNotProduction(ENV)) {
     console.log(...params)
   }
 }
 
 export function warn (...params) {
-  if (ENV === 'testing' || ENV === 'development') {
+  if (isNotProduction(ENV)) {
     console.warn(...params)
   }
 }
 
 export function error (...params) {
-  if (ENV === 'testing' || ENV === 'development') {
+  if (isNotProduction(ENV)) {
     if (params[params.length - 1]?.debugger) debugger // eslint-disable-line
     if (params[params.length - 1]?.verbose) verbose.call(this, ...params)
     console.error(...params, this)

@@ -1,6 +1,13 @@
 'use strict'
 
-import { isArray, isFunction, isObject, isString, deepClone } from '@domql/utils'
+import {
+  isArray,
+  isFunction,
+  isObject,
+  isString,
+  deepClone,
+  isNotProduction
+} from '@domql/utils'
 const ENV = process.env.NODE_ENV
 
 export const generateHash = () => Math.random().toString(36).substring(2)
@@ -15,13 +22,17 @@ export const getHashedExtend = extend => {
 
 export const setHashedExtend = (extend, stack) => {
   const hash = generateHash()
-  if (!isString(extend)) { extend.__hash = hash }
+  if (!isString(extend)) {
+    extend.__hash = hash
+  }
   extendStackRegistry[hash] = stack
   return stack
 }
 
 export const getExtendStackRegistry = (extend, stack) => {
-  if (extend.__hash) { return stack.concat(getHashedExtend(extend)) }
+  if (extend.__hash) {
+    return stack.concat(getHashedExtend(extend))
+  }
   return setHashedExtend(extend, stack) // stack .concat(hashedExtend)
 }
 
@@ -75,20 +86,25 @@ export const cloneAndMergeArrayExtend = stack => {
   }, {})
 }
 
-export const fallbackStringExtend = (extend, context, options = {}, variant) => {
+export const fallbackStringExtend = (
+  extend,
+  context,
+  options = {},
+  variant
+) => {
   const COMPONENTS = (context && context.components) || options.components
   const PAGES = (context && context.pages) || options.pages
   if (isString(extend)) {
-    const componentExists = COMPONENTS && (
-      COMPONENTS[extend + '.' + variant] ||
-      COMPONENTS[extend] ||
-      COMPONENTS['smbls.' + extend]
-    )
+    const componentExists =
+      COMPONENTS &&
+      (COMPONENTS[extend + '.' + variant] ||
+        COMPONENTS[extend] ||
+        COMPONENTS['smbls.' + extend])
     const pageExists = PAGES && extend.startsWith('/') && PAGES[extend]
     if (componentExists) return componentExists
     else if (pageExists) return pageExists
     else {
-      if (options.verbose && (ENV === 'testing' || ENV === 'development')) {
+      if (options.verbose && isNotProduction(ENV)) {
         console.warn('Extend is string but component was not found:', extend)
       }
       return {}

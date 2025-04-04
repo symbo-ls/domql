@@ -15,6 +15,7 @@ import {
 import { mergeAndCloneIfArray, mergeArray } from './array.js'
 import { stringIncludesAny } from './string.js'
 import { isDOMNode } from './node.js'
+import { isNotProduction } from './env.js'
 
 const ENV = process.env.NODE_ENV
 
@@ -888,7 +889,7 @@ export const detectInfiniteLoop = arr => {
 
       // If the pattern repeats more than `maxRepeats`, throw a warning
       if (repeatCount >= maxRepeats * 2) {
-        if (ENV === 'testing' || ENV === 'development') {
+        if (isNotProduction(ENV)) {
           console.warn(
             'Warning: Potential infinite loop detected due to repeated sequence:',
             pattern

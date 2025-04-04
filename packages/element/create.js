@@ -40,13 +40,20 @@ import {
   applyVariant,
   createValidDomqlObjectFromSugar
 } from './utils/component.js'
+import { isNotProduction } from '@domql/utils/env.js'
 
 const ENV = process.env.NODE_ENV
 
 /**
  * Creating a domQL element using passed parameters
  */
-export const create = async (element, parent, key, options = OPTIONS.create || {}, attachOptions) => {
+export const create = async (
+  element,
+  parent,
+  key,
+  options = OPTIONS.create || {},
+  attachOptions
+) => {
   cacheOptions(element, options)
 
   // if element is STRING
@@ -93,7 +100,8 @@ export const create = async (element, parent, key, options = OPTIONS.create || {
 
   // apply props settings
   createProps(element, parent, options)
-  if (element.scope === 'props' || element.scope === true) element.scope = element.props
+  if (element.scope === 'props' || element.scope === true)
+    element.scope = element.props
 
   // recatch if it passess props again
   createIfConditionFlag(element, parent)
@@ -128,13 +136,17 @@ export const create = async (element, parent, key, options = OPTIONS.create || {
 const createBasedOnType = (element, parent, key, options) => {
   // if ELEMENT is not given
   if (element === undefined) {
-    if (ENV === 'testing' || ENV === 'development') {
-      console.warn(key, 'element is undefined in', parent && parent.__ref && parent.__ref.path)
+    if (isNotProduction(ENV)) {
+      console.warn(
+        key,
+        'element is undefined in',
+        parent && parent.__ref && parent.__ref.path
+      )
     }
     return {}
   }
   if (isString(key) && key.slice(0, 2 === '__')) {
-    if (ENV === 'testing' || ENV === 'development') {
+    if (isNotProduction(ENV)) {
       console.warn(key, 'seems like to be in __ref')
     }
   }
@@ -152,7 +164,11 @@ const createBasedOnType = (element, parent, key, options) => {
 const redefineElement = (element, parent, key, options) => {
   const elementWrapper = createBasedOnType(element, parent, key, options)
 
-  if (options.syntaxv3 || (element.props && element.props.syntaxv3) || (parent && parent.props && parent.props.syntaxv3) /* kalduna guard */) {
+  if (
+    options.syntaxv3 ||
+    (element.props && element.props.syntaxv3) ||
+    (parent && parent.props && parent.props.syntaxv3) /* kalduna guard */
+  ) {
     if (element.props) element.props.syntaxv3 = true
     else element.syntaxv3 = true
     return createValidDomqlObjectFromSugar(element, parent, key, options)
@@ -187,12 +203,7 @@ const cacheOptions = (element, options) => {
 }
 
 const createKey = (element, parent, key) => {
-  return (
-    exec(key, element) ||
-    key ||
-    element.key ||
-    generateKey()
-  ).toString()
+  return (exec(key, element) || key || element.key || generateKey()).toString()
 }
 
 const addRef = (element, parent) => {
@@ -209,13 +220,15 @@ const switchDefaultOptions = (element, parent, options) => {
 }
 
 const addElementIntoParentChildren = (element, parent) => {
-  if (parent.__ref && parent.__ref.__children) parent.__ref.__children.push(element.key)
+  if (parent.__ref && parent.__ref.__children)
+    parent.__ref.__children.push(element.key)
 }
 
 const visitedElements = new WeakMap()
 const renderElement = async (element, parent, options, attachOptions) => {
   if (visitedElements.has(element)) {
-    if (ENV === 'testing' || ENV === 'development') console.warn('Cyclic rendering detected:', element.__ref.path)
+    if (isNotProduction(ENV))
+      console.warn('Cyclic rendering detected:', element.__ref.path)
   }
 
   visitedElements.set(element, true)
@@ -230,21 +243,34 @@ const renderElement = async (element, parent, options, attachOptions) => {
   }
 
   // CREATE a real NODE
-  if (ENV === 'testing' || ENV === 'development') {
+  if (isNotProduction(ENV)) {
     await createNestedChild()
   } else {
     try {
       await createNestedChild()
     } catch (e) {
       const path = ref.path
-      if (path.includes('ComponentsGrid')) path.splice(0, path.indexOf('ComponentsGrid') + 2)
-      if (path.includes('demoComponent')) path.splice(0, path.indexOf('demoComponent') + 1)
+      if (path.includes('ComponentsGrid'))
+        path.splice(0, path.indexOf('ComponentsGrid') + 2)
+      if (path.includes('demoComponent'))
+        path.splice(0, path.indexOf('demoComponent') + 1)
       const isDemoComponent = element.lookup(el => el.state.key)?.state?.key
-      element.warn('Error happened in:', isDemoComponent ? isDemoComponent + ' ' : '' + path.join('.'))
+      element.warn(
+        'Error happened in:',
+        isDemoComponent ? isDemoComponent + ' ' : '' + path.join('.')
+      )
       element.verbose()
       element.error(e, options)
-      if (element.on?.error) element.on.error(e, element, element.state, element.context, options)
-      if (element.props?.onError) element.props.onError(e, element, element.state, element.context, options)
+      if (element.on?.error)
+        element.on.error(e, element, element.state, element.context, options)
+      if (element.props?.onError)
+        element.props.onError(
+          e,
+          element,
+          element.state,
+          element.context,
+          options
+        )
     }
   }
 
@@ -273,25 +299,32 @@ const renderElement = async (element, parent, options, attachOptions) => {
   await triggerEventOn('create', element, options)
 }
 
-const checkIfPrimitive = (element) => is(element)('string', 'number')
+const checkIfPrimitive = element => is(element)('string', 'number')
 
 const applyValueAsText = (element, parent, key) => {
   const extendTag = element.extend && element.extend.tag
   const childExtendTag = parent.childExtend && parent.childExtend.tag
   const childPropsTag = parent.props.childProps && parent.props.childProps.tag
-  const isKeyValidHTMLTag = ((HTML_TAGS.body.indexOf(key) > -1) && key)
+  const isKeyValidHTMLTag = HTML_TAGS.body.indexOf(key) > -1 && key
   return {
     text: element,
-    tag: extendTag || childExtendTag || childPropsTag || isKeyValidHTMLTag || 'string'
+    tag:
+      extendTag ||
+      childExtendTag ||
+      childPropsTag ||
+      isKeyValidHTMLTag ||
+      'string'
   }
 }
 
 const applyContext = (element, parent, options) => {
-  const forcedOptionsContext = options.context && !ROOT.context && !element.context
+  const forcedOptionsContext =
+    options.context && !ROOT.context && !element.context
   if (forcedOptionsContext) ROOT.context = options.context
 
   // inherit from parent or root
-  if (!element.context) element.context = parent.context || options.context || ROOT.context
+  if (!element.context)
+    element.context = parent.context || options.context || ROOT.context
 }
 
 // Create scope - shared object across the elements to the own or the nearest parent
@@ -304,7 +337,10 @@ const createScope = (element, parent) => {
 const createIfConditionFlag = (element, parent) => {
   const { __ref: ref } = element
 
-  if (isFunction(element.if) && !element.if(element, element.state, element.context)) {
+  if (
+    isFunction(element.if) &&
+    !element.if(element, element.state, element.context)
+  ) {
     delete ref.__if
   } else ref.__if = true
 }
@@ -337,14 +373,15 @@ const addCaching = (element, parent) => {
   // enable CHANGES storing
   if (!ref.__children) ref.__children = []
 
-  if (checkIfKeyIsComponent(key)) ref.__componentKey = key.split('_')[0].split('.')[0].split('+')[0]
+  if (checkIfKeyIsComponent(key))
+    ref.__componentKey = key.split('_')[0].split('.')[0].split('+')[0]
 
   // Add _root element property
   const hasRoot = parent && parent.key === ':root'
   if (!ref.root) ref.root = hasRoot ? element : parentRef.root
 
   // set the PATH array
-  // if (ENV === 'testing' || ENV === 'development') {
+  // if (isNotProduction(ENV)) {
   if (!parentRef) parentRef = parent.ref = {}
   if (!parentRef.path) parentRef.path = []
   ref.path = parentRef.path.concat(element.key)
@@ -367,9 +404,12 @@ const onlyResolveExtends = (element, parent, key, options) => {
 
     // apply props settings
     createProps(element, parent, options)
-    if (element.scope === 'props' || element.scope === true) element.scope = element.props
+    if (element.scope === 'props' || element.scope === true)
+      element.scope = element.props
 
-    if (element.node && ref.__if) { parent[key || element.key] = element } // Borrowed from assignNode()
+    if (element.node && ref.__if) {
+      parent[key || element.key] = element
+    } // Borrowed from assignNode()
 
     if (!element.props) element.props = {}
     applyVariant(element, parent)
@@ -387,16 +427,22 @@ const onlyResolveExtends = (element, parent, key, options) => {
         isMethod(k, element) ||
         isObject((registry.default || registry)[k]) ||
         isVariant(k)
-      ) continue
+      )
+        continue
 
       const hasDefine = element.define && element.define[k]
-      const contextHasDefine = element.context && element.context.define &&
-            element.context.define[k]
+      const contextHasDefine =
+        element.context && element.context.define && element.context.define[k]
       const optionsHasDefine = options.define && options.define[k]
 
       if (!ref.__skipCreate && REGISTRY[k] && !optionsHasDefine) {
         continue
-      } else if (element[k] && !hasDefine && !optionsHasDefine && !contextHasDefine) {
+      } else if (
+        element[k] &&
+        !hasDefine &&
+        !optionsHasDefine &&
+        !contextHasDefine
+      ) {
         create(exec(element[k], element), element, k, options)
       }
     }
@@ -416,7 +462,7 @@ const onlyResolveExtends = (element, parent, key, options) => {
   return element
 }
 
-const checkIfMedia = (key) => key.slice(0, 1) === '@'
+const checkIfMedia = key => key.slice(0, 1) === '@'
 
 const applyMediaProps = (element, parent, key) => {
   const { props } = element

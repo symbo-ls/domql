@@ -1,5 +1,6 @@
 'use strict'
 
+import { isNotProduction } from './env.js'
 import { joinArrays } from './array.js'
 import { deepClone, exec } from './object.js'
 import { isArray, isFunction, isObject, isString } from './types.js'
@@ -176,7 +177,7 @@ export const applyComponentFromContext = (element, parent, options) => {
       components[execExtend] || components['smbls.' + execExtend]
     if (componentExists) element.extend = componentExists
     else {
-      if ((ENV === 'testing' || ENV === 'development') && options.verbose) {
+      if (isNotProduction(ENV) && options.verbose) {
         console.warn(execExtend, 'is not in library', components, element)
         console.warn('replacing with ', {})
       }

@@ -1,6 +1,6 @@
 'use strict'
 
-import { isFunction, exec } from '@domql/utils'
+import { isFunction, exec, isProduction } from '@domql/utils'
 import {
   getExtendStack,
   jointStacks,
@@ -29,7 +29,7 @@ export const applyExtend = (element, parent, options = {}) => {
 
   const extendStack = getExtendStack(extend, context)
 
-  if (ENV !== 'testing' || ENV !== 'development') delete element.extend
+  if (isProduction(ENV)) delete element.extend
 
   let childExtendStack = []
   if (parent) {
@@ -41,11 +41,15 @@ export const applyExtend = (element, parent, options = {}) => {
       // if (!options.ignoreChildExtend && !(props && exec(props, element).ignoreChildExtend)) {
       //   const ignoreChildExtendRecursive = props && exec(props, element).ignoreChildExtendRecursive
 
-      const ignoreChildExtendRecursive = props && props.ignoreChildExtendRecursive
+      const ignoreChildExtendRecursive =
+        props && props.ignoreChildExtendRecursive
       if (parent.childExtendRecursive && !ignoreChildExtendRecursive) {
         const canExtendRecursive = element.key !== '__text'
         if (canExtendRecursive) {
-          const childExtendRecursiveStack = getExtendStack(parent.childExtendRecursive, context)
+          const childExtendRecursiveStack = getExtendStack(
+            parent.childExtendRecursive,
+            context
+          )
           // add error if childExtendRecursive contains element which goes to infinite loop
           childExtendStack = childExtendStack.concat(childExtendRecursiveStack)
           element.childExtendRecursive = parent.childExtendRecursive
@@ -68,7 +72,10 @@ export const applyExtend = (element, parent, options = {}) => {
 
   if (context.defaultExtends) {
     if (!mainExtend) {
-      const defaultOptionsExtend = getExtendStack(context.defaultExtends, context)
+      const defaultOptionsExtend = getExtendStack(
+        context.defaultExtends,
+        context
+      )
       mainExtend = cloneAndMergeArrayExtend(defaultOptionsExtend)
       delete mainExtend.extend
     }
@@ -81,7 +88,9 @@ export const applyExtend = (element, parent, options = {}) => {
   const COMPONENTS = (context && context.components) || options.components
   const component = exec(element.component || mergedExtend.component, element)
   if (component && COMPONENTS && COMPONENTS[component]) {
-    const componentExtend = cloneAndMergeArrayExtend(getExtendStack(COMPONENTS[component]))
+    const componentExtend = cloneAndMergeArrayExtend(
+      getExtendStack(COMPONENTS[component])
+    )
     mergedExtend = deepMergeExtend(componentExtend, mergedExtend)
   }
 
