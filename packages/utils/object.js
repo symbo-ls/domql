@@ -17,8 +17,6 @@ import { stringIncludesAny } from './string.js'
 import { isDOMNode } from './node.js'
 import { isNotProduction } from './env.js'
 
-const ENV = process.env.NODE_ENV
-
 export const exec = (param, element, state, context) => {
   if (isFunction(param)) {
     return param.call(
@@ -889,7 +887,7 @@ export const detectInfiniteLoop = arr => {
 
       // If the pattern repeats more than `maxRepeats`, throw a warning
       if (repeatCount >= maxRepeats * 2) {
-        if (isNotProduction(ENV)) {
+        if (isNotProduction()) {
           console.warn(
             'Warning: Potential infinite loop detected due to repeated sequence:',
             pattern

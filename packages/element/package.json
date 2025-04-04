@@ -1,6 +1,6 @@
 {
   "name": "@domql/element",
-  "version": "2.27.11",
+  "version": "2.27.16",
   "license": "MIT",
   "type": "module",
   "module": "index.js",
@@ -21,18 +21,18 @@
   ],
   "scripts": {
     "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
-    "build:esm": "cross-env NODE_ENV=$NODE_ENV npx esbuild *.js **/*.js --target=es2019 --format=esm --outdir=dist/esm",
-    "build:cjs": "cross-env NODE_ENV=$NODE_ENV npx esbuild *.js **/*.js --target=node16 --format=cjs --outdir=dist/cjs",
+    "build:esm": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild *.js **/*.js --target=es2019 --format=esm --outdir=dist/esm",
+    "build:cjs": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild *.js **/*.js --target=node16 --format=cjs --outdir=dist/cjs",
     "build": "npx rimraf -I dist; npm run build:cjs; npm run build:esm",
     "prepublish": "npx rimraf -I dist && npm run build && npm run copy:package:cjs"
   },
   "dependencies": {
-    "@domql/event": "^2.27.11",
-    "@domql/render": "^2.27.11",
-    "@domql/state": "^2.27.11",
-    "@domql/utils": "^2.27.11"
+    "@domql/event": "^2.27.16",
+    "@domql/render": "^2.27.16",
+    "@domql/state": "^2.27.16",
+    "@domql/utils": "^2.27.16"
   },
-  "gitHead": "0189e4620f901c763754d06de65bcf6075c05618",
+  "gitHead": "aa562640d37f34a66e567c177be8f6ab6b41eccc",
   "devDependencies": {
     "@babel/core": "^7.26.0"
   }

@@ -9,8 +9,6 @@ import {
   fallbackStringExtend
 } from './utils/index.js'
 
-const ENV = process.env.NODE_ENV
-
 let mainExtend
 
 /**
@@ -29,7 +27,7 @@ export const applyExtend = (element, parent, options = {}) => {
 
   const extendStack = getExtendStack(extend, context)
 
-  if (isProduction(ENV)) delete element.extend
+  if (isProduction()) delete element.extend
 
   let childExtendStack = []
   if (parent) {

@@ -2,6 +2,7 @@
 
 // @preserve-env
 export const NODE_ENV = process.env.NODE_ENV
+export const ENV = NODE_ENV
 
 export const isProduction = (env = NODE_ENV) => env === 'production'
 export const isTest = (env = NODE_ENV) => env === 'testing' || env === 'test'

@@ -23,8 +23,6 @@ import { propagateEventsFromProps } from './utils/propEvents.js'
 import { isNotProduction } from '@domql/utils/env.js'
 // import { defineSetter } from './methods'
 
-const ENV = process.env.NODE_ENV
-
 export const createNode = async (element, options) => {
   // create and assign a node
   let { node, tag, __ref: ref } = element
@@ -45,7 +43,7 @@ export const createNode = async (element, options) => {
   }
   // node.dataset // .key = element.key
 
-  if (isNotProduction(ENV) || options.alowRefReference) {
+  if (isNotProduction() || options.alowRefReference) {
     node.ref = element
     if (isFunction(node.setAttribute)) node.setAttribute('key', element.key)
   }

@@ -13,7 +13,6 @@ import {
 } from '@domql/utils'
 import { TREE } from '../tree.js'
 import { parseFilters, REGISTRY } from '../mixins/index.js'
-const ENV = process.env.NODE_ENV
 
 // TODO: update these files
 export function spotByPath (path) {
@@ -212,7 +211,7 @@ export function parseDeep (excl = []) {
 }
 
 export function verbose (element, ...args) {
-  if (isProduction(ENV)) return
+  if (isProduction()) return
 
   const parent = this
   const { __ref: ref } = parent
@@ -230,19 +229,19 @@ export function verbose (element, ...args) {
 }
 
 export function log (...params) {
-  if (isNotProduction(ENV)) {
+  if (isNotProduction()) {
     console.log(...params)
   }
 }
 
 export function warn (...params) {
-  if (isNotProduction(ENV)) {
+  if (isNotProduction()) {
     console.warn(...params)
   }
 }
 
 export function error (...params) {
-  if (isNotProduction(ENV)) {
+  if (isNotProduction()) {
     if (params[params.length - 1]?.debugger) debugger // eslint-disable-line
     if (params[params.length - 1]?.verbose) verbose.call(this, ...params)
     console.error(...params, this)

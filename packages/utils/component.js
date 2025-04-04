@@ -5,8 +5,6 @@ import { joinArrays } from './array.js'
 import { deepClone, exec } from './object.js'
 import { isArray, isFunction, isObject, isString } from './types.js'
 
-const ENV = process.env.NODE_ENV
-
 export const checkIfKeyIsComponent = key => {
   const isFirstKeyString = isString(key)
   if (!isFirstKeyString) return
@@ -177,7 +175,7 @@ export const applyComponentFromContext = (element, parent, options) => {
       components[execExtend] || components['smbls.' + execExtend]
     if (componentExists) element.extend = componentExists
     else {
-      if (isNotProduction(ENV) && options.verbose) {
+      if (isNotProduction() && options.verbose) {
         console.warn(execExtend, 'is not in library', components, element)
         console.warn('replacing with ', {})
       }

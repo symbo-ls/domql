@@ -8,7 +8,6 @@ import {
   deepClone,
   isNotProduction
 } from '@domql/utils'
-const ENV = process.env.NODE_ENV
 
 export const generateHash = () => Math.random().toString(36).substring(2)
 
@@ -104,7 +103,7 @@ export const fallbackStringExtend = (
     if (componentExists) return componentExists
     else if (pageExists) return pageExists
     else {
-      if (options.verbose && isNotProduction(ENV)) {
+      if (options.verbose && isNotProduction()) {
         console.warn('Extend is string but component was not found:', extend)
       }
       return {}

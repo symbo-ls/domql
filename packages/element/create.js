@@ -42,8 +42,6 @@ import {
 } from './utils/component.js'
 import { isNotProduction } from '@domql/utils/env.js'
 
-const ENV = process.env.NODE_ENV
-
 /**
  * Creating a domQL element using passed parameters
  */
@@ -136,7 +134,7 @@ export const create = async (
 const createBasedOnType = (element, parent, key, options) => {
   // if ELEMENT is not given
   if (element === undefined) {
-    if (isNotProduction(ENV)) {
+    if (isNotProduction()) {
       console.warn(
         key,
         'element is undefined in',
@@ -146,7 +144,7 @@ const createBasedOnType = (element, parent, key, options) => {
     return {}
   }
   if (isString(key) && key.slice(0, 2 === '__')) {
-    if (isNotProduction(ENV)) {
+    if (isNotProduction()) {
       console.warn(key, 'seems like to be in __ref')
     }
   }
@@ -227,7 +225,7 @@ const addElementIntoParentChildren = (element, parent) => {
 const visitedElements = new WeakMap()
 const renderElement = async (element, parent, options, attachOptions) => {
   if (visitedElements.has(element)) {
-    if (isNotProduction(ENV))
+    if (isNotProduction())
       console.warn('Cyclic rendering detected:', element.__ref.path)
   }
 
@@ -243,7 +241,7 @@ const renderElement = async (element, parent, options, attachOptions) => {
   }
 
   // CREATE a real NODE
-  if (isNotProduction(ENV)) {
+  if (isNotProduction()) {
     await createNestedChild()
   } else {
     try {
@@ -381,7 +379,7 @@ const addCaching = (element, parent) => {
   if (!ref.root) ref.root = hasRoot ? element : parentRef.root
 
   // set the PATH array
-  // if (isNotProduction(ENV)) {
+  // if (isNotProduction()) {
   if (!parentRef) parentRef = parent.ref = {}
   if (!parentRef.path) parentRef.path = []
   ref.path = parentRef.path.concat(element.key)
