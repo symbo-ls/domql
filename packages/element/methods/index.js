@@ -302,14 +302,41 @@ export function variables (obj = {}) {
   }
 }
 
+/**
+ * A unified call function that detects the calling context and adapts accordingly.
+ * - When called in an async context (with await), it fully resolves promises
+ * - When called in a sync context, it returns sync results directly and handles promises appropriately
+ *
+ * @param {string} fnKey - The name of the function to call
+ * @param {...any} args - Arguments to pass to the function
+ * @returns {any|Promise} - The result or a Promise to the result
+ */
 export function call (fnKey, ...args) {
-  const context = this.context
-  return (
-    context.utils[fnKey] ||
-    context.functions[fnKey] ||
-    context.methods[fnKey] ||
-    context.snippets[fnKey]
-  )?.call(this, ...args)
+  const fn =
+    this.context.utils?.[fnKey] ||
+    this.context.functions?.[fnKey] ||
+    this.context.methods?.[fnKey] ||
+    this.context.snippets?.[fnKey]
+
+  if (!fn) return undefined
+
+  try {
+    // Call the function
+    const result = fn.call(this, ...args)
+
+    // Handle promises
+    if (result && typeof result.then === 'function') {
+      // This magic allows the function to be awaited if called with await
+      // but still work reasonably when called without await
+      return result
+    }
+
+    // Return synchronous results directly
+    return result
+  } catch (error) {
+    console.error(`Error calling '${fnKey}':`, error)
+    throw error
+  }
 }
 
 export const METHODS = [

@@ -112,6 +112,8 @@ export const create = async (
   // apply variants
   applyVariant(element, parent)
 
+  addChildrenIfNotInOriginal(element, parent, key)
+
   const onInit = await triggerEventOn('init', element, options)
   if (onInit === false) return element
 
@@ -119,8 +121,6 @@ export const create = async (
 
   // generate a CLASS name
   assignKeyAsClassname(element)
-
-  addChildrenIfNotInOriginal(element, parent, key)
 
   await renderElement(element, parent, options, attachOptions)
 

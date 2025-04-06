@@ -79,23 +79,24 @@ export const createNode = async (element, options) => {
       continue
 
     const isElement = await applyParam(param, element, options)
-    if (isElement) {
-      const { hasDefine, hasContextDefine } = isElement
-      if (element[param] && !hasDefine && !hasContextDefine) {
-        const createAsync = async () => {
-          await create(exec(value, element), element, param, options)
-        }
+    if (!isElement) continue
 
-        if ((element.props && element.props.lazyLoad) || options.lazyLoad) {
-          window.requestAnimationFrame(async () => {
-            await createAsync()
-            // handle lazy load
-            if (!options.preventUpdateListener) {
-              await triggerEventOn('lazyLoad', element, options)
-            }
-          })
-        } else await createAsync()
+    const { hasDefine, hasContextDefine } = isElement
+
+    if (isElement && value && !hasDefine && !hasContextDefine) {
+      const createAsync = async () => {
+        await create(await exec(value, element), element, param, options)
       }
+
+      if ((element.props && element.props.lazyLoad) || options.lazyLoad) {
+        window.requestAnimationFrame(async () => {
+          await createAsync()
+          // handle lazy load
+          if (!options.preventUpdateListener) {
+            await triggerEventOn('lazyLoad', element, options)
+          }
+        })
+      } else await createAsync()
     }
   }
 

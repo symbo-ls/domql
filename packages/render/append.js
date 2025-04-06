@@ -5,12 +5,29 @@
  * and assigns them into real DOM tree
  */
 export const appendNode = (node, parentNode) => {
-  parentNode.appendChild(node)
+  try {
+    if (parentNode && typeof parentNode.appendChild === 'function') {
+      parentNode.appendChild(node)
+    } else {
+      throw new Error(
+        'Invalid parentNode: appendChild is not supported on this node type.'
+      )
+    }
+  } catch (e) {
+    // Fallback for older browsers
+    if (node && node.parentNode) {
+      node.parentNode.removeChild(node)
+    }
+    if (node && parentNode) {
+      parentNode.appendChild(node)
+    }
+  }
   return node
 }
 
+//q23
 export const insertNodeAfter = (node, siblingNode, parentNode) => {
-  const parent = (parentNode || siblingNode.parentNode)
+  const parent = parentNode || siblingNode.parentNode
   if (siblingNode.nextSibling) {
     parent && parent.insertBefore(node, siblingNode.nextSibling)
   } else if (siblingNode?.insertAdjacentElement) {
@@ -21,7 +38,7 @@ export const insertNodeAfter = (node, siblingNode, parentNode) => {
 }
 
 export const insertNodeBefore = (node, siblingNode, parentNode) => {
-  const parent = (parentNode || siblingNode.parentNode)
+  const parent = parentNode || siblingNode.parentNode
   parent && parent.insertBefore(node, siblingNode)
 }
 
@@ -33,7 +50,7 @@ export const assignNode = (element, parent, key, attachOptions) => {
   parent[key || element.key] = element
   if (element.tag !== 'shadow') {
     if (attachOptions && attachOptions.position) {
-      (attachOptions.position === 'before'
+      ;(attachOptions.position === 'before'
         ? insertNodeBefore
         : insertNodeAfter)(element.node, attachOptions.node || parent.node)
     } else {

@@ -11,6 +11,7 @@ import { triggerEventOn, triggerEventOnUpdate } from '@domql/event'
 export const resetElement = async (params, element, options) => {
   if (!options.preventRemove) removeContent(element, options)
   const { __ref: ref } = element
+  if (params instanceof Promise) console.log(params, params instanceof Promise)
   await create(params, element, ref.contentElementKey || 'content', {
     ignoreChildExtend: true,
     ...registry.defaultOptions,
@@ -19,7 +20,7 @@ export const resetElement = async (params, element, options) => {
   })
 }
 
-export const reset = async (options) => {
+export const reset = async options => {
   const element = this
   await create(element, element.parent, undefined, {
     ignoreChildExtend: true,
@@ -37,16 +38,26 @@ export const set = async function (params, options = {}, el) {
   const __contentRef = content && content.__ref
   const lazyLoad = element.props && element.props.lazyLoad
 
-  const hasCollection = element.$collection || element.$stateCollection || element.$propsCollection
+  const hasCollection =
+    element.$collection || element.$stateCollection || element.$propsCollection
   if (options.preventContentUpdate === true && !hasCollection) return
 
-  if (ref.__noCollectionDifference || (__contentRef && __contentRef.__cached && deepContains(params, content))) {
+  if (
+    ref.__noCollectionDifference ||
+    (__contentRef && __contentRef.__cached && deepContains(params, content))
+  ) {
     if (!options.preventBeforeUpdateListener && !options.preventListeners) {
-      const beforeUpdateReturns = await triggerEventOnUpdate('beforeUpdate', params, element, options)
+      const beforeUpdateReturns = await triggerEventOnUpdate(
+        'beforeUpdate',
+        params,
+        element,
+        options
+      )
       if (beforeUpdateReturns === false) return element
     }
     if (content?.update) await content.update()
-    if (!options.preventUpdateListener) await triggerEventOn('update', element, options)
+    if (!options.preventUpdateListener)
+      await triggerEventOn('update', element, options)
     return
   }
 

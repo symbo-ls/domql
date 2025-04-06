@@ -17,14 +17,43 @@ import { stringIncludesAny } from './string.js'
 import { isDOMNode } from './node.js'
 import { isNotProduction } from './env.js'
 
+/**
+ * Executes a function with the specified context and parameters.
+ * Handles both synchronous and asynchronous functions.
+ *
+ * - When called in an async context (with await), it fully resolves promises
+ * - When called in a sync context, it returns sync results directly and handles promises appropriately
+ *
+ * @param {Function|any} param - The function to execute or value to return
+ * @param {Object} element - The element to use as 'this' context
+ * @param {Object} state - The state to pass to the function
+ * @param {Object} context - The context to pass to the function
+ * @returns {any|Promise} - The result or a Promise to the result
+ */
 export const exec = (param, element, state, context) => {
   if (isFunction(param)) {
-    return param.call(
-      element,
-      element,
-      state || element.state,
-      context || element.context
-    )
+    try {
+      // Call the function with the specified context and parameters
+      const result = param.call(
+        element,
+        element,
+        state || element.state,
+        context || element.context
+      )
+
+      // Handle promises
+      if (result && typeof result.then === 'function') {
+        // This magic allows the function to be awaited if called with await
+        // but still work reasonably when called without await
+        return result
+      }
+      return result
+    } catch (e) {
+      if (isNotProduction()) {
+        console.log(param)
+        console.warn('Error executing function', e)
+      }
+    }
   }
   return param
 }

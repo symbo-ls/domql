@@ -12,7 +12,7 @@ export const propagateEventsFromProps = (element) => {
     if (isFunction(origEvent)) {
       on[eventName] = (...args) => {
         const originalEventRetunrs = origEvent(...args)
-        if (originalEventRetunrs !== false) funcFromProps(...args)
+        if (originalEventRetunrs !== false) return funcFromProps(...args)
       }
     } else on[eventName] = funcFromProps
   })
