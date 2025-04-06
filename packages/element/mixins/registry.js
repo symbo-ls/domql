@@ -1,21 +1,21 @@
 'use strict'
 
-import attr from './attr.js'
+import { attr } from './attr.js'
 import { classList } from './classList.js'
-import content from './content.js'
-import data from './data.js'
-import html from './html.js'
-import scope from './scope.js'
-import state from './state.js'
-import style from './style.js'
-import text from './text.js'
+import { setContent } from './content.js'
+import { data } from './data.js'
+import { html } from './html.js'
+import { scope } from './scope.js'
+import { state } from './state.js'
+import { style } from './style.js'
+import { text } from './text.js'
 
 export const REGISTRY = {
   attr,
   style,
   text,
   html,
-  content,
+  content: setContent,
   data,
   class: classList,
   state,
@@ -81,13 +81,33 @@ export default REGISTRY
 // Keys not in the array are excluded.
 export const parseFilters = {
   elementKeys: [
-    'tag', 'text', 'style', 'attr', 'class', 'state', 'props',
-    'data', 'content', 'html', 'on', 'key', 'extend', 'childExtend',
-    'childExtendRecursive', 'scope', 'query',
-    '$collection', '$stateCollection', '$propsCollection'
+    'tag',
+    'text',
+    'style',
+    'attr',
+    'class',
+    'state',
+    'props',
+    'data',
+    'content',
+    'html',
+    'on',
+    'key',
+    'extend',
+    'childExtend',
+    'childExtendRecursive',
+    'scope',
+    'query',
+    '$collection',
+    '$stateCollection',
+    '$propsCollection'
   ],
   propsKeys: ['__element', 'update'],
   stateKeys: []
 }
 
-export const collectionFilters = ['$collection', '$stateCollection', '$propsCollection']
+export const collectionFilters = [
+  '$collection',
+  '$stateCollection',
+  '$propsCollection'
+]

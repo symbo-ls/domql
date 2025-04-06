@@ -83,7 +83,7 @@ export const createNode = async (element, options) => {
 
     const { hasDefine, hasContextDefine } = isElement
 
-    if (isElement && value && !hasDefine && !hasContextDefine) {
+    if (value && isElement && !hasDefine && !hasContextDefine) {
       const createAsync = async () => {
         await create(await exec(value, element), element, param, options)
       }
