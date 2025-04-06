@@ -27,7 +27,8 @@ export const applyExtend = (element, parent, options = {}) => {
 
   const extendStack = getExtendStack(extend, context)
 
-  if (isProduction()) delete element.extend
+  // if (isProduction()) delete element.extend
+  delete element.extend
 
   let childExtendStack = []
   if (parent) {
