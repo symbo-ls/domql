@@ -8,6 +8,7 @@ export const isProduction = (env = NODE_ENV) => env === 'production'
 export const isTest = (env = NODE_ENV) => env === 'testing' || env === 'test'
 export const isTesting = isTest
 export const isStaging = (env = NODE_ENV) => env === 'staging'
+export const isLocal = (env = NODE_ENV) => env === 'local'
 export const isDevelopment = (env = NODE_ENV) =>
   env === 'development' || env === 'dev' || env === 'local'
 export const getNev = (key, env = NODE_ENV) => env[key]
