@@ -7,7 +7,16 @@
 export const appendNode = (node, parentNode) => {
   try {
     if (parentNode && typeof parentNode.appendChild === 'function') {
-      parentNode.appendChild(node)
+      if (
+        parentNode instanceof Node &&
+        typeof parentNode.appendChild === 'function'
+      ) {
+        parentNode.appendChild(node)
+      } else {
+        throw new Error(
+          'Invalid parentNode: appendChild is not supported on this node type.'
+        )
+      }
     } else {
       throw new Error(
         'Invalid parentNode: appendChild is not supported on this node type.'
