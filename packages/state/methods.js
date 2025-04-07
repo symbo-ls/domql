@@ -137,7 +137,7 @@ export const setByPath = function (path, val, options = {}) {
   return state.update(update, options)
 }
 
-export const setPathCollection = function (changes, options = {}) {
+export const setPathCollection = async function (changes, options = {}) {
   const state = this
   const update = changes.reduce((acc, change) => {
     if (change[0] === 'update') {
@@ -148,14 +148,14 @@ export const setPathCollection = function (changes, options = {}) {
     }
     return acc
   }, {})
-  return state.update(update, options)
+  return await state.update(update, options)
 }
 
-export const removeByPath = function (path, options = {}) {
+export const removeByPath = async function (path, options = {}) {
   const state = this
   removeNestedKeyByPath(state, path)
   if (options.preventUpdate) return path
-  return state.update({}, options)
+  return await state.update({}, options)
 }
 
 export const removePathCollection = function (changes, options = {}) {
