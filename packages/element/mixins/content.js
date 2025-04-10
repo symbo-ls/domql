@@ -41,6 +41,8 @@ export const removeContent = function (el, opts = {}) {
         __cached[contentElementKey].remove()
     }
 
+    ref.__children.splice(ref.__children.indexOf(element[contentElementKey]), 1)
+
     delete element[contentElementKey]
   }
 }
