@@ -82,7 +82,9 @@ export function lookdown (param) {
 export function lookdownAll (param, results = []) {
   const el = this
   const { __ref: ref } = el
-  const children = ref.__children
+  const children = ref?.__children
+
+  if (!children) return
 
   for (let i = 0; i < children.length; i++) {
     const v = children[i]
