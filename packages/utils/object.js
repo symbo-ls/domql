@@ -30,7 +30,8 @@ import { isNotProduction } from './env.js'
  * @param {Object} context - The context to pass to the function
  * @returns {any|Promise} - The result or a Promise to the result
  */
-export const exec = (param, element, state, context) => {
+export function exec (param, element, state, context) {
+  if (!element) element = this
   if (isFunction(param)) {
     try {
       // Call the function with the specified context and parameters
