@@ -193,6 +193,7 @@ export const deepClone = (obj, options = {}) => {
     if (isObjectLike(value)) {
       clone[key] = deepClone(value, {
         ...options,
+        exclude: ['window', 'document', 'node'],
         visited
       })
     } else {
