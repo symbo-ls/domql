@@ -145,8 +145,14 @@ export function setProps (param, options) {
   return element
 }
 
-export function getRef () {
+export function getRef (key) {
+  if (key) return this.__ref && this.__ref[key]
   return this.__ref
+}
+
+export function getChildren () {
+  const __children = this.getRef('__children')
+  return __children.map(k => this[k])
 }
 
 export function getPath () {
@@ -354,6 +360,7 @@ export const METHODS = [
   'lookdown',
   'lookdownAll',
   'getRef',
+  'getChildren',
   'getPath',
   'setNodeStyles',
   'spotByPath',

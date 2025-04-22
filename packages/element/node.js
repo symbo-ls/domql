@@ -52,10 +52,10 @@ export const createNode = async (element, options) => {
   throughExecProps(element)
 
   // iterate through define
-  throughInitialDefine(element)
+  await throughInitialDefine(element)
 
   // iterate through exec
-  throughInitialExec(element)
+  await throughInitialExec(element)
 
   if (element.tag !== 'string' && element.tag !== 'fragment') {
     propagateEventsFromProps(element)

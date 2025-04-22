@@ -78,7 +78,7 @@ export const create = async (
   element.key = key
 
   if (options.onlyResolveExtends) {
-    return onlyResolveExtends(element, parent, key, options)
+    return await onlyResolveExtends(element, parent, key, options)
   }
 
   await triggerEventOn('start', element, options)
@@ -386,7 +386,7 @@ const addCaching = (element, parent) => {
   // }
 }
 
-const onlyResolveExtends = (element, parent, key, options) => {
+const onlyResolveExtends = async (element, parent, key, options) => {
   const { __ref: ref } = element
   if (!ref.__skipCreate) {
     addCaching(element, parent)
@@ -416,8 +416,8 @@ const onlyResolveExtends = (element, parent, key, options) => {
   }
 
   if (element.tag !== 'string' && element.tag !== 'fragment') {
-    throughInitialDefine(element)
-    throughInitialExec(element)
+    await throughInitialDefine(element)
+    await throughInitialExec(element)
 
     for (const k in element) {
       if (
