@@ -27,7 +27,7 @@ export const appendNode = (node, parentNode) => {
     if (node && node.parentNode) {
       node.parentNode.removeChild(node)
     }
-    if (node && parentNode) {
+    if (node && parentNode && parentNode instanceof Element) {
       parentNode.appendChild(node)
     }
   }
