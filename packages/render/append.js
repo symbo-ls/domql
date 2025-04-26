@@ -4,11 +4,12 @@
  * Receives child and parent nodes as parametes
  * and assigns them into real DOM tree
  */
-export const appendNode = (node, parentNode) => {
+export const appendNode = (node, parentNode, el) => {
   try {
     if (parentNode && typeof parentNode.appendChild === 'function') {
+      const win = el.context.window || window
       if (
-        parentNode instanceof Node &&
+        parentNode instanceof win.Node &&
         typeof parentNode.appendChild === 'function'
       ) {
         parentNode.appendChild(node)
@@ -27,7 +28,7 @@ export const appendNode = (node, parentNode) => {
     if (node && node.parentNode) {
       node.parentNode.removeChild(node)
     }
-    if (node && parentNode && parentNode instanceof Element) {
+    if (node && parentNode && parentNode instanceof win.Element) {
       parentNode.appendChild(node)
     }
   }
@@ -63,7 +64,7 @@ export const assignNode = (element, parent, key, attachOptions) => {
         ? insertNodeBefore
         : insertNodeAfter)(element.node, attachOptions.node || parent.node)
     } else {
-      appendNode(element.node, parent.node)
+      appendNode(element.node, parent.node, element)
     }
   }
   return element
