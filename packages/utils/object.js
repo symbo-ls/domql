@@ -186,7 +186,7 @@ export const deepClone = (obj, options = {}) => {
     }
 
     // Handle functions in cross-frame scenario
-    if (isFunction(value) && contentWindow) {
+    if (isFunction(value) && options.window) {
       clone[key] = contentWindow.eval('(' + value.toString() + ')')
       continue
     }
