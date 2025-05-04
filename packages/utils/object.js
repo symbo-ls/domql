@@ -135,6 +135,8 @@ export const deepClone = (obj, options = {}) => {
     handleExtend = false
   } = options
 
+  const contentWindow = targetWindow || window || globalThis
+
   // Handle non-object types and special cases
   if (!isObjectLike(obj) || isDOMNode(obj)) {
     return obj
@@ -146,10 +148,10 @@ export const deepClone = (obj, options = {}) => {
   }
 
   // Create appropriate container based on type and window context
-  const clone = targetWindow
+  const clone = contentWindow
     ? isArray(obj)
-      ? new targetWindow.Array()
-      : new targetWindow.Object()
+      ? new contentWindow.Array()
+      : new contentWindow.Object()
     : isArray(obj)
     ? []
     : {}
@@ -184,8 +186,8 @@ export const deepClone = (obj, options = {}) => {
     }
 
     // Handle functions in cross-frame scenario
-    if (isFunction(value) && targetWindow) {
-      clone[key] = targetWindow.eval('(' + value.toString() + ')')
+    if (isFunction(value) && contentWindow) {
+      clone[key] = contentWindow.eval('(' + value.toString() + ')')
       continue
     }
 

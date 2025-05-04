@@ -54,7 +54,7 @@ export const removeContent = function (el, opts = {}) {
 export async function setContent (param, element, node, opts) {
   const contentElementKey = setContentKey(element, opts)
   if (param && element) {
-    if (element[contentElementKey].update) {
+    if (element[contentElementKey]?.update) {
       await element[contentElementKey].update({}, opts)
     } else {
       await set.call(element, param, opts)
