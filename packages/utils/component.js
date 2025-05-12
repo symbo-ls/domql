@@ -196,28 +196,28 @@ export const hasVariantProp = element => {
   if (isObject(props) && isString(props.variant)) return true
 }
 
-export const getChildrenComponentsByKey = (key, el) => {
-  if (key === el.key || el.__ref.__componentKey === key) {
-    return el
+export function getChildrenComponentsByKey (key) {
+  if (key === thiskey || this.__ref.__componentKey === key) {
+    return this
   }
 
   // Check if the prop is "extend" and it's either a string or an array
-  if (el.extend) {
+  if (this.extend) {
     // Add the value of the extend key to the result array
-    const foundString = isString(el.extend) && el.extend === key
+    const foundString = isString(this.extend) && this.extend === key
     const foundInArray =
-      isArray(el.extend) && el.extend.filter(v => v === key).length
-    if (foundString || foundInArray) return el
+      isArray(this.extend) && this.extend.filter(v => v === key).length
+    if (foundString || foundInArray) return this
   }
 
-  if (el.parent && el.parent.childExtend) {
+  if (this.parent && this.parent.childExtend) {
     // Add the value of the extend key to the result array
     const foundString =
-      isString(el.parent.childExtend) && el.parent.childExtend === key
+      isString(this.parent.childExtend) && this.parent.childExtend === key
     const foundInArray =
-      isArray(el.parent.childExtend) &&
-      el.parent.childExtend.filter(v => v === key).length
-    if (foundString || foundInArray) return el
+      isArray(this.parent.childExtend) &&
+      this.parent.childExtend.filter(v => v === key).length
+    if (foundString || foundInArray) return this
   }
 }
 

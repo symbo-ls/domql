@@ -35,7 +35,10 @@ export const parse = function () {
 export const clean = function (options = {}) {
   const state = this
   for (const param in state) {
-    if (!IGNORE_STATE_PARAMS.includes(param) && Object.hasOwnProperty.call(state, param)) {
+    if (
+      !IGNORE_STATE_PARAMS.includes(param) &&
+      Object.hasOwnProperty.call(state, param)
+    ) {
       delete state[param]
     }
   }
@@ -93,7 +96,7 @@ export const parentUpdate = function (obj, options = {}) {
 export const rootUpdate = function (obj, options = {}) {
   const state = this
   if (!state) return
-  const rootState = (state.__element.__ref.root).state
+  const rootState = state.__element.__ref.root.state
   return rootState.update(obj, { isHoisted: false, ...options })
 }
 
@@ -117,21 +120,23 @@ export const remove = function (key, options = {}) {
   const state = this
   if (isArray(state)) removeFromArray(state, key)
   if (isObject(state)) removeFromObject(state, key)
-  if (options.applyReset) return state.set(state.parse(), { replace: true, ...options })
+  if (options.applyReset)
+    return state.set(state.parse(), { replace: true, ...options })
   return state.update()
 }
 
 export const set = function (val, options = {}) {
   const state = this
   const value = deepClone(val)
-  return state.clean({ preventStateUpdate: true, ...options })
+  return state
+    .clean({ preventStateUpdate: true, ...options })
     .update(value, { replace: true, ...options })
 }
 
 export const setByPath = function (path, val, options = {}) {
   const state = this
   const value = deepClone(val)
-  setInObjectByPath(state, path, val)
+  if (!options.preventReplace) setInObjectByPath(state, path, val)
   const update = createNestedObject(path, value)
   if (options.preventStateUpdate) return update
   return state.update(update, options)
@@ -141,7 +146,10 @@ export const setPathCollection = async function (changes, options = {}) {
   const state = this
   const update = changes.reduce((acc, change) => {
     if (change[0] === 'update') {
-      const result = setByPath.call(state, change[1], change[2], { preventStateUpdate: true })
+      const result = setByPath.call(state, change[1], change[2], {
+        ...options,
+        preventStateUpdate: true
+      })
       return overwriteDeep(acc, result)
     } else if (change[0] === 'delete') {
       removeByPath.call(state, change[1], options)
