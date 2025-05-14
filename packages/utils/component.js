@@ -197,7 +197,7 @@ export const hasVariantProp = element => {
 }
 
 export function getChildrenComponentsByKey (key) {
-  if (key === thiskey || this.__ref.__componentKey === key) {
+  if (key === this.key || this.__ref.__componentKey === key) {
     return this
   }
 

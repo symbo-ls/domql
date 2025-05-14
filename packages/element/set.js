@@ -9,7 +9,7 @@ import { removeContent } from './mixins/content.js'
 import { triggerEventOn, triggerEventOnUpdate } from '@domql/event'
 
 export const resetElement = async (params, element, options) => {
-  if (!options.preventRemove) removeContent(element, options)
+  if (!options.preventRemove) await removeContent(element, options)
   const { __ref: ref } = element
   if (params instanceof Promise) console.log(params, params instanceof Promise)
   await create(params, element, ref.contentElementKey || 'content', {

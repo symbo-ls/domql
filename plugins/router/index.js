@@ -78,7 +78,7 @@ export const router = async (path, el, state = {}, options = {}) => {
     }
 
     if (contentElementKey && opts.removeOldElement) {
-      element[contentElementKey].remove()
+      await element[contentElementKey].remove()
     }
 
     await element.set(
