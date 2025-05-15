@@ -43,10 +43,10 @@ export const createNode = async (element, options) => {
   }
   // node.dataset // .key = element.key
 
-  if (isNotProduction() || options.alowRefReference) {
-    node.ref = element
-    if (isFunction(node.setAttribute)) node.setAttribute('key', element.key)
-  }
+  // if (isNotProduction() || options.alowRefReference) {
+  node.ref = element
+  if (isFunction(node.setAttribute)) node.setAttribute('key', element.key)
+  // }
 
   // iterate through exec props
   throughExecProps(element)
