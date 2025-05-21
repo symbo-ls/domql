@@ -85,7 +85,13 @@ export const createNode = async (element, options) => {
 
     if (value && isElement && !hasDefine && !hasContextDefine) {
       const createAsync = async () => {
-        await create(await exec(value, element), element, param, options)
+        try {
+          const val = await exec(value, element)
+          await create(val, element, param, options)
+        } catch (error) {
+          // Handle other potential errors
+          element.error('An unexpected error occurred:', error)
+        }
       }
 
       if ((element.props && element.props.lazyLoad) || options.lazyLoad) {
