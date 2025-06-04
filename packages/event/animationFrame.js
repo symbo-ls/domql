@@ -23,6 +23,12 @@ export const initAnimationFrame = (ctx) => {
 
   function requestFrame () {
     // Iterate over frameListeners
+
+    if (!frameListeners.size) {
+      window.cancelAnimationFrame(requestFrame) // Stop if no listeners
+      return
+    }
+
     for (const element of frameListeners) {
       if (!element.parent.node.contains(element.node)) {
         frameListeners.delete(element) // Remove if node has no parent
