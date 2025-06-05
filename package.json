@@ -14,6 +14,7 @@
     "test:lint": "npx standard \"packages/**/*.js\"",
     "test:coverage": "node --experimental-vm-modules ./node_modules/.bin/jest --env=jsdom --no-cache --coverage --coverageReporters='text-summary' --coverageReporters='text' --coverageReporters='lcov'; cat ./coverage/lcov.info | coveralls",
     "test": "npm run test:unit; npm run test:lint",
+    "workspace:test:watch": "node --experimental-vm-modules ../node_modules/.bin/jest --watch --env=jsdom",
     "publish:all": "npx lerna publish --force-publish",
     "publish:packages": "npm run test; npx lerna publish",
     "clean": "rm -rf dist .cache **/dist **/.cache",
