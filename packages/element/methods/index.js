@@ -47,7 +47,7 @@ export function lookup (param) {
 
   if (el[param]) return el[param]
 
-  while (parent && parent.param !== param) {
+  while (parent.param !== param) {
     if (parent[param]) return parent[param]
     parent = parent.parent
     if (!parent) return
