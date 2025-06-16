@@ -1,7 +1,7 @@
 {
   "name": "domql-root",
   "private": true,
-  "version": "2.29.0",
+  "version": "2.29.1",
   "repository": "https://github.com/domql/domql",
   "scripts": {
     "postinstall": "npx lerna run build; npx lerna run copy:package:cjs",
