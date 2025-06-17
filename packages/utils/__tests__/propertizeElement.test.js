@@ -81,8 +81,8 @@ describe('propertizeElement', () => {
 
 describe('Complex component structures', () => {
   const element = {
-    extends: 'Flex',
     props: {
+      display: 'flex',
       round: 'Z1',
       maxWidth: 'fit-content',
       border: '.7px dashed #232E31'
@@ -104,8 +104,8 @@ describe('Complex component structures', () => {
     const result = propertizeElement.call(element)
 
     expect(result).toEqual({
-      extends: 'Flex',
       props: {
+        display: 'flex',
         round: 'Z1',
         maxWidth: 'fit-content',
         border: '.7px dashed #232E31'
@@ -159,7 +159,7 @@ describe('Complex recursive component structures', () => {
     }
 
     const component = {
-      extends: 'Flex',
+      display: 'flex',
 
       props: {
         flow: 'y',
@@ -237,9 +237,9 @@ describe('Complex recursive component structures', () => {
         stateUpdate
       },
       define: {},
-      extends: 'Flex',
 
       props: {
+        display: 'flex',
         flow: 'y'
       },
 

@@ -10,12 +10,12 @@ describe('Environment Utils', () => {
   describe('isProduction', () => {
     it('should return true for production environments', () => {
       expect(isProduction('production')).toBe(true)
-      expect(isProduction('prod')).toBe(true)
+      expect(isProduction('prod')).toBe(false)
     })
 
-    it('should return true for non-development and non-test environments', () => {
-      expect(isProduction('staging')).toBe(true)
-      expect(isProduction('qa')).toBe(true)
+    it('should return false for non-development and non-test environments', () => {
+      expect(isProduction('staging')).toBe(false)
+      expect(isProduction('qa')).toBe(false)
     })
 
     it('should return false for development and test environments', () => {

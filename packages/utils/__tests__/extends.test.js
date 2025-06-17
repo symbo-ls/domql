@@ -1397,7 +1397,7 @@ describe('applyExtends', () => {
           },
           Link: { tag: 'a' },
           IconText: {
-            extends: 'Flex',
+            display: 'flex',
             align: 'center center',
             Icon: {
               icon: el => el.call('exec', el.parent.props.icon, el.parent)
@@ -1471,7 +1471,7 @@ describe('applyExtends', () => {
             extends: ['IconText']
           },
           IconText: {
-            extends: 'Flex',
+            display: 'flex',
             align: 'center center'
           },
           Flex: {
