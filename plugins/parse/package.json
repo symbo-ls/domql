@@ -1,5 +1,6 @@
 {
   "name": "@domql/parse",
+<<<<<<< HEAD
   "version": "2.28.98",
   "main": "index.js",
   "license": "MIT",
@@ -8,5 +9,15 @@
     "@domql/render": "^2.28.98"
   },
   "gitHead": "f13db5af1b72bb2a8ab53256b7ba659a3d8ecaae",
+=======
+  "version": "2.29.2",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@domql/element": "^2.29.2",
+    "@domql/render": "^2.29.2"
+  },
+  "gitHead": "50a79f720176a1de8a527c2c29b0ddd76197d563",
+>>>>>>> dc98028e07de933d56ab2e460357cf0c39008ad3
   "source": "index.js"
 }
