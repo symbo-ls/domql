@@ -2,11 +2,16 @@
 
 import { exec, isObject, isString } from '@domql/utils'
 
-export const assignKeyAsClassname = (element) => {
+export const assignKeyAsClassname = element => {
   const { key } = element
-  if (element.class === true) element.class = key
-  else if (!element.class && typeof key === 'string' && key.charAt(0) === '_' && key.charAt(1) !== '_') {
-    element.class = key.slice(1)
+  if (element.classlist === true) element.classlist = key
+  else if (
+    !element.classlist &&
+    typeof key === 'string' &&
+    key.charAt(0) === '_' &&
+    key.charAt(1) !== '_'
+  ) {
+    element.classlist = key.slice(1)
   }
 }
 
@@ -27,12 +32,11 @@ export const classify = (obj, element) => {
 export const classList = (params, element) => {
   if (!params) return
   const { key } = element
-  if (params === true) params = element.class = { key }
-  if (isString(params)) params = element.class = { default: params }
+  if (params === true) params = element.classlist = { key }
+  if (isString(params)) params = element.classlist = { default: params }
   if (isObject(params)) params = classify(params, element)
   // TODO: fails on string
   const className = params.replace(/\s+/g, ' ').trim()
-  if (element.ref) element.ref.class = className // TODO: this check is NOT needed in new DOMQL
   return className
 }
 

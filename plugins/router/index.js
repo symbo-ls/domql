@@ -1,7 +1,8 @@
 'use strict'
 
 import { triggerEventOn } from '@domql/event'
-import { setContentKey, document, window } from '@domql/utils'
+import { document, window } from '@domql/utils'
+import { setContentKey } from '@domql/element/set'
 
 export const getActiveRoute = (level = 0, route = window.location.pathname) => {
   const routeArray = route.split('/')
@@ -84,7 +85,7 @@ export const router = async (path, el, state = {}, options = {}) => {
     await element.set(
       {
         tag: opts.useFragment && 'fragment',
-        extend: content
+        extends: content
       },
       { contentElementKey }
     )

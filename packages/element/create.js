@@ -4,88 +4,62 @@ import { createNode } from './node.js'
 import { ROOT } from './tree.js'
 
 import {
-  HTML_TAGS,
   isObject,
-  isFunction,
-  isString,
   exec,
-  is,
-  isNode,
   isUndefined,
-  generateKey,
-  checkIfKeyIsComponent,
-  deepClone,
-  applyComponentFromContext,
-  applyKeyComponentAsExtend,
-  isVariant,
   detectInfiniteLoop,
-  addChildrenIfNotInOriginal
+  propertizeElement,
+  createElement,
+  applyExtends,
+  createScope,
+  isMethod,
+  OPTIONS,
+  initProps,
+  createIfConditionFlag,
+  createRoot
 } from '@domql/utils'
 
 import { applyAnimationFrame, triggerEventOn } from '@domql/event'
 import { assignNode } from '@domql/render'
 import { createState } from '@domql/state'
 
-import { isMethod } from './methods/index.js'
-import { createProps } from './props/index.js'
-import { applyExtend } from './extend.js'
-import { REGISTRY, registry } from './mixins/index.js'
+import { REGISTRY } from './mixins/index.js'
 import { addMethods } from './methods/set.js'
 import { assignKeyAsClassname } from './mixins/classList.js'
 import { throughInitialExec, throughInitialDefine } from './iterate.js'
 
-import { OPTIONS } from './cache/options.js'
-
-import {
-  applyVariant,
-  createValidDomqlObjectFromSugar
-} from './utils/component.js'
-import { isNotProduction } from '@domql/utils/env.js'
+const ENV = process.env.NODE_ENV
 
 /**
- * Creating a domQL element using passed parameters
+ * Creating a DOMQL element using passed parameters
  */
 export const create = async (
-  element,
-  parent,
-  key,
+  props,
+  parentEl,
+  passedKey,
   options = OPTIONS.create || {},
   attachOptions
 ) => {
-  cacheOptions(element, options)
+  cacheOptions(options)
 
-  // if element is STRING
-  if (checkIfPrimitive(element)) {
-    element = applyValueAsText(element, parent, key)
-  }
+  const element = createElement(props, parentEl, passedKey, options, ROOT)
+  if (!element) return
 
-  element = redefineElement(element, parent, key, options)
-  parent = redefineParent(element, parent, key)
-  key = createKey(element, parent, key)
+  const { key, parent, __ref: ref } = element
 
-  const ref = addRef(element, parent, key)
+  createRoot(element, parent) // Call createRoot after addCaching
 
-  ref.__initialProps = deepClone(element.props)
+  applyExtends(element, parent, options)
 
-  applyContext(element, parent, options)
+  propertizeElement.call(element, element)
 
-  applyComponentFromContext(element, parent, options)
-
-  if (!ref.__skipCreate) {
-    applyExtend(element, parent, options)
-  }
-
-  element.key = key
+  await triggerEventOn('start', element, options)
 
   if (options.onlyResolveExtends) {
     return await onlyResolveExtends(element, parent, key, options)
   }
 
-  await triggerEventOn('start', element, options)
-
-  switchDefaultOptions(element, parent, options)
-
-  addCaching(element, parent)
+  resetOptions(element, parent, options)
 
   addMethods(element, parent, options)
 
@@ -97,27 +71,26 @@ export const create = async (
   createIfConditionFlag(element, parent)
 
   // apply props settings
-  createProps(element, parent, options)
-  if (element.scope === 'props' || element.scope === true)
+  initProps(element, parent, options)
+  if (element.scope === 'props' || element.scope === true) {
     element.scope = element.props
+  }
 
   // recatch if it passess props again
   createIfConditionFlag(element, parent)
 
   // if it already HAS a NODE
-  if (element.node && ref.__if) {
-    return assignNode(element, parent, key, attachOptions)
+  if (element.node) {
+    if (ref.__if) return assignNode(element, parent, key, attachOptions)
   }
 
   // apply variants
-  applyVariant(element, parent)
-
-  addChildrenIfNotInOriginal(element, parent, key)
+  // applyVariant(element, parent)
 
   const onInit = await triggerEventOn('init', element, options)
   if (onInit === false) return element
 
-  await triggerEventOn('beforeClassAssign', element, options)
+  triggerEventOn('beforeClassAssign', element, options)
 
   // generate a CLASS name
   assignKeyAsClassname(element)
@@ -131,102 +104,32 @@ export const create = async (
   return element
 }
 
-const createBasedOnType = (element, parent, key, options) => {
-  // if ELEMENT is not given
-  if (element === undefined) {
-    if (isNotProduction()) {
-      console.warn(
-        key,
-        'element is undefined in',
-        parent && parent.__ref && parent.__ref.path
-      )
-    }
-    return {}
-  }
-  if (isString(key) && key.slice(0, 2 === '__')) {
-    if (isNotProduction()) {
-      console.warn(key, 'seems like to be in __ref')
-    }
-  }
-  if (element === null) return
-  if (element === true) return { text: true }
-
-  // if element is extend
-  if (element.__hash) {
-    return { extend: element }
-  }
-
-  return element
-}
-
-const redefineElement = (element, parent, key, options) => {
-  const elementWrapper = createBasedOnType(element, parent, key, options)
-
-  if (
-    options.syntaxv3 ||
-    (element.props && element.props.syntaxv3) ||
-    (parent && parent.props && parent.props.syntaxv3) /* kalduna guard */
-  ) {
-    if (element.props) element.props.syntaxv3 = true
-    else element.syntaxv3 = true
-    return createValidDomqlObjectFromSugar(element, parent, key, options)
-  } else if (checkIfKeyIsComponent(key)) {
-    return applyKeyComponentAsExtend(elementWrapper, parent, key)
-  }
-
-  // TODO: move as define plugins
-  // Responsive rendering
-  if (checkIfMedia(key)) {
-    return applyMediaProps(elementWrapper, parent, key)
-  }
-
-  return elementWrapper
-}
-
-const redefineParent = (element, parent, key, options) => {
-  if (!parent) return ROOT
-  if (isNode(parent)) {
-    const parentNodeWrapper = { key: ':root', node: parent }
-    ROOT[`${key}_parent`] = parentNodeWrapper
-    return parentNodeWrapper
-  }
-  return parent
-}
-
-const cacheOptions = (element, options) => {
+const cacheOptions = options => {
   if (options && !OPTIONS.create) {
     OPTIONS.create = options
-    OPTIONS.create.context = element.context || options.context
+    OPTIONS.create.context = options.context
   }
 }
 
-const createKey = (element, parent, key) => {
-  return (exec(key, element) || key || element.key || generateKey()).toString()
-}
-
-const addRef = (element, parent) => {
-  if (element.__ref) element.__ref.origin = element
-  else element.__ref = { origin: element }
-  return element.__ref
-}
-
-const switchDefaultOptions = (element, parent, options) => {
+const resetOptions = (element, parent, options) => {
   if (Object.keys(options).length) {
-    registry.defaultOptions = options
-    if (options.ignoreChildExtend) delete options.ignoreChildExtend
+    OPTIONS.defaultOptions = options
+    if (options.ignoreChildExtends) delete options.ignoreChildExtends
   }
 }
 
 const addElementIntoParentChildren = (element, parent) => {
-  if (parent.__ref && parent.__ref.__children)
+  if (parent.__ref && parent.__ref.__children) {
     parent.__ref.__children.push(element.key)
+  }
 }
 
 const visitedElements = new WeakMap()
 const renderElement = async (element, parent, options, attachOptions) => {
   if (visitedElements.has(element)) {
-    if (isNotProduction())
+    if (ENV === 'test' || ENV === 'development') {
       console.warn('Cyclic rendering detected:', element.__ref.path)
+    }
   }
 
   visitedElements.set(element, true)
@@ -241,17 +144,19 @@ const renderElement = async (element, parent, options, attachOptions) => {
   }
 
   // CREATE a real NODE
-  if (isNotProduction()) {
+  if (ENV === 'test' || ENV === 'development') {
     await createNestedChild()
   } else {
     try {
       await createNestedChild()
     } catch (e) {
       const path = ref.path
-      if (path.includes('ComponentsGrid'))
+      if (path.includes('ComponentsGrid')) {
         path.splice(0, path.indexOf('ComponentsGrid') + 2)
-      if (path.includes('demoComponent'))
+      }
+      if (path.includes('demoComponent')) {
         path.splice(0, path.indexOf('demoComponent') + 1)
+      }
       const isDemoComponent = element.lookup(el => el.state.key)?.state?.key
       element.warn(
         'Error happened in:',
@@ -259,16 +164,9 @@ const renderElement = async (element, parent, options, attachOptions) => {
       )
       element.verbose()
       element.error(e, options)
-      if (element.on?.error)
+      if (element.on?.error) {
         element.on.error(e, element, element.state, element.context, options)
-      if (element.props?.onError)
-        element.props.onError(
-          e,
-          element,
-          element.state,
-          element.context,
-          options
-        )
+      }
     }
   }
 
@@ -297,123 +195,32 @@ const renderElement = async (element, parent, options, attachOptions) => {
   await triggerEventOn('create', element, options)
 }
 
-const checkIfPrimitive = element => is(element)('string', 'number')
-
-const applyValueAsText = (element, parent, key) => {
-  const extendTag = element.extend && element.extend.tag
-  const childExtendTag = parent.childExtend && parent.childExtend.tag
-  const childPropsTag = parent.props.childProps && parent.props.childProps.tag
-  const isKeyValidHTMLTag = HTML_TAGS.body.indexOf(key) > -1 && key
-  return {
-    text: element,
-    tag:
-      extendTag ||
-      childExtendTag ||
-      childPropsTag ||
-      isKeyValidHTMLTag ||
-      'string'
-  }
-}
-
-const applyContext = (element, parent, options) => {
-  const forcedOptionsContext =
-    options.context && !ROOT.context && !element.context
-  if (forcedOptionsContext) ROOT.context = options.context
-
-  // inherit from parent or root
-  if (!element.context)
-    element.context = parent.context || options.context || ROOT.context
-}
-
-// Create scope - shared object across the elements to the own or the nearest parent
-const createScope = (element, parent) => {
-  const { __ref: ref } = element
-  // If the element doesn't have a scope, initialize it using the parent's scope or the root's scope.
-  if (!element.scope) element.scope = parent.scope || ref.root.scope || {}
-}
-
-const createIfConditionFlag = (element, parent) => {
-  const { __ref: ref } = element
-
-  if (
-    isFunction(element.if) &&
-    !element.if(element, element.state, element.context)
-  ) {
-    delete ref.__if
-  } else ref.__if = true
-}
-
-const addCaching = (element, parent) => {
-  const { __ref: ref, key } = element
-  let { __ref: parentRef } = parent
-
-  // enable TRANSFORM in data
-  if (!element.transform) element.transform = {}
-
-  // enable CACHING
-  if (!ref.__cached) ref.__cached = {}
-  if (!ref.__defineCache) ref.__defineCache = {}
-
-  // enable EXEC
-  if (!ref.__exec) ref.__exec = {}
-  if (!ref.__execProps) ref.__execProps = {}
-
-  // enable CLASS CACHING
-  if (!ref.__class) ref.__class = {}
-  if (!ref.__classNames) ref.__classNames = {}
-
-  // enable CLASS CACHING
-  if (!ref.__attr) ref.__attr = {}
-
-  // enable CHANGES storing
-  if (!ref.__changes) ref.__changes = []
-
-  // enable CHANGES storing
-  if (!ref.__children) ref.__children = []
-
-  if (checkIfKeyIsComponent(key))
-    ref.__componentKey = key.split('_')[0].split('.')[0].split('+')[0]
-
-  // Add _root element property
-  const hasRoot = parent && parent.key === ':root'
-  if (!ref.root) ref.root = hasRoot ? element : parentRef.root
-
-  // set the PATH array
-  // if (isNotProduction()) {
-  if (!parentRef) parentRef = parent.ref = {}
-  if (!parentRef.path) parentRef.path = []
-  ref.path = parentRef.path.concat(element.key)
-  // }
-}
-
 const onlyResolveExtends = async (element, parent, key, options) => {
   const { __ref: ref } = element
-  if (!ref.__skipCreate) {
-    addCaching(element, parent)
 
-    addMethods(element, parent, options)
+  addMethods(element, parent, options)
 
-    createScope(element, parent)
+  createScope(element, parent)
 
-    createState(element, parent)
-    if (element.scope === 'state') element.scope = element.state
+  createState(element, parent)
+  if (element.scope === 'state') element.scope = element.state
 
-    createIfConditionFlag(element, parent)
+  createIfConditionFlag(element, parent)
 
-    // apply props settings
-    createProps(element, parent, options)
-    if (element.scope === 'props' || element.scope === true)
-      element.scope = element.props
-
-    if (element.node && ref.__if) {
-      parent[key || element.key] = element
-    } // Borrowed from assignNode()
-
-    if (!element.props) element.props = {}
-    applyVariant(element, parent)
-
-    addElementIntoParentChildren(element, parent)
+  // apply props settings
+  initProps(element, parent, options)
+  if (element.scope === 'props' || element.scope === true) {
+    element.scope = element.props
   }
+
+  if (element.node && ref.__if) {
+    parent[key || element.key] = element
+  } // Borrowed from assignNode()
+
+  if (!element.props) element.props = {}
+  // applyVariant(element, parent)
+
+  addElementIntoParentChildren(element, parent)
 
   if (element.tag !== 'string' && element.tag !== 'fragment') {
     await throughInitialDefine(element)
@@ -423,10 +230,10 @@ const onlyResolveExtends = async (element, parent, key, options) => {
       if (
         isUndefined(element[k]) ||
         isMethod(k, element) ||
-        isObject((registry.default || registry)[k]) ||
-        isVariant(k)
-      )
+        isObject(REGISTRY[k])
+      ) {
         continue
+      }
 
       const hasDefine = element.define && element.define[k]
       const contextHasDefine =
@@ -451,7 +258,7 @@ const onlyResolveExtends = async (element, parent, key, options) => {
   delete element.update
   delete element.__element
 
-  // added by createProps
+  // added by initProps
   if (element.props) {
     delete element.props.update
     delete element.props.__element
@@ -460,24 +267,24 @@ const onlyResolveExtends = async (element, parent, key, options) => {
   return element
 }
 
-const checkIfMedia = key => key.slice(0, 1) === '@'
+// const checkIfMedia = (key) => key.slice(0, 1) === '@'
 
-const applyMediaProps = (element, parent, key) => {
-  const { props } = element
-  if (props) {
-    props.display = 'none'
-    if (props[key]) props[key].display = props.display
-    else props[key] = { display: props.display || 'block' }
-    return element
-  } else {
-    return {
-      ...element,
-      props: {
-        display: 'none',
-        [key]: { display: 'block' }
-      }
-    }
-  }
-}
+// const applyMediaProps = (element, parent, key) => {
+//   const { props } = element
+//   if (props) {
+//     props.display = 'none'
+//     if (props[key]) props[key].display = props.display
+//     else props[key] = { display: props.display || 'block' }
+//     return element
+//   } else {
+//     return {
+//       ...element,
+//       props: {
+//         display: 'none',
+//         [key]: { display: 'block' }
+//       }
+//     }
+//   }
+// }
 
 export default create

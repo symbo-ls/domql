@@ -10,16 +10,19 @@ import {
   isString,
   isUndefined,
   merge,
-  isVariant,
   overwriteDeep,
-  createSnapshotId,
-  deepClone
+  deepClone,
+  isMethod,
+  findInheritedState,
+  deepMerge,
+  OPTIONS,
+  updateProps,
+  captureSnapshot,
+  propertizeUpdate
 } from '@domql/utils'
 
 import { applyEvent, triggerEventOn, triggerEventOnUpdate } from '@domql/event'
-import { isMethod } from './methods/index.js'
-import { updateProps } from './props/index.js'
-import { createState, findInheritedState } from '@domql/state'
+import { createState } from '@domql/state'
 
 import { create } from './create.js'
 import {
@@ -29,12 +32,9 @@ import {
 } from './iterate.js'
 import { REGISTRY } from './mixins/index.js'
 import { applyParam } from './utils/applyParam.js'
-import { OPTIONS } from './cache/options.js'
-import { METHODS_EXL, deepMerge } from './utils/index.js' // old utils (current)
-
-const snapshot = {
-  snapshotId: createSnapshotId
-}
+import { METHODS_EXL } from './utils/index.js' // old utils (current)
+import { setContent } from './set.js'
+import setChildren from './children.js'
 
 const UPDATE_DEFAULT_OPTIONS = {
   stackChanges: false,
@@ -42,7 +42,7 @@ const UPDATE_DEFAULT_OPTIONS = {
   preventRecursive: false,
   currentSnapshot: false,
   calleeElement: false,
-  excludes: METHODS_EXL
+  exclude: METHODS_EXL
 }
 
 export const update = async function (params = {}, opts) {
@@ -55,8 +55,6 @@ export const update = async function (params = {}, opts) {
   )
   options.calleeElement = calleeElementCache
   const element = this
-  const { parent, node, key } = element
-  const { excludes, preventInheritAtCurrentState } = options
 
   let ref = element.__ref
   if (!ref) ref = element.__ref = {}
@@ -64,48 +62,58 @@ export const update = async function (params = {}, opts) {
     element,
     options
   )
+
   if (snapshotHasUpdated) return
 
-  if (!options.preventListeners)
+  if (!options.preventListeners) {
     await triggerEventOnUpdate('startUpdate', params, element, options)
+  }
+
+  const { parent, node, key } = element
+  const { exclude, preventInheritAtCurrentState } = options
 
   if (
     preventInheritAtCurrentState &&
     preventInheritAtCurrentState.__element === element
-  )
+  ) {
     return
-  if (!excludes) merge(options, UPDATE_DEFAULT_OPTIONS)
+  }
+  if (!exclude) merge(options, UPDATE_DEFAULT_OPTIONS)
 
   if (isString(params) || isNumber(params)) {
     params = { text: params }
   }
 
+  // apply new updates
+  params = propertizeUpdate.call(element, params)
+
   const inheritState = await inheritStateUpdates(element, options)
   if (inheritState === false) return
 
-  const ifFails = checkIfOnUpdate(element, parent, options)
+  const ifFails = await checkIfOnUpdate(element, parent, options)
   if (ifFails) return
 
   if (ref.__if && !options.preventPropsUpdate) {
     const hasParentProps =
       parent.props && (parent.props[key] || parent.props.childProps)
-    const hasFunctionInProps = ref.__props.filter(v => isFunction(v))
+    const hasFunctionInProps = ref.__propsStack.filter(v => isFunction(v))
     const props = params.props || hasParentProps || hasFunctionInProps.length
     if (props) updateProps(props, element, parent)
   }
 
   if (!options.preventBeforeUpdateListener && !options.preventListeners) {
+    const simulate = { ...params, ...element }
     const beforeUpdateReturns = await triggerEventOnUpdate(
       'beforeUpdate',
       params,
-      element,
+      simulate,
       options
     )
     if (beforeUpdateReturns === false) return element
   }
 
   // apply new updates
-  overwriteDeep(element, params, { exclude: METHODS_EXL })
+  overwriteDeep(element, params)
 
   // exec updates
   throughExecProps(element)
@@ -137,11 +145,11 @@ export const update = async function (params = {}, opts) {
     if (
       isNumber(preventUpdateAfterCount) &&
       preventUpdateAfter <= preventUpdateAfterCount
-    )
+    ) {
       return
-    else if (options.preventUpdateAfterCount === undefined)
+    } else if (options.preventUpdateAfterCount === undefined) {
       options.preventUpdateAfterCount = 1
-    else options.preventUpdateAfterCount++
+    } else options.preventUpdateAfterCount++
   }
 
   for (const param in element) {
@@ -154,24 +162,18 @@ export const update = async function (params = {}, opts) {
     const isInPreventDefineUpdate =
       isArray(preventDefineUpdate) && preventDefineUpdate.includes(param)
 
-    const hasCollection =
-      element.$collection ||
-      element.$stateCollection ||
-      element.$propsCollection
-
     if (
       isUndefined(prop) ||
       isInPreventUpdate ||
       isInPreventDefineUpdate ||
       preventDefineUpdate === true ||
       preventDefineUpdate === param ||
-      (preventContentUpdate && param === 'content' && !hasCollection) ||
       (preventStateUpdate && param) === 'state' ||
       isMethod(param, element) ||
-      isObject(REGISTRY[param]) ||
-      isVariant(param)
-    )
+      isObject(REGISTRY[param])
+    ) {
       continue
+    }
 
     if (preventStateUpdate === 'once') options.preventStateUpdate = false
 
@@ -195,45 +197,39 @@ export const update = async function (params = {}, opts) {
           calleeElement
         })
 
-      lazyLoad
-        ? window.requestAnimationFrame(async () => {
-            // eslint-disable-line
-            await childUpdateCall()
-            // handle lazy load
-            if (!options.preventUpdateListener) {
-              await triggerEventOn('lazyLoad', element, options)
-            }
-          })
-        : await childUpdateCall()
+      if (lazyLoad) {
+        window.requestAnimationFrame(async () => {
+          // eslint-disable-line
+          await childUpdateCall()
+          // handle lazy load
+          if (!options.preventUpdateListener) {
+            await triggerEventOn('lazyLoad', element, options)
+          }
+        })
+      } else await childUpdateCall()
     }
   }
 
-  if (!preventUpdateListener) await triggerEventOn('update', element, options)
-}
+  if (!preventContentUpdate) {
+    const children = params.children || element.children
+    const content = children
+      ? await setChildren(children, element, opts)
+      : element.children || params.content
 
-const captureSnapshot = (element, options) => {
-  const ref = element.__ref
-
-  const { currentSnapshot, calleeElement } = options
-  const isCallee = calleeElement === element
-  if (!calleeElement || isCallee) {
-    const createdStanpshot = snapshot.snapshotId()
-    ref.__currentSnapshot = createdStanpshot
-    return [createdStanpshot, element]
+    if (content) {
+      await setContent(content, element, options)
+    }
   }
 
-  const snapshotOnCallee = calleeElement.__ref.__currentSnapshot
-
-  if (currentSnapshot < snapshotOnCallee) {
-    return [snapshotOnCallee, calleeElement, true]
+  if (!preventUpdateListener) {
+    await triggerEventOn('update', element, options)
   }
-
-  return [snapshotOnCallee, calleeElement]
 }
 
-const checkIfOnUpdate = (element, parent, options) => {
-  if ((!isFunction(element.if) && !isFunction(element.props?.if)) || !parent)
+const checkIfOnUpdate = async (element, parent, options) => {
+  if ((!isFunction(element.if) && !isFunction(element.props?.if)) || !parent) {
     return
+  }
 
   const ref = element.__ref
   const ifPassed = (element.if || element.props?.if)(
@@ -249,7 +245,7 @@ const checkIfOnUpdate = (element, parent, options) => {
     if (itWasFalse) {
       delete element.__hash
       delete element.__text
-      delete element.extend
+      delete element.extends
       if (!ref.__hasRootState) {
         delete element.state
       }
@@ -267,14 +263,11 @@ const checkIfOnUpdate = (element, parent, options) => {
 
       const contentKey = ref.contentElementKey
 
-      if (
-        element.$collection ||
-        element.$stateCollection ||
-        element.$propsCollection
-      ) {
+      if (element.children) {
         element.removeContent()
-      } else if (element[contentKey]?.parseDeep)
+      } else if (element[contentKey]?.parseDeep) {
         element[contentKey] = element[contentKey].parseDeep()
+      }
 
       const previousElement = element.previousElement()
       const previousNode = previousElement?.node // document.body.contains(previousElement.node)
@@ -292,7 +285,7 @@ const checkIfOnUpdate = (element, parent, options) => {
 
       delete element.__ref
       delete element.parent
-      const createdElement = create(
+      const createdElement = await create(
         element,
         parent,
         element.key,
@@ -305,7 +298,11 @@ const checkIfOnUpdate = (element, parent, options) => {
         element.on &&
         isFunction(element.on.update)
       ) {
-        applyEvent(element.on.update, createdElement, createdElement.state)
+        await applyEvent(
+          element.on.update,
+          createdElement,
+          createdElement.state
+        )
       }
       return createdElement
     }
@@ -316,7 +313,7 @@ const checkIfOnUpdate = (element, parent, options) => {
 }
 
 /**
- * Inherit state updates for a given element based on the specified options.
+ * Inherit state updates for a given element when state is inherited.
  *
  * @param {Object} element - The element to inherit state updates for.
  * @param {Object} options - Configuration options for state update inheritance.

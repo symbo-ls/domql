@@ -18,7 +18,7 @@ import { create } from '@domql/element'
 
 //   if (!DOMQLElement) {
 //     const el = create({
-//       extend: component,
+//       extends: component,
 //       node: current.DOMQLElement,
 //       state: state,
 //       props: props,
@@ -50,8 +50,10 @@ export const transformReact = (element, key) => {
   const { ref } = element
   const { tag, props, ...rest } = ref
   let children = ref.children
-  if (children && children.length) { children = children.map(child => child.ref.transform.react) }
-  if (rest.class) props.className = rest.class
+  if (children && children.length) {
+    children = children.map(child => child.ref.transform.react)
+  }
+  if (rest.classlist) props.className = rest.classlist
   return {
     type: tag,
     props,
@@ -72,7 +74,7 @@ const renderReact = (element, key) => {
 // }
 
 // const createCompoonent = (extnds, props, state) => {
-//   return create({extend: extnds, props, state}, {
+//   return create({extends: extnds, props, state}, {
 //     transform: {
 //       react: transformReact
 //     },
@@ -81,11 +83,16 @@ const renderReact = (element, key) => {
 // }
 
 export const DOMQLReact = (component, props, state) => {
-  const element = create({
-    extend: component,
-    props,
-    state
-  }, null, null, { transform: { react: transformReact } })
+  const element = create(
+    {
+      extends: component,
+      props,
+      state
+    },
+    null,
+    null,
+    { transform: { react: transformReact } }
+  )
   const ReactElement = renderReact(element, element.key)
   console.log(ReactElement)
   return ReactElement

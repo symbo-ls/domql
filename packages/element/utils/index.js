@@ -1,5 +1,3 @@
 'use strict'
 
-export * from './object.js'
-export * from './extendUtils.js'
-export * from './component.js'
+export const METHODS_EXL = [] // this is needed because of unit tests

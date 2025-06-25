@@ -1,27 +1,23 @@
 'use strict'
 
 // import DOM from '../../src'
-import {
-  isObjectLike,
-  isString,
-  isNumber,
-  isBoolean,
-  exec,
-  isObject,
-  isEqualDeep,
-  isProduction
-} from '@domql/utils'
-import createEmotion from '@emotion/css/create-instance'
+import { isObjectLike, isString, isNumber, isBoolean, exec } from '@domql/utils'
 import { applyClassListOnNode } from './classList'
+import createEmotion from '@emotion/css/create-instance'
 
 export const transformEmotionStyle = emotion => {
   return (params, element, state) => {
     const execParams = exec(params, element)
     if (params) {
-      if (isObjectLike(element.class)) element.class.elementStyle = execParams
-      else element.class = { elementStyle: execParams }
+      const { __ref: ref } = element
+      ref.__class.style = execParams
     }
-    transformEmotionClass(emotion)(element.class, element, element.state, true)
+    transformEmotionClass(emotion)(
+      element.classlist,
+      element,
+      element.state,
+      true
+    )
   }
 }
 
@@ -35,33 +31,35 @@ export const transformEmotionClass = emotion => {
     if (element.props.class) {
       __classNames.classProps = element.props.class
     }
-    if (element.attr.class) {
+    if (element.attr?.class) {
       __classNames.class = element.attr.class
     }
 
-    for (const key in params) {
-      const prop = exec(params[key], element)
+    // for (const key in params) {
+    //   const prop = exec(params[key], element)
 
+    //   if (!prop) {
+    //     delete __class[key]
+    //     continue
+    //   }
+    // }
+
+    for (const key in __class) {
+      const prop = __class[key]
       if (!prop) {
-        delete __class[key]
         delete __classNames[key]
         continue
       }
-
-      const isEqual = isEqualDeep(__class[key], prop)
-      if (!isEqual) {
-        if (!isProduction() && isObject(prop)) prop.label = key || element.key
-        let className
-        if (isString(prop) || isNumber(prop)) className = prop
-        else if (isBoolean(prop)) className = element.key
-        else className = emotion.css(prop)
-        __class[key] = prop
-        __classNames[key] = className
-      }
+      // console.log(prop, key, element)
+      let className
+      if (isString(prop) || isNumber(prop)) className = prop
+      else if (isBoolean(prop)) className = element.key
+      else className = emotion.css(prop)
+      // console.log(className)
+      __classNames[key] = className
     }
 
     applyClassListOnNode(__classNames, element, element.node)
-    // return element.class
   }
 }
 
@@ -70,6 +68,6 @@ export const transformDOMQLEmotion = (emotion, options) => {
 
   return {
     style: transformEmotionStyle(emotion),
-    class: transformEmotionClass(emotion)
+    classlist: transformEmotionClass(emotion)
   }
 }

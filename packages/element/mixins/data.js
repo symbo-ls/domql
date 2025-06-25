@@ -1,6 +1,6 @@
 'use strict'
 
-import { exec, isObject, deepMerge } from '@domql/utils'
+import { isObject, deepMerge, exec } from '@domql/utils'
 import { report } from '@domql/report'
 
 /**

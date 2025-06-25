@@ -1,51 +1,123 @@
 'use strict'
 
-import { deepContains, setContentKey } from '@domql/utils'
-
-import { OPTIONS } from './cache/options.js'
+import { deepContains, execPromise, isFunction, OPTIONS } from '@domql/utils'
 import { create } from './create.js'
-import { registry } from './mixins/index.js'
-import { removeContent } from './mixins/content.js'
 import { triggerEventOn, triggerEventOnUpdate } from '@domql/event'
 
-export const resetElement = async (params, element, options) => {
-  if (!options.preventRemove) await removeContent(element, options)
+export const setContentKey = (element, opts = {}) => {
   const { __ref: ref } = element
-  if (params instanceof Promise) console.log(params, params instanceof Promise)
-  await create(params, element, ref.contentElementKey || 'content', {
-    ignoreChildExtend: true,
-    ...registry.defaultOptions,
-    ...OPTIONS.create,
-    ...options
-  })
+  const contentElementKey = opts.contentElementKey
+  if (!ref.contentElementKey || contentElementKey !== ref.contentElementKey) {
+    ref.contentElementKey = contentElementKey || 'content'
+  }
+  return ref.contentElementKey
 }
 
 export const reset = async options => {
   const element = this
   await create(element, element.parent, undefined, {
-    ignoreChildExtend: true,
-    ...registry.defaultOptions,
+    ignoreChildExtends: true,
+    ...OPTIONS.defaultOptions,
     ...OPTIONS.create,
     ...options
   })
+}
+
+export const resetContent = async (params, element, opts) => {
+  const contentElementKey = setContentKey(element, opts)
+  if (element[contentElementKey]?.node) removeContent(element, opts)
+  const contentElem = await create(
+    params,
+    element,
+    contentElementKey || 'content',
+    {
+      ignoreChildExtends: true,
+      ...OPTIONS.defaultOptions,
+      ...OPTIONS.create,
+      ...opts
+    }
+  )
+  if (contentElementKey !== 'content') opts.contentElementKey = 'content' // reset to default
+  return contentElem
+}
+
+export const updateContent = async function (params, opts) {
+  const element = this
+  const contentElementKey = setContentKey(element, opts)
+  if (!element[contentElementKey]) return
+  if (element[contentElementKey].update) {
+    await element[contentElementKey].update(params, opts)
+  }
+}
+
+/**
+ * Appends anything as content
+ * an original one as a child
+ */
+export async function setContent (param, element, opts) {
+  const content = await execPromise(param, element)
+
+  if (content && element) {
+    await set.call(element, content, opts)
+  }
+}
+
+export const removeContent = function (el, opts = {}) {
+  const element = el || this
+
+  const contentElementKey = setContentKey(element, opts)
+  if (opts.contentElementKey !== 'content') {
+    opts.contentElementKey = 'content'
+  }
+
+  const content = element[contentElementKey]
+  if (!content) return
+
+  // Handle fragment removal
+  if (content.tag === 'fragment' && content.__ref?.__children) {
+    // Remove all child nodes
+    content.__ref.__children.forEach(key => {
+      const child = content[key]
+      if (child.node && child.node.parentNode) {
+        child.node.parentNode.removeChild(child.node)
+      }
+      if (isFunction(child.remove)) {
+        child.remove()
+      }
+    })
+  } else {
+    // Handle regular element removal
+    if (content.node && content.node.parentNode) {
+      content.node.parentNode.removeChild(content.node)
+    }
+    if (isFunction(content.remove)) {
+      content.remove()
+    }
+  }
+
+  delete element[contentElementKey]
 }
 
 export const set = async function (params, options = {}, el) {
   const element = el || this
   const { __ref: ref } = element
 
-  const content = setContentKey(element, options)
+  const contentElementKey = setContentKey(element, options)
+  const content = element[contentElementKey]
   const __contentRef = content && content.__ref
   const lazyLoad = element.props && element.props.lazyLoad
 
-  const hasCollection =
-    element.$collection || element.$stateCollection || element.$propsCollection
-  if (options.preventContentUpdate === true && !hasCollection) return
+  const hasChildren = element.children
+  if (options.preventContentUpdate === true && !hasChildren) return
 
-  if (
-    ref.__noCollectionDifference ||
-    (__contentRef && __contentRef.__cached && deepContains(params, content))
-  ) {
+  const childHasChanged = !ref.__noChildrenDifference
+  const childrenIsDifferentFromCache =
+    childHasChanged &&
+    __contentRef &&
+    Object.keys(params).length === Object.keys(content).length &&
+    deepContains(params, content)
+
+  if (content?.update && !childHasChanged && !childrenIsDifferentFromCache) {
     if (!options.preventBeforeUpdateListener && !options.preventListeners) {
       const beforeUpdateReturns = await triggerEventOnUpdate(
         'beforeUpdate',
@@ -55,36 +127,41 @@ export const set = async function (params, options = {}, el) {
       )
       if (beforeUpdateReturns === false) return element
     }
-    if (content?.update) await content.update()
-    if (!options.preventUpdateListener)
+    await content.update(params)
+    if (!options.preventUpdateListener && !options.preventListeners) {
       await triggerEventOn('update', element, options)
+    }
     return
   }
 
-  if (params) {
-    let { childExtend, props } = params
-    if (!props) props = params.props = {}
-    if (!childExtend && element.childExtend) {
-      params.childExtend = element.childExtend
-      props.ignoreChildExtend = true
+  if (!params) return element
+
+  let { childExtends, props, tag } = params
+  if (!props) props = params.props = {}
+
+  if (tag === 'fragment') {
+    if (!childExtends && element.childExtends) {
+      params.childExtends = element.childExtends
+      props.ignoreChildExtends = true
     }
+
     if (!props?.childProps && element.props?.childProps) {
       props.childProps = element.props.childProps
       props.ignoreChildProps = true
     }
-
-    if (lazyLoad) {
-      window.requestAnimationFrame(async () => {
-        await resetElement(params, element, options)
-        // handle lazy load
-        if (!options.preventUpdateListener) {
-          await triggerEventOn('lazyLoad', element, options)
-        }
-      })
-    } else await resetElement(params, element, options)
   }
 
-  return element
+  if (lazyLoad) {
+    window.requestAnimationFrame(async () => {
+      await resetContent(params, element, options)
+      // handle lazy load
+      if (!options.preventUpdateListener) {
+        await triggerEventOn('lazyLoad', element, options)
+      }
+    })
+  } else {
+    await resetContent(params, element, options)
+  }
 }
 
 export default set

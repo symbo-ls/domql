@@ -25,35 +25,45 @@ export const trimStringFromSymbols = (str, characters) => {
  * @returns {string} The modified string with placeholders replaced by values from the object.
  */
 const brackRegex = {
-  2: /\{\{\s*((?:\.\.\/)+)?([^}\s]+)\s*\}\}/g,
-  3: /\{\{\{\s*((?:\.\.\/)+)?([^}\s]+)\s*\}\}\}/g
+  2: /{{\s*((?:\.\.\/)*)([\w\d.]+)\s*}}/g,
+  3: /{{{(\s*(?:\.\.\/)*)([\w\d.]+)\s*}}}/g
 }
 
-export function replaceLiteralsWithObjectFields (
-  str,
-  options = {},
-  forcedState
-) {
-  if (!str.includes(options.bracketsLength === 3 ? '{{{' : '{{')) return str
-  const reg = brackRegex[options.bracketsLength || 2]
-  const obj = forcedState || this?.state || {}
+const getNestedValue = (obj, path) => {
+  return path.split('.').reduce((acc, part) => {
+    return acc && acc[part] !== undefined ? acc[part] : undefined
+  }, obj)
+}
+
+export function replaceLiteralsWithObjectFields (str, state = {}, options = {}) {
+  const { bracketsLength = 2 } = options
+  const bracketPattern = bracketsLength === 3 ? '{{{' : '{{'
+  if (!str.includes(bracketPattern)) return str
+
+  const reg = brackRegex[bracketsLength]
+  const obj = state || {}
+
   return str.replace(reg, (_, parentPath, variable) => {
     if (parentPath) {
-      const parentLevels = parentPath.match(
-        options.bracketsLength === 3 ? /\.\.\.\//g : /\.\.\//g
-      ).length
+      const parentLevels = (parentPath.match(/\.\.\//g) || []).length
       let parentState = obj
+
       for (let i = 0; i < parentLevels; i++) {
+        if (!parentState || !parentState.parent) return ''
         parentState = parentState.parent
-        if (!parentState) {
-          return '' // Return an empty string if the parent level doesn't exist
-        }
       }
-      const value = parentState[variable.trim()]
-      return value !== undefined ? `${value}` : ''
+
+      // If the variable is 'parent', return the value property
+      const key = variable.trim()
+      if (key === 'parent') {
+        return parentState.value !== undefined ? String(parentState.value) : ''
+      }
+
+      const value = getNestedValue(parentState, key)
+      return value !== undefined ? String(value) : ''
     } else {
-      const value = obj[variable.trim()]
-      return value !== undefined ? `${value}` : ''
+      const value = getNestedValue(obj, variable.trim())
+      return value !== undefined ? String(value) : ''
     }
   })
 }

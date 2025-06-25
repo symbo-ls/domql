@@ -9,22 +9,18 @@ const Button = {
 }
 
 const increment = {
-  extend: Button,
+  extends: Button,
   text: 'Increment',
-  on: {
-    click: (e) => {
-      val.text++
-    }
+  onClick: e => {
+    val.text++
   }
 }
 
 const decrement = {
-  extend: Button,
+  extends: Button,
   text: 'Decrement',
-  on: {
-    click: (e) => {
-      val.text--
-    }
+  onClick: e => {
+    val.text--
   }
 }
 

@@ -4,50 +4,34 @@
  * Receives child and parent nodes as parametes
  * and assigns them into real DOM tree
  */
-export const appendNode = (node, parentNode, el) => {
+export const appendNode = (node, parentNode) => {
   try {
-    if (parentNode && typeof parentNode.appendChild === 'function') {
-      const win = el.context.window || window
-      if (
-        parentNode instanceof win.Node &&
-        typeof parentNode.appendChild === 'function'
-      ) {
-        parentNode.appendChild(node)
-      } else {
-        throw new Error(
-          'Invalid parentNode: appendChild is not supported on this node type.'
-        )
-      }
-    } else {
-      throw new Error(
-        'Invalid parentNode: appendChild is not supported on this node type.'
-      )
-    }
+    parentNode.appendChild(node)
+    return node
   } catch (e) {
-    // Fallback for older browsers
-    if (node && node.parentNode) {
-      node.parentNode.removeChild(node)
-    }
-    if (node && parentNode && parentNode instanceof win.Element) {
-      parentNode.appendChild(node)
-    }
+    console.error('Does not support to append', parentNode, node)
   }
-  return node
 }
 
 //q23
 export const insertNodeAfter = (node, siblingNode, parentNode) => {
-  const parent = parentNode || siblingNode.parentNode
-  if (siblingNode.nextSibling) {
+  if (!node) {
+    throw new Error('Node is required')
+  }
+  const parent = parentNode || siblingNode?.parentNode
+  if (siblingNode?.nextSibling) {
     parent && parent.insertBefore(node, siblingNode.nextSibling)
   } else if (siblingNode?.insertAdjacentElement) {
     siblingNode.insertAdjacentElement('afterend', node)
   } else {
-    parent.insertBefore(node, siblingNode)
+    parent && parent.insertBefore(node, siblingNode)
   }
 }
 
 export const insertNodeBefore = (node, siblingNode, parentNode) => {
+  if (!node) {
+    throw new Error('Node is required')
+  }
   const parent = parentNode || siblingNode.parentNode
   parent && parent.insertBefore(node, siblingNode)
 }
@@ -57,6 +41,12 @@ export const insertNodeBefore = (node, siblingNode, parentNode) => {
  * parameter as a child of the second one
  */
 export const assignNode = (element, parent, key, attachOptions) => {
+  if (!element) {
+    throw new Error('Element is required')
+  }
+  if (!parent) {
+    throw new Error('Parent is required')
+  }
   parent[key || element.key] = element
   if (element.tag !== 'shadow') {
     if (attachOptions && attachOptions.position) {

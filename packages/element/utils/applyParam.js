@@ -10,7 +10,6 @@ export const applyParam = async (param, element, options) => {
   const { onlyUpdate } = options
 
   const DOMQLProperty = REGISTRY[param]
-
   const DOMQLPropertyFromContext =
     context && context.registry && context.registry[param]
   const isGlobalTransformer = DOMQLPropertyFromContext || DOMQLProperty

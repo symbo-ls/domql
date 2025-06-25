@@ -31,25 +31,30 @@ export const removeCookie = cname => {
   if (isUndefined(document) || isUndefined(document.cookie)) return
   document.cookie = cname + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
 }
-
 /**
  * Load item from the localStorage
  *
  * @param key -- string to identify the storage item
+ * @returns {*} -- parsed data or undefined
  */
 export function getLocalStorage (key) {
-  let savedJSON
-
-  if (window.localStorage) {
-    try {
-      savedJSON = JSON.parse(window.localStorage.getItem(key))
-    } catch (e) {}
+  if (!window.localStorage) {
+    return undefined
   }
 
-  if (typeof savedJSON !== 'undefined') {
-    return savedJSON
+  const item = window.localStorage.getItem(key)
+
+  if (item === null) {
+    return undefined
+  }
+
+  try {
+    return JSON.parse(item)
+  } catch (e) {
+    return undefined
   }
 }
+
 /**
  * Save the data to window.localStorage
  *
@@ -57,11 +62,10 @@ export function getLocalStorage (key) {
  * @param data - the data to save
  */
 export function setLocalStorage (key, data) {
-  if (data && window.localStorage) {
-    if (typeof data === 'object') {
-      window.localStorage.setItem(key, JSON.stringify(data))
-    } else {
-      window.localStorage.setItem(key, data)
-    }
+  if (!window.localStorage || data === undefined || data === null) {
+    return
   }
+
+  const value = typeof data === 'object' ? JSON.stringify(data) : data
+  window.localStorage.setItem(key, value)
 }
