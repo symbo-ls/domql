@@ -21,8 +21,8 @@
   ],
   "scripts": {
     "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
-    "build:esm": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild *.js **/*.js --target=es2019 --format=esm --outdir=dist/esm",
-    "build:cjs": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild *.js **/*.js --target=node16 --format=cjs --outdir=dist/cjs",
+    "build:esm": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild *.js **/*.js --target=es2019 --format=esm --outdir=dist/esm --ignore-pattern:__tests__",
+    "build:cjs": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild *.js **/*.js --target=node16 --format=cjs --outdir=dist/cjs --ignore-pattern:__tests__",
     "build": "npx rimraf -I dist; npm run build:cjs; npm run build:esm",
     "prepublish": "npx rimraf -I dist && npm run build && npm run copy:package:cjs"
   },

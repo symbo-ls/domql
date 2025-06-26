@@ -44,60 +44,60 @@ describe('checkIfOnUpdate via update()', () => {
     options = {}
   })
 
-  it('uses props.if when element.if missing', async () => {
+  it('uses props.if when element.if missing', () => {
     delete element.if
     element.props.if = () => false
-    await update.call(element, {}, options)
+    update.call(element, {}, options)
     expect(element.node).toEqual(document.createElement('div'))
   })
 
-  it('retains state when __hasRootState=true', async () => {
+  it('retains state when __hasRootState=true', () => {
     element.__ref.__hasRootState = true
     element.state.critical = true
     element.__ref.__if = false
 
-    await update.call(element, {}, options)
+    update.call(element, {}, options)
 
     expect(element.state.critical).toBe(true)
     expect(element.state.preserved).toBeUndefined()
   })
 
-  it('processes nested content with parseDeep', async () => {
+  it('processes nested content with parseDeep', () => {
     element.content = {
       parseDeep: () => ({ parsed: true }),
       existing: 'data'
     }
 
-    await update.call(element, {}, options)
+    update.call(element, {}, options)
 
     expect(element.content.parsed).toBe(true)
     expect(element.content.existing).toBeUndefined()
   })
 
-  it('reattaches after previous sibling', async () => {
+  it('reattaches after previous sibling', () => {
     const prevNode = document.createElement('span')
     parent.node.appendChild(prevNode)
 
-    await update.call(element, {}, options)
+    update.call(element, {}, options)
 
     const newElement = parent.node.children[0]
     expect(newElement).toEqual(document.createElement('span'))
     expect(newElement.previousSibling).toBe(null)
   })
 
-  // it('reattaches before next sibling', async () => {
+  // it('reattaches before next sibling', () => {
   //   const nextNode = document.createElement('p')
   //   parent.node.appendChild(nextNode)
 
-  //   await update.call(element, {}, options)
+  //   update.call(element, {}, options)
 
   //   const newElement = parent.node.children[0]
   //   expect(newElement).toEqual(document.createElement('p'))
   //   expect(newElement.nextSibling).toBe(null)
   // })
 
-  // it('appends to parent when no siblings exist', async () => {
-  //   await update.call(element, {}, options)
+  // it('appends to parent when no siblings exist', () => {
+  //   update.call(element, {}, options)
   //   expect(parent.node.children).toHaveLength(0)
   // })
 })

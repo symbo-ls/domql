@@ -20,24 +20,20 @@ const ENV = process.env.NODE_ENV
 
 export const exec = (param, element, state, context) => {
   if (isFunction(param)) {
-    return param.call(
+    const result = param.call(
       element,
       element,
       state || element.state,
       context || element.context
     )
-  }
-  return param
-}
-
-export const execPromise = async (param, element, state, context) => {
-  if (isFunction(param)) {
-    return await param.call(
-      element,
-      element,
-      state || element.state,
-      context || element.context
-    )
+    if (result && typeof result.then === 'function') {
+      let resolved
+      result.then(value => {
+        resolved = value
+      })
+      return resolved
+    }
+    return result
   }
   return param
 }

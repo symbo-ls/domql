@@ -1,6 +1,6 @@
 'use strict'
 
-import { deepContains, execPromise, isFunction, OPTIONS } from '@domql/utils'
+import { deepContains, exec, isFunction, OPTIONS } from '@domql/utils'
 import { create } from './create.js'
 import { triggerEventOn, triggerEventOnUpdate } from '@domql/event'
 
@@ -13,9 +13,9 @@ export const setContentKey = (element, opts = {}) => {
   return ref.contentElementKey
 }
 
-export const reset = async options => {
+export const reset = options => {
   const element = this
-  await create(element, element.parent, undefined, {
+  create(element, element.parent, undefined, {
     ignoreChildExtends: true,
     ...OPTIONS.defaultOptions,
     ...OPTIONS.create,
@@ -23,30 +23,25 @@ export const reset = async options => {
   })
 }
 
-export const resetContent = async (params, element, opts) => {
+export const resetContent = (params, element, opts) => {
   const contentElementKey = setContentKey(element, opts)
   if (element[contentElementKey]?.node) removeContent(element, opts)
-  const contentElem = await create(
-    params,
-    element,
-    contentElementKey || 'content',
-    {
-      ignoreChildExtends: true,
-      ...OPTIONS.defaultOptions,
-      ...OPTIONS.create,
-      ...opts
-    }
-  )
+  const contentElem = create(params, element, contentElementKey || 'content', {
+    ignoreChildExtends: true,
+    ...OPTIONS.defaultOptions,
+    ...OPTIONS.create,
+    ...opts
+  })
   if (contentElementKey !== 'content') opts.contentElementKey = 'content' // reset to default
   return contentElem
 }
 
-export const updateContent = async function (params, opts) {
+export const updateContent = function (params, opts) {
   const element = this
   const contentElementKey = setContentKey(element, opts)
   if (!element[contentElementKey]) return
   if (element[contentElementKey].update) {
-    await element[contentElementKey].update(params, opts)
+    element[contentElementKey].update(params, opts)
   }
 }
 
@@ -54,11 +49,11 @@ export const updateContent = async function (params, opts) {
  * Appends anything as content
  * an original one as a child
  */
-export async function setContent (param, element, opts) {
-  const content = await execPromise(param, element)
+export function setContent (param, element, opts) {
+  const content = exec(param, element)
 
   if (content && element) {
-    await set.call(element, content, opts)
+    set.call(element, content, opts)
   }
 }
 
@@ -98,7 +93,7 @@ export const removeContent = function (el, opts = {}) {
   delete element[contentElementKey]
 }
 
-export const set = async function (params, options = {}, el) {
+export const set = function (params, options = {}, el) {
   const element = el || this
   const { __ref: ref } = element
 
@@ -119,7 +114,7 @@ export const set = async function (params, options = {}, el) {
 
   if (content?.update && !childHasChanged && !childrenIsDifferentFromCache) {
     if (!options.preventBeforeUpdateListener && !options.preventListeners) {
-      const beforeUpdateReturns = await triggerEventOnUpdate(
+      const beforeUpdateReturns = triggerEventOnUpdate(
         'beforeUpdate',
         params,
         element,
@@ -127,9 +122,9 @@ export const set = async function (params, options = {}, el) {
       )
       if (beforeUpdateReturns === false) return element
     }
-    await content.update(params)
+    content.update(params)
     if (!options.preventUpdateListener && !options.preventListeners) {
-      await triggerEventOn('update', element, options)
+      triggerEventOn('update', element, options)
     }
     return
   }
@@ -152,15 +147,15 @@ export const set = async function (params, options = {}, el) {
   }
 
   if (lazyLoad) {
-    window.requestAnimationFrame(async () => {
-      await resetContent(params, element, options)
+    window.requestAnimationFrame(() => {
+      resetContent(params, element, options)
       // handle lazy load
       if (!options.preventUpdateListener) {
-        await triggerEventOn('lazyLoad', element, options)
+        triggerEventOn('lazyLoad', element, options)
       }
     })
   } else {
-    await resetContent(params, element, options)
+    resetContent(params, element, options)
   }
 }
 

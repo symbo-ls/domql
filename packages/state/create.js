@@ -11,17 +11,17 @@ import {
 
 import { applyStateMethods } from './methods'
 
-export const createState = async function (element, parent, options) {
-  element.state = await applyInitialState(element, parent, options)
+export const createState = function (element, parent, options) {
+  element.state = applyInitialState(element, parent, options)
   return element.state
 }
 
-export const applyInitialState = async function (element, parent, options) {
-  const objectizeState = await checkForStateTypes(element)
+export const applyInitialState = function (element, parent, options) {
+  const objectizeState = checkForStateTypes(element)
   if (objectizeState === false) return parent.state || {}
   else element.state = objectizeState
 
-  const whatInitReturns = await triggerEventOn('stateInit', element, options)
+  const whatInitReturns = triggerEventOn('stateInit', element, options)
   if (whatInitReturns === false) return element.state
 
   if (checkIfInherits(element)) {
@@ -29,7 +29,7 @@ export const applyInitialState = async function (element, parent, options) {
     element.state = isUndefined(inheritedState) ? {} : inheritedState
   }
 
-  const dependentState = await applyDependentState(
+  const dependentState = applyDependentState(
     element,
     element.state || parent.state || {}
   )
@@ -38,7 +38,7 @@ export const applyInitialState = async function (element, parent, options) {
   applyStateMethods(element)
 
   // trigger `on.stateCreated`
-  await triggerEventOn('stateCreated', element)
+  triggerEventOn('stateCreated', element)
 
   return element.state
 }

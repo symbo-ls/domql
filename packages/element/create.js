@@ -33,7 +33,7 @@ const ENV = process.env.NODE_ENV
 /**
  * Creating a DOMQL element using passed parameters
  */
-export const create = async (
+export const create = (
   props,
   parentEl,
   passedKey,
@@ -51,13 +51,13 @@ export const create = async (
 
   applyExtends(element, parent, options)
 
+  if (options.onlyResolveExtends) {
+    return onlyResolveExtends(element, parent, key, options)
+  }
+
   propertizeElement.call(element, element)
 
-  await triggerEventOn('start', element, options)
-
-  if (options.onlyResolveExtends) {
-    return await onlyResolveExtends(element, parent, key, options)
-  }
+  triggerEventOn('start', element, options)
 
   resetOptions(element, parent, options)
 
@@ -65,7 +65,7 @@ export const create = async (
 
   createScope(element, parent)
 
-  await createState(element, parent)
+  createState(element, parent)
   if (element.scope === 'state') element.scope = element.state
 
   createIfConditionFlag(element, parent)
@@ -87,7 +87,7 @@ export const create = async (
   // apply variants
   // applyVariant(element, parent)
 
-  const onInit = await triggerEventOn('init', element, options)
+  const onInit = triggerEventOn('init', element, options)
   if (onInit === false) return element
 
   triggerEventOn('beforeClassAssign', element, options)
@@ -95,11 +95,11 @@ export const create = async (
   // generate a CLASS name
   assignKeyAsClassname(element)
 
-  await renderElement(element, parent, options, attachOptions)
+  renderElement(element, parent, options, attachOptions)
 
   addElementIntoParentChildren(element, parent)
 
-  await triggerEventOn('complete', element, options)
+  triggerEventOn('complete', element, options)
 
   return element
 }
@@ -125,7 +125,7 @@ const addElementIntoParentChildren = (element, parent) => {
 }
 
 const visitedElements = new WeakMap()
-const renderElement = async (element, parent, options, attachOptions) => {
+const renderElement = (element, parent, options, attachOptions) => {
   if (visitedElements.has(element)) {
     if (ENV === 'test' || ENV === 'development') {
       console.warn('Cyclic rendering detected:', element.__ref.path)
@@ -136,19 +136,19 @@ const renderElement = async (element, parent, options, attachOptions) => {
 
   const { __ref: ref, key } = element
 
-  const createNestedChild = async () => {
+  const createNestedChild = () => {
     const isInfiniteLoopDetected = detectInfiniteLoop(ref.path)
     if (ref.__uniqId || isInfiniteLoopDetected) return
-    await createNode(element, options)
+    createNode(element, options)
     ref.__uniqId = Math.random()
   }
 
   // CREATE a real NODE
   if (ENV === 'test' || ENV === 'development') {
-    await createNestedChild()
+    createNestedChild()
   } else {
     try {
-      await createNestedChild()
+      createNestedChild()
     } catch (e) {
       const path = ref.path
       if (path.includes('ComponentsGrid')) {
@@ -182,20 +182,20 @@ const renderElement = async (element, parent, options, attachOptions) => {
   applyAnimationFrame(element, options)
 
   // run `on.render`
-  await triggerEventOn('render', element, options)
+  triggerEventOn('render', element, options)
   // triggerEventOn('render', element, options).then(() => {})
 
   // run `on.renderRouter`
-  await triggerEventOn('renderRouter', element, options)
+  triggerEventOn('renderRouter', element, options)
 
   // run `on.done`
-  await triggerEventOn('done', element, options)
+  triggerEventOn('done', element, options)
 
   // run `on.done`
-  await triggerEventOn('create', element, options)
+  triggerEventOn('create', element, options)
 }
 
-const onlyResolveExtends = async (element, parent, key, options) => {
+const onlyResolveExtends = (element, parent, key, options) => {
   const { __ref: ref } = element
 
   addMethods(element, parent, options)
@@ -223,8 +223,8 @@ const onlyResolveExtends = async (element, parent, key, options) => {
   addElementIntoParentChildren(element, parent)
 
   if (element.tag !== 'string' && element.tag !== 'fragment') {
-    await throughInitialDefine(element)
-    await throughInitialExec(element)
+    throughInitialDefine(element)
+    throughInitialExec(element)
 
     for (const k in element) {
       if (
@@ -279,10 +279,8 @@ const onlyResolveExtends = async (element, parent, key, options) => {
 //   } else {
 //     return {
 //       ...element,
-//       props: {
 //         display: 'none',
 //         [key]: { display: 'block' }
-//       }
 //     }
 //   }
 // }

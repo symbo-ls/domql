@@ -3,7 +3,7 @@
 import {
   concatAddExtends,
   deepClone,
-  execPromise,
+  exec,
   getChildStateInKey,
   isArray,
   isDefined,
@@ -20,17 +20,16 @@ import {
  * Apply data parameters on the DOM nodes
  * this should only work if `showOnNode: true` is passed
  */
-export async function setChildren (param, element, opts) {
+export function setChildren (param, element, opts) {
   let { children, __ref: ref, state } = element
 
   let { childrenAs } = element.props || {}
-  children =
-    (await execPromise(param, element, state)) ||
-    (await execPromise(children, element, state))
+  let execParam = exec(param, element, state)
+  let execChildren = exec(children, element, state)
+  children = execParam || execChildren
 
   if (children) {
     if (isState(children)) children = children.parse()
-
     if (isString(children) || isNumber(children)) {
       if (children === 'state') children = state.parse()
       else {

@@ -2,8 +2,8 @@
 
 import { TREE, create as createElement } from '@domql/element'
 
-const create = async (element, parent, key, options) => {
-  const domqlElement = await (createElement.default || createElement)(
+const create = (element, parent, key, options) => {
+  const domqlElement = (createElement.default || createElement)(
     element,
     parent,
     key,
@@ -12,16 +12,11 @@ const create = async (element, parent, key, options) => {
 
   const complete = domqlElement.on?.complete
   if (complete) {
-    await domqlElement.on.complete(
-      element,
-      element.state,
-      element.context,
-      options
-    )
+    domqlElement.on.complete(element, element.state, element.context, options)
   }
   const onComplete = domqlElement.props?.onComplete
   if (onComplete) {
-    await domqlElement.props?.onComplete(
+    domqlElement.props?.onComplete(
       element,
       element.state,
       element.context,
@@ -31,7 +26,7 @@ const create = async (element, parent, key, options) => {
 
   const initInspect = domqlElement.on?.initInspect
   if (initInspect) {
-    await domqlElement.on.initInspect(
+    domqlElement.on.initInspect(
       element,
       element.state,
       element.context,
@@ -41,12 +36,7 @@ const create = async (element, parent, key, options) => {
 
   const initSync = domqlElement.on?.initSync
   if (initSync) {
-    await domqlElement.on.initSync(
-      element,
-      element.state,
-      element.context,
-      options
-    )
+    domqlElement.on.initSync(element, element.state, element.context, options)
   }
 
   return domqlElement

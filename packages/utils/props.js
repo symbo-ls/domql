@@ -129,9 +129,9 @@ export const inheritParentProps = (element, parent) => {
   return propsStack
 }
 
-export async function update (props, options) {
+export function update (props, options) {
   const element = this.__element
-  await element.update({ props }, options)
+  element.update({ props }, options)
 }
 
 // TODO: check bind with promise

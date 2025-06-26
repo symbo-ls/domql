@@ -15,15 +15,15 @@ describe('resetContent', () => {
     }
   })
 
-  it('should update contentElementKey from options', async () => {
-    await resetContent({}, element, { contentElementKey: 'mainContent' })
+  it('should update contentElementKey from options', () => {
+    resetContent({}, element, { contentElementKey: 'mainContent' })
 
     expect(ref.contentElementKey).toBe('mainContent')
     expect(element.mainContent).toBeDefined()
   })
 
-  it('should merge options correctly', async () => {
-    await resetContent({}, element, { customOption: true })
+  it('should merge options correctly', () => {
+    resetContent({}, element, { customOption: true })
 
     expect(element.content).toEqual(
       expect.objectContaining({
@@ -33,10 +33,10 @@ describe('resetContent', () => {
     )
   })
 
-  it('should maintain context through reset', async () => {
+  it('should maintain context through reset', () => {
     const originalContext = element.context
 
-    await resetContent({}, element, {})
+    resetContent({}, element, {})
 
     expect(element.context).toBe(originalContext)
     expect(element.content.context).toBe(originalContext)

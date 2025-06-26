@@ -15,11 +15,11 @@ describe('throughExecProps', () => {
     }
   })
 
-  it('should cache and execute define-prefixed function props', async () => {
+  it('should cache and execute define-prefixed function props', () => {
     element.props.isActive = () => true
     element.props.hasFeature = (el, state) => state.test === 'state'
 
-    await throughExecProps(element)
+    throughExecProps(element)
 
     expect(element.props.isActive).toBe(true)
     expect(element.props.hasFeature).toBe(true)
@@ -29,48 +29,48 @@ describe('throughExecProps', () => {
     })
   })
 
-  it('should execute cached functions from previous runs', async () => {
+  it('should execute cached functions from previous runs', () => {
     ref.__execProps.value = () => 'cached'
     element.props.value = 'current'
 
-    await throughExecProps(element)
+    throughExecProps(element)
 
     expect(element.props.value).toBe('cached')
   })
 
-  it('should leave non-function props unchanged', async () => {
+  it('should leave non-function props unchanged', () => {
     element.props.title = 'static text'
     element.props.disabled = false
 
-    await throughExecProps(element)
+    throughExecProps(element)
 
     expect(element.props.title).toBe('static text')
     expect(element.props.disabled).toBe(false)
     expect(ref.__execProps).toEqual({})
   })
 
-  it('should handle mixed define-prefixed and regular props', async () => {
+  it('should handle mixed define-prefixed and regular props', () => {
     element.props.useHelper = () => 'helper'
     element.props.color = 'blue'
 
-    await throughExecProps(element)
+    throughExecProps(element)
 
     expect(element.props.useHelper).toBe('helper')
     expect(element.props.color).toBe('blue')
     expect(ref.__execProps).toHaveProperty('useHelper')
   })
 
-  it('should preserve existing cache entries', async () => {
+  it('should preserve existing cache entries', () => {
     ref.__execProps.existing = () => 'prior'
     element.props.existing = 'new'
 
-    await throughExecProps(element)
+    throughExecProps(element)
 
     expect(element.props.existing).toBe('prior')
     expect(ref.__execProps.existing).toBeInstanceOf(Function)
   })
 
-  it('should pass correct execution context', async () => {
+  it('should pass correct execution context', () => {
     element.props.checkContext = function (el, state, context) {
       return (
         this === element &&
@@ -79,7 +79,7 @@ describe('throughExecProps', () => {
       )
     }
 
-    await throughExecProps(element)
+    throughExecProps(element)
 
     expect(typeof element.props.checkContext).toBe('function')
   })

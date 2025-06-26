@@ -1,9 +1,9 @@
 'use strict'
 
-import { execPromise, isObject, STATE_METHODS } from '@domql/utils'
+import { exec, isObject, STATE_METHODS } from '@domql/utils'
 
-export async function state (params, element, node) {
-  const state = await execPromise(params, element)
+export function state (params, element, node) {
+  const state = exec(params, element)
 
   if (isObject(state)) {
     for (const param in state) {

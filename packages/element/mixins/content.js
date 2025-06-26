@@ -3,15 +3,14 @@
 import { isFunction, setContentKey } from '@domql/utils'
 import { set } from '../set.js'
 
-export const updateContent = async function (params, options) {
+export const updateContent = function (params, options) {
   const element = this
   const ref = element.__ref
 
   const contentKey = ref.contentElementKey
 
   if (!element[contentKey]) return
-  if (element[contentKey].update)
-    await element[contentKey].update(params, options)
+  if (element[contentKey].update) element[contentKey].update(params, options)
 }
 
 export const removeContent = function (el, opts = {}) {
@@ -52,13 +51,13 @@ export const removeContent = function (el, opts = {}) {
  * Appends anything as content
  * an original one as a child
  */
-export async function setContent (param, element, node, opts) {
+export function setContent (param, element, node, opts) {
   const contentElementKey = setContentKey(element, opts)
   if (param && element) {
     if (element[contentElementKey]?.update) {
-      await element[contentElementKey].update({}, opts)
+      element[contentElementKey].update({}, opts)
     } else {
-      await set.call(element, param, opts)
+      set.call(element, param, opts)
     }
   }
 }

@@ -3,9 +3,9 @@
 import { exec, isFunction } from '@domql/utils'
 import { REGISTRY } from '../mixins/index.js'
 
-export const applyParam = async (param, element, options) => {
+export const applyParam = (param, element, options) => {
   const { node, context, __ref: ref } = element
-  const prop = await exec(element[param], element)
+  const prop = exec(element[param], element)
 
   const { onlyUpdate } = options
 
@@ -25,7 +25,7 @@ export const applyParam = async (param, element, options) => {
 
   if (isGlobalTransformer && !hasContextDefine && hasOnlyUpdate) {
     if (isFunction(isGlobalTransformer)) {
-      await isGlobalTransformer(prop, element, node, options)
+      isGlobalTransformer(prop, element, node, options)
     }
     return
   }

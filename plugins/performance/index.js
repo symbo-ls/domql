@@ -32,9 +32,9 @@ export const measure = (key, func, options = OPTIONS) => {
       console.groupEnd('measure', key)
 }
 
-export const measurePromise = async (key, func, options = OPTIONS) => {
+export const measurePromise = (key, func, options = OPTIONS) => {
   const perf = window.performance.now()
-  await func(perf)
+  func(perf)
   const diff = window.performance.now() - perf
   if (diff > 200 && options.logLevel > 0)
     console.group('measure', key) ||

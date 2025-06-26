@@ -16,23 +16,23 @@ describe('children', () => {
     node = {}
   })
 
-  it('handles null/undefined params', async () => {
-    const result = await setChildren(null, element, node)
+  it('handles null/undefined params', () => {
+    const result = setChildren(null, element, node)
     expect(result).toBeUndefined()
   })
 
-  it('handles direct string children', async () => {
-    const result = await setChildren('Hello World', element, node)
+  it('handles direct string children', () => {
+    const result = setChildren('Hello World', element, node)
     expect(result).toEqual({ tag: 'fragment', 0: { text: 'Hello World' } })
   })
 
-  it('handles numeric children', async () => {
-    const result = await setChildren(42, element, node)
+  it('handles numeric children', () => {
+    const result = setChildren(42, element, node)
     expect(result).toEqual({ tag: 'fragment', 0: { text: 42 } })
   })
 
-  it('handles array of primitive values with childrenAs prop', async () => {
-    const result = await setChildren(['one', 'two'], element, node)
+  it('handles array of primitive values with childrenAs prop', () => {
+    const result = setChildren(['one', 'two'], element, node)
 
     expect(result).toEqual({
       tag: 'fragment',
@@ -41,9 +41,9 @@ describe('children', () => {
     })
   })
 
-  it('handles array of primitive values with childrenAs state', async () => {
+  it('handles array of primitive values with childrenAs state', () => {
     element.props.childrenAs = 'state'
-    const result = await setChildren(['one', 'two'], element, node)
+    const result = setChildren(['one', 'two'], element, node)
 
     expect(result).toEqual({
       tag: 'fragment',
@@ -52,34 +52,34 @@ describe('children', () => {
     })
   })
 
-  it('caches children and detects changes', async () => {
+  it('caches children and detects changes', () => {
     const children1 = [{ id: 1 }, { id: 2 }]
     const children2 = [{ id: 1 }, { id: 2 }]
     const children3 = [{ id: 1 }, { id: 3 }]
 
     // First call
-    await setChildren(children1, element, node)
+    setChildren(children1, element, node)
     expect(element.__ref.__childrenCache).toEqual(children1)
     expect(element.__ref.__noChildrenDifference).toBeUndefined()
 
     // Same content, different reference
-    await setChildren(children2, element, node)
+    setChildren(children2, element, node)
     expect(element.__ref.__noChildrenDifference).toBe(true)
 
     // Different content
-    await setChildren(children3, element, node)
+    setChildren(children3, element, node)
     expect(element.__ref.__noChildrenDifference).toBeUndefined()
     expect(element.__ref.__childrenCache).toEqual(children3)
   })
 
-  it('handles mixed React and normal components', async () => {
+  it('handles mixed React and normal components', () => {
     const mixedChildren = [
       { type: 'div', text: 'Normal' },
       { $$typeof: Symbol('react') },
       { type: 'span', text: 'Another' }
     ]
 
-    await setChildren(mixedChildren, element, node)
+    setChildren(mixedChildren, element, node)
 
     expect(element.call).toHaveBeenCalledWith(
       'renderReact',
@@ -88,13 +88,13 @@ describe('children', () => {
     )
   })
 
-  it('handles state-based children', async () => {
+  it('handles state-based children', () => {
     element.state = {
       items: ['a', 'b'],
       parse: () => ['parsed a', 'parsed b']
     }
 
-    const result = await setChildren('state', element, node)
+    const result = setChildren('state', element, node)
     expect(result).toEqual({
       tag: 'fragment',
       0: { text: 'parsed a' },
@@ -102,9 +102,9 @@ describe('children', () => {
     })
   })
 
-  it('handles async function parameters', async () => {
-    const asyncParam = async () => ['async1', 'async2']
-    const result = await setChildren(asyncParam, element, node)
+  it('handles async function parameters', () => {
+    const asyncParam = () => ['async1', 'async2']
+    const result = setChildren(asyncParam, element, node)
 
     expect(result).toEqual({
       tag: 'fragment',
@@ -113,7 +113,7 @@ describe('children', () => {
     })
   })
 
-  it('handles nested object structures', async () => {
+  it('handles nested object structures', () => {
     const nestedChildren = {
       header: { text: 'Title' },
       content: {
@@ -121,7 +121,7 @@ describe('children', () => {
       }
     }
 
-    const result = await setChildren(nestedChildren, element, node)
+    const result = setChildren(nestedChildren, element, node)
     expect(result).toEqual({
       tag: 'fragment',
       0: { text: 'Title' },
@@ -129,24 +129,20 @@ describe('children', () => {
     })
   })
 
-  it('handles empty arrays and objects', async () => {
-    let result = await setChildren([], element, node)
+  it('handles empty arrays and objects', () => {
+    let result = setChildren([], element, node)
     expect(result).toEqual({
       tag: 'fragment'
     })
 
-    result = await setChildren({}, element, node)
+    result = setChildren({}, element, node)
     expect(result).toEqual({
       tag: 'fragment'
     })
   })
 
-  it('handles falsy values in arrays', async () => {
-    const result = await setChildren(
-      [null, undefined, false, 0, ''],
-      element,
-      node
-    )
+  it('handles falsy values in arrays', () => {
+    const result = setChildren([null, undefined, false, 0, ''], element, node)
     expect(result).toEqual({
       tag: 'fragment',
       3: { text: 0 },
@@ -154,7 +150,7 @@ describe('children', () => {
     })
   })
 
-  it('handles React components with falsy values in array', async () => {
+  it('handles React components with falsy values in array', () => {
     const mixedChildren = [
       null,
       { $$typeof: Symbol('react') },
@@ -163,7 +159,7 @@ describe('children', () => {
       false
     ]
 
-    await setChildren(mixedChildren, element, node)
+    setChildren(mixedChildren, element, node)
 
     expect(element.call).toHaveBeenCalledWith(
       'renderReact',
@@ -172,7 +168,7 @@ describe('children', () => {
     )
   })
 
-  it('handles nested state parsing', async () => {
+  it('handles nested state parsing', () => {
     element.state = {
       nested: {
         items: ['c', 'd']
@@ -180,20 +176,20 @@ describe('children', () => {
     }
     element.state.nested.__proto__.parse = () => ['parsed c', 'parsed d']
 
-    const result = await setChildren('nested', element, node)
+    const result = setChildren('nested', element, node)
     expect(result).toEqual({
       tag: 'fragment',
       0: { state: ['c', 'd'] }
     })
   })
 
-  it('handles mixed state and regular objects', async () => {
+  it('handles mixed state and regular objects', () => {
     element.state = {
       header: { parse: () => 'Header' },
       footer: { parse: () => 'Footer' }
     }
 
-    const result = await setChildren(
+    const result = setChildren(
       {
         header: 'header',
         content: { text: 'Content' },

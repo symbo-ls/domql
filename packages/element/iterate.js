@@ -2,7 +2,6 @@
 
 import {
   isObject,
-  exec,
   isFunction,
   isNumber,
   isString,
@@ -10,22 +9,29 @@ import {
   isContextComponent,
   isMethod,
   overwrite,
-  execPromise
+  exec
 } from '@domql/utils'
 
-export const throughInitialExec = async (element, exclude = {}) => {
+export const throughInitialExec = (element, exclude = {}) => {
   const { __ref: ref } = element
   for (const param in element) {
     if (exclude[param]) continue
     const prop = element[param]
     if (isFunction(prop) && !isMethod(param, element)) {
       ref.__exec[param] = prop
-      element[param] = await prop(element, element.state, element.context)
+      const result = prop(element, element.state, element.context)
+      if (result && typeof result.then === 'function') {
+        result.then(resolved => {
+          element[param] = resolved
+        })
+      } else {
+        element[param] = result
+      }
     }
   }
 }
 
-export const throughUpdatedExec = async (element, options = {}) => {
+export const throughUpdatedExec = (element, options = {}) => {
   const { __ref: ref } = element
   const changes = {}
 
@@ -35,11 +41,13 @@ export const throughUpdatedExec = async (element, options = {}) => {
     const isDefinedParam = ref.__defineCache[param]
     if (isDefinedParam) continue
 
-    const newExec = await ref.__exec[param](
-      element,
-      element.state,
-      element.context
-    )
+    const newExec = ref.__exec[param](element, element.state, element.context)
+    if (newExec && typeof newExec.then === 'function') {
+      newExec.then(resolved => {
+        element[param] = resolved
+      })
+      continue
+    }
     const execReturnsString = isString(newExec) || isNumber(newExec)
     // if (prop && prop.node && execReturnsString) {
     if (prop && prop.node && execReturnsString) {
@@ -62,7 +70,7 @@ export const throughUpdatedExec = async (element, options = {}) => {
   return changes
 }
 
-export const throughExecProps = async element => {
+export const throughExecProps = element => {
   const { __ref: ref } = element
   const { props } = element
   for (const k in props) {
@@ -70,17 +78,31 @@ export const throughExecProps = async element => {
       k.startsWith('is') || k.startsWith('has') || k.startsWith('use')
     const cachedExecProp = ref.__execProps[k]
     if (isFunction(cachedExecProp)) {
-      props[k] = await execPromise(cachedExecProp, element)
+      const result = exec(cachedExecProp, element)
+      if (result && typeof result.then === 'function') {
+        result.then(resolved => {
+          props[k] = resolved
+        })
+      } else {
+        props[k] = result
+      }
     } else if (isDefine && isFunction(props[k])) {
       ref.__execProps[k] = props[k]
-      props[k] = await execPromise(props[k], element)
+      const result = exec(props[k], element)
+      if (result && typeof result.then === 'function') {
+        result.then(resolved => {
+          props[k] = resolved
+        })
+      } else {
+        props[k] = result
+      }
     }
   }
 }
 
 export const isPropertyInDefines = (key, element) => {}
 
-export const throughInitialDefine = async element => {
+export const throughInitialDefine = element => {
   const { define, context, __ref: ref } = element
 
   let defineObj = {}
@@ -93,28 +115,42 @@ export const throughInitialDefine = async element => {
 
     if (isFunction(elementProp) && !isMethod(param, element)) {
       ref.__exec[param] = elementProp
-      const execParam = (elementProp = await execPromise(elementProp, element))
-
-      if (execParam) {
-        elementProp = element[param] = execParam.parse
-          ? execParam.parse()
-          : execParam
-        ref.__defineCache[param] = elementProp
+      let execParam = exec(elementProp, element)
+      if (execParam && typeof execParam.then === 'function') {
+        execParam.then(resolved => {
+          elementProp = element[param] =
+            resolved && resolved.parse ? resolved.parse() : resolved
+          if (resolved) {
+            ref.__defineCache[param] = elementProp
+          }
+        })
+      } else {
+        elementProp = element[param] =
+          execParam && execParam.parse ? execParam.parse() : execParam
+        if (execParam) {
+          ref.__defineCache[param] = elementProp
+        }
       }
     }
 
-    const execParam = await defineObj[param](
+    const execParam = defineObj[param](
       elementProp,
       element,
       element.state,
       element.context
     )
-    if (execParam) element[param] = execParam
+    if (execParam && typeof execParam.then === 'function') {
+      execParam.then(resolved => {
+        if (resolved) element[param] = resolved
+      })
+    } else if (execParam) {
+      element[param] = execParam
+    }
   }
   return element
 }
 
-export const throughUpdatedDefine = async element => {
+export const throughUpdatedDefine = element => {
   const { context, define, __ref: ref } = element
   const changes = {}
 
@@ -125,18 +161,33 @@ export const throughUpdatedDefine = async element => {
   for (const param in obj) {
     const execParam = ref.__exec[param]
     if (execParam) {
-      ref.__defineCache[param] = await execParam(
-        element,
-        element.state,
-        element.context
-      )
+      const result = execParam(element, element.state, element.context)
+      if (result && typeof result.then === 'function') {
+        result.then(resolved => {
+          ref.__defineCache[param] = resolved
+        })
+      } else {
+        ref.__defineCache[param] = result
+      }
     }
-    const cached = await execPromise(ref.__defineCache[param], element)
+    const cached = exec(ref.__defineCache[param], element)
+    if (cached && typeof cached.then === 'function') {
+      cached.then(resolved => {
+        // Optionally assign or use resolved value if needed
+      })
+      continue
+    }
     const newExecParam =
       typeof obj[param] === 'function'
         ? obj[param](cached, element, element.state, element.context)
         : undefined
-    if (newExecParam) element[param] = newExecParam
+    if (newExecParam && typeof newExecParam.then === 'function') {
+      newExecParam.then(resolved => {
+        element[param] = resolved
+      })
+    } else if (newExecParam) {
+      element[param] = newExecParam
+    }
   }
   return changes
 }

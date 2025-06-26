@@ -21,10 +21,7 @@ const STATE_UPDATE_OPTIONS = {
   execStateFunction: true
 }
 
-export const updateState = async function (
-  obj,
-  options = STATE_UPDATE_OPTIONS
-) {
+export const updateState = function (obj, options = STATE_UPDATE_OPTIONS) {
   const state = this
   const element = state.__element
 
@@ -38,7 +35,7 @@ export const updateState = async function (
   } else if (options.preventInheritAtCurrentState) return
 
   if (!options.preventBeforeStateUpdateListener) {
-    const beforeStateUpdateReturns = await triggerEventOnUpdate(
+    const beforeStateUpdateReturns = triggerEventOnUpdate(
       'beforeStateUpdate',
       obj,
       element,
@@ -48,21 +45,21 @@ export const updateState = async function (
   }
 
   overwriteState(state, obj, options)
-  const updateIsHoisted = await hoistStateUpdate(state, obj, options)
+  const updateIsHoisted = hoistStateUpdate(state, obj, options)
   if (updateIsHoisted) return state
 
-  await updateDependentState(state, obj, options)
+  updateDependentState(state, obj, options)
 
-  await applyElementUpdate(state, obj, options)
+  applyElementUpdate(state, obj, options)
 
   if (!options.preventStateUpdateListener) {
-    await triggerEventOnUpdate('stateUpdate', obj, element, options)
+    triggerEventOnUpdate('stateUpdate', obj, element, options)
   }
 
   return state
 }
 
-export const hoistStateUpdate = async (state, obj, options) => {
+export const hoistStateUpdate = (state, obj, options) => {
   const element = state.__element
   const { parent, __ref: ref } = element
 
@@ -88,7 +85,7 @@ export const hoistStateUpdate = async (state, obj, options) => {
   const changesValue = createNestedObjectByKeyPath(stateKey, passedValue)
   const targetParent = findRootState || findGrandParentState || parent.state
   if (options.replace) overwriteDeep(targetParent, changesValue || value) // check with createNestedObjectByKeyPath
-  await targetParent.update(changesValue, {
+  targetParent.update(changesValue, {
     execStateFunction: false,
     isHoisted: true,
     preventUpdate: options.preventHoistElementUpdate,
@@ -98,24 +95,24 @@ export const hoistStateUpdate = async (state, obj, options) => {
   const hasNotUpdated =
     options.preventUpdate !== true || !options.preventHoistElementUpdate
   if (!options.preventStateUpdateListener && hasNotUpdated) {
-    await triggerEventOnUpdate('stateUpdate', obj, element, options)
+    triggerEventOnUpdate('stateUpdate', obj, element, options)
   }
   return true
 }
 
-const updateDependentState = async (state, obj, options) => {
+const updateDependentState = (state, obj, options) => {
   if (!state.__depends) return
   for (const el in state.__depends) {
     const dependentState = state.__depends[el]
-    const cleanState = await dependentState.clean()
-    await cleanState.update(state.parse(), options)
+    const cleanState = dependentState.clean()
+    cleanState.update(state.parse(), options)
   }
 }
 
-const applyElementUpdate = async (state, obj, options) => {
+const applyElementUpdate = (state, obj, options) => {
   const element = state.__element
   if (options.preventUpdate !== true) {
-    await element.update(
+    element.update(
       {},
       {
         ...options,
@@ -123,7 +120,7 @@ const applyElementUpdate = async (state, obj, options) => {
       }
     )
   } else if (options.preventUpdate === 'recursive') {
-    await element.update(
+    element.update(
       {},
       {
         ...options,

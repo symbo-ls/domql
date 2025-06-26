@@ -33,7 +33,7 @@ describe('create()', () => {
     props.__ref.__skipCreate = true
     props.scope = undefined
     const { create } = await import('../create')
-    await create(props, parent, 'passedKey', {
+    create(props, parent, 'passedKey', {
       onlyResolveExtends: true,
       define: ['test']
     })
@@ -45,7 +45,7 @@ describe('create()', () => {
     props.__ref.__if = true
     props.scope = 'state'
     const { create } = await import('../create')
-    await create(props, parent, 'passedKey', {
+    create(props, parent, 'passedKey', {
       onlyResolveExtends: true,
       define: ['test']
     })
@@ -57,7 +57,7 @@ describe('create()', () => {
     process.env.NODE_ENV = 'prod'
     props.__ref = undefined
     const { create } = await import('../create')
-    await create(props, parent, 'passedKey', { onlyResolveExtends: true })
+    create(props, parent, 'passedKey', { onlyResolveExtends: true })
     expect(parent.__ref).toBeUndefined()
     expect(parent.passedKey).toBe(props.__ref.parent.passedKey)
   })
@@ -66,7 +66,7 @@ describe('create()', () => {
     process.env.NODE_ENV = 'prod'
     props.__ref = undefined
     const { create } = await import('../create')
-    await create(props, parent, 'passedKey')
+    create(props, parent, 'passedKey')
     expect(parent.__ref).toBeUndefined()
     expect(parent.passedKey).toBe(props.__ref.parent.passedKey)
   })
@@ -74,7 +74,7 @@ describe('create()', () => {
   test('should attaches element to parent when ref.__if is false', async () => {
     process.env.NODE_ENV = 'prod'
     const { create } = await import('../create')
-    await create(props, parent, 'passedKey')
+    create(props, parent, 'passedKey')
     expect(parent.__ref).toBeUndefined()
     expect(parent.passedKey).toBe(props.__ref.parent.passedKey)
   })
@@ -83,7 +83,7 @@ describe('create()', () => {
     process.env.NODE_ENV = 'prod'
     props.__if = true
     const { create } = await import('../create')
-    await create(props, parent, 'passedKey')
+    create(props, parent, 'passedKey')
     expect(parent.testKey).toBe('parentTestKey')
     expect(parent.passedKey).toBe(props.__ref.parent.passedKey)
   })
@@ -92,7 +92,7 @@ describe('create()', () => {
     process.env.NODE_ENV = 'prod'
     props.__ref = { __uniqId: 'existing-id', path: [] }
     const { create } = await import('../create')
-    await create(props, {}, 'passedKey')
+    create(props, {}, 'passedKey')
     expect(props.__ref.__uniqId).toBeDefined()
   })
 
@@ -100,7 +100,7 @@ describe('create()', () => {
     process.env.NODE_ENV = 'prod'
     props.__ref = { path: ['loop-path'], __uniqId: undefined }
     const { create } = await import('../create')
-    await create(props, {}, 'passedKey')
+    create(props, {}, 'passedKey')
     expect(props.__ref.__uniqId).toBeDefined()
   })
 
@@ -108,7 +108,7 @@ describe('create()', () => {
     process.env.NODE_ENV = 'prod'
     props.__ref = { path: ['ComponentsGrid', 'x', 'y', 'z'] }
     const { create } = await import('../create')
-    await create(props, {}, ['ComponentsGrid', 'x', 'y', 'z'])
+    create(props, {}, ['ComponentsGrid', 'x', 'y', 'z'])
     expect(props.__ref.path).toEqual(['ComponentsGrid,x,y,z'])
   })
 
@@ -116,7 +116,7 @@ describe('create()', () => {
     process.env.NODE_ENV = 'prod'
     props.__ref = { path: ['demoComponent', 'a', 'b', 'c'] }
     const { create } = await import('../create')
-    await create(props, {}, ['demoComponent', 'a', 'b', 'c'])
+    create(props, {}, ['demoComponent', 'a', 'b', 'c'])
     expect(props.__ref.path).toEqual(['demoComponent,a,b,c'])
   })
 
@@ -125,7 +125,7 @@ describe('create()', () => {
     props.__ref = { __if: false, path: [] }
     props.key = 'fallbackKey'
     const { create } = await import('../create')
-    await create(props, parent, null)
+    create(props, parent, null)
     expect(props.__ref.parent.fallbackKey).toBeDefined()
   })
 })

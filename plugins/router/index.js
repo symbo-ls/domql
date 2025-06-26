@@ -28,7 +28,7 @@ const defaultOptions = {
   scrollToOptions: { behavior: 'smooth' }
 }
 
-export const router = async (path, el, state = {}, options = {}) => {
+export const router = (path, el, state = {}, options = {}) => {
   const element = el || this
   const win = element.context.window || window
   const doc = element.context.document || document
@@ -72,17 +72,17 @@ export const router = async (path, el, state = {}, options = {}) => {
 
   if (pathChanged || !hashChanged) {
     if (opts.updateState) {
-      await element.state.update(
+      element.state.update(
         { route, hash, debugging: false },
         { preventContentUpdate: true }
       )
     }
 
     if (contentElementKey && opts.removeOldElement) {
-      await element[contentElementKey].remove()
+      element[contentElementKey].remove()
     }
 
-    await element.set(
+    element.set(
       {
         tag: opts.useFragment && 'fragment',
         extends: content
@@ -122,7 +122,7 @@ export const router = async (path, el, state = {}, options = {}) => {
   }
 
   // trigger `on.routeChanged`
-  await triggerEventOn('routeChanged', element, opts)
+  triggerEventOn('routeChanged', element, opts)
 }
 
 export default router

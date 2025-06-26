@@ -10,29 +10,33 @@ const getOnOrPropsEvent = (param, element) => {
   return onEvent || onPropEvent
 }
 
-export const applyEvent = async (param, element, state, context, options) => {
+export const applyEvent = (param, element, state, context, options) => {
   if (!isFunction(param)) return
-  return await param.call(
+  const result = param.call(
     element,
     element,
     state || element.state,
     context || element.context,
     options
   )
+  if (result && typeof result.then === 'function') {
+    result.then(() => {})
+  }
+  return result
 }
 
-export const triggerEventOn = async (param, element, options) => {
+export const triggerEventOn = (param, element, options) => {
   if (!element) {
     throw new Error('Element is required')
   }
   const appliedFunction = getOnOrPropsEvent(param, element)
   if (appliedFunction) {
     const { state, context } = element
-    return await applyEvent(appliedFunction, element, state, context, options)
+    return applyEvent(appliedFunction, element, state, context, options)
   }
 }
 
-export const applyEventUpdate = async (
+export const applyEventUpdate = (
   param,
   updatedObj,
   element,
@@ -41,7 +45,7 @@ export const applyEventUpdate = async (
   options
 ) => {
   if (!isFunction(param)) return
-  return await param.call(
+  const result = param.call(
     element,
     updatedObj,
     element,
@@ -49,18 +53,17 @@ export const applyEventUpdate = async (
     context || element.context,
     options
   )
+  if (result && typeof result.then === 'function') {
+    result.then(() => {})
+  }
+  return result
 }
 
-export const triggerEventOnUpdate = async (
-  param,
-  updatedObj,
-  element,
-  options
-) => {
+export const triggerEventOnUpdate = (param, updatedObj, element, options) => {
   const appliedFunction = getOnOrPropsEvent(param, element)
   if (appliedFunction) {
     const { state, context } = element
-    return await applyEventUpdate(
+    return applyEventUpdate(
       appliedFunction,
       updatedObj,
       element,
@@ -78,9 +81,9 @@ export const applyEventsOnNode = (element, options) => {
 
     const appliedFunction = getOnOrPropsEvent(param, element)
     if (isFunction(appliedFunction)) {
-      node.addEventListener(param, async event => {
+      node.addEventListener(param, event => {
         const { state, context } = element
-        await appliedFunction.call(
+        const result = appliedFunction.call(
           element,
           event,
           element,
@@ -88,6 +91,9 @@ export const applyEventsOnNode = (element, options) => {
           context,
           options
         )
+        if (result && typeof result.then === 'function') {
+          result.then(() => {})
+        }
       })
     }
   }

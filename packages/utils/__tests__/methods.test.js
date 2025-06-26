@@ -446,6 +446,9 @@ describe('Parsing Methods', () => {
 describe('Logging Methods', () => {
   describe('verbose', () => {
     test('should log verbose information', () => {
+      // Reset mock call counts
+      console.groupCollapsed.mockClear()
+      console.log.mockClear()
       const mockElement = {
         key: 'test',
         __ref: { path: ['root'] },
@@ -456,6 +459,9 @@ describe('Logging Methods', () => {
     })
 
     test('should log formatted properties when args provided', () => {
+      // Reset mock call counts
+      console.groupCollapsed.mockClear()
+      console.log.mockClear()
       const mockElement = {
         key: 'test',
         testProp: 'testValue',
@@ -486,6 +492,8 @@ describe('Logging Methods', () => {
   describe('logging functions', () => {
     beforeEach(() => {
       process.env.NODE_ENV = 'development'
+      console.log.mockClear()
+      console.warn.mockClear()
     })
 
     test('log should call console.log in development', () => {

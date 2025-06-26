@@ -18,7 +18,7 @@ import { setContent } from './set.js'
 
 const ENV = process.env.NODE_ENV
 
-export const createNode = async (element, opts) => {
+export const createNode = (element, opts) => {
   // create and assign a node
   let { node, tag, __ref: ref } = element
 
@@ -34,7 +34,9 @@ export const createNode = async (element, opts) => {
     } else node = element.node = cacheNode(element)
 
     // trigger `on.attachNode`
-    await triggerEventOn('attachNode', element, opts)
+    return triggerEventOn('attachNode', element, opts).then(() => {
+      return continueCreateNode(element, opts, isNewNode, node)
+    })
   }
   // node.dataset // .key = element.key
 
@@ -43,61 +45,86 @@ export const createNode = async (element, opts) => {
     if (isFunction(node.setAttribute)) node.setAttribute('key', element.key)
   }
 
-  // iterate through exec props
-  await throughExecProps(element)
+  // If node already exists, continue without attachNode event
+  return continueCreateNode(element, opts, isNewNode, node)
+}
 
-  // iterate through define
-  await throughInitialDefine(element)
+// Helper to handle the rest of the logic with .then() chaining
+function continueCreateNode (element, opts, isNewNode, node) {
+  if (ENV === 'test' || ENV === 'development' || opts.alowRefReference) {
+    node.ref = element
+    if (isFunction(node.setAttribute)) node.setAttribute('key', element.key)
+  }
 
-  // iterate through exec
-  await throughInitialExec(element)
-
-  await applyEventsOnNode(element, { isNewNode, ...opts })
-
-  for (const param in element) {
-    const value = element[param]
-
-    if (
-      !Object.hasOwnProperty.call(element, param) ||
-      isUndefined(value) ||
-      isMethod(param, element) ||
-      isObject(REGISTRY[param])
-    ) {
-      continue
-    }
-
-    const isElement = await applyParam(param, element, opts)
-    if (isElement) {
-      const { hasDefine, hasContextDefine } = isElement
-      if (element[param] && !hasDefine && !hasContextDefine) {
-        const createAsync = async () => {
-          await create(value, element, param, opts)
+  // throughExecProps
+  return throughExecProps(element)
+    .then(() => {
+      return throughInitialDefine(element)
+    })
+    .then(() => {
+      return throughInitialExec(element)
+    })
+    .then(() => {
+      return applyEventsOnNode(element, { isNewNode, ...opts })
+    })
+    .then(() => {
+      // for...in loop with promise chaining
+      let chain = Promise.resolve()
+      for (const param in element) {
+        const value = element[param]
+        if (
+          !Object.hasOwnProperty.call(element, param) ||
+          isUndefined(value) ||
+          isMethod(param, element) ||
+          isObject(REGISTRY[param])
+        ) {
+          continue
         }
-
-        // TODO: test this with promise
-        // handle lazy load
-        if ((element.props && element.props.lazyLoad) || opts.lazyLoad) {
-          window.requestAnimationFrame(async () => {
-            await createAsync()
-            if (!opts.preventUpdateListener) {
-              await triggerEventOn('lazyLoad', element, opts)
+        chain = chain.then(() => {
+          return applyParam(param, element, opts).then(isElement => {
+            if (isElement) {
+              const { hasDefine, hasContextDefine } = isElement
+              if (element[param] && !hasDefine && !hasContextDefine) {
+                // handle lazy load
+                if (
+                  (element.props && element.props.lazyLoad) ||
+                  opts.lazyLoad
+                ) {
+                  window.requestAnimationFrame(() => {
+                    create(value, element, param, opts).then(() => {
+                      if (!opts.preventUpdateListener) {
+                        triggerEventOn('lazyLoad', element, opts)
+                      }
+                    })
+                  })
+                } else {
+                  return create(value, element, param, opts)
+                }
+              }
             }
           })
-        } else await createAsync()
+        })
       }
-    }
-  }
-
-  const content = element.children
-    ? await setChildren(element.children, element, opts)
-    : element.content || element.content
-
-  if (content) {
-    await setContent(content, element, opts)
-  }
-
-  // node.dataset.key = key
-  return element
+      return chain
+    })
+    .then(() => {
+      // setChildren
+      let contentPromise
+      if (element.children) {
+        contentPromise = setChildren(element.children, element, opts)
+      } else {
+        contentPromise = Promise.resolve(element.content || element.content)
+      }
+      return contentPromise.then(content => {
+        if (content) {
+          return setContent(content, element, opts)
+        }
+      })
+    })
+    .then(() => {
+      // node.dataset.key = key
+      return element
+    })
 }
 
 export default createNode

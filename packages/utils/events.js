@@ -9,9 +9,9 @@ export function addEventFromProps (key, obj) {
   const origEvent = on[eventName]
   const funcFromProps = props[key]
   if (isFunction(origEvent)) {
-    on[eventName] = async (...args) => {
-      const originalEventRetunrs = await origEvent(...args)
-      if (originalEventRetunrs !== false) await funcFromProps(...args)
+    on[eventName] = (...args) => {
+      const originalEventRetunrs = origEvent(...args)
+      if (originalEventRetunrs !== false) funcFromProps(...args)
     }
   } else on[eventName] = funcFromProps
 }

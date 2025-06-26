@@ -9,12 +9,10 @@ import DOM from 'domql'
 
 const Poster = {
   extends: [Link, Img],
-  props: {
-    boxSize: [100, 200],
-    borderRadius: 12,
-    padding: 16,
-    background: '#fff'
-  }
+  boxSize: [100, 200],
+  borderRadius: 12,
+  padding: 16,
+  background: '#fff'
 }
 
 DOM.create(Poster, document.body)

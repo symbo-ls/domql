@@ -22,91 +22,87 @@ describe('set', () => {
   })
 
   // 1. Basic Content Updates
-  it('updates element.props when params.props are provided', async () => {
-    await set.call(element, { props: { title: 'New Title' } })
+  it('updates element.props when params.props are provided', () => {
+    set.call(element, { props: { title: 'New Title' } })
     expect(element.content.props.title).toBe('New Title')
   })
 
   // 2. Deep Equality Checks
-  it('skips update when deepContains matches existing content', async () => {
+  it('skips update when deepContains matches existing content', () => {
     ref.__noChildrenDifference = true
     const originalProps = { ...element.props }
-    await set.call(element, { props: { id: 'same' } })
+    set.call(element, { props: { id: 'same' } })
     expect(element.props).toEqual(originalProps)
   })
 
   // 3. ChildExtends Inheritance
-  it('merges element.childExtends into params when missing', async () => {
+  it('merges element.childExtends into params when missing', () => {
     element.childExtends = { button: 'PrimaryButton' }
     const params = { tag: 'fragment', props: {} }
-    await set.call(element, params)
+    set.call(element, params)
     expect(params.childExtends).toEqual({ button: 'PrimaryButton' })
     expect(params.props.ignoreChildExtends).toBe(true)
   })
 
   // 6. Prevent Content Update
-  it('preserves content when preventContentUpdate=true and no children', async () => {
+  it('preserves content when preventContentUpdate=true and no children', () => {
     const originalContent = element[ref.contentElementKey]
-    await set.call(
-      element,
-      { props: { new: true } },
-      { preventContentUpdate: true }
-    )
+    set.call(element, { props: { new: true } }, { preventContentUpdate: true })
     expect(element[ref.contentElementKey]).toBeDefined()
     expect(originalContent).toBeUndefined()
   })
 
   // 7. ChildProps Inheritance
-  it('copies element.props.childProps into params when missing', async () => {
+  it('copies element.props.childProps into params when missing', () => {
     element.props.childProps = { size: 'large' }
     const params = { tag: 'fragment', props: {} }
-    await set.call(element, params)
+    set.call(element, params)
     expect(params.props.childProps).toEqual({ size: 'large' })
     expect(params.props.ignoreChildProps).toBe(true)
   })
 
   // 8. Event Blocking
-  it('preserves state when beforeUpdate returns false', async () => {
+  it('preserves state when beforeUpdate returns false', () => {
     ref.__noChildrenDifference = true
     const originalState = { ...element.state }
 
     // Simulate beforeUpdate rejection by not changing state
-    await set.call(element, { state: { shouldChange: true } })
+    set.call(element, { state: { shouldChange: true } })
     expect(element.state).toEqual(originalState)
   })
 
   // 9. DOM Node Handling
-  it('updates node reference when provided in params', async () => {
+  it('updates node reference when provided in params', () => {
     const newNode = document.createElement('section')
-    await set.call(element, { node: newNode })
+    set.call(element, { node: newNode })
     expect(element.node.tagName).toBe('DIV')
   })
 
   // 11. Context Component Resolution
-  it('resolves context components in params', async () => {
+  it('resolves context components in params', () => {
     element.context.components = { Header: {} }
-    await set.call(element, { Header: {} })
+    set.call(element, { Header: {} })
     expect(element.Header).toBeUndefined()
   })
 
   // 12. Nested Property Updates
-  it('updates nested props without mutating original', async () => {
+  it('updates nested props without mutating original', () => {
     const originalProps = { nested: { value: 1 } }
     element.props = originalProps
-    await set.call(element, { props: { nested: { value: 2 } } })
+    set.call(element, { props: { nested: { value: 2 } } })
     expect(element.props.nested.value).toBe(1)
     expect(originalProps.nested.value).toBe(1) // No mutation
   })
 
   // 13. Empty Param Handling
-  it('preserves existing props when params=null', async () => {
+  it('preserves existing props when params=null', () => {
     element.props = { preserveMe: true }
-    await set.call(element, null)
+    set.call(element, null)
     expect(element.props.preserveMe).toBe(true)
   })
 
   // 14. Content Removal
-  it('removes content correctly when calling removeContent', async () => {
+  it('removes content correctly when calling removeContent', () => {
     const content = document.createElement('div')
     element.content = {
       node: content,
@@ -114,18 +110,18 @@ describe('set', () => {
       remove: jest.fn()
     }
     element.node.appendChild(content)
-    await set.call(element, { props: { new: true } })
+    set.call(element, { props: { new: true } })
     expect(element.content.__ref).toBeDefined()
     expect(element.node.contains(content)).toBeFalsy()
   })
 
   // 15. Lazy Loading
-  it('handles lazy loading with requestAnimationFrame', async () => {
+  it('handles lazy loading with requestAnimationFrame', () => {
     jest.useFakeTimers()
     element.props = { lazyLoad: true }
     const params = { props: { test: true } }
 
-    await set.call(element, params)
+    set.call(element, params)
     jest.runAllTimers()
 
     setTimeout(() => {
@@ -135,7 +131,7 @@ describe('set', () => {
   })
 
   // 17. Fragment Content
-  it('handles fragment content removal correctly', async () => {
+  it('handles fragment content removal correctly', () => {
     const remove1 = jest.fn(() => Promise.resolve())
     const remove2 = jest.fn(() => Promise.resolve())
     const node1 = document.createElement('div')
@@ -155,13 +151,13 @@ describe('set', () => {
     element.node.appendChild(node1)
     element.node.appendChild(node2)
 
-    await set.call(element, { props: { new: true } })
+    set.call(element, { props: { new: true } })
 
     expect(remove1).toHaveBeenCalled()
     expect(remove2).toHaveBeenCalled()
   })
 
-  it('handles fragment content removal with children', async () => {
+  it('handles fragment content removal with children', () => {
     const remove1 = jest.fn()
     const remove2 = jest.fn()
     const node1 = document.createElement('div')
@@ -180,25 +176,25 @@ describe('set', () => {
     element.node.appendChild(node1)
     element.node.appendChild(node2)
 
-    await set.call(element, { props: { new: true } })
+    set.call(element, { props: { new: true } })
 
     expect(remove1).toHaveBeenCalled()
     expect(remove2).toHaveBeenCalled()
   })
 
-  it('merges element.childExtends into params when tag is fragment', async () => {
+  it('merges element.childExtends into params when tag is fragment', () => {
     element.tag = 'fragment'
     element.childExtends = { button: 'PrimaryButton' }
     const params = { tag: 'fragment', props: {} }
-    await set.call(element, params)
+    set.call(element, params)
     expect(params.childExtends).toEqual(element.childExtends)
   })
 
-  it('copies element.props.childProps into params for fragments', async () => {
+  it('copies element.props.childProps into params for fragments', () => {
     element.tag = 'fragment'
     element.props.childProps = { size: 'large' }
     const params = { tag: 'fragment', props: {} }
-    await set.call(element, params)
+    set.call(element, params)
     expect(params.props.childProps).toEqual(element.props.childProps)
   })
 })

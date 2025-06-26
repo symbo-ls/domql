@@ -35,7 +35,7 @@ export const parse = function () {
   }
 }
 
-export const clean = async function (options = {}) {
+export const clean = function (options = {}) {
   const state = this
   for (const param in state) {
     if (
@@ -46,12 +46,12 @@ export const clean = async function (options = {}) {
     }
   }
   if (!options.preventStateUpdate) {
-    await state.update(state, { replace: true, ...options })
+    state.update(state, { replace: true, ...options })
   }
   return state
 }
 
-export const destroy = async function (options = {}) {
+export const destroy = function (options = {}) {
   const state = this
   const element = state.__element
 
@@ -86,76 +86,76 @@ export const destroy = async function (options = {}) {
     }
   }
 
-  await element.state.update({}, { isHoisted: true, ...options })
+  element.state.update({}, { isHoisted: true, ...options })
   return element.state
 }
 
-export const parentUpdate = async function (obj, options = {}) {
+export const parentUpdate = function (obj, options = {}) {
   const state = this
   if (!state || !state.parent) return
-  return await state.parent.update(obj, { isHoisted: true, ...options })
+  return state.parent.update(obj, { isHoisted: true, ...options })
 }
 
-export const rootUpdate = async function (obj, options = {}) {
+export const rootUpdate = function (obj, options = {}) {
   const state = this
   if (!state) return
   const rootState = state.__element.__ref.root.state
-  return await rootState.update(obj, { isHoisted: false, ...options })
+  return rootState.update(obj, { isHoisted: false, ...options })
 }
 
-export const add = async function (value, options = {}) {
+export const add = function (value, options = {}) {
   const state = this
   if (isArray(state)) {
     state.push(value)
-    await state.update(state.parse(), { overwrite: true, ...options })
+    state.update(state.parse(), { overwrite: true, ...options })
   } else if (isObject(state)) {
     const key = Object.keys(state).length
-    await state.update({ [key]: value }, options)
+    state.update({ [key]: value }, options)
   }
 }
 
-export const toggle = async function (key, options = {}) {
+export const toggle = function (key, options = {}) {
   const state = this
-  await state.update({ [key]: !state[key] }, options)
+  state.update({ [key]: !state[key] }, options)
 }
 
-export const remove = async function (key, options = {}) {
+export const remove = function (key, options = {}) {
   const state = this
   if (isArray(state)) removeFromArray(state, key)
   if (isObject(state)) removeFromObject(state, key)
   if (options.applyReset) {
-    return await state.set(state.parse(), { replace: true, ...options })
+    return state.set(state.parse(), { replace: true, ...options })
   }
-  return await state.update({}, options)
+  return state.update({}, options)
 }
 
-export const set = async function (val, options = {}) {
+export const set = function (val, options = {}) {
   const state = this
   const value = deepClone(val)
-  const cleanState = await state.clean({ preventStateUpdate: true, ...options })
-  return await cleanState.update(value, { replace: true, ...options })
+  const cleanState = state.clean({ preventStateUpdate: true, ...options })
+  return cleanState.update(value, { replace: true, ...options })
 }
 
-export const setByPath = async function (path, val, options = {}) {
+export const setByPath = function (path, val, options = {}) {
   const state = this
   const value = deepClone(val)
   if (!options.preventReplace) setInObjectByPath(state, path, val)
   const update = createNestedObject(path, value)
   if (options.preventStateUpdate) return update
-  return await state.update(update, options)
+  return state.update(update, options)
 }
 
-export const setPathCollection = async function (changes, options = {}) {
+export const setPathCollection = function (changes, options = {}) {
   const state = this
-  const update = await changes.reduce(async (promise, change) => {
-    const acc = await promise
+  const update = changes.reduce((promise, change) => {
+    const acc = promise
     if (change[0] === 'update') {
       const result = setByPath.call(state, change[1], change[2], {
         preventStateUpdate: true
       })
       return overwriteDeep(acc, result)
     } else if (change[0] === 'delete') {
-      await removeByPath.call(state, change[1], {
+      removeByPath.call(state, change[1], {
         ...options,
         preventUpdate: true
       })
@@ -166,19 +166,19 @@ export const setPathCollection = async function (changes, options = {}) {
   return state.update(update, options)
 }
 
-export const removeByPath = async function (path, options = {}) {
+export const removeByPath = function (path, options = {}) {
   const state = this
   removeNestedKeyByPath(state, path)
   if (options.preventUpdate) return path
-  return await state.update({}, options)
+  return state.update({}, options)
 }
 
-export const removePathCollection = async function (changes, options = {}) {
+export const removePathCollection = function (changes, options = {}) {
   const state = this
-  changes.forEach(async item => {
-    await removeByPath(item, { preventUpdate: true })
+  changes.forEach(item => {
+    removeByPath(item, { preventUpdate: true })
   })
-  return await state.update({}, options)
+  return state.update({}, options)
 }
 
 export const getByPath = function (path, options = {}) {
@@ -186,54 +186,54 @@ export const getByPath = function (path, options = {}) {
   return getInObjectByPath(state, path)
 }
 
-export const reset = async function (options = {}) {
+export const reset = function (options = {}) {
   const state = this
   const value = deepClone(state.parse())
-  return await state.set(value, { replace: true, ...options })
+  return state.set(value, { replace: true, ...options })
 }
 
-export const apply = async function (func, options = {}) {
+export const apply = function (func, options = {}) {
   const state = this
   if (isFunction(func)) {
     const value = func(state)
-    return await state.update(value, { replace: true, ...options })
+    return state.update(value, { replace: true, ...options })
   }
 }
 
-export const applyReplace = async function (func, options = {}) {
+export const applyReplace = function (func, options = {}) {
   const state = this
   if (isFunction(func)) {
     const value = func(state)
-    return await state.replace(value, options)
+    return state.replace(value, options)
   }
 }
 
-export const applyFunction = async function (func, options = {}) {
+export const applyFunction = function (func, options = {}) {
   const state = this
   if (isFunction(func)) {
-    await func(state)
-    return await state.update(state.parse(), { replace: true, ...options })
+    func(state)
+    return state.update(state.parse(), { replace: true, ...options })
   }
 }
 
-export const quietUpdate = async function (obj, options = {}) {
+export const quietUpdate = function (obj, options = {}) {
   const state = this
-  return await state.update(obj, { preventUpdate: true, ...options })
+  return state.update(obj, { preventUpdate: true, ...options })
 }
 
-export const replace = async function (obj, options = {}) {
+export const replace = function (obj, options = {}) {
   const state = this
 
   for (const param in obj) {
     state[param] = obj[param]
   }
 
-  return await state.update(obj, options)
+  return state.update(obj, options)
 }
 
-export const quietReplace = async function (obj, options = {}) {
+export const quietReplace = function (obj, options = {}) {
   const state = this
-  return await state.replace(obj, { preventUpdate: true, ...options })
+  return state.replace(obj, { preventUpdate: true, ...options })
 }
 
 export const keys = function (obj, options = {}) {

@@ -45,7 +45,7 @@ const UPDATE_DEFAULT_OPTIONS = {
   exclude: METHODS_EXL
 }
 
-export const update = async function (params = {}, opts) {
+export const update = function (params = {}, opts) {
   const calleeElementCache = opts?.calleeElement
   const options = deepClone(
     isObject(opts)
@@ -66,7 +66,7 @@ export const update = async function (params = {}, opts) {
   if (snapshotHasUpdated) return
 
   if (!options.preventListeners) {
-    await triggerEventOnUpdate('startUpdate', params, element, options)
+    triggerEventOnUpdate('startUpdate', params, element, options)
   }
 
   const { parent, node, key } = element
@@ -87,10 +87,10 @@ export const update = async function (params = {}, opts) {
   // apply new updates
   params = propertizeUpdate.call(element, params)
 
-  const inheritState = await inheritStateUpdates(element, options)
+  const inheritState = inheritStateUpdates(element, options)
   if (inheritState === false) return
 
-  const ifFails = await checkIfOnUpdate(element, parent, options)
+  const ifFails = checkIfOnUpdate(element, parent, options)
   if (ifFails) return
 
   if (ref.__if && !options.preventPropsUpdate) {
@@ -103,7 +103,7 @@ export const update = async function (params = {}, opts) {
 
   if (!options.preventBeforeUpdateListener && !options.preventListeners) {
     const simulate = { ...params, ...element }
-    const beforeUpdateReturns = await triggerEventOnUpdate(
+    const beforeUpdateReturns = triggerEventOnUpdate(
       'beforeUpdate',
       params,
       simulate,
@@ -117,11 +117,11 @@ export const update = async function (params = {}, opts) {
 
   // exec updates
   throughExecProps(element)
-  await throughUpdatedExec(element, { ignore: UPDATE_DEFAULT_OPTIONS })
-  await throughUpdatedDefine(element)
+  throughUpdatedExec(element, { ignore: UPDATE_DEFAULT_OPTIONS })
+  throughUpdatedDefine(element)
 
   if (!options.isForced && !options.preventListeners) {
-    await triggerEventOn('beforeClassAssign', element, options)
+    triggerEventOn('beforeClassAssign', element, options)
   }
 
   if (!ref.__if) return false
@@ -177,7 +177,7 @@ export const update = async function (params = {}, opts) {
 
     if (preventStateUpdate === 'once') options.preventStateUpdate = false
 
-    const isElement = await applyParam(param, element, options)
+    const isElement = applyParam(param, element, options)
     if (isElement) {
       const { hasDefine, hasContextDefine } = isElement
       const canUpdate =
@@ -190,43 +190,43 @@ export const update = async function (params = {}, opts) {
         options.onEachUpdate(param, element, element.state, element.context)
       }
 
-      const childUpdateCall = async () =>
-        await update.call(prop, params[prop], {
+      const childUpdateCall = () =>
+        update.call(prop, params[prop], {
           ...options,
           currentSnapshot: snapshotOnCallee,
           calleeElement
         })
 
       if (lazyLoad) {
-        window.requestAnimationFrame(async () => {
+        window.requestAnimationFrame(() => {
           // eslint-disable-line
-          await childUpdateCall()
+          childUpdateCall()
           // handle lazy load
           if (!options.preventUpdateListener) {
-            await triggerEventOn('lazyLoad', element, options)
+            triggerEventOn('lazyLoad', element, options)
           }
         })
-      } else await childUpdateCall()
+      } else childUpdateCall()
     }
   }
 
   if (!preventContentUpdate) {
     const children = params.children || element.children
     const content = children
-      ? await setChildren(children, element, opts)
+      ? setChildren(children, element, opts)
       : element.children || params.content
 
     if (content) {
-      await setContent(content, element, options)
+      setContent(content, element, options)
     }
   }
 
   if (!preventUpdateListener) {
-    await triggerEventOn('update', element, options)
+    triggerEventOn('update', element, options)
   }
 }
 
-const checkIfOnUpdate = async (element, parent, options) => {
+const checkIfOnUpdate = (element, parent, options) => {
   if ((!isFunction(element.if) && !isFunction(element.props?.if)) || !parent) {
     return
   }
@@ -285,7 +285,7 @@ const checkIfOnUpdate = async (element, parent, options) => {
 
       delete element.__ref
       delete element.parent
-      const createdElement = await create(
+      const createdElement = create(
         element,
         parent,
         element.key,
@@ -298,11 +298,7 @@ const checkIfOnUpdate = async (element, parent, options) => {
         element.on &&
         isFunction(element.on.update)
       ) {
-        await applyEvent(
-          element.on.update,
-          createdElement,
-          createdElement.state
-        )
+        applyEvent(element.on.update, createdElement, createdElement.state)
       }
       return createdElement
     }
@@ -326,7 +322,7 @@ const checkIfOnUpdate = async (element, parent, options) => {
  * @param {boolean} [options.preventStateUpdateListener] - If true, prevent the 'stateUpdate' event listener.
  * @returns {boolean} - If returns false, it breaks the update function
  */
-const inheritStateUpdates = async (element, options) => {
+const inheritStateUpdates = (element, options) => {
   const { __ref: ref } = element
   const stateKey = ref.__state
   const { parent, state } = element
@@ -361,7 +357,7 @@ const inheritStateUpdates = async (element, options) => {
 
   // Trigger on.beforeStateUpdate event
   if (!options.preventBeforeStateUpdateListener && !options.preventListeners) {
-    const initStateReturns = await triggerEventOnUpdate(
+    const initStateReturns = triggerEventOnUpdate(
       'beforeStateUpdate',
       keyInParentState,
       element,
@@ -371,22 +367,17 @@ const inheritStateUpdates = async (element, options) => {
   }
 
   // Recreate the state again
-  const newState = await createStateUpdate(element, parent, options)
+  const newState = createStateUpdate(element, parent, options)
 
   // Trigger on.stateUpdate event
   if (!options.preventStateUpdateListener && !options.preventListeners) {
-    await triggerEventOnUpdate(
-      'stateUpdate',
-      newState.parse(),
-      element,
-      options
-    )
+    triggerEventOnUpdate('stateUpdate', newState.parse(), element, options)
   }
 }
 
-const createStateUpdate = async (element, parent, options) => {
+const createStateUpdate = (element, parent, options) => {
   const __stateChildren = element.state.__children
-  const newState = await createState(element, parent)
+  const newState = createState(element, parent)
   element.state = newState
   for (const child in __stateChildren) {
     // check this for inherited states
