@@ -7,7 +7,7 @@ describe('triggerEventOn', () => {
   let mockOptions
 
   beforeEach(() => {
-    mockEventHandler = jest.fn().mockResolvedValue('eventResult')
+    mockEventHandler = jest.fn().mockReturnValue('eventResult')
     mockOptions = { option1: 'value1' }
 
     mockElement = {
@@ -19,12 +19,12 @@ describe('triggerEventOn', () => {
   })
 
   describe('event resolution', () => {
-    test('should trigger event from on property', async () => {
+    test('should trigger event from on property', () => {
       // Arrange
       mockElement.on.click = mockEventHandler
 
       // Act
-      const result = await triggerEventOn('click', mockElement, mockOptions)
+      const result = triggerEventOn('click', mockElement, mockOptions)
 
       // Assert
       expect(result).toBe('eventResult')
@@ -36,12 +36,12 @@ describe('triggerEventOn', () => {
       )
     })
 
-    test('should trigger event from props using camelCase', async () => {
+    test('should trigger event from props using camelCase', () => {
       // Arrange
       mockElement.props.onClick = mockEventHandler
 
       // Act
-      const result = await triggerEventOn('click', mockElement, mockOptions)
+      const result = triggerEventOn('click', mockElement, mockOptions)
 
       // Assert
       expect(result).toBe('eventResult')
@@ -53,16 +53,16 @@ describe('triggerEventOn', () => {
       )
     })
 
-    test('should prioritize on property over props', async () => {
+    test('should prioritize on property over props', () => {
       // Arrange
-      const onEventHandler = jest.fn().mockResolvedValue('onResult')
-      const propsEventHandler = jest.fn().mockResolvedValue('propsResult')
+      const onEventHandler = jest.fn().mockReturnValue('onResult')
+      const propsEventHandler = jest.fn().mockReturnValue('propsResult')
 
       mockElement.on.click = onEventHandler
       mockElement.props.onClick = propsEventHandler
 
       // Act
-      const result = await triggerEventOn('click', mockElement, mockOptions)
+      const result = triggerEventOn('click', mockElement, mockOptions)
 
       // Assert
       expect(result).toBe('onResult')
@@ -72,14 +72,14 @@ describe('triggerEventOn', () => {
   })
 
   describe('event parameters', () => {
-    test('should pass state and context correctly', async () => {
+    test('should pass state and context correctly', () => {
       // Arrange
       mockElement.on.click = mockEventHandler
       mockElement.state = { custom: 'state' }
       mockElement.context = { custom: 'context' }
 
       // Act
-      await triggerEventOn('click', mockElement, mockOptions)
+      triggerEventOn('click', mockElement, mockOptions)
 
       // Assert
       expect(mockEventHandler).toHaveBeenCalledWith(
@@ -90,14 +90,14 @@ describe('triggerEventOn', () => {
       )
     })
 
-    test('should handle missing state and context', async () => {
+    test('should handle missing state and context', () => {
       // Arrange
       mockElement = {
         on: { click: mockEventHandler }
       }
 
       // Act
-      await triggerEventOn('click', mockElement, mockOptions)
+      triggerEventOn('click', mockElement, mockOptions)
 
       // Assert
       expect(mockEventHandler).toHaveBeenCalledWith(
@@ -108,12 +108,12 @@ describe('triggerEventOn', () => {
       )
     })
 
-    test('should handle missing options', async () => {
+    test('should handle missing options', () => {
       // Arrange
       mockElement.on.click = mockEventHandler
 
       // Act
-      await triggerEventOn('click', mockElement)
+      triggerEventOn('click', mockElement)
 
       // Assert
       expect(mockEventHandler).toHaveBeenCalledWith(
@@ -126,7 +126,7 @@ describe('triggerEventOn', () => {
   })
 
   describe('event naming', () => {
-    test('should handle various event names correctly', async () => {
+    test('should handle various event names correctly', () => {
       const eventTests = [
         { input: 'mouseenter', prop: 'onMouseenter' },
         { input: 'mouseleave', prop: 'onMouseleave' },
@@ -139,7 +139,7 @@ describe('triggerEventOn', () => {
         mockElement.props[prop] = mockEventHandler
 
         // Act
-        await triggerEventOn(input, mockElement, mockOptions)
+        triggerEventOn(input, mockElement, mockOptions)
 
         // Assert
         expect(mockEventHandler).toHaveBeenCalledWith(
@@ -157,35 +157,37 @@ describe('triggerEventOn', () => {
   })
 
   describe('edge cases', () => {
-    test('should return undefined when no event handler exists', async () => {
+    test('should return undefined when no event handler exists', () => {
       // Act
-      const result = await triggerEventOn('click', mockElement, mockOptions)
+      const result = triggerEventOn('click', mockElement, mockOptions)
 
       // Assert
       expect(result).toBeUndefined()
     })
 
-    test('should handle rejection in event handler', async () => {
+    test('should handle error thrown in event handler', () => {
       // Arrange
       const error = new Error('Event handler error')
-      mockElement.on.click = jest.fn().mockRejectedValue(error)
+      mockElement.on.click = jest.fn(() => {
+        throw error
+      })
 
       // Act & Assert
-      await expect(
-        triggerEventOn('click', mockElement, mockOptions)
-      ).rejects.toThrow('Event handler error')
+      expect(() => triggerEventOn('click', mockElement, mockOptions)).toThrow(
+        'Event handler error'
+      )
     })
 
-    test('should handle undefined element', async () => {
+    test('should handle undefined element', () => {
       // Assert
-      await expect(
-        triggerEventOn('click', undefined, mockOptions)
-      ).rejects.toThrow('Element is required')
+      expect(() => triggerEventOn('click', undefined, mockOptions)).toThrow(
+        'Element is required'
+      )
     })
 
-    test('should handle null element', async () => {
+    test('should handle null element', () => {
       // Assert
-      await expect(triggerEventOn('click', null, mockOptions)).rejects.toThrow(
+      expect(() => triggerEventOn('click', null, mockOptions)).toThrow(
         'Element is required'
       )
     })

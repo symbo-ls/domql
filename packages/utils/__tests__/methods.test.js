@@ -470,18 +470,15 @@ describe('Logging Methods', () => {
       }
       verbose.call(mockElement, 'testProp', 'anotherProp')
 
-      // First call logs the path
-      expect(console.log).toHaveBeenNthCalledWith(1, ['root'])
-
-      // Then logs the formatted properties
+      // Only formatted properties are logged when args are provided
       expect(console.log).toHaveBeenNthCalledWith(
-        4,
+        1,
         '%ctestProp:\n',
         'font-weight: bold',
         'testValue'
       )
       expect(console.log).toHaveBeenNthCalledWith(
-        5,
+        2,
         '%canotherProp:\n',
         'font-weight: bold',
         123

@@ -9,8 +9,8 @@ describe('applyEventsOnNode', () => {
   let addEventListenerSpy
 
   beforeEach(() => {
-    // Create mock event handler
-    mockEventHandler = jest.fn().mockResolvedValue('eventResult')
+    // Create mock event handler (sync)
+    mockEventHandler = jest.fn().mockReturnValue('eventResult')
 
     // Create mock node with addEventListener
     mockNode = {
@@ -117,7 +117,7 @@ describe('applyEventsOnNode', () => {
   })
 
   describe('event handling', () => {
-    test('should call handler with correct parameters when event triggered', async () => {
+    test('should call handler with correct parameters when event triggered', () => {
       // Arrange
       mockElement.on.click = mockEventHandler
       const mockEvent = { type: 'click' }
@@ -126,7 +126,7 @@ describe('applyEventsOnNode', () => {
       applyEventsOnNode(mockElement, mockOptions)
 
       // Get and call the registered handler
-      await mockNode.handlers.click(mockEvent)
+      mockNode.handlers.click(mockEvent)
 
       // Assert
       expect(mockEventHandler).toHaveBeenCalledWith(
@@ -138,7 +138,7 @@ describe('applyEventsOnNode', () => {
       )
     })
 
-    test('should maintain correct this context in handler', async () => {
+    test('should maintain correct this context in handler', () => {
       // Arrange
       mockElement.on.click = function () {
         expect(this).toBe(mockElement)
@@ -147,7 +147,7 @@ describe('applyEventsOnNode', () => {
 
       // Act
       applyEventsOnNode(mockElement, mockOptions)
-      await mockNode.handlers.click(mockEvent)
+      mockNode.handlers.click(mockEvent)
     })
   })
 
@@ -163,24 +163,24 @@ describe('applyEventsOnNode', () => {
       expect(addEventListenerSpy).not.toHaveBeenCalled()
     })
 
-    test('should handle async handler rejection', async () => {
+    test('should handle handler error thrown synchronously', () => {
       // Arrange
       const error = new Error('Handler error')
-      mockElement.on.click = jest.fn().mockRejectedValue(error)
+      mockElement.on.click = jest.fn(() => {
+        throw error
+      })
       const mockEvent = { type: 'click' }
 
       // Act
       applyEventsOnNode(mockElement, mockOptions)
 
       // Assert
-      await expect(mockNode.handlers.click(mockEvent)).rejects.toThrow(
-        'Handler error'
-      )
+      expect(() => mockNode.handlers.click(mockEvent)).toThrow('Handler error')
     })
   })
 
   describe('edge cases', () => {
-    test('should handle missing state and context', async () => {
+    test('should handle missing state and context', () => {
       // Arrange
       mockElement = {
         node: mockNode,
@@ -190,7 +190,7 @@ describe('applyEventsOnNode', () => {
 
       // Act
       applyEventsOnNode(mockElement, mockOptions)
-      await mockNode.handlers.click(mockEvent)
+      mockNode.handlers.click(mockEvent)
 
       // Assert
       expect(mockEventHandler).toHaveBeenCalledWith(

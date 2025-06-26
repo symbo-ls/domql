@@ -24,7 +24,7 @@ describe('State Methods', () => {
   })
 
   describe('parse', () => {
-    it('should parse object state correctly', async () => {
+    it('should parse object state correctly', () => {
       const result = methods.parse.call(mockState)
       expect(result).toEqual({
         foo: 'bar',
@@ -33,7 +33,7 @@ describe('State Methods', () => {
       })
     })
 
-    it('should parse array state correctly', async () => {
+    it('should parse array state correctly', () => {
       const arrayState = ['item1', 'item2', 'update']
       const result = methods.parse.call(arrayState)
       expect(result).toEqual(['item1', 'item2'])
@@ -41,23 +41,23 @@ describe('State Methods', () => {
   })
 
   describe('clean', () => {
-    it('should remove non-method properties', async () => {
-      await methods.clean.call(mockState)
+    it('should remove non-method properties', () => {
+      methods.clean.call(mockState)
       expect(mockState.update).toHaveBeenCalled()
       expect(mockState.foo).toBeUndefined()
     })
   })
 
   describe('set', () => {
-    it('should set new state values', async () => {
+    it('should set new state values', () => {
       const newValue = { newProp: 'value' }
-      await methods.set.call(mockState, newValue)
+      methods.set.call(mockState, newValue)
       expect(mockState.update).toHaveBeenCalledWith(newValue, { replace: true })
     })
   })
 
   describe('add', () => {
-    it('should add value to array state', async () => {
+    it('should add value to array state', () => {
       const arrayState = []
       arrayState.push = jest.fn()
       arrayState.parse = jest.fn().mockReturnValue(['existing'])
@@ -65,14 +65,14 @@ describe('State Methods', () => {
       arrayState[0] = 'existing'
       arrayState.length = 1
 
-      await methods.add.call(arrayState, 'newItem')
+      methods.add.call(arrayState, 'newItem')
       expect(arrayState.push).toHaveBeenCalledWith('newItem')
       expect(arrayState.update).toHaveBeenCalledWith(['existing'], {
         overwrite: true
       })
     })
 
-    it('should add value to object state', async () => {
+    it('should add value to object state', () => {
       // Create a clean state with non-enumerable methods
       const cleanMockState = {}
       Object.defineProperties(cleanMockState, {
@@ -86,44 +86,44 @@ describe('State Methods', () => {
         }
       })
 
-      await methods.add.call(cleanMockState, 'newItem')
+      methods.add.call(cleanMockState, 'newItem')
       expect(cleanMockState.update).toHaveBeenCalledWith({ 0: 'newItem' }, {})
     })
   })
 
   describe('toggle', () => {
-    it('should toggle boolean value', async () => {
-      await methods.toggle.call(mockState, 'testBool')
+    it('should toggle boolean value', () => {
+      methods.toggle.call(mockState, 'testBool')
       expect(mockState.update).toHaveBeenCalledWith({ testBool: true }, {})
     })
   })
 
   describe('remove', () => {
-    it('should remove property from state', async () => {
-      await methods.remove.call(mockState, 'foo')
+    it('should remove property from state', () => {
+      methods.remove.call(mockState, 'foo')
       expect(mockState.update).toHaveBeenCalled()
     })
   })
 
   describe('setByPath', () => {
-    it('should set nested value by path', async () => {
-      await methods.setByPath.call(mockState, ['nested', 'newValue'], 'test')
+    it('should set nested value by path', () => {
+      methods.setByPath.call(mockState, ['nested', 'newValue'], 'test')
       expect(mockState.update).toHaveBeenCalled()
     })
   })
 
   describe('getByPath', () => {
-    it('should get nested value by path', async () => {
+    it('should get nested value by path', () => {
       const result = methods.getByPath.call(mockState, ['nested', 'value'])
       expect(result).toBe(123)
     })
   })
 
   describe('reset', () => {
-    it('should reset state to parsed values', async () => {
+    it('should reset state to parsed values', () => {
       const parsedValue = { foo: 'bar', count: 1, nested: { value: 123 } }
       mockState.parse = jest.fn().mockReturnValue(parsedValue)
-      await methods.reset.call(mockState)
+      methods.reset.call(mockState)
       expect(mockState.update).toHaveBeenCalledWith(parsedValue, {
         replace: true
       })
@@ -131,33 +131,33 @@ describe('State Methods', () => {
   })
 
   describe('apply', () => {
-    it('should apply function to state', async () => {
+    it('should apply function to state', () => {
       const testFn = jest.fn().mockReturnValue({ test: true })
-      await methods.apply.call(mockState, testFn)
+      methods.apply.call(mockState, testFn)
       expect(testFn).toHaveBeenCalledWith(mockState)
       expect(mockState.update).toHaveBeenCalled()
     })
   })
 
   describe('parentUpdate', () => {
-    it('should update parent state', async () => {
-      await methods.parentUpdate.call(mockState, { test: true })
+    it('should update parent state', () => {
+      methods.parentUpdate.call(mockState, { test: true })
       expect(mockState.parent.update).toHaveBeenCalled()
     })
   })
 
   describe('rootUpdate', () => {
-    it('should update root state', async () => {
+    it('should update root state', () => {
       const rootState = { update: jest.fn() }
       mockState.__element.__ref.root.state = rootState
-      await methods.rootUpdate.call(mockState, { test: true })
+      methods.rootUpdate.call(mockState, { test: true })
       expect(rootState.update).toHaveBeenCalled()
     })
   })
 
   describe('quietUpdate', () => {
-    it('should update state without triggering updates', async () => {
-      await methods.quietUpdate.call(mockState, { test: true })
+    it('should update state without triggering updates', () => {
+      methods.quietUpdate.call(mockState, { test: true })
       expect(mockState.update).toHaveBeenCalledWith(
         { test: true },
         { preventUpdate: true }
@@ -166,7 +166,7 @@ describe('State Methods', () => {
   })
 
   describe('keys', () => {
-    it('should return state keys', async () => {
+    it('should return state keys', () => {
       const result = methods.keys.call(mockState)
       expect(result).toContain('foo')
       expect(result).toContain('count')
@@ -175,7 +175,7 @@ describe('State Methods', () => {
   })
 
   describe('values', () => {
-    it('should return state values', async () => {
+    it('should return state values', () => {
       const result = methods.values.call(mockState)
       expect(result).toContain('bar')
       expect(result).toContain(1)
@@ -187,7 +187,7 @@ describe('applyStateMethods', () => {
   let mockElement
   let state
 
-  beforeEach(async () => {
+  beforeEach(() => {
     state = { testKey: 'testValue' }
     mockElement = {
       state,
@@ -201,10 +201,10 @@ describe('applyStateMethods', () => {
         }
       }
     }
-    await methods.applyStateMethods(mockElement)
+    methods.applyStateMethods(mockElement)
   })
 
-  test('adds all state methods to the object', async () => {
+  test('adds all state methods to the object', () => {
     const expectedMethods = [
       'clean',
       'parse',
@@ -238,14 +238,14 @@ describe('applyStateMethods', () => {
     })
   })
 
-  test('sets correct references', async () => {
+  test('sets correct references', () => {
     expect(state.__element).toBe(mockElement)
     expect(state.parent).toBe(mockElement.parent.state)
     expect(state.root).toBe(mockElement.__ref.root.state)
     expect(state.__children).toEqual({})
   })
 
-  test('handles array states', async () => {
+  test('handles array states', () => {
     const arrayState = ['item1', 'item2']
     const arrayElement = {
       state: arrayState,
@@ -260,14 +260,14 @@ describe('applyStateMethods', () => {
       }
     }
 
-    await methods.applyStateMethods(arrayElement)
+    methods.applyStateMethods(arrayElement)
 
     expect(Array.isArray(arrayElement.state)).toBe(true)
     expect(typeof arrayElement.state.update).toBe('function')
     expect(arrayElement.state.__element).toBe(arrayElement)
   })
 
-  test('connects parent-child relationship', async () => {
+  test('connects parent-child relationship', () => {
     const childState = { childKey: 'childValue' }
     const childElement = {
       state: childState,
@@ -282,7 +282,7 @@ describe('applyStateMethods', () => {
       }
     }
 
-    await methods.applyStateMethods(childElement)
+    methods.applyStateMethods(childElement)
 
     expect(state.__children[childElement.key]).toBe(childState)
     expect(childState.parent).toBe(state)

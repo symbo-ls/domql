@@ -24,9 +24,9 @@ describe('applyEvent', () => {
     mockOptions = { option1: 'value1' }
   })
 
-  test('should call param with provided element and default state/context', async () => {
+  test('should call param with provided element and default state/context', () => {
     // Act
-    const result = await applyEvent(mockParam, mockElement)
+    const result = applyEvent(mockParam, mockElement)
 
     // Assert
     expect(mockParam).toHaveBeenCalledWith(
@@ -38,9 +38,9 @@ describe('applyEvent', () => {
     expect(result).toBe('eventResult')
   })
 
-  test('should use provided state instead of element state', async () => {
+  test('should use provided state instead of element state', () => {
     // Act
-    const result = await applyEvent(mockParam, mockElement, mockState)
+    const result = applyEvent(mockParam, mockElement, mockState)
 
     // Assert
     expect(mockParam).toHaveBeenCalledWith(
@@ -52,9 +52,9 @@ describe('applyEvent', () => {
     expect(result).toBe('eventResult')
   })
 
-  test('should use provided context instead of element context', async () => {
+  test('should use provided context instead of element context', () => {
     // Act
-    const result = await applyEvent(mockParam, mockElement, null, mockContext)
+    const result = applyEvent(mockParam, mockElement, null, mockContext)
 
     // Assert
     expect(mockParam).toHaveBeenCalledWith(
@@ -66,15 +66,9 @@ describe('applyEvent', () => {
     expect(result).toBe('eventResult')
   })
 
-  test('should pass through options parameter', async () => {
+  test('should pass through options parameter', () => {
     // Act
-    const result = await applyEvent(
-      mockParam,
-      mockElement,
-      null,
-      null,
-      mockOptions
-    )
+    const result = applyEvent(mockParam, mockElement, null, null, mockOptions)
 
     // Assert
     expect(mockParam).toHaveBeenCalledWith(
@@ -86,12 +80,12 @@ describe('applyEvent', () => {
     expect(result).toBe('eventResult')
   })
 
-  test('should handle undefined element state and context', async () => {
+  test('should handle undefined element state and context', () => {
     // Arrange
     const elementWithoutStateContext = {}
 
     // Act
-    const result = await applyEvent(mockParam, elementWithoutStateContext)
+    const result = applyEvent(mockParam, elementWithoutStateContext)
 
     // Assert
     expect(mockParam).toHaveBeenCalledWith(
@@ -103,9 +97,9 @@ describe('applyEvent', () => {
     expect(result).toBe('eventResult')
   })
 
-  test('should handle all custom parameters', async () => {
+  test('should handle all custom parameters', () => {
     // Act
-    const result = await applyEvent(
+    const result = applyEvent(
       mockParam,
       mockElement,
       mockState,
@@ -123,9 +117,9 @@ describe('applyEvent', () => {
     expect(result).toBe('eventResult')
   })
 
-  test('should handle null state and use element state', async () => {
+  test('should handle null state and use element state', () => {
     // Act
-    const result = await applyEvent(mockParam, mockElement, null)
+    const result = applyEvent(mockParam, mockElement, null)
 
     // Assert
     expect(mockParam).toHaveBeenCalledWith(
@@ -137,9 +131,9 @@ describe('applyEvent', () => {
     expect(result).toBe('eventResult')
   })
 
-  test('should handle null context and use element context', async () => {
+  test('should handle null context and use element context', () => {
     // Act
-    const result = await applyEvent(mockParam, mockElement, mockState, null)
+    const result = applyEvent(mockParam, mockElement, mockState, null)
 
     // Assert
     expect(mockParam).toHaveBeenCalledWith(
@@ -151,13 +145,13 @@ describe('applyEvent', () => {
     expect(result).toBe('eventResult')
   })
 
-  test('should preserve param return value', async () => {
+  test('should preserve param return value', () => {
     // Arrange
     const expectedReturn = { custom: 'return value' }
     mockParam.mockReturnValue(expectedReturn)
 
     // Act
-    const result = await applyEvent(mockParam, mockElement)
+    const result = applyEvent(mockParam, mockElement)
 
     // Assert
     expect(result).toBe(expectedReturn)

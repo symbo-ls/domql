@@ -26,9 +26,9 @@ describe('applyEventUpdate', () => {
     mockOptions = { option1: 'value1' }
   })
 
-  test('should call param with all provided parameters', async () => {
+  test('should call param with all provided parameters', () => {
     // Act
-    const result = await applyEventUpdate(
+    const result = applyEventUpdate(
       mockParam,
       mockUpdatedObj,
       mockElement,
@@ -48,9 +48,9 @@ describe('applyEventUpdate', () => {
     expect(result).toBe('eventResult')
   })
 
-  test('should use element state when state is not provided', async () => {
+  test('should use element state when state is not provided', () => {
     // Act
-    const result = await applyEventUpdate(
+    const result = applyEventUpdate(
       mockParam,
       mockUpdatedObj,
       mockElement,
@@ -70,9 +70,9 @@ describe('applyEventUpdate', () => {
     expect(result).toBe('eventResult')
   })
 
-  test('should use element context when context is not provided', async () => {
+  test('should use element context when context is not provided', () => {
     // Act
-    const result = await applyEventUpdate(
+    const result = applyEventUpdate(
       mockParam,
       mockUpdatedObj,
       mockElement,
@@ -92,12 +92,12 @@ describe('applyEventUpdate', () => {
     expect(result).toBe('eventResult')
   })
 
-  test('should handle undefined state and context in element', async () => {
+  test('should handle undefined state and context in element', () => {
     // Arrange
     const elementWithoutStateContext = {}
 
     // Act
-    const result = await applyEventUpdate(
+    const result = applyEventUpdate(
       mockParam,
       mockUpdatedObj,
       elementWithoutStateContext,
@@ -117,9 +117,9 @@ describe('applyEventUpdate', () => {
     expect(result).toBe('eventResult')
   })
 
-  test('should handle missing options parameter', async () => {
+  test('should handle missing options parameter', () => {
     // Act
-    const result = await applyEventUpdate(
+    const result = applyEventUpdate(
       mockParam,
       mockUpdatedObj,
       mockElement,
@@ -138,14 +138,14 @@ describe('applyEventUpdate', () => {
     expect(result).toBe('eventResult')
   })
 
-  test('should preserve function context (this binding)', async () => {
+  test('should preserve function context (this binding)', () => {
     // Arrange
     mockParam = jest.fn(function () {
       return this === mockElement
     })
 
     // Act
-    const result = await applyEventUpdate(
+    const result = applyEventUpdate(
       mockParam,
       mockUpdatedObj,
       mockElement,
@@ -157,9 +157,9 @@ describe('applyEventUpdate', () => {
     expect(result).toBe(true)
   })
 
-  test('should handle empty updatedObj', async () => {
+  test('should handle empty updatedObj', () => {
     // Act
-    const result = await applyEventUpdate(
+    const result = applyEventUpdate(
       mockParam,
       {},
       mockElement,
@@ -178,13 +178,13 @@ describe('applyEventUpdate', () => {
     expect(result).toBe('eventResult')
   })
 
-  test('should pass through return value from param', async () => {
+  test('should pass through return value from param', () => {
     // Arrange
     const expectedReturn = { custom: 'return value' }
     mockParam.mockReturnValue(expectedReturn)
 
     // Act
-    const result = await applyEventUpdate(
+    const result = applyEventUpdate(
       mockParam,
       mockUpdatedObj,
       mockElement,

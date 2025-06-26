@@ -12,11 +12,11 @@ describe('setPathCollection function', () => {
     mockState = {
       update: jest.fn().mockImplementation((update, options) => {
         // Return a copy of the update object to simulate the update result
-        return Promise.resolve({ ...update })
+        return { ...update }
       }),
       delete: jest.fn().mockImplementation((deletee, options) => {
         // Return a copy of the update object to simulate the update result
-        return Promise.resolve({ ...deletee })
+        return { ...deletee }
       }),
       prop1: {
         nestedProp: 'original value'
@@ -25,14 +25,14 @@ describe('setPathCollection function', () => {
     }
   })
 
-  test('should process an empty changes array', async () => {
+  test('should process an empty changes array', () => {
     // Setup
     const changes = []
     const options = { testOption: true }
     const initialState = { ...mockState }
 
     // Execute
-    const result = await setPathCollection.call(mockState, changes, options)
+    const result = setPathCollection.call(mockState, changes, options)
 
     // Verify
     expect(result).toEqual({})
@@ -43,7 +43,7 @@ describe('setPathCollection function', () => {
     expect(mockState.prop2).toEqual(initialState.prop2)
   })
 
-  test('should process update changes correctly', async () => {
+  test('should process update changes correctly', () => {
     // Setup
     const changes = [
       ['update', ['prop1.nestedProp'], 'new value'],
@@ -52,20 +52,20 @@ describe('setPathCollection function', () => {
     const options = { testOption: true }
 
     // Execute
-    await setPathCollection.call(mockState, changes, options)
+    setPathCollection.call(mockState, changes, options)
 
     // Verify state changes
     expect(mockState.prop1.nestedProp).toBe('original value')
     expect(mockState['prop1.nestedProp']).toBe('new value')
   })
 
-  test('should process delete changes correctly', async () => {
+  test('should process delete changes correctly', () => {
     // Setup
     const changes = [['delete', ['prop1'], 'testing']]
     const options = { testOption: true }
 
     // Execute
-    const result = await setPathCollection.call(mockState, changes, options)
+    const result = setPathCollection.call(mockState, changes, options)
 
     // Verify the property was deleted
     expect(mockState.prop1).toBeUndefined()
@@ -74,7 +74,7 @@ describe('setPathCollection function', () => {
     expect(result).toEqual({})
   })
 
-  test('should process mixed update and delete changes', async () => {
+  test('should process mixed update and delete changes', () => {
     // Setup
     const changes = [
       ['update', ['prop1.nestedProp'], 'updated value'],
@@ -84,7 +84,7 @@ describe('setPathCollection function', () => {
     const options = { testOption: true }
 
     // Execute
-    const result = await setPathCollection.call(mockState, changes, options)
+    const result = setPathCollection.call(mockState, changes, options)
 
     // Verify state changes
     expect(mockState['prop1.nestedProp']).toBe('updated value')
@@ -92,10 +92,13 @@ describe('setPathCollection function', () => {
     expect(mockState['prop3.newProp']).toBe('new addition')
 
     // Verify the accumulated update object
-    expect(result).toEqual({})
+    expect(result).toEqual({
+      'prop1.nestedProp': 'updated value',
+      'prop3.newProp': 'new addition'
+    })
   })
 
-  test('should accumulate multiple updates correctly', async () => {
+  test('should accumulate multiple updates correctly', () => {
     // Setup
     const changes = [
       ['update', ['user.name'], 'John'],
@@ -104,7 +107,7 @@ describe('setPathCollection function', () => {
     ]
 
     // Execute
-    const result = await setPathCollection.call(mockState, changes)
+    const result = setPathCollection.call(mockState, changes)
 
     // Verify state changes
     expect(mockState['user.name']).toBe('John')
@@ -112,10 +115,14 @@ describe('setPathCollection function', () => {
     expect(mockState['user.address.city']).toBe('New York')
 
     // Verify the accumulated update object has all changes
-    expect(result).toEqual({})
+    expect(result).toEqual({
+      'user.name': 'John',
+      'user.age': 30,
+      'user.address.city': 'New York'
+    })
   })
 
-  test('should ignore unknown change types', async () => {
+  test('should ignore unknown change types', () => {
     // Setup
     const changes = [
       ['unknown', ['prop1.nestedProp'], 'should be ignored'],
@@ -124,7 +131,7 @@ describe('setPathCollection function', () => {
     const initialProp2 = mockState.prop2
 
     // Execute
-    const result = await setPathCollection.call(mockState, changes)
+    const result = setPathCollection.call(mockState, changes)
 
     // Verify only the valid update was processed
     expect(mockState.prop1.nestedProp).toBe('original value')
@@ -132,10 +139,12 @@ describe('setPathCollection function', () => {
     expect(mockState.prop2).toBe(initialProp2) // Unchanged
 
     // Verify the accumulated update object
-    expect(result).toEqual({})
+    expect(result).toEqual({
+      'prop1.nestedProp': 'should be updated'
+    })
   })
 
-  test('should pass options to state.update', async () => {
+  test('should pass options to state.update', () => {
     // Setup
     const changes = [['update', ['prop1.nestedProp'], 'updated']]
     const options = {
@@ -147,23 +156,25 @@ describe('setPathCollection function', () => {
     let capturedOptions = null
     mockState.update = jest.fn().mockImplementation((update, opts) => {
       capturedOptions = opts
-      return Promise.resolve({ ...update })
+      return { ...update }
     })
 
     // Execute
-    await setPathCollection.call(mockState, changes, options)
+    setPathCollection.call(mockState, changes, options)
 
     // Verify options were passed correctly
     expect(capturedOptions).toEqual(options)
   })
 
-  test('should handle empty update result correctly', async () => {
+  test('should handle empty update result correctly', () => {
     const changes = [['update', ['prop1.nestedProp'], 'value']]
 
     // Execute
-    const result = await setPathCollection.call(mockState, changes)
+    const result = setPathCollection.call(mockState, changes)
 
-    // Verify the result is an empty object
-    expect(result).toEqual({})
+    // Verify the result is the update object
+    expect(result).toEqual({
+      'prop1.nestedProp': 'value'
+    })
   })
 })

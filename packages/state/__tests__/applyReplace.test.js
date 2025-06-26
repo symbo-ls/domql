@@ -33,12 +33,12 @@ describe('applyReplace function', () => {
           mockState.value = newValue
         }
 
-        return Promise.resolve(mockState)
+        return mockState
       })
     }
   })
 
-  test('should apply replace when func is a valid function', async () => {
+  test('should apply replace when func is a valid function', () => {
     // Setup
     const newState = {
       name: 'replaced',
@@ -49,7 +49,7 @@ describe('applyReplace function', () => {
     const options = { silent: true }
 
     // Execute
-    const result = await applyReplace.call(mockState, replaceFunc, options)
+    const result = applyReplace.call(mockState, replaceFunc, options)
 
     // Verify state was replaced with new values
     expect(mockState.name).toBe('replaced')
@@ -64,7 +64,7 @@ describe('applyReplace function', () => {
     expect(result).toBe(mockState)
   })
 
-  test('should pass options to replace method', async () => {
+  test('should pass options to replace method', () => {
     // Setup
     const newState = { name: 'test' }
     const replaceFunc = jest.fn().mockReturnValue(newState)
@@ -89,23 +89,23 @@ describe('applyReplace function', () => {
         mockState[key] = newValue[key]
       })
 
-      return Promise.resolve(mockState)
+      return mockState
     })
 
     // Execute
-    await applyReplace.call(mockState, replaceFunc, options)
+    applyReplace.call(mockState, replaceFunc, options)
 
     // Verify options were passed correctly
     expect(capturedOptions).toEqual(options)
   })
 
-  test('should not do anything when func is not a function', async () => {
+  test('should not do anything when func is not a function', () => {
     // Setup
     const initialState = { ...mockState }
     const notAFunction = "I'm a string, not a function"
 
     // Execute
-    const result = await applyReplace.call(mockState, notAFunction)
+    const result = applyReplace.call(mockState, notAFunction)
 
     // Verify state wasn't changed
     expect(mockState.name).toBe(initialState.name)
@@ -119,12 +119,12 @@ describe('applyReplace function', () => {
     expect(result).toBeUndefined()
   })
 
-  test('should handle null/undefined func parameter', async () => {
+  test('should handle null/undefined func parameter', () => {
     // Setup
     const initialState = { ...mockState }
 
     // Test with null
-    const nullResult = await applyReplace.call(mockState, null)
+    const nullResult = applyReplace.call(mockState, null)
 
     // Verify state wasn't changed
     expect(mockState.name).toBe(initialState.name)
@@ -135,7 +135,7 @@ describe('applyReplace function', () => {
     expect(nullResult).toBeUndefined()
 
     // Test with undefined
-    const undefinedResult = await applyReplace.call(mockState, undefined)
+    const undefinedResult = applyReplace.call(mockState, undefined)
 
     // Verify state still wasn't changed
     expect(mockState.name).toBe(initialState.name)

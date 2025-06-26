@@ -13,13 +13,13 @@ describe('replace function', () => {
         value: 'test'
       },
       update: jest.fn().mockImplementation((newObj, options) => {
-        // Return a promise that resolves to the state itself
-        return Promise.resolve(mockState)
+        // Synchronous update, just return the state itself
+        return mockState
       })
     }
   })
 
-  test('should replace properties with values from the provided object', async () => {
+  test('should replace properties with values from the provided object', () => {
     // Setup
     const newObj = {
       name: 'replaced',
@@ -27,7 +27,7 @@ describe('replace function', () => {
     }
 
     // Execute
-    const result = await replace.call(mockState, newObj)
+    const result = replace.call(mockState, newObj)
 
     // Verify state was modified correctly
     expect(mockState.name).toBe('replaced')
@@ -39,7 +39,7 @@ describe('replace function', () => {
     expect(result).toBe(mockState)
   })
 
-  test('should add new properties from the provided object', async () => {
+  test('should add new properties from the provided object', () => {
     // Setup
     const newObj = {
       newProperty: 'new value',
@@ -47,7 +47,7 @@ describe('replace function', () => {
     }
 
     // Execute
-    const result = await replace.call(mockState, newObj)
+    const result = replace.call(mockState, newObj)
 
     // Verify new properties were added
     expect(mockState.newProperty).toBe('new value')
@@ -61,7 +61,7 @@ describe('replace function', () => {
     expect(result).toBe(mockState)
   })
 
-  test('should handle replacing with nested objects', async () => {
+  test('should handle replacing with nested objects', () => {
     // Setup
     const newObj = {
       nested: {
@@ -71,7 +71,7 @@ describe('replace function', () => {
     }
 
     // Execute
-    const result = await replace.call(mockState, newObj)
+    const result = replace.call(mockState, newObj)
 
     // Verify nested object was completely replaced (not merged)
     expect(mockState.nested).toEqual({
@@ -87,7 +87,7 @@ describe('replace function', () => {
     expect(result).toBe(mockState)
   })
 
-  test('should pass options to state.update', async () => {
+  test('should pass options to state.update', () => {
     // Setup
     const newObj = { name: 'test' }
     const options = {
@@ -99,24 +99,24 @@ describe('replace function', () => {
     let capturedOptions = null
     mockState.update = jest.fn().mockImplementation((obj, opts) => {
       capturedOptions = opts
-      return Promise.resolve(mockState)
+      return mockState
     })
 
     // Execute
-    await replace.call(mockState, newObj, options)
+    replace.call(mockState, newObj, options)
 
     // Verify options were passed correctly
     expect(capturedOptions).toEqual(options)
   })
 
-  test('should handle empty object replacement', async () => {
+  test('should handle empty object replacement', () => {
     // Setup
     const emptyObj = {}
     const initialState = { ...mockState }
     delete initialState.update // Remove method for comparison
 
     // Execute
-    const result = await replace.call(mockState, emptyObj)
+    const result = replace.call(mockState, emptyObj)
 
     // Verify state wasn't changed (except by update call)
     expect(mockState.name).toBe(initialState.name)
@@ -127,14 +127,14 @@ describe('replace function', () => {
     expect(result).toBe(mockState)
   })
 
-  test('should handle null object replacement', async () => {
+  test('should handle null object replacement', () => {
     // Setup - we'll use an implementation that doesn't crash on null
     mockState.update = jest.fn().mockImplementation(obj => {
-      return Promise.resolve(mockState)
+      return mockState
     })
 
     // Execute
-    const result = await replace.call(mockState, null)
+    const result = replace.call(mockState, null)
 
     // Verify state wasn't changed
     expect(mockState.name).toBe('original')
@@ -149,9 +149,9 @@ describe('replace function', () => {
     expect(result).toBe(mockState)
   })
 
-  test('should handle undefined object replacement', async () => {
+  test('should handle undefined object replacement', () => {
     // Execute
-    const result = await replace.call(mockState, undefined)
+    const result = replace.call(mockState, undefined)
 
     // Verify state wasn't changed
     expect(mockState.name).toBe('original')
@@ -166,7 +166,7 @@ describe('replace function', () => {
     expect(result).toBe(mockState)
   })
 
-  test('should replace existing properties with null/undefined values', async () => {
+  test('should replace existing properties with null/undefined values', () => {
     // Setup
     const newObj = {
       name: null,
@@ -174,7 +174,7 @@ describe('replace function', () => {
     }
 
     // Execute
-    const result = await replace.call(mockState, newObj)
+    const result = replace.call(mockState, newObj)
 
     // Verify properties were set to null/undefined
     expect(mockState.name).toBeNull()
@@ -187,7 +187,7 @@ describe('replace function', () => {
     expect(result).toBe(mockState)
   })
 
-  test('should handle array values in the replacement object', async () => {
+  test('should handle array values in the replacement object', () => {
     // Setup
     const newObj = {
       items: [1, 2, 3],
@@ -195,7 +195,7 @@ describe('replace function', () => {
     }
 
     // Execute
-    const result = await replace.call(mockState, newObj)
+    const result = replace.call(mockState, newObj)
 
     // Verify arrays were set correctly
     expect(mockState.items).toEqual([1, 2, 3])
@@ -212,7 +212,7 @@ describe('replace function', () => {
     expect(result).toBe(mockState)
   })
 
-  test('should handle primitive values in the replacement object', async () => {
+  test('should handle primitive values in the replacement object', () => {
     // Setup
     mockState.primitiveObj = {
       shouldBeReplaced: true
@@ -223,7 +223,7 @@ describe('replace function', () => {
     }
 
     // Execute
-    const result = await replace.call(mockState, newObj)
+    const result = replace.call(mockState, newObj)
 
     // Verify the object was replaced with primitive
     expect(mockState.primitiveObj).toBe('now a string')

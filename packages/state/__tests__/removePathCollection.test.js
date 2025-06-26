@@ -11,8 +11,8 @@ describe('removePathCollection function', () => {
     // Create a deep mock state object
     mockState = {
       update: jest.fn().mockImplementation((update, options) => {
-        // Return a promise to simulate the real update behavior
-        return Promise.resolve({ ...update })
+        // Return a copy of the update object to simulate the update result
+        return { ...update }
       }),
       user: {
         name: 'John',
@@ -32,14 +32,14 @@ describe('removePathCollection function', () => {
     }
   })
 
-  test('should handle an empty changes array', async () => {
+  test('should handle an empty changes array', () => {
     // Setup
     const changes = []
     const options = { testOption: true }
     const initialState = JSON.parse(JSON.stringify(mockState)) // Deep clone
 
     // Execute
-    const result = await removePathCollection.call(mockState, changes, options)
+    const result = removePathCollection.call(mockState, changes, options)
 
     // Verify
     // State should remain unchanged for user and settings
@@ -50,13 +50,13 @@ describe('removePathCollection function', () => {
     expect(result).toEqual({})
   })
 
-  test('should remove a single path correctly', async () => {
+  test('should remove a single path correctly', () => {
     // Setup
     const changes = [['user.email']]
     const options = { testOption: true }
 
     // Execute
-    const result = await removePathCollection.call(mockState, changes, options)
+    const result = removePathCollection.call(mockState, changes, options)
 
     // Verify
     // The email property should be removed

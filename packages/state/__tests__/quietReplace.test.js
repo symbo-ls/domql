@@ -27,12 +27,12 @@ describe('quietReplace function', () => {
           mockState.__updatedWithObj = obj
         }
 
-        return Promise.resolve(mockState)
+        return mockState
       })
     }
   })
 
-  test('should call replace with preventUpdate option set to true', async () => {
+  test('should call replace with preventUpdate option set to true', () => {
     // Setup
     const newObj = {
       name: 'replaced',
@@ -40,7 +40,7 @@ describe('quietReplace function', () => {
     }
 
     // Execute
-    const result = await quietReplace.call(mockState, newObj)
+    const result = quietReplace.call(mockState, newObj)
 
     // Verify state was modified correctly
     expect(mockState.name).toBe('replaced')
@@ -56,7 +56,7 @@ describe('quietReplace function', () => {
     expect(result).toBe(mockState)
   })
 
-  test('should merge additional options with preventUpdate', async () => {
+  test('should merge additional options with preventUpdate', () => {
     // Setup
     const newObj = { name: 'test' }
     const options = {
@@ -74,11 +74,11 @@ describe('quietReplace function', () => {
         mockState[param] = obj[param]
       }
 
-      return Promise.resolve(mockState)
+      return mockState
     })
 
     // Execute
-    await quietReplace.call(mockState, newObj, options)
+    quietReplace.call(mockState, newObj, options)
 
     // Verify options were merged correctly
     expect(capturedOptions).toEqual({
@@ -88,14 +88,14 @@ describe('quietReplace function', () => {
     })
   })
 
-  test('should handle empty object replacement', async () => {
+  test('should handle empty object replacement', () => {
     // Setup
     const emptyObj = {}
     const initialState = { ...mockState }
     delete initialState.replace // Remove method for comparison
 
     // Execute
-    const result = await quietReplace.call(mockState, emptyObj)
+    const result = quietReplace.call(mockState, emptyObj)
 
     // Verify state wasn't changed
     expect(mockState.name).toBe(initialState.name)
@@ -109,9 +109,9 @@ describe('quietReplace function', () => {
     expect(result).toBe(mockState)
   })
 
-  test('should handle null object replacement', async () => {
+  test('should handle null object replacement', () => {
     // Execute
-    const result = await quietReplace.call(mockState, null)
+    const result = quietReplace.call(mockState, null)
 
     // Verify preventUpdate was set
     expect(mockState.__preventUpdateCalled).toBe(true)
@@ -120,9 +120,9 @@ describe('quietReplace function', () => {
     expect(result).toBe(mockState)
   })
 
-  test('should handle undefined object replacement', async () => {
+  test('should handle undefined object replacement', () => {
     // Execute
-    const result = await quietReplace.call(mockState, undefined)
+    const result = quietReplace.call(mockState, undefined)
 
     // Verify preventUpdate was set
     expect(mockState.__preventUpdateCalled).toBe(true)
@@ -131,7 +131,7 @@ describe('quietReplace function', () => {
     expect(result).toBe(mockState)
   })
 
-  test('should handle replacing with complex objects', async () => {
+  test('should handle replacing with complex objects', () => {
     // Setup - create a complex replacement object
     const complexObj = {
       name: 'complex',
@@ -148,7 +148,7 @@ describe('quietReplace function', () => {
     }
 
     // Execute
-    const result = await quietReplace.call(mockState, complexObj)
+    const result = quietReplace.call(mockState, complexObj)
 
     // Verify complex properties were set correctly
     expect(mockState.name).toBe('complex')
@@ -166,7 +166,7 @@ describe('quietReplace function', () => {
     expect(result).toBe(mockState)
   })
 
-  test('should handle replacing with primitive values', async () => {
+  test('should handle replacing with primitive values', () => {
     // Test replacing object properties with various primitive values
     const primitiveValues = {
       stringProp: 'string value',
@@ -177,7 +177,7 @@ describe('quietReplace function', () => {
     }
 
     // Execute
-    const result = await quietReplace.call(mockState, primitiveValues)
+    const result = quietReplace.call(mockState, primitiveValues)
 
     // Verify primitive values were set correctly
     expect(mockState.stringProp).toBe('string value')

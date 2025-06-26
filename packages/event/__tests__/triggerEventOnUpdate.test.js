@@ -8,7 +8,7 @@ describe('triggerEventOnUpdate', () => {
   let mockOptions
 
   beforeEach(() => {
-    mockEventHandler = jest.fn().mockResolvedValue('eventResult')
+    mockEventHandler = jest.fn(() => 'eventResult')
     mockUpdatedObj = { updated: 'value' }
     mockOptions = { option1: 'value1' }
 
@@ -21,12 +21,12 @@ describe('triggerEventOnUpdate', () => {
   })
 
   describe('event resolution and execution', () => {
-    test('should trigger event from on property', async () => {
+    test('should trigger event from on property', () => {
       // Arrange
       mockElement.on.click = mockEventHandler
 
       // Act
-      const result = await triggerEventOnUpdate(
+      const result = triggerEventOnUpdate(
         'click',
         mockUpdatedObj,
         mockElement,
@@ -44,12 +44,12 @@ describe('triggerEventOnUpdate', () => {
       )
     })
 
-    test('should trigger event from props using camelCase', async () => {
+    test('should trigger event from props using camelCase', () => {
       // Arrange
       mockElement.props.onClick = mockEventHandler
 
       // Act
-      const result = await triggerEventOnUpdate(
+      const result = triggerEventOnUpdate(
         'click',
         mockUpdatedObj,
         mockElement,
@@ -67,16 +67,16 @@ describe('triggerEventOnUpdate', () => {
       )
     })
 
-    test('should prioritize on property over props', async () => {
+    test('should prioritize on property over props', () => {
       // Arrange
-      const onEventHandler = jest.fn().mockResolvedValue('onResult')
-      const propsEventHandler = jest.fn().mockResolvedValue('propsResult')
+      const onEventHandler = jest.fn(() => 'onResult')
+      const propsEventHandler = jest.fn(() => 'propsResult')
 
       mockElement.on.click = onEventHandler
       mockElement.props.onClick = propsEventHandler
 
       // Act
-      const result = await triggerEventOnUpdate(
+      const result = triggerEventOnUpdate(
         'click',
         mockUpdatedObj,
         mockElement,
@@ -91,19 +91,14 @@ describe('triggerEventOnUpdate', () => {
   })
 
   describe('parameter handling', () => {
-    test('should handle undefined state and context', async () => {
+    test('should handle undefined state and context', () => {
       // Arrange
       mockElement = {
         on: { click: mockEventHandler }
       }
 
       // Act
-      await triggerEventOnUpdate(
-        'click',
-        mockUpdatedObj,
-        mockElement,
-        mockOptions
-      )
+      triggerEventOnUpdate('click', mockUpdatedObj, mockElement, mockOptions)
 
       // Assert
       expect(mockEventHandler).toHaveBeenCalledWith(
@@ -115,12 +110,12 @@ describe('triggerEventOnUpdate', () => {
       )
     })
 
-    test('should handle missing options', async () => {
+    test('should handle missing options', () => {
       // Arrange
       mockElement.on.click = mockEventHandler
 
       // Act
-      await triggerEventOnUpdate('click', mockUpdatedObj, mockElement)
+      triggerEventOnUpdate('click', mockUpdatedObj, mockElement)
 
       // Assert
       expect(mockEventHandler).toHaveBeenCalledWith(
@@ -132,12 +127,12 @@ describe('triggerEventOnUpdate', () => {
       )
     })
 
-    test('should handle empty updatedObj', async () => {
+    test('should handle empty updatedObj', () => {
       // Arrange
       mockElement.on.click = mockEventHandler
 
       // Act
-      await triggerEventOnUpdate('click', {}, mockElement, mockOptions)
+      triggerEventOnUpdate('click', {}, mockElement, mockOptions)
 
       // Assert
       expect(mockEventHandler).toHaveBeenCalledWith(
@@ -151,7 +146,7 @@ describe('triggerEventOnUpdate', () => {
   })
 
   describe('event naming', () => {
-    test('should handle various event names correctly', async () => {
+    test('should handle various event names correctly', () => {
       const eventTests = [
         { input: 'mouseenter', prop: 'onMouseenter' },
         { input: 'mouseleave', prop: 'onMouseleave' },
@@ -164,12 +159,7 @@ describe('triggerEventOnUpdate', () => {
         mockElement.props[prop] = mockEventHandler
 
         // Act
-        await triggerEventOnUpdate(
-          input,
-          mockUpdatedObj,
-          mockElement,
-          mockOptions
-        )
+        triggerEventOnUpdate(input, mockUpdatedObj, mockElement, mockOptions)
 
         // Assert
         expect(mockEventHandler).toHaveBeenCalledWith(
@@ -188,9 +178,9 @@ describe('triggerEventOnUpdate', () => {
   })
 
   describe('error handling', () => {
-    test('should return undefined when no event handler exists', async () => {
+    test('should return undefined when no event handler exists', () => {
       // Act
-      const result = await triggerEventOnUpdate(
+      const result = triggerEventOnUpdate(
         'click',
         mockUpdatedObj,
         mockElement,
@@ -201,15 +191,17 @@ describe('triggerEventOnUpdate', () => {
       expect(result).toBeUndefined()
     })
 
-    test('should handle rejection in event handler', async () => {
+    test('should handle thrown error in event handler', () => {
       // Arrange
       const error = new Error('Event handler error')
-      mockElement.on.click = jest.fn().mockRejectedValue(error)
+      mockElement.on.click = jest.fn(() => {
+        throw error
+      })
 
       // Act & Assert
-      await expect(
+      expect(() =>
         triggerEventOnUpdate('click', mockUpdatedObj, mockElement, mockOptions)
-      ).rejects.toThrow('Event handler error')
+      ).toThrow('Event handler error')
     })
   })
 })

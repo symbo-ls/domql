@@ -38,12 +38,12 @@ describe('applyFunction function', () => {
           mockState[key] = newState[key]
         })
 
-        return Promise.resolve(mockState)
+        return mockState
       })
     }
   })
 
-  test('should apply function and update state when func is a valid function', async () => {
+  test('should apply function and update state when func is a valid function', () => {
     // Create a function that modifies the state
     const testFunc = jest.fn(state => {
       state.name = 'modified'
@@ -54,7 +54,7 @@ describe('applyFunction function', () => {
     const options = { silent: true }
 
     // Execute
-    const result = await applyFunction.call(mockState, testFunc, options)
+    const result = applyFunction.call(mockState, testFunc, options)
 
     // Verify the function was called with state
     expect(testFunc).toHaveBeenCalledWith(mockState)
@@ -71,7 +71,7 @@ describe('applyFunction function', () => {
     expect(result).toBe(mockState)
   })
 
-  test('should merge options correctly with the replace option', async () => {
+  test('should merge options correctly with the replace option', () => {
     // Setup
     const testFunc = jest.fn(state => {
       state.updated = true
@@ -92,11 +92,11 @@ describe('applyFunction function', () => {
         mockState[key] = newState[key]
       })
 
-      return Promise.resolve(mockState)
+      return mockState
     })
 
     // Execute
-    await applyFunction.call(mockState, testFunc, options)
+    applyFunction.call(mockState, testFunc, options)
 
     // Verify options were merged correctly
     expect(capturedOptions).toEqual({
@@ -106,7 +106,7 @@ describe('applyFunction function', () => {
     })
   })
 
-  test('should replace the entire state when update is called with replace: true', async () => {
+  test('should replace the entire state when update is called with replace: true', () => {
     // Modify the parse method to return a completely different state
     mockState.parse = jest.fn().mockReturnValue({
       completelyNew: true,
@@ -116,7 +116,7 @@ describe('applyFunction function', () => {
     const testFunc = jest.fn() // This function doesn't modify state
 
     // Execute
-    await applyFunction.call(mockState, testFunc)
+    applyFunction.call(mockState, testFunc)
 
     // Verify the entire state was replaced (old properties should be gone)
     expect(mockState).not.toHaveProperty('name')
@@ -128,13 +128,13 @@ describe('applyFunction function', () => {
     expect(mockState.different).toBe('structure')
   })
 
-  test('should not do anything when func is not a function', async () => {
+  test('should not do anything when func is not a function', () => {
     // Setup
     const initialState = { ...mockState }
     const notAFunction = "I'm a string, not a function"
 
     // Execute
-    const result = await applyFunction.call(mockState, notAFunction)
+    const result = applyFunction.call(mockState, notAFunction)
 
     // Verify state wasn't changed
     expect(mockState.name).toBe(initialState.name)
@@ -149,12 +149,12 @@ describe('applyFunction function', () => {
     expect(result).toBeUndefined()
   })
 
-  test('should handle null/undefined func parameter', async () => {
+  test('should handle null/undefined func parameter', () => {
     // Setup
     const initialState = { ...mockState }
 
     // Test with null
-    const nullResult = await applyFunction.call(mockState, null)
+    const nullResult = applyFunction.call(mockState, null)
 
     // Verify state wasn't changed
     expect(mockState.name).toBe(initialState.name)
@@ -165,7 +165,7 @@ describe('applyFunction function', () => {
     expect(nullResult).toBeUndefined()
 
     // Test with undefined
-    const undefinedResult = await applyFunction.call(mockState, undefined)
+    const undefinedResult = applyFunction.call(mockState, undefined)
 
     // Verify state still wasn't changed
     expect(mockState.name).toBe(initialState.name)
@@ -176,40 +176,36 @@ describe('applyFunction function', () => {
     expect(undefinedResult).toBeUndefined()
   })
 
-  test('should handle async function modification correctly', async () => {
-    // Create an async function that modifies state after a delay
-    const asyncFunc = jest.fn().mockImplementation(async state => {
-      // Simulate async operation
-      await new Promise(resolve => setTimeout(resolve, 10))
-      state.asyncModified = true
+  test('should handle function modification correctly (sync)', () => {
+    // Create a function that modifies state synchronously
+    const syncFunc = jest.fn(state => {
+      state.syncModified = true
     })
 
     // Execute
-    const result = await applyFunction.call(mockState, asyncFunc)
+    const result = applyFunction.call(mockState, syncFunc)
 
-    // Verify state was modified by the async function
-    expect(mockState.asyncModified).toBe(true)
+    // Verify state was modified by the function
+    expect(mockState.syncModified).toBe(true)
 
     // Verify the function returned the updated state
     expect(result).toBe(mockState)
   })
 
-  test('should handle a function that throws an error', async () => {
+  test('should handle a function that throws an error', () => {
     // Create a function that throws an error
     const errorFunc = jest.fn().mockImplementation(() => {
       throw new Error('Test error')
     })
 
     // Execute and expect error
-    await expect(applyFunction.call(mockState, errorFunc)).rejects.toThrow(
-      'Test error'
-    )
+    expect(() => applyFunction.call(mockState, errorFunc)).toThrow('Test error')
 
     // Verify state wasn't updated due to the error
     expect(mockState.update).not.toHaveBeenCalled()
   })
 
-  test('should handle state.parse() returning unexpected values', async () => {
+  test('should handle state.parse() returning unexpected values', () => {
     // Test cases for different parse return values
     const testCases = [
       { description: 'null', parseReturn: null },
@@ -237,14 +233,14 @@ describe('applyFunction function', () => {
             // For primitives, store as value property
             mockState.value = newState
           }
-          return Promise.resolve(mockState)
+          return mockState
         })
       }
 
       const testFunc = jest.fn()
 
       // Execute
-      await applyFunction.call(mockState, testFunc)
+      applyFunction.call(mockState, testFunc)
 
       // Verify update was called with the parse result
       expect(mockState.update).toHaveBeenCalledWith(
