@@ -1,16 +1,15 @@
 {
   "name": "@domql/utils",
-  "version": "3.1.2",
+  "version": "3.2.0",
   "license": "MIT",
   "type": "module",
   "module": "index.js",
   "main": "index.js",
   "exports": {
     ".": {
-      "default": "./index.js",
+      "default": "./dist/esm/index.js",
       "import": "./dist/esm/index.js",
-      "require": "./dist/cjs/index.js",
-      "default": "./dist/esm/index.js"
+      "require": "./dist/cjs/index.js"
     }
   },
   "source": "index.js",
@@ -25,7 +24,7 @@
     "build": "npx rimraf -I dist; npm run build:cjs; npm run build:esm",
     "prepublish": "npm run build; npm run copy:package:cjs"
   },
-  "gitHead": "429b36616aa04c8587a26ce3c129815115e35897",
+  "gitHead": "d63ad23a9c2134bbfd26f7cdf1b835e6c5f3cc02",
   "devDependencies": {
     "@babel/core": "^7.26.0"
   }
