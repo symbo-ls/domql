@@ -1,6 +1,6 @@
 {
   "name": "@domql/report",
-  "version": "3.2.0",
+  "version": "3.2.1",
   "license": "MIT",
   "type": "module",
   "module": "index.js",
@@ -19,11 +19,11 @@
   ],
   "scripts": {
     "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
-    "build:esm": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild *.js --target=es2017 --format=esm --outdir=dist/esm --ignore-pattern:__tests__",
-    "build:cjs": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild *.js --target=node16 --format=cjs --outdir=dist/cjs --ignore-pattern:__tests__",
-    "build:iife": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild *.js --target=node16 --format=iife --outdir=dist/iife --ignore-pattern:__tests__",
+    "build:esm": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild *.js --target=es2017 --format=esm --outdir=dist/esm",
+    "build:cjs": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild *.js --target=node16 --format=cjs --outdir=dist/cjs",
+    "build:iife": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild *.js --target=node16 --format=iife --outdir=dist/iife",
     "build": "npx rimraf -I dist; npm run build:cjs; npm run build:esm",
     "prepublish": "npx rimraf -I dist && npm run build && npm run copy:package:cjs"
   },
-  "gitHead": "d63ad23a9c2134bbfd26f7cdf1b835e6c5f3cc02"
+  "gitHead": "d6dea47c5fca1a226074a47018c48389ee24c774"
 }
