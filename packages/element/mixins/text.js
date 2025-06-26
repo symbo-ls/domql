@@ -10,7 +10,7 @@ import { exec, isString } from '@domql/utils'
 export function text (param, element, node) {
   let prop = exec(param || element.props.text, element)
   if (isString(prop) && prop.includes('{{')) {
-    prop = element.call('replaceLiteralsWithObjectFields', prop)
+    prop = element.call('replaceLiteralsWithObjectFields', prop, element.state)
   }
   if (element.tag === 'string') {
     node.nodeValue = prop

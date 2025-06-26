@@ -184,21 +184,25 @@ export function keys () {
 
 export function parse (excl = []) {
   const element = this
-  const { __ref: ref } = element
   const obj = {}
   const keyList = keys.call(element)
+  const hasChildren = keyList.includes('children')
   keyList.forEach(v => {
-    if (excl.includes(v)) return
+    if (excl.includes(v) || !Object.hasOwnProperty.call(element, v)) return
+    if (hasChildren && v === 'content') return
     const val = element[v]
     if (v === 'state') {
-      if (!ref?.__hasRootState) return
+      if (element.__ref && !element.__ref.__hasRootState) return
       const parsedVal = isFunction(val && val.parse) ? val.parse() : val
       obj[v] = isFunction(parsedVal)
         ? parsedVal
         : JSON.parse(JSON.stringify(parsedVal || {}))
     } else if (v === 'scope') {
-      if (!ref?.__hasRootScope) return
+      if (element.__ref && !element.__ref.__hasRootScope) return
       obj[v] = JSON.parse(JSON.stringify(val || {}))
+    } else if (v === 'props') {
+      const { __element, update, ...props } = element[v]
+      obj[v] = props
     } else if (isDefined(val) && Object.hasOwnProperty.call(element, v)) {
       obj[v] = val
     }
@@ -206,13 +210,20 @@ export function parse (excl = []) {
   return obj
 }
 
-export function parseDeep (excl = []) {
+export function parseDeep (excl = [], visited = new WeakSet()) {
   const element = this
+  if (visited.has(element)) return undefined
+  visited.add(element)
   const obj = parse.call(element, excl)
   for (const v in obj) {
-    if (excl.includes(v)) return
-    if (isObjectLike(obj[v])) {
-      obj[v] = parseDeep.call(obj[v], excl)
+    if (excl.includes(v) || !Object.hasOwnProperty.call(element, v)) continue
+    const val = obj[v]
+    if (Array.isArray(val)) {
+      obj[v] = val.map(item =>
+        isObjectLike(item) ? parseDeep.call(item, excl, visited) : item
+      )
+    } else if (isObjectLike(val)) {
+      obj[v] = parseDeep.call(val, excl, visited)
     }
   }
   return obj

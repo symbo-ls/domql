@@ -10,6 +10,7 @@ export const DOMQ_PROPERTIES = [
   'classlist',
   'state',
   'scope',
+  'root',
   'deps',
   'extends',
   '$router',
@@ -51,8 +52,7 @@ export const PARSED_DOMQ_PROPERTIES = [
   'key',
   'tag',
   'query',
-  'on',
-  'context'
+  'on'
 ]
 
 export const STATE_PROPERTIES = [
