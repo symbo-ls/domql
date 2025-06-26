@@ -25,7 +25,7 @@ export const throughInitialExec = async (element, exclude = {}) => {
   }
 }
 
-export const throughUpdatedExec = (element, options = {}) => {
+export const throughUpdatedExec = async (element, options = {}) => {
   const { __ref: ref } = element
   const changes = {}
 
