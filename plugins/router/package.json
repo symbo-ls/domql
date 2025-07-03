@@ -1,6 +1,6 @@
 {
   "name": "@domql/router",
-  "version": "2.29.26",
+  "version": "2.29.27",
   "license": "MIT",
   "type": "module",
   "module": "dist/esm/index.js",
@@ -22,10 +22,10 @@
     "prepublish": "npx rimraf -I dist && npm run build && npm run copy:package:cjs"
   },
   "dependencies": {
-    "@domql/event": "^2.29.26",
-    "@domql/utils": "^2.29.26"
+    "@domql/event": "^2.29.27",
+    "@domql/utils": "^2.29.27"
   },
-  "gitHead": "9d7c4b7d8a852edb2c8eca40bd0debd282bedb72",
+  "gitHead": "8c4454632bbd7643c1b63ca0ce33ebd3651bef5a",
   "devDependencies": {
     "@babel/core": "^7.27.1"
   }
