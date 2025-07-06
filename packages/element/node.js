@@ -30,8 +30,8 @@ export const createNode = async (element, options) => {
   let isNewNode
 
   // handle content duplication bug with delayed rendering
-  if (options.contentElement && options.lastElement) {
-    if (options.contentElement !== options.lastElement.content) return
+  if (options.routerContentElement && options.lastElement) {
+    if (options.routerContentElement !== options.lastElement.content) return
   }
 
   if (!node) {

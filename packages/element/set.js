@@ -35,11 +35,15 @@ export const set = async function (params, options = {}, el) {
   const element = el || this
   const { __ref: ref } = element
 
-  // if (
-  //   options.preventContentUpdate ||
-  //   options.preventUpdate?.includes('content')
-  // )
-  //   return
+  if (
+    options.preventContentUpdate ||
+    options.preventUpdate?.includes('content')
+  )
+    return
+
+  if (options.routerContentElement && options.lastElement) {
+    if (options.routerContentElement !== options.lastElement.content) return
+  }
 
   const content = setContentKey(element, options)
   const __contentRef = content && content.__ref
