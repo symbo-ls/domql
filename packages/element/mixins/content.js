@@ -17,6 +17,7 @@ export const updateContent = async function (params, options) {
 export const removeContent = function (el, opts = {}) {
   const element = el || this
   const { __ref: ref } = element
+  // console.warn('removing content', ref.path)
   const contentElementKey = setContentKey(element, opts)
 
   if (opts.contentElementKey !== 'content') opts.contentElementKey = 'content'

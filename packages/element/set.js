@@ -9,8 +9,9 @@ import { removeContent } from './mixins/content.js'
 import { triggerEventOn, triggerEventOnUpdate } from '@domql/event'
 
 export const resetElement = async (params, element, options) => {
-  if (!options.preventRemove) await removeContent(element, options)
+  if (!options.preventRemove) removeContent(element, options)
   const { __ref: ref } = element
+  // console.warn('resetting content', ref.path)
   if (params instanceof Promise) console.log(params, params instanceof Promise)
   await create(params, element, ref.contentElementKey || 'content', {
     ignoreChildExtend: true,
@@ -33,6 +34,12 @@ export const reset = async options => {
 export const set = async function (params, options = {}, el) {
   const element = el || this
   const { __ref: ref } = element
+
+  // if (
+  //   options.preventContentUpdate ||
+  //   options.preventUpdate?.includes('content')
+  // )
+  //   return
 
   const content = setContentKey(element, options)
   const __contentRef = content && content.__ref
@@ -72,6 +79,8 @@ export const set = async function (params, options = {}, el) {
       props.childProps = element.props.childProps
       props.ignoreChildProps = true
     }
+
+    // console.warn('setting content', ref.path)
 
     if (lazyLoad) {
       window.requestAnimationFrame(async () => {

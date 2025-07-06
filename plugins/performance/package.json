@@ -1,11 +1,11 @@
 {
   "name": "@domql/performance",
-  "version": "2.29.38",
+  "version": "2.29.39",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
     "vpatch": "npm version patch && npm publish --access public"
   },
-  "gitHead": "3384cf7d920f77cf693d9145edc0b3ad9ecf3f33",
+  "gitHead": "a4e14a874ffcbd3839fc5ae916259887a47294e3",
   "source": "index.js"
 }
