@@ -193,6 +193,8 @@ export const deepClone = (obj, options = {}) => {
 
     // Recursively clone objects
     if (isObjectLike(value)) {
+      if (!Object.prototype.hasOwnProperty.call(obj, key)) continue
+
       clone[key] = deepClone(value, {
         ...options,
         visited
