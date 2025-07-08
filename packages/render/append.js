@@ -5,9 +5,9 @@
  * and assigns them into real DOM tree
  */
 export const appendNode = (node, parentNode, el) => {
+  const win = el?.context?.window || window
   try {
     if (parentNode && typeof parentNode.appendChild === 'function') {
-      const win = el.context.window || window
       if (
         parentNode instanceof win.Node &&
         typeof parentNode.appendChild === 'function'

@@ -239,23 +239,23 @@ export function verbose (element, ...args) {
 }
 
 export function log (...params) {
-  if (isNotProduction()) {
-    console.log(...params)
-  }
+  // if (isNotProduction()) {
+  console.log(...params)
+  // }
 }
 
 export function warn (...params) {
-  if (isNotProduction()) {
-    console.warn(...params)
-  }
+  // if (isNotProduction()) {
+  console.warn(...params)
+  // }
 }
 
 export function error (...params) {
-  if (isNotProduction()) {
-    if (params[params.length - 1]?.debugger) debugger // eslint-disable-line
-    if (params[params.length - 1]?.verbose) verbose.call(this, ...params)
-    console.error(...params, this)
-  }
+  // if (isNotProduction()) {
+  if (params[params.length - 1]?.debugger) debugger // eslint-disable-line
+  if (params[params.length - 1]?.verbose) verbose.call(this, ...params)
+  console.error(...params, this)
+  // }
 }
 
 export function nextElement () {
