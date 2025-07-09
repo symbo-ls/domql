@@ -37,7 +37,7 @@ export const set = async function (params, options = {}, el) {
 
   if (
     options.preventContentUpdate ||
-    options.preventUpdate?.includes('content')
+    (options.preventUpdate && options.preventUpdate.includes?.('content'))
   )
     return
 

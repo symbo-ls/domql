@@ -27,10 +27,10 @@ const defaultOptions = {
   scrollToOptions: { behavior: 'smooth' }
 }
 
-export const router = async (path, el, state = {}, options = {}) => {
+export const router = async function (path, el, state = {}, options = {}) {
   const element = el || this
-  const win = element.context.window || window
-  const doc = element.context.document || document
+  const win = element.context?.window || window
+  const doc = element.context?.document || document
   const opts = {
     ...defaultOptions,
     ...element.context.routerOptions,
