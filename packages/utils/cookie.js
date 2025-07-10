@@ -43,7 +43,9 @@ export function getLocalStorage (key) {
   if (window.localStorage) {
     try {
       savedJSON = JSON.parse(window.localStorage.getItem(key))
-    } catch (e) {}
+    } catch (e) {
+      console.error(e)
+    }
   }
 
   if (typeof savedJSON !== 'undefined') {
