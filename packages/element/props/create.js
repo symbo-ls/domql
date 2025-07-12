@@ -69,9 +69,10 @@ export const createProps = function (element, parent, options) {
   else {
     try {
       applyProps()
-    } catch {
+    } catch (e) {
       element.props = {}
       ref.__props = options.cachedProps || []
+      element.error('Error applying props', e)
     }
   }
 
