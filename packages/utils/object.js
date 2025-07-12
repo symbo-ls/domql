@@ -467,6 +467,7 @@ export const stringToObject = (str, opts = { verbose: true }) => {
     return str ? window.eval('(' + str + ')') : {} // eslint-disable-line
   } catch (e) {
     if (opts.verbose) console.warn(e)
+    if (opts.errorCallback) opts.errorCallback(e)
   }
 }
 
