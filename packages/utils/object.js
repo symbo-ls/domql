@@ -407,12 +407,13 @@ export const hasFunction = str => {
     /^[a-zA-Z_$][a-zA-Z0-9_$]*\s*=>/
   ]
 
+  const isClass = str.startsWith('class')
   const isFunction = patterns.some(pattern => pattern.test(trimmed))
   const isObjectLiteral = trimmed.startsWith('{') && !trimmed.includes('=>')
   const isArrayLiteral = trimmed.startsWith('[')
   const isJSONLike = /^["[{]/.test(trimmed) && !trimmed.includes('=>')
 
-  return isFunction && !isObjectLiteral && !isArrayLiteral && !isJSONLike
+  return (isFunction || isClass) && !isObjectLiteral && !isArrayLiteral && !isJSONLike
 }
 
 export const deepDestringify = (obj, destringified = {}) => {
