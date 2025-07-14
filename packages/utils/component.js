@@ -5,14 +5,14 @@ import { joinArrays } from './array.js'
 import { deepClone, exec } from './object.js'
 import { isArray, isFunction, isObject, isString } from './types.js'
 
-export const checkIfKeyIsComponent = key => {
+export const checkIfKeyIsComponent = (key) => {
   const isFirstKeyString = isString(key)
   if (!isFirstKeyString) return
   const firstCharKey = key.slice(0, 1)
   return /^[A-Z]*$/.test(firstCharKey)
 }
 
-export const checkIfKeyIsProperty = key => {
+export const checkIfKeyIsProperty = (key) => {
   const isFirstKeyString = isString(key)
   if (!isFirstKeyString) return
   const firstCharKey = key.slice(0, 1)
@@ -68,14 +68,14 @@ export const checkIfSugar = (element, parent, key) => {
   )
 }
 
-export const extractComponentKeyFromKey = key => {
+export const extractComponentKeyFromKey = (key) => {
   return key.includes('+')
     ? key.split('+') // get array of componentKeys
     : key.includes('_')
-    ? [key.split('_')[0]] // get component key split _
-    : key.includes('.') && !checkIfKeyIsComponent(key.split('.')[1])
-    ? [key.split('.')[0]] // get component key split .
-    : [key]
+      ? [key.split('_')[0]] // get component key split _
+      : key.includes('.') && !checkIfKeyIsComponent(key.split('.')[1])
+        ? [key.split('.')[0]] // get component key split .
+        : [key]
 }
 
 export const extendizeByKey = (element, parent, key) => {
@@ -126,8 +126,8 @@ export const extendizeByKey = (element, parent, key) => {
   }
 }
 
-export function getCapitalCaseKeys (obj) {
-  return Object.keys(obj).filter(key => /^[A-Z]/.test(key))
+export function getCapitalCaseKeys(obj) {
+  return Object.keys(obj).filter((key) => /^[A-Z]/.test(key))
 }
 
 export const addChildrenIfNotInOriginal = (element, parent, key) => {
@@ -139,7 +139,7 @@ export const addChildrenIfNotInOriginal = (element, parent, key) => {
     const childElem = element[childKey]
     const newChild = element.props[childKey]
 
-    const assignChild = val => {
+    const assignChild = (val) => {
       element[childKey] = val
       delete element.props[childKey]
     }
@@ -184,20 +184,20 @@ export const applyComponentFromContext = (element, parent, options) => {
   }
 }
 
-export const isVariant = param => {
+export const isVariant = (param) => {
   if (!isString(param)) return
   const firstCharKey = param.slice(0, 1)
   // return (firstCharKey === '.' || firstCharKey === '$')
   return firstCharKey === '.'
 }
 
-export const hasVariantProp = element => {
+export const hasVariantProp = (element) => {
   const { props } = element
   if (isObject(props) && isString(props.variant)) return true
 }
 
-export function getChildrenComponentsByKey (key) {
-  if (key === this.key || this.__ref.__componentKey === key) {
+export function getChildrenComponentsByKey(key) {
+  if (key === this.key || this.__ref?.__componentKey === key) {
     return this
   }
 
@@ -206,7 +206,7 @@ export function getChildrenComponentsByKey (key) {
     // Add the value of the extend key to the result array
     const foundString = isString(this.extend) && this.extend === key
     const foundInArray =
-      isArray(this.extend) && this.extend.filter(v => v === key).length
+      isArray(this.extend) && this.extend.filter((v) => v === key).length
     if (foundString || foundInArray) return this
   }
 
@@ -216,15 +216,15 @@ export function getChildrenComponentsByKey (key) {
       isString(this.parent.childExtend) && this.parent.childExtend === key
     const foundInArray =
       isArray(this.parent.childExtend) &&
-      this.parent.childExtend.filter(v => v === key).length
+      this.parent.childExtend.filter((v) => v === key).length
     if (foundString || foundInArray) return this
   }
 }
 
-export const getExtendsInElement = obj => {
+export const getExtendsInElement = (obj) => {
   let result = []
 
-  function traverse (o) {
+  function traverse(o) {
     for (const key in o) {
       if (Object.hasOwnProperty.call(o, key)) {
         // Check if the key starts with a capital letter and exclude keys like @mobileL, $propsCollection
