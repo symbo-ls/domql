@@ -1,6 +1,6 @@
 {
   "name": "@domql/utils",
-  "version": "2.29.69",
+  "version": "2.29.70",
   "license": "MIT",
   "type": "module",
   "module": "index.js",
@@ -24,7 +24,7 @@
     "build": "npx rimraf -I dist; npm run build:cjs; npm run build:esm",
     "prepublish": "npm run build; npm run copy:package:cjs"
   },
-  "gitHead": "269b8fceb4f17d33c48f1dedb21bc7bf09c2ef29",
+  "gitHead": "1407af1db22e20fafb2f7c7a5f9259a97c2dbb26",
   "devDependencies": {
     "@babel/core": "^7.27.1"
   }
