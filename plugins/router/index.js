@@ -81,6 +81,7 @@ export const router = async function (path, el, state = {}, options = {}) {
       await element[contentElementKey].remove()
     }
 
+    element.removeContent()
     await element.set(
       {
         tag: opts.useFragment && 'fragment',

@@ -297,9 +297,29 @@ export const deepStringifyWithMaxDepth = (
 }
 
 export const objectToString = (obj = {}, indent = 0) => {
-  // Handle empty object case
+  // Handle null or primitive case
   if (obj === null || typeof obj !== 'object') {
     return String(obj)
+  }
+
+  const spaces = '  '.repeat(indent)
+
+  // Handle array case
+  if (Array.isArray(obj)) {
+    if (obj.length === 0) return '[]'
+
+    let str = '[\n'
+    for (const element of obj) {
+      if (isObjectLike(element)) {
+        str += `${spaces}  ${objectToString(element, indent + 1)},\n`
+      } else if (isString(element)) {
+        str += `${spaces}  '${element}',\n`
+      } else {
+        str += `${spaces}  ${element},\n`
+      }
+    }
+    str += `${spaces}]`
+    return str
   }
 
   // Handle empty object case
@@ -307,7 +327,6 @@ export const objectToString = (obj = {}, indent = 0) => {
     return '{}'
   }
 
-  const spaces = '  '.repeat(indent)
   let str = '{\n'
 
   for (const [key, value] of Object.entries(obj)) {
