@@ -1,6 +1,12 @@
 'use strict'
 
-import { isArray, isObject, isObjectLike, joinArrays, deepClone } from '@domql/utils'
+import {
+  isArray,
+  isObject,
+  isObjectLike,
+  joinArrays,
+  deepClone
+} from '@domql/utils'
 import { IGNORE_PROPS_PARAMS } from '../props/index.js'
 
 // breaks server build
@@ -8,10 +14,35 @@ import { IGNORE_PROPS_PARAMS } from '../props/index.js'
 // import { METHODS } from '../methods'
 
 const IGNORE_STATE_PARAMS = [
-  'update', 'parse', 'clean', 'create', 'destroy', 'add', 'toggle', 'remove', 'apply', 'set', 'reset',
-  'replace', 'quietReplace', 'quietUpdate', 'applyReplace', 'applyFunction',
-  'rootUpdate', 'parentUpdate', 'parent', '__element', '__depends', '__ref', '__children', 'root',
-  'setByPath', 'setPathCollection', 'removeByPath', 'removePathCollection', 'getByPath'
+  'update',
+  'parse',
+  'clean',
+  'create',
+  'destroy',
+  'add',
+  'toggle',
+  'remove',
+  'apply',
+  'set',
+  'reset',
+  'replace',
+  'quietReplace',
+  'quietUpdate',
+  'applyReplace',
+  'applyFunction',
+  'rootUpdate',
+  'parentUpdate',
+  'parent',
+  '__element',
+  '__depends',
+  '__ref',
+  '__children',
+  'root',
+  'setByPath',
+  'setPathCollection',
+  'removeByPath',
+  'removePathCollection',
+  'getByPath'
 ]
 
 export const METHODS = [
@@ -28,6 +59,7 @@ export const METHODS = [
   'getPath',
   'setNodeStyles',
   'spotByPath',
+  'append',
   'keys',
   'parse',
   'setProps',
@@ -145,14 +177,17 @@ export const mergeIfExisted = (a, b) => {
 /**
  * Merges array extends
  */
-export const mergeArray = (arr, exclude = ['parent', 'node', '__element', 'state', 'context', '__ref']) => {
+export const mergeArray = (
+  arr,
+  exclude = ['parent', 'node', '__element', 'state', 'context', '__ref']
+) => {
   return arr.reduce((a, c) => deepMerge(a, deepClone(c, { exclude })), {})
 }
 
 /**
  * Merges array extends
  */
-export const mergeAndCloneIfArray = obj => {
+export const mergeAndCloneIfArray = (obj) => {
   return isArray(obj) ? mergeArray(obj) : deepClone(obj)
 }
 

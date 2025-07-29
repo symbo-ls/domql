@@ -1,7 +1,15 @@
 'use strict'
 
 import { triggerEventOn } from '@domql/event'
-import { deepClone, exec, is, isArray, isFunction, isObject, isUndefined } from '@domql/utils'
+import {
+  deepClone,
+  exec,
+  is,
+  isArray,
+  isFunction,
+  isObject,
+  isUndefined
+} from '@domql/utils'
 import { IGNORE_STATE_PARAMS } from './ignore.js'
 import {
   add,
@@ -49,7 +57,10 @@ export const applyInitialState = async function (element, parent, options) {
     element.state = isUndefined(inheritedState) ? {} : inheritedState
   }
 
-  const dependentState = applyDependentState(element, element.state || parent.state || {})
+  const dependentState = applyDependentState(
+    element,
+    element.state || parent.state || {}
+  )
   if (dependentState) element.state = dependentState
 
   applyMethods(element)
@@ -65,16 +76,22 @@ const applyDependentState = (element, state) => {
   const origState = exec(__ref || ref || __element?.state, element)
   if (!origState) return
   const dependentState = deepClone(origState, IGNORE_STATE_PARAMS)
-  const newDepends = { [element.key]: dependentState }
+  const newDepends = { [element.key + Math.random()]: dependentState }
 
   const __depends = isObject(origState.__depends)
     ? { ...origState.__depends, ...newDepends }
     : newDepends
 
   if (Array.isArray(origState)) {
-    addProtoToArray(origState, { ...Object.getPrototypeOf(origState), __depends })
+    addProtoToArray(origState, {
+      ...Object.getPrototypeOf(origState),
+      __depends
+    })
   } else {
-    Object.setPrototypeOf(origState, { ...Object.getPrototypeOf(origState), __depends })
+    Object.setPrototypeOf(origState, {
+      ...Object.getPrototypeOf(origState),
+      __depends
+    })
   }
 
   return dependentState
@@ -155,5 +172,7 @@ const applyMethods = (element) => {
     Object.setPrototypeOf(state, proto)
   }
 
-  if (state.parent && state.parent.__children) { state.parent.__children[element.key] = state }
+  if (state.parent && state.parent.__children) {
+    state.parent.__children[element.key] = state
+  }
 }

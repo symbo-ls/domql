@@ -26,6 +26,7 @@ import {
   spotByPath,
   variables,
   verbose,
+  append,
   warn
 } from './index.js'
 
@@ -55,8 +56,10 @@ export const addMethods = (element, parent, options = {}) => {
     verbose,
     warn,
     error,
+    append,
     call
   }
-  if (element.context.methods) (options.strict ? merge : overwrite)(proto, element.context.methods)
+  if (element.context.methods)
+    (options.strict ? merge : overwrite)(proto, element.context.methods)
   Object.setPrototypeOf(element, proto)
 }

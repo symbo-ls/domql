@@ -8,14 +8,14 @@ import {
   isObjectLike,
   isProduction,
   removeValueFromArray,
-  deepClone,
-  isNotProduction
+  deepClone
 } from '@domql/utils'
 import { TREE } from '../tree.js'
 import { parseFilters, REGISTRY } from '../mixins/index.js'
+import { create } from '../create.js'
 
 // TODO: update these files
-export function spotByPath (path) {
+export function spotByPath(path) {
   const element = this
   const arr = [].concat(path)
   let active = TREE[arr[0]]
@@ -34,7 +34,7 @@ export function spotByPath (path) {
 }
 
 // TODO: update these files
-export function lookup (param) {
+export function lookup(param) {
   const el = this
   let { parent } = el
 
@@ -56,7 +56,7 @@ export function lookup (param) {
   return parent
 }
 
-export function lookdown (param) {
+export function lookdown(param) {
   const el = this
   const { __ref: ref } = el
   const children = ref?.__children
@@ -79,7 +79,7 @@ export function lookdown (param) {
   }
 }
 
-export function lookdownAll (param, results = []) {
+export function lookdownAll(param, results = []) {
   const el = this
   const { __ref: ref } = el
   const children = ref?.__children
@@ -101,7 +101,7 @@ export function lookdownAll (param, results = []) {
   return results.length ? results : undefined
 }
 
-export function setNodeStyles (params = {}) {
+export function setNodeStyles(params = {}) {
   const el = this
   if (!el.node?.style) return
 
@@ -115,7 +115,7 @@ export function setNodeStyles (params = {}) {
   return el
 }
 
-export async function remove (opts) {
+export async function remove(opts) {
   const element = this
   const beforeRemoveReturns = triggerEventOn('beforeRemove', element, opts)
   if (beforeRemoveReturns === false) return element
@@ -133,29 +133,29 @@ export async function remove (opts) {
   await triggerEventOn('remove', element, opts)
 }
 
-export function get (param) {
+export function get(param) {
   const element = this
   return element[param]
 }
 
-export function setProps (param, options) {
+export function setProps(param, options) {
   const element = this
   if (!param || !element.props) return
   element.update({ props: param }, options)
   return element
 }
 
-export function getRef (key) {
+export function getRef(key) {
   if (key) return this.__ref && this.__ref[key]
   return this.__ref
 }
 
-export function getChildren () {
+export function getChildren() {
   const __children = this.getRef('__children')
-  return __children.map(k => this[k])
+  return __children.map((k) => this[k])
 }
 
-export function getPath () {
+export function getPath() {
   return this.getRef().path
 }
 
@@ -168,7 +168,7 @@ export function getPath () {
 export const defineSetter = (element, key, get, set) =>
   Object.defineProperty(element, key, { get, set })
 
-export function keys () {
+export function keys() {
   const element = this
   const keys = []
   for (const param in element) {
@@ -183,11 +183,11 @@ export function keys () {
   return keys
 }
 
-export function parse (excl = []) {
+export function parse(excl = []) {
   const element = this
   const obj = {}
   const keyList = keys.call(element)
-  keyList.forEach(v => {
+  keyList.forEach((v) => {
     if (excl.includes(v)) return
     const val = element[v]
     if (v === 'state') {
@@ -208,7 +208,7 @@ export function parse (excl = []) {
   return obj
 }
 
-export function parseDeep (excl = []) {
+export function parseDeep(excl = []) {
   const element = this
   const obj = parse.call(element, excl)
   for (const v in obj) {
@@ -220,37 +220,39 @@ export function parseDeep (excl = []) {
   return obj
 }
 
-export function verbose (element, ...args) {
+export function verbose(element, ...args) {
   if (isProduction()) return
 
   const parent = this
   const { __ref: ref } = parent
   console.groupCollapsed(parent.key)
   if (args.length) {
-    args.forEach(v => console.log(`%c${v}:\n`, 'font-weight: bold', parent[v]))
+    args.forEach((v) =>
+      console.log(`%c${v}:\n`, 'font-weight: bold', parent[v])
+    )
   } else {
     console.log(ref.path)
     const keys = parent.keys()
-    keys.forEach(v => console.log(`%c${v}:`, 'font-weight: bold', parent[v]))
+    keys.forEach((v) => console.log(`%c${v}:`, 'font-weight: bold', parent[v]))
   }
   console.log(parent)
   console.groupEnd(parent.key)
   return parent
 }
 
-export function log (...params) {
+export function log(...params) {
   // if (isNotProduction()) {
   console.log(...params)
   // }
 }
 
-export function warn (...params) {
+export function warn(...params) {
   // if (isNotProduction()) {
   console.warn(...params)
   // }
 }
 
-export function error (...params) {
+export function error(...params) {
   // if (isNotProduction()) {
   if (params[params.length - 1]?.debugger) debugger // eslint-disable-line
   if (params[params.length - 1]?.verbose) verbose.call(this, ...params)
@@ -258,7 +260,7 @@ export function error (...params) {
   // }
 }
 
-export function nextElement () {
+export function nextElement() {
   const element = this
   const { key, parent } = element
   const { __children } = parent.__ref
@@ -269,7 +271,11 @@ export function nextElement () {
   return parent[nextChild]
 }
 
-export function previousElement (el) {
+export async function append(el, key) {
+  return await create(el, this, key)
+}
+
+export function previousElement(el) {
   const element = el || this
   const { key, parent } = element
   const { __children } = parent.__ref
@@ -280,7 +286,7 @@ export function previousElement (el) {
   return parent[__children[currentIndex - 1]]
 }
 
-export function variables (obj = {}) {
+export function variables(obj = {}) {
   const element = this
   if (!element.data) element.data = {}
   if (!element.data.varCaches) element.data.varCaches = {}
@@ -294,7 +300,7 @@ export function variables (obj = {}) {
     }
   }
   return {
-    changed: cb => {
+    changed: (cb) => {
       if (!changed || !varCaches) return
       const returns = cb(changes, deepClone(varCaches))
       for (const key in changes) {
@@ -321,7 +327,7 @@ export function variables (obj = {}) {
  * @param {...any} args - Arguments to pass to the function
  * @returns {any|Promise} - The result or a Promise to the result
  */
-export function call (fnKey, ...args) {
+export function call(fnKey, ...args) {
   const fn =
     this.context.utils?.[fnKey] ||
     this.context.functions?.[fnKey] ||
@@ -376,9 +382,10 @@ export const METHODS = [
   'error',
   'call',
   'nextElement',
+  'append',
   'previousElement'
 ]
 
-export function isMethod (param, element) {
+export function isMethod(param, element) {
   return METHODS.includes(param) || element?.context?.methods?.[param]
 }

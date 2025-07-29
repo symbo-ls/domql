@@ -60,6 +60,7 @@ export const REGISTRY = {
   lookdownAll: {},
   setNodeStyles: {},
   spotByPath: {},
+  append: {},
   keys: {},
   log: {},
   parse: {},
