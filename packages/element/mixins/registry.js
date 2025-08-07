@@ -61,6 +61,7 @@ export const REGISTRY = {
   setNodeStyles: {},
   spotByPath: {},
   append: {},
+  routes: {},
   keys: {},
   log: {},
   parse: {},
