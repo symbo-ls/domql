@@ -494,50 +494,81 @@ export const stringToObject = (str, opts = { verbose: true }) => {
   }
 }
 
-export const diffObjects = (original, objToDiff, cache) => {
-  for (const e in objToDiff) {
-    if (e === 'ref') continue
+export const diffObjects = (original, objToDiff, cache, opts) => {
+  let hasDiff = false
 
-    const originalProp = original[e]
-    const objToDiffProp = objToDiff[e]
+  for (const key in objToDiff) {
+    if (key === 'ref') continue
+
+    const originalProp = original[key]
+    const objToDiffProp = objToDiff[key]
 
     if (isObject(originalProp) && isObject(objToDiffProp)) {
-      cache[e] = {}
-      diff(originalProp, objToDiffProp, cache[e])
-    } else if (objToDiffProp !== undefined) {
-      cache[e] = objToDiffProp
-    }
-  }
-  return cache
-}
-
-export const diffArrays = (original, objToDiff, cache) => {
-  if (original.length !== objToDiff.length) {
-    cache = objToDiff
-  } else {
-    const diffArr = []
-    for (let i = 0; i < original.length; i++) {
-      const diffObj = diff(original[i], objToDiff[i])
-      if (Object.keys(diffObj).length > 0) {
-        diffArr.push(diffObj)
+      const nestedDiff = diff(originalProp, objToDiffProp, {}, opts)
+      if (nestedDiff && Object.keys(nestedDiff).length > 0) {
+        cache[key] = nestedDiff
+        hasDiff = true
       }
-    }
-    if (diffArr.length > 0) {
-      cache = diffArr
+    } else if (isArray(originalProp) && isArray(objToDiffProp)) {
+      const nestedDiff = diffArrays(originalProp, objToDiffProp, [], opts)
+      if (nestedDiff && nestedDiff.length > 0) {
+        cache[key] = nestedDiff
+        hasDiff = true
+      }
+    } else if (objToDiffProp !== originalProp) {
+      cache[key] = objToDiffProp
+      hasDiff = true
     }
   }
-  return cache
+
+  return hasDiff ? cache : undefined
 }
 
-export const diff = (original, objToDiff, cache = {}) => {
-  if (isArray(original) && isArray(objToDiff)) {
-    cache = []
-    diffArrays(original, objToDiff, cache)
-  } else {
-    diffObjects(original, objToDiff, cache)
+const diffArrays = (original, objToDiff, cache, opts) => {
+  if (original.length !== objToDiff.length) {
+    return objToDiff
   }
 
-  return cache
+  let hasDiff = false
+  for (let i = 0; i < original.length; i++) {
+    const diffObj = diff(original[i], objToDiff[i], {}, opts)
+    if (
+      diffObj &&
+      (isObject(diffObj) ? Object.keys(diffObj).length > 0 : true)
+    ) {
+      cache[i] = diffObj
+      hasDiff = true
+    }
+  }
+
+  return hasDiff ? cache : undefined
+}
+
+export const diff = (original, objToDiff, cache = {}, opts = {}) => {
+  if (opts.cloneInstances) {
+    original = deepClone(original)
+    objToDiff = deepClone(objToDiff)
+  }
+
+  original = deepStringify(original)
+  objToDiff = deepStringify(objToDiff)
+
+  if (isArray(original) && isArray(objToDiff)) {
+    const result = diffArrays(original, objToDiff, [], opts)
+    return result === undefined ? {} : result
+  }
+
+  if (isObject(original) && isObject(objToDiff)) {
+    const result = diffObjects(original, objToDiff, {}, opts)
+    return result === undefined ? {} : result
+  }
+
+  // fallback for primitives or differing types
+  if (original !== objToDiff) {
+    return objToDiff
+  }
+
+  return {}
 }
 
 export const hasOwnProperty = (o, ...args) =>

@@ -7,7 +7,7 @@ import { deepMerge } from '../utils/index.js'
 /**
  * Recursively add attributes to a DOM node
  */
-export function attr (params, element, node) {
+export function attr(params, element, node) {
   const { __ref: ref, props } = element
   const { __attr } = ref
   if (isNot('object')) report('HTMLInvalidAttr', params)
@@ -16,7 +16,13 @@ export function attr (params, element, node) {
     for (const attr in params) {
       const val = exec(params[attr], element)
       // if (__attr[attr] === val) return
-      if (val !== false && !isUndefined(val) && !isNull(val) && node.setAttribute) node.setAttribute(attr, val)
+      if (
+        val !== false &&
+        !isUndefined(val) &&
+        !isNull(val) &&
+        node.setAttribute
+      )
+        node.setAttribute(attr, exec(val, element))
       else if (node.removeAttribute) node.removeAttribute(attr)
       __attr[attr] = val
     }

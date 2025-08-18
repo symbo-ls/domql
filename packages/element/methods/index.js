@@ -240,6 +240,18 @@ export function verbose(element, ...args) {
   return parent
 }
 
+export function groupLog(...params) {
+  // if (isNotProduction()) {
+  console.group(...params)
+  // }
+}
+
+export function groupLogEnd(...params) {
+  // if (isNotProduction()) {
+  console.groupEnd(...params)
+  // }
+}
+
 export function log(...params) {
   // if (isNotProduction()) {
   console.log(...params)
@@ -378,6 +390,8 @@ export const METHODS = [
   'if',
   'log',
   'verbose',
+  'groupLog',
+  'groupLogEnd',
   'warn',
   'error',
   'call',
