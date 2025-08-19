@@ -21,14 +21,22 @@ export const applyAnimationFrame = (element, options) => {
 export const initAnimationFrame = (ctx) => {
   const frameListeners = new Set()
 
-  function requestFrame () {
+  function requestFrame() {
     // Iterate over frameListeners
     for (const element of frameListeners) {
-      if (!element.parent.node.contains(element.node)) {
+      const parentNode =
+        element.parent.tag === 'fragment'
+          ? element.parent.parent
+          : element.parent
+      if (!parentNode.node.contains(element.node)) {
         frameListeners.delete(element) // Remove if node has no parent
       } else {
         try {
-          (element.on.frame || element.props.onFrame)(element, element.state, element.context)
+          ;(element.on.frame || element.props.onFrame)(
+            element,
+            element.state,
+            element.context
+          )
         } catch (e) {
           console.warn(e)
         }
