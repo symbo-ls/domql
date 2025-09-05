@@ -24,6 +24,7 @@ export const REGISTRY = {
   deps: (param, el) => param || el.parent.deps,
 
   extend: {},
+  helmet: {},
   childExtend: {},
   childExtendRecursive: {},
   props: {},
