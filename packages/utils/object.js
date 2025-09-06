@@ -151,8 +151,8 @@ export const deepClone = (obj, options = {}) => {
       ? new contentWindow.Array()
       : new contentWindow.Object()
     : isArray(obj)
-      ? []
-      : {}
+    ? []
+    : {}
 
   // Store the clone to handle circular references
   visited.set(obj, clone)
@@ -490,7 +490,7 @@ export const stringToObject = (str, opts = { verbose: true }) => {
     return str ? window.eval('(' + str + ')') : {} // eslint-disable-line
   } catch (e) {
     if (opts.verbose) console.warn(e)
-    if (opts.errorCallback) opts.errorCallback(e)
+    if (opts.errorCallback) return opts.errorCallback(e)
   }
 }
 
