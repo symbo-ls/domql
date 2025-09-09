@@ -690,11 +690,21 @@ export const overwriteDeep = (
     const paramsProp = params[e]
 
     if (isDOMNode(paramsProp)) {
-      obj[e] = paramsProp
+      if (obj[e] !== paramsProp) {
+        obj[e] = paramsProp
+        if (opts) opts.__changed = true
+      }
     } else if (isObjectLike(objProp) && isObjectLike(paramsProp)) {
+      // Recurse while passing the same opts to bubble up change info
+      const prevChanged = opts && opts.__changed
       obj[e] = overwriteDeep(objProp, paramsProp, opts, visited)
+      // opts.__changed may be set by recursion; no assignment needed here
     } else if (paramsProp !== undefined) {
-      obj[e] = paramsProp
+      // Assign only if the value actually changes
+      if (objProp !== paramsProp) {
+        obj[e] = paramsProp
+        if (opts) opts.__changed = true
+      }
     }
   }
 

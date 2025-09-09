@@ -32,11 +32,16 @@ export const updateState = async function (obj, options = STATE_UPDATE_OPTIONS) 
     if (beforeStateUpdateReturns === false) return element
   }
 
+  // Track changes while applying overwrite
   applyOverwrite(state, obj, options)
   const updateIsHoisted = await hoistStateUpdate(state, obj, options)
   if (updateIsHoisted) return state
 
   await updateDependentState(state, obj, options)
+
+  // If no real state changes occurred, skip element update and listeners
+  if (!options.__changed) return state
+
 
   await applyElementUpdate(state, obj, options)
 
@@ -52,16 +57,43 @@ const applyOverwrite = (state, obj, options) => {
   if (!overwrite) return
 
   const shallow = overwrite === 'shallow' || overwrite === 'shallow-once'
-  const merge = overwrite === 'merge'
+  const mergeMode = overwrite === 'merge'
 
-  if (merge) {
-    deepMerge(state, obj, IGNORE_STATE_PARAMS)
+  // Hard replace semantics: swap references and mark changed if identity differs
+  if (options.replace === true) {
+    let changed = false
+    for (const k in obj) {
+      if (IGNORE_STATE_PARAMS.includes(k)) continue
+      if (state[k] !== obj[k]) { state[k] = obj[k]; changed = true }
+    }
+    if (changed) options.__changed = true
     return
   }
 
-  const overwriteFunc = shallow ? overwriteShallow : overwriteDeep
-  if (options.overwrite === 'shallow-once') options.overwrite = true
-  overwriteFunc(state, obj, IGNORE_STATE_PARAMS)
+  if (mergeMode) {
+    // deepMerge only assigns when the key doesn't exist; treat as a change to be safe
+    deepMerge(state, obj, IGNORE_STATE_PARAMS)
+    options.__changed = true
+    return
+  }
+
+  if (shallow) {
+    // Detect if any value actually changes before overwriting
+    let changed = false
+    for (const k in obj) {
+      if (IGNORE_STATE_PARAMS.includes(k)) continue
+      if (state[k] !== obj[k]) { changed = true; break }
+    }
+    overwriteShallow(state, obj, IGNORE_STATE_PARAMS)
+    if (options.overwrite === 'shallow-once') options.overwrite = true
+    if (changed) options.__changed = true
+    return
+  }
+
+  // Deep overwrite with change tracking bubbled up via opts.__changed
+  const odOpts = { exclude: IGNORE_STATE_PARAMS, __changed: false }
+  overwriteDeep(state, obj, odOpts)
+  if (odOpts.__changed) options.__changed = true
 }
 
 const hoistStateUpdate = async (state, obj, options) => {

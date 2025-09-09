@@ -25,6 +25,7 @@ const createPropsStack = (element, parent) => {
 }
 
 export const syncProps = async (props, element, opts) => {
+  const prevProps = element.props || {}
   element.props = {}
   const mergedProps = {}
 
@@ -44,6 +45,19 @@ export const syncProps = async (props, element, opts) => {
     )
   })
   element.props = mergedProps
+
+  // Mark whether props actually changed (shallow compare)
+  let changed = false
+  const prevKeys = Object.keys(prevProps)
+  const nextKeys = Object.keys(mergedProps)
+  if (prevKeys.length !== nextKeys.length) changed = true
+  else {
+    for (let i = 0; i < nextKeys.length; i++) {
+      const k = nextKeys[i]
+      if (prevProps[k] !== mergedProps[k]) { changed = true; break }
+    }
+  }
+  element.__ref.__propsChanged = changed
 
   const methods = { update: await update.bind(element.props), __element: element }
   Object.setPrototypeOf(element.props, methods)

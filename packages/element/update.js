@@ -104,8 +104,16 @@ export const update = async function (params = {}, opts) {
     if (beforeUpdateReturns === false) return element
   }
 
-  // apply new updates
-  overwriteDeep(element, params, { exclude: METHODS_EXL })
+  // apply new updates with change detection
+  const odOpts = { exclude: METHODS_EXL, __changed: false }
+  overwriteDeep(element, params, odOpts)
+
+  // If no structural element changes and no props update requested AND props didn't change, short-circuit
+  const hasPropsChanged = element.__ref?.__propsChanged
+  if (!odOpts.__changed && !params.props && !hasPropsChanged && !options.updateByState) {
+    if (!options.preventUpdateListener) await triggerEventOn('update', element, options)
+    return
+  }
 
   // exec updates
   throughExecProps(element)
