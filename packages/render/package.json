@@ -27,7 +27,9 @@
     "build:esm": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild *.js --target=es2017 --format=esm --outdir=dist/esm",
     "build:cjs": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild *.js --target=node16 --format=cjs --outdir=dist/cjs",
     "build": "npx rimraf -I dist; npm run build:cjs; npm run build:esm",
-    "prepublish": "npx rimraf -I dist && npm run build && npm run copy:package:cjs"
+    "prepublish": "npx rimraf -I dist && npm run build && npm run copy:package:cjs",
+    "link": "npm link",
+    "unlink": "npm unlink -g $npm_package_name || true"
   },
   "gitHead": "1b59a8173275f34b13c1aba7a43073401f46989b"
 }

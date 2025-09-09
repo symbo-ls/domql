@@ -4,7 +4,9 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "vpatch": "npm version patch && npm publish --access public"
+    "vpatch": "npm version patch && npm publish --access public",
+    "link": "npm link",
+    "unlink": "npm unlink -g $npm_package_name || true"
   },
   "gitHead": "1b59a8173275f34b13c1aba7a43073401f46989b",
   "source": "index.js"
