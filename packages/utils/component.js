@@ -72,10 +72,10 @@ export const extractComponentKeyFromKey = (key) => {
   return key.includes('+')
     ? key.split('+') // get array of componentKeys
     : key.includes('_')
-      ? [key.split('_')[0]] // get component key split _
-      : key.includes('.') && !checkIfKeyIsComponent(key.split('.')[1])
-        ? [key.split('.')[0]] // get component key split .
-        : [key]
+    ? [key.split('_')[0]] // get component key split _
+    : key.includes('.') && !checkIfKeyIsComponent(key.split('.')[1])
+    ? [key.split('.')[0]] // get component key split .
+    : [key]
 }
 
 export const extendizeByKey = (element, parent, key) => {
@@ -233,7 +233,12 @@ export const getExtendsInElement = (obj) => {
         }
 
         // Check if the key is "extend" and it's either a string or an array
-        if (key === 'extend' || key === 'extends') {
+        if (
+          key === 'extend' ||
+          key === 'extends' ||
+          key === 'childExtend' ||
+          key === 'childExtends'
+        ) {
           // Add the value of the extend key to the result array
           if (typeof o[key] === 'string') {
             result.push(o[key])
