@@ -19,6 +19,8 @@ module.exports = {
     '\\.js$': ['babel-jest', { configFile: './babel.config.json' }]
   },
   moduleNameMapper: {
+    '^@domql/element/(.*)$': '<rootDir>/../element/$1',
+    '^@domql/(.*)$': '<rootDir>/../$1',
     ...packages.reduce(
       (acc, name) => ({
         ...acc,
