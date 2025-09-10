@@ -14,7 +14,16 @@ export function attr(params, element, node) {
   if (params) {
     if (props.attr) deepMerge(params, props.attr)
     for (const attr in params) {
-      const val = exec(params[attr], element)
+      let val
+      try {
+        val = exec(params[attr], element)
+      } catch (e) {
+        // Skip noisy attribute errors; they are usually benign
+        if (!element?.context?.options?.silentErrors) {
+          element?.warn?.('AttrExecError', { attr, path: ref?.path }, e)
+        }
+        continue
+      }
       // Skip setting the same attribute value to avoid unnecessary DOM writes
       // and side-effects like <img> refetching the same src
       if (__attr[attr] === val) continue
@@ -24,7 +33,7 @@ export function attr(params, element, node) {
         !isNull(val) &&
         node.setAttribute
       )
-        node.setAttribute(attr, exec(val, element))
+        node.setAttribute(attr, val)
       else if (node.removeAttribute) node.removeAttribute(attr)
       __attr[attr] = val
     }

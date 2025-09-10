@@ -31,6 +31,7 @@ import { REGISTRY } from './mixins/index.js'
 import { applyParam } from './utils/applyParam.js'
 import { OPTIONS } from './cache/options.js'
 import { METHODS_EXL, deepMerge } from './utils/index.js' // old utils (current)
+import { shouldThrottleUpdates, noteElementUpdate, getLoopStats } from '@domql/utils/loopGuard.js'
 
 const snapshot = {
   snapshotId: createSnapshotId
@@ -42,10 +43,14 @@ const UPDATE_DEFAULT_OPTIONS = {
   preventRecursive: false,
   currentSnapshot: false,
   calleeElement: false,
-  excludes: METHODS_EXL
+  excludes: METHODS_EXL,
+  depth: 0
 }
 
 export const update = async function (params = {}, opts) {
+  // Suspend guard
+  if (this?.__ref?.__suspended) return
+
   const calleeElementCache = opts?.calleeElement
   const options = deepClone(
     isObject(opts)
@@ -58,6 +63,14 @@ export const update = async function (params = {}, opts) {
   const { parent, node, key } = element
   const { excludes, preventInheritAtCurrentState } = options
 
+  // Depth guard
+  const MAX_DEPTH = 100
+  if (options.depth > MAX_DEPTH) {
+    if (element.warn) element.warn('UpdateDepthExceeded', { path: element.__ref?.path })
+    else console.warn('UpdateDepthExceeded', { path: element.__ref?.path })
+    return
+  }
+
   let ref = element.__ref
   if (!ref) ref = element.__ref = {}
   const [snapshotOnCallee, calleeElement, snapshotHasUpdated] = captureSnapshot(
@@ -68,6 +81,14 @@ export const update = async function (params = {}, opts) {
 
   if (!options.preventListeners)
     await triggerEventOnUpdate('startUpdate', params, element, options)
+
+  // Loop guards (per-element and global)
+  if (noteElementUpdate(element) || shouldThrottleUpdates()) {
+    if (element.warn) element.warn('UpdateStormDetected', getLoopStats(element))
+    else console.warn('UpdateStormDetected', getLoopStats(element))
+    // Do not hard-suspend automatically; just degrade to rAF-coalesced updates
+    options.lazyLoad = true
+  }
 
   if (
     preventInheritAtCurrentState &&
@@ -199,6 +220,7 @@ export const update = async function (params = {}, opts) {
       const childUpdateCall = async () =>
         await update.call(prop, params[prop], {
           ...options,
+          depth: (options.depth || 0) + 1,
           currentSnapshot: snapshotOnCallee,
           calleeElement
         })

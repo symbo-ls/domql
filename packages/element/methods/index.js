@@ -371,6 +371,8 @@ export const METHODS = [
   'set',
   'reset',
   'update',
+  'suspend',
+  'resume',
   'remove',
   'updateContent',
   'removeContent',

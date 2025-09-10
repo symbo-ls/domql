@@ -34,13 +34,21 @@ export function exec(param, element, state, context) {
   if (!element) element = this
   if (isFunction(param)) {
     try {
+      // Prepare safe state/context args
+      let stateArg = state ?? element.state
+      if (!stateArg) stateArg = {}
+      else {
+        if (stateArg.value === undefined) stateArg.value = {}
+        if (stateArg.key === undefined && element?.key !== undefined) stateArg.key = element.key
+        if (typeof stateArg.key !== 'string') {
+          try { stateArg.key = (stateArg.key ?? element?.key ?? '').toString() } catch (e) { stateArg.key = '' }
+        }
+        if (stateArg.parent === undefined) stateArg.parent = element?.parent?.state || stateArg.parent || {}
+      }
+      const contextArg = (context || element.context) || {}
+
       // Call the function with the specified context and parameters
-      const result = param.call(
-        element,
-        element,
-        state || element.state,
-        context || element.context
-      )
+      const result = param.call(element, element, stateArg, contextArg)
 
       // Handle promises
       if (result && typeof result.then === 'function') {
@@ -50,8 +58,21 @@ export function exec(param, element, state, context) {
       }
       return result
     } catch (e) {
-      element.log(param)
-      element.warn('Error executing function', e)
+      const path = element?.__ref?.path || element?.key || '(unknown)'
+      const opts = element?.context?.options || {}
+      const shouldLog = opts.debugErrors ?? isNotProduction()
+      if (!opts.silentErrors && shouldLog) {
+        const fnLabel = typeof param === 'function' ? (param.name || '(anonymous fn)') : param
+        const ref = element?.__ref || (element.__ref = {})
+        if (!ref.__errorLogCache) ref.__errorLogCache = new Map()
+        const cacheKey = `${Array.isArray(path) ? path.join('.') : path}:${fnLabel}:${e && e.message}`
+        const limit = typeof opts.errorLogLimit === 'number' ? opts.errorLogLimit : 1
+        const count = ref.__errorLogCache.get(cacheKey) || 0
+        if (count < limit) {
+          element.warn('Error executing function', { path, fn: fnLabel }, e)
+          ref.__errorLogCache.set(cacheKey, count + 1)
+        }
+      }
     }
   }
   return param
