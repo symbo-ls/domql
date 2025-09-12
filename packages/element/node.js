@@ -91,6 +91,13 @@ export const createNode = async (element, options) => {
     if (value && isElement && !hasDefine && !hasContextDefine) {
       const createAsync = async () => {
         try {
+          if (isFunction(value)) {
+            console.log(
+              value,
+              ' is function - it will be depricated in DOMQL 3'
+            )
+            return
+          }
           const val = await exec(value, element)
           await create(val, element, param, options)
         } catch (error) {

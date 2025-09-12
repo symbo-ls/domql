@@ -26,7 +26,11 @@ export const applyParam = async (param, element, options) => {
 
   if (isGlobalTransformer && !hasContextDefine && hasOnlyUpdate) {
     if (isFunction(isGlobalTransformer)) {
-      await isGlobalTransformer(prop, element, node, options)
+      const s = element.state || {}
+      if (s.value === undefined) s.value = {}
+      if (s.key === undefined && element?.key !== undefined) s.key = element.key
+      if (s.parent === undefined) s.parent = element?.parent?.state || s.parent || {}
+      await isGlobalTransformer(prop, element, node, { ...options, state: s })
     }
     return
   }

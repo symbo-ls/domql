@@ -252,7 +252,7 @@ const renderElement = async (element, parent, options, attachOptions) => {
         path.splice(0, path.indexOf('ComponentsGrid') + 2)
       if (path.includes('demoComponent'))
         path.splice(0, path.indexOf('demoComponent') + 1)
-      const isDemoComponent = element.lookup(el => el.state.key)?.state?.key
+      const isDemoComponent = element.lookup((el) => el.state.key)?.state?.key
       element.warn(
         'Error happened in:',
         isDemoComponent ? isDemoComponent + ' ' : '' + path.join('.')
@@ -297,7 +297,7 @@ const renderElement = async (element, parent, options, attachOptions) => {
   await triggerEventOn('create', element, options)
 }
 
-const checkIfPrimitive = element => is(element)('string', 'number')
+const checkIfPrimitive = (element) => is(element)('string', 'number')
 
 const applyValueAsText = (element, parent, key) => {
   const extendTag = element.extend && element.extend.tag
@@ -460,7 +460,7 @@ const onlyResolveExtends = async (element, parent, key, options) => {
   return element
 }
 
-const checkIfMedia = key => key.slice(0, 1) === '@'
+const checkIfMedia = (key) => key.slice(0, 1) === '@'
 
 const applyMediaProps = (element, parent, key) => {
   const { props } = element

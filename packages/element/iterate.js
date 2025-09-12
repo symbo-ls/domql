@@ -21,7 +21,11 @@ export const throughInitialExec = async (element, exclude = {}) => {
     const prop = element[param]
     if (isFunction(prop) && !isMethod(param, element) && !isVariant(param)) {
       ref.__exec[param] = prop
-      element[param] = await prop(element, element.state, element.context)
+      const s = element.state || {}
+      if (s.value === undefined) s.value = {}
+      if (s.key === undefined && element?.key !== undefined) s.key = element.key
+      if (s.parent === undefined) s.parent = element?.parent?.state || s.parent || {}
+      element[param] = await prop(element, s, element.context)
       // if (isComponent)
     }
   }
@@ -40,11 +44,11 @@ export const throughUpdatedExec = async (
     const isDefinedParam = ref.__defineCache[param]
     if (isDefinedParam) continue
 
-    const newExec = await ref.__exec[param](
-      element,
-      element.state,
-      element.context
-    )
+    const s = element.state || {}
+    if (s.value === undefined) s.value = {}
+    if (s.key === undefined && element?.key !== undefined) s.key = element.key
+    if (s.parent === undefined) s.parent = element?.parent?.state || s.parent || {}
+    const newExec = await ref.__exec[param](element, s, element.context)
     const execReturnsString = isString(newExec) || isNumber(newExec)
     // if (prop && prop.node && execReturnsString) {
     if (prop && prop.node && execReturnsString) {
@@ -108,12 +112,11 @@ export const throughInitialDefine = async element => {
       }
     }
 
-    const execParam = await defineObj[param](
-      elementProp,
-      element,
-      element.state,
-      element.context
-    )
+    const s = element.state || {}
+    if (s.value === undefined) s.value = {}
+    if (s.key === undefined && element?.key !== undefined) s.key = element.key
+    if (s.parent === undefined) s.parent = element?.parent?.state || s.parent || {}
+    const execParam = await defineObj[param](elementProp, element, s, element.context)
     if (execParam) element[param] = execParam
   }
   return element
@@ -129,19 +132,19 @@ export const throughUpdatedDefine = async element => {
 
   for (const param in obj) {
     const execParam = ref.__exec[param]
-    if (execParam)
-      ref.__defineCache[param] = await execParam(
-        element,
-        element.state,
-        element.context
-      )
+    if (execParam) {
+      const s = element.state || {}
+      if (s.value === undefined) s.value = {}
+      if (s.key === undefined && element?.key !== undefined) s.key = element.key
+      if (s.parent === undefined) s.parent = element?.parent?.state || s.parent || {}
+      ref.__defineCache[param] = await execParam(element, s, element.context)
+    }
     const cached = await exec(ref.__defineCache[param], element)
-    const newExecParam = await obj[param](
-      cached,
-      element,
-      element.state,
-      element.context
-    )
+    const s2 = element.state || {}
+    if (s2.value === undefined) s2.value = {}
+    if (s2.key === undefined && element?.key !== undefined) s2.key = element.key
+    if (s2.parent === undefined) s2.parent = element?.parent?.state || s2.parent || {}
+    const newExecParam = await obj[param](cached, element, s2, element.context)
     if (newExecParam) element[param] = newExecParam
   }
   return changes

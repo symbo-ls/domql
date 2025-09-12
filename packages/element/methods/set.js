@@ -35,6 +35,8 @@ export const addMethods = (element, parent, options = {}) => {
     set,
     reset,
     update,
+    suspend: function (reason) { if (this.__ref) this.__ref.__suspended = reason || true; return this },
+    resume: function () { if (this.__ref) delete this.__ref.__suspended; return this },
     variables,
     remove,
     updateContent,
