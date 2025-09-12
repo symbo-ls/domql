@@ -284,6 +284,7 @@ export function nextElement() {
 }
 
 export async function append(el, key) {
+  if (!el) return this.error('Nothing to append')
   return await create(el, this, key)
 }
 

@@ -31,7 +31,11 @@ import { REGISTRY } from './mixins/index.js'
 import { applyParam } from './utils/applyParam.js'
 import { OPTIONS } from './cache/options.js'
 import { METHODS_EXL, deepMerge } from './utils/index.js' // old utils (current)
-import { shouldThrottleUpdates, noteElementUpdate, getLoopStats } from '@domql/utils/loopGuard.js'
+import {
+  shouldThrottleUpdates,
+  noteElementUpdate,
+  getLoopStats
+} from '@domql/utils/loopGuard.js'
 
 const snapshot = {
   snapshotId: createSnapshotId
@@ -66,7 +70,8 @@ export const update = async function (params = {}, opts) {
   // Depth guard
   const MAX_DEPTH = 100
   if (options.depth > MAX_DEPTH) {
-    if (element.warn) element.warn('UpdateDepthExceeded', { path: element.__ref?.path })
+    if (element.warn)
+      element.warn('UpdateDepthExceeded', { path: element.__ref?.path })
     else console.warn('UpdateDepthExceeded', { path: element.__ref?.path })
     return
   }
@@ -85,9 +90,12 @@ export const update = async function (params = {}, opts) {
   // Loop guards (per-element and global)
   if (noteElementUpdate(element) || shouldThrottleUpdates()) {
     if (element.warn) element.warn('UpdateStormDetected', getLoopStats(element))
-    else console.warn('UpdateStormDetected', getLoopStats(element))
+    else {
+      console.warn('UpdateStormDetected', getLoopStats(element))
+    }
     // Do not hard-suspend automatically; just degrade to rAF-coalesced updates
     options.lazyLoad = true
+    return false
   }
 
   if (
@@ -110,7 +118,7 @@ export const update = async function (params = {}, opts) {
   if (ref.__if && !options.preventPropsUpdate) {
     const hasParentProps =
       parent.props && (parent.props[key] || parent.props.childProps)
-    const hasFunctionInProps = ref.__props.filter(v => isFunction(v))
+    const hasFunctionInProps = ref.__props.filter((v) => isFunction(v))
     const props = params.props || hasParentProps || hasFunctionInProps.length
     if (props) updateProps(props, element, parent)
   }
@@ -131,8 +139,14 @@ export const update = async function (params = {}, opts) {
 
   // If no structural element changes and no props update requested AND props didn't change, short-circuit
   const hasPropsChanged = element.__ref?.__propsChanged
-  if (!odOpts.__changed && !params.props && !hasPropsChanged && !options.updateByState) {
-    if (!options.preventUpdateListener) await triggerEventOn('update', element, options)
+  if (
+    !odOpts.__changed &&
+    !params.props &&
+    !hasPropsChanged &&
+    !options.updateByState
+  ) {
+    if (!options.preventUpdateListener)
+      await triggerEventOn('update', element, options)
     return
   }
 
