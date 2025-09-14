@@ -89,9 +89,10 @@ export const update = async function (params = {}, opts) {
 
   // Loop guards (per-element and global)
   if (noteElementUpdate(element) || shouldThrottleUpdates()) {
-    if (element.warn) element.warn('UpdateStormDetected', getLoopStats(element))
+    if (element.warn)
+      element.error('Updating Storm Detected', getLoopStats(element))
     else {
-      console.warn('UpdateStormDetected', getLoopStats(element))
+      console.error('Updating Storm Detected', getLoopsStats(element))
     }
     // Do not hard-suspend automatically; just degrade to rAF-coalesced updates
     options.lazyLoad = true
