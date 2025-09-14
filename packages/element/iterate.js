@@ -21,11 +21,11 @@ export const throughInitialExec = async (element, exclude = {}) => {
     const prop = element[param]
     if (isFunction(prop) && !isMethod(param, element) && !isVariant(param)) {
       ref.__exec[param] = prop
-      const s = element.state || {}
-      if (s.value === undefined) s.value = {}
-      if (s.key === undefined && element?.key !== undefined) s.key = element.key
-      if (s.parent === undefined) s.parent = element?.parent?.state || s.parent || {}
-      element[param] = await prop(element, s, element.context)
+      element[param] = await prop(
+        element,
+        element.state || element.parent.state,
+        element.context
+      )
       // if (isComponent)
     }
   }
@@ -44,11 +44,11 @@ export const throughUpdatedExec = async (
     const isDefinedParam = ref.__defineCache[param]
     if (isDefinedParam) continue
 
-    const s = element.state || {}
-    if (s.value === undefined) s.value = {}
-    if (s.key === undefined && element?.key !== undefined) s.key = element.key
-    if (s.parent === undefined) s.parent = element?.parent?.state || s.parent || {}
-    const newExec = await ref.__exec[param](element, s, element.context)
+    const newExec = await ref.__exec[param](
+      element,
+      element.state || element.parent.state,
+      element.context
+    )
     const execReturnsString = isString(newExec) || isNumber(newExec)
     // if (prop && prop.node && execReturnsString) {
     if (prop && prop.node && execReturnsString) {
@@ -69,7 +69,7 @@ export const throughUpdatedExec = async (
   return changes
 }
 
-export const throughExecProps = element => {
+export const throughExecProps = (element) => {
   const { __ref: ref } = element
   const { props } = element
   for (const k in props) {
@@ -85,7 +85,7 @@ export const throughExecProps = element => {
   }
 }
 
-export const throughInitialDefine = async element => {
+export const throughInitialDefine = async (element) => {
   const { define, context, __ref: ref } = element
 
   let defineObj = {}
@@ -112,17 +112,18 @@ export const throughInitialDefine = async element => {
       }
     }
 
-    const s = element.state || {}
-    if (s.value === undefined) s.value = {}
-    if (s.key === undefined && element?.key !== undefined) s.key = element.key
-    if (s.parent === undefined) s.parent = element?.parent?.state || s.parent || {}
-    const execParam = await defineObj[param](elementProp, element, s, element.context)
+    const execParam = await defineObj[param](
+      elementProp,
+      element,
+      element.state || element.parent.state,
+      element.context
+    )
     if (execParam) element[param] = execParam
   }
   return element
 }
 
-export const throughUpdatedDefine = async element => {
+export const throughUpdatedDefine = async (element) => {
   const { context, define, __ref: ref } = element
   const changes = {}
 
@@ -133,17 +134,18 @@ export const throughUpdatedDefine = async element => {
   for (const param in obj) {
     const execParam = ref.__exec[param]
     if (execParam) {
-      const s = element.state || {}
-      if (s.value === undefined) s.value = {}
-      if (s.key === undefined && element?.key !== undefined) s.key = element.key
-      if (s.parent === undefined) s.parent = element?.parent?.state || s.parent || {}
-      ref.__defineCache[param] = await execParam(element, s, element.context)
+      ref.__defineCache[param] = await execParam(
+        element,
+        element.state || element.parent.state,
+        element.context
+      )
     }
     const cached = await exec(ref.__defineCache[param], element)
     const s2 = element.state || {}
     if (s2.value === undefined) s2.value = {}
     if (s2.key === undefined && element?.key !== undefined) s2.key = element.key
-    if (s2.parent === undefined) s2.parent = element?.parent?.state || s2.parent || {}
+    if (s2.parent === undefined)
+      s2.parent = element?.parent?.state || s2.parent || {}
     const newExecParam = await obj[param](cached, element, s2, element.context)
     if (newExecParam) element[param] = newExecParam
   }
