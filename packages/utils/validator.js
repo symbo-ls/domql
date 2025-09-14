@@ -27,6 +27,19 @@ export const validateDomQL = (element, optionsOrPath = {}, path = []) => {
     ? opts.riskyLifecycles
     : riskyLifecycleDefaults
 
+  // Common CSS-like property names used frequently in schemas
+  const COMMON_CSS = new Set([
+    'position','display','visibility','zIndex','inset','top','left','right','bottom',
+    'width','height','minWidth','minHeight','maxWidth','maxHeight',
+    'padding','paddingLeft','paddingRight','paddingTop','paddingBottom',
+    'margin','marginLeft','marginRight','marginTop','marginBottom',
+    'gap','rowGap','columnGap','gridGap','gridTemplateColumns','gridTemplateRows',
+    'alignItems','justifyContent','placeItems','placeContent','flex','flexGrow','flexShrink',
+    'border','borderWidth','borderStyle','borderColor','borderRadius','outline','outlineOffset',
+    'background','backgroundColor','color','opacity','overflow','overflowX','overflowY',
+    'textDecoration','fontSize','fontWeight','lineHeight','letterSpacing'
+  ])
+
   const visit = (el, p) => {
     if (!isObjectLike(el)) return
 
@@ -38,6 +51,19 @@ export const validateDomQL = (element, optionsOrPath = {}, path = []) => {
       // Top-level key validation
       if (p.length === 0 && !isValidTopLevelKey(key)) {
         warnings.push({ path: nextPath, rule: 'unknown-key', message: `Unknown top-level key '${key}'` })
+        // Heuristic: flag likely CSS props mistakenly placed at top-level
+        if (typeof key === 'string') {
+          const kebabish = /-/.test(key)
+          const camelish = /^[a-z][A-Za-z0-9]*$/.test(key)
+          if (COMMON_CSS.has(key) || kebabish || camelish) {
+            warnings.push({ path: nextPath, rule: 'css-prop-top-level', message: `Likely CSS property '${key}' at top-level; place under 'style' or inside props` })
+          }
+        }
+      }
+
+      // Pseudo selector keys are not supported as element keys (either top-level or nested)
+      if (typeof key === 'string' && (key.charAt(0) === ':' || key.includes('::'))) {
+        errors.push({ path: nextPath, rule: 'pseudo-key', message: `Pseudo selector '${key}' is not supported as an element key. Use variants or a CSS plugin.` })
       }
 
       // Self-extend cycle detection for component entries
@@ -90,6 +116,12 @@ export const validateDomQL = (element, optionsOrPath = {}, path = []) => {
             if (riskyLifecycles.includes(evt)) {
               if (src.includes('state.update(') || src.includes('state.replace(') || src.includes('.update(')) {
                 warnings.push({ path: nextPath.concat(evt), rule: 'loop-risk-lifecycle-update', message: `on.${evt} calls update/replace; ensure change guards to avoid loops` })
+              }
+            }
+            // Specifically flag on.stateUpdate using state.update/replace (high loop risk)
+            if (evt === 'stateUpdate') {
+              if (src.includes('state.update(') || src.includes('state.replace(') || src.includes('.update(')) {
+                warnings.push({ path: nextPath.concat(evt), rule: 'loop-risk-on-stateUpdate-update', message: 'on.stateUpdate calls update/replace; guard against re-entrancy to avoid loops' })
               }
             }
           }
@@ -148,4 +180,19 @@ export const validateDomQL = (element, optionsOrPath = {}, path = []) => {
   return { errors, warnings }
 }
 
-
+// Optional helper to produce a concise guidance summary for users
+export const summarizeValidation = ({ errors = [], warnings = [] } = {}) => {
+  const lines = []
+  const push = (level, msg, p) => {
+    const loc = p && p.length ? ` @ ${p.join('.')}` : ''
+    lines.push(`${level}: ${msg}${loc}`)
+  }
+  errors.forEach(e => push('Error', e.message, e.path))
+  warnings.forEach(w => push('Warn', w.message, w.path))
+  if (!lines.length) return 'No issues detected.'
+  lines.push('Tips:')
+  lines.push('- Place CSS properties under style or inside props, not at top-level.')
+  lines.push('- Avoid using pseudo selectors as element keys; prefer variants or a CSS plugin.')
+  lines.push('- Ensure lifecycle and stateUpdate handlers don\'t call update/replace without guards.')
+  return lines.join('\n')
+}

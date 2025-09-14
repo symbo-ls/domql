@@ -89,6 +89,13 @@ describe('validateDomQL', () => {
     expect(warnings.some((w) => w.rule === 'extend-unresolved' && w.path.join('.') === 'Widget.extend')).toBe(true)
   })
 
+  test('flags pseudo selector keys and CSS top-level props', () => {
+    const element = { ':hover': {}, '::before': {}, display: 'flex' }
+    const { errors, warnings } = validateDomQL(element)
+    expect(errors.some((e) => e.rule === 'pseudo-key' && [':hover','::before'].includes(e.path.join('.')))).toBe(true)
+    expect(warnings.some((w) => w.rule === 'css-prop-top-level' && w.path.join('.') === 'display')).toBe(true)
+  })
+
   test('errors when style/attr are not objects', () => {
     const element = { style: 'red', attr: 'id' }
     const { errors } = validateDomQL(element)
@@ -106,6 +113,16 @@ describe('validateDomQL', () => {
     const { errors, warnings } = validateDomQL(element)
     expect(errors.some((e) => e.rule === 'on-function' && e.path.join('.') === 'on.click')).toBe(true)
     expect(warnings.some((w) => w.rule === 'loop-risk-lifecycle-update' && w.path.join('.') === 'on.render')).toBe(true)
+  })
+
+  test('warn specifically when on.stateUpdate contains state.update/replace', () => {
+    const element = {
+      on: {
+        stateUpdate: function () { this.state && this.state.update && this.state.update({}) }
+      }
+    }
+    const { warnings } = validateDomQL(element)
+    expect(warnings.some((w) => w.rule === 'loop-risk-on-stateUpdate-update' && w.path.join('.') === 'on.stateUpdate')).toBe(true)
   })
 
   test('children should be array or function; keys missing/duplicate warnings', () => {
