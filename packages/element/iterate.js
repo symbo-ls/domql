@@ -19,6 +19,16 @@ export const throughInitialExec = async (element, exclude = {}) => {
   for (const param in element) {
     if (exclude[param]) continue
     const prop = element[param]
+    // Do not execute event-like props such as onRender, onClick, etc.
+    // They should be treated as events, not computed props.
+    if (
+      typeof param === 'string' &&
+      param.startsWith('on') &&
+      param.length > 2 &&
+      param[2] === param[2].toUpperCase()
+    ) {
+      continue
+    }
     if (isFunction(prop) && !isMethod(param, element) && !isVariant(param)) {
       ref.__exec[param] = prop
       element[param] = await prop(

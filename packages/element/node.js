@@ -79,7 +79,9 @@ export const createNode = async (element, options) => {
       isUndefined(value) ||
       isMethod(param, element) ||
       isVariant(param) ||
-      isObject(REGISTRY[param])
+      // Skip known mixin/registry keys or event-like keys (handled by event system)
+      isObject(REGISTRY[param]) ||
+      (typeof param === 'string' && param.startsWith('on') && param[2] === param[2]?.toUpperCase())
     )
       continue
 

@@ -20,6 +20,23 @@ export const applyParam = async (param, element, options) => {
 
   if (!ref.__if) return
 
+  // Treat event-like keys (e.g., onClick, onRender) as events, not child elements
+  if (
+    typeof param === 'string' &&
+    param.startsWith('on') &&
+    param.length > 2 &&
+    param[2] === param[2].toUpperCase()
+  ) {
+    // Normalize into element.on map so downstream event system can attach
+    if (!element.on) element.on = {}
+    const eventName = param.slice(2, 3).toLowerCase() + param.slice(3)
+    if (element.on[eventName] === undefined) {
+      element.on[eventName] = element[param]
+    }
+    // Avoid creating/processing a child element for this param
+    return
+  }
+
   // Reject pseudo selectors at element level (e.g., ':hover', '::before').
   // These are CSS targets, not DomQL element keys. Today we don't support
   // auto-generating CSS rules for pseudos. We fail fast to avoid creating
