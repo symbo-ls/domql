@@ -38,8 +38,9 @@ export function exec(param, element, state, context) {
       const result = param.call(
         element,
         element,
-        element.state || element.parent.state,
-        context || element.context
+        // Guard against missing element or parent when deriving state
+        (element && element.state) || (element && element.parent && element.parent.state) || {},
+        context || (element && element.context)
       )
 
       // Handle promises
