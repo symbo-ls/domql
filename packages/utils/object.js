@@ -63,7 +63,11 @@ export function exec(param, element, state, context) {
           typeof opts.errorLogLimit === 'number' ? opts.errorLogLimit : 1
         const count = ref.__errorLogCache.get(cacheKey) || 0
         if (count < limit) {
-          element.warn('Error executing function', { path, fn: fnLabel }, e)
+          ;(element.warn || console.warn)(
+            'Error executing function',
+            { path, fn: fnLabel },
+            e
+          )
           ref.__errorLogCache.set(cacheKey, count + 1)
         }
       }
