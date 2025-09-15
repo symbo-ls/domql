@@ -79,7 +79,9 @@ export const createNode = async (element, options) => {
       isUndefined(value) ||
       isMethod(param, element) ||
       isVariant(param) ||
-      isObject(REGISTRY[param])
+      // Skip known mixin/registry keys or event-like keys (handled by event system)
+      isObject(REGISTRY[param]) ||
+      (typeof param === 'string' && param.startsWith('on') && param[2] === param[2]?.toUpperCase())
     )
       continue
 
@@ -91,6 +93,13 @@ export const createNode = async (element, options) => {
     if (value && isElement && !hasDefine && !hasContextDefine) {
       const createAsync = async () => {
         try {
+          if (isFunction(value)) {
+            console.log(
+              value,
+              ' is function - it will be depricated in DOMQL 3'
+            )
+            return
+          }
           const val = await exec(value, element)
           await create(val, element, param, options)
         } catch (error) {

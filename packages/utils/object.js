@@ -38,8 +38,9 @@ export function exec(param, element, state, context) {
       const result = param.call(
         element,
         element,
-        state || element.state,
-        context || element.context
+        // Guard against missing element or parent when deriving state
+        (element && element.state) || (element && element.parent && element.parent.state) || {},
+        context || (element && element.context)
       )
 
       // Handle promises
@@ -50,8 +51,23 @@ export function exec(param, element, state, context) {
       }
       return result
     } catch (e) {
-      element.log(param)
-      element.warn('Error executing function', e)
+      const path = element?.__ref?.path || element?.key || '(unknown)'
+      const opts = element?.context?.options || {}
+      const shouldLog = opts.debugErrors ?? isNotProduction()
+      if (!opts.silentErrors && shouldLog) {
+        const fnLabel =
+          typeof param === 'function' ? param.name || '(anonymous fn)' : param
+        const ref = element?.__ref || (element.__ref = {})
+        if (!ref.__errorLogCache) ref.__errorLogCache = new Map()
+        const cacheKey = `${Array.isArray(path) ? path.join('.') : path}:${fnLabel}:${e && e.message}`
+        const limit =
+          typeof opts.errorLogLimit === 'number' ? opts.errorLogLimit : 1
+        const count = ref.__errorLogCache.get(cacheKey) || 0
+        if (count < limit) {
+          console.warn('Error executing function', { path, fn: fnLabel }, e)
+          ref.__errorLogCache.set(cacheKey, count + 1)
+        }
+      }
     }
   }
   return param
@@ -151,8 +167,8 @@ export const deepClone = (obj, options = {}) => {
       ? new contentWindow.Array()
       : new contentWindow.Object()
     : isArray(obj)
-    ? []
-    : {}
+      ? []
+      : {}
 
   // Store the clone to handle circular references
   visited.set(obj, clone)
@@ -690,11 +706,21 @@ export const overwriteDeep = (
     const paramsProp = params[e]
 
     if (isDOMNode(paramsProp)) {
-      obj[e] = paramsProp
+      if (obj[e] !== paramsProp) {
+        obj[e] = paramsProp
+        if (opts) opts.__changed = true
+      }
     } else if (isObjectLike(objProp) && isObjectLike(paramsProp)) {
+      // Recurse while passing the same opts to bubble up change info
+      const prevChanged = opts && opts.__changed
       obj[e] = overwriteDeep(objProp, paramsProp, opts, visited)
+      // opts.__changed may be set by recursion; no assignment needed here
     } else if (paramsProp !== undefined) {
-      obj[e] = paramsProp
+      // Assign only if the value actually changes
+      if (objProp !== paramsProp) {
+        obj[e] = paramsProp
+        if (opts) opts.__changed = true
+      }
     }
   }
 
