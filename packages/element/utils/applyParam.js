@@ -40,11 +40,23 @@ export const applyParam = async (param, element, options) => {
   const styleObj = node && node.style
   if (styleObj && typeof param === 'string') {
     const camel = param.replace(/-([a-z])/g, (_, c) => c.toUpperCase())
-    // A CSS property exists either in camelCase or as-is on CSSStyleDeclaration
-    if (camel in styleObj || param in styleObj) {
-      // Optional: guidance once per element could be added via element.warn
-      // element.warn?.('CSSPropertyAtTopLevelIgnored', { key: param, path: element.__ref?.path })
-      return // Prevent child element creation for CSS props
+    const looksLikeCssKey = camel in styleObj || param in styleObj
+    if (looksLikeCssKey) {
+      const value = element[param]
+      const isPrimitiveCssValue =
+        typeof value === 'string' || typeof value === 'number'
+      // Only treat as CSS-at-top-level if it's clearly a primitive CSS value
+      // and there is no transformer/define that would handle this key
+      if (
+        isPrimitiveCssValue &&
+        !isGlobalTransformer &&
+        !hasDefine &&
+        !hasContextDefine
+      ) {
+        // Optional: guidance once per element could be added via element.warn
+        // element.warn?.('CSSPropertyAtTopLevelIgnored', { key: param, path: element.__ref?.path })
+        return // Prevent child element creation for CSS props
+      }
     }
   }
 
