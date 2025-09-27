@@ -54,7 +54,11 @@ export const router = async function (path, el, state = {}, options = {}) {
 
   const rootNode = element.node
   const route = getActiveRoute(opts.level, pathname)
-  const content = element.routes[route || '/'] || element.routes['/*']
+  const content =
+    element.routes[route] ||
+    element.routes[pathname] ||
+    element.routes['/'] ||
+    element.routes['/*']
   const scrollNode = opts.scrollToNode ? rootNode : opts.scrollNode
   const hashChanged = hash && hash !== win.location.hash.slice(1)
   const pathChanged = pathname !== lastPathname

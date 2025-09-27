@@ -4,12 +4,20 @@ import { isFunction } from '@domql/utils'
 
 const getOnOrPropsEvent = (param, element) => {
   const onEvent = element.on?.[param]
-  const onPropEvent = element.props?.['on' + param.slice(0, 1).toUpperCase() + param.slice(1)]
+  const onPropEvent =
+    element.props?.['on' + param.slice(0, 1).toUpperCase() + param.slice(1)]
   return onEvent || onPropEvent
 }
 
 export const applyEvent = (param, element, state, context, options) => {
-  return param.call(element, element, state || element.state, context || element.context, options)
+  if (!param.call) element.warn(`Event is not executable: ${param}`)
+  return param.call(
+    element,
+    element,
+    state || element.state,
+    context || element.context,
+    options
+  )
 }
 
 export const triggerEventOn = async (param, element, options) => {
@@ -20,15 +28,42 @@ export const triggerEventOn = async (param, element, options) => {
   }
 }
 
-export const applyEventUpdate = (param, updatedObj, element, state, context, options) => {
-  return param.call(element, updatedObj, element, state || element.state, context || element.context, options)
+export const applyEventUpdate = (
+  param,
+  updatedObj,
+  element,
+  state,
+  context,
+  options
+) => {
+  if (!param.call) element.warn(`Event is not executable: ${param}`)
+  return param.call(
+    element,
+    updatedObj,
+    element,
+    state || element.state,
+    context || element.context,
+    options
+  )
 }
 
-export const triggerEventOnUpdate = async (param, updatedObj, element, options) => {
+export const triggerEventOnUpdate = async (
+  param,
+  updatedObj,
+  element,
+  options
+) => {
   const appliedFunction = getOnOrPropsEvent(param, element)
   if (appliedFunction) {
     const { state, context } = element
-    return await applyEventUpdate(appliedFunction, updatedObj, element, state, context, options)
+    return await applyEventUpdate(
+      appliedFunction,
+      updatedObj,
+      element,
+      state,
+      context,
+      options
+    )
   }
 }
 
@@ -51,13 +86,21 @@ export const applyEventsOnNode = (element, options) => {
       param === 'complete' ||
       param === 'frame' ||
       param === 'update'
-    ) continue
+    )
+      continue
 
     const appliedFunction = getOnOrPropsEvent(param, element)
     if (isFunction(appliedFunction)) {
-      node.addEventListener(param, async event => {
+      node.addEventListener(param, async (event) => {
         const { state, context } = element
-        await appliedFunction.call(element, event, element, state, context, options)
+        await appliedFunction.call(
+          element,
+          event,
+          element,
+          state,
+          context,
+          options
+        )
       })
     }
   }

@@ -67,6 +67,11 @@ export function lookdown(param) {
     const v = children[i]
     const childElem = el[v]
 
+    if (!childElem)
+      return this.warn(
+        'Element found in children array but it does not exist in parent'
+      )
+
     if (v === param) return childElem
     else if (isFunction(param)) {
       const exec = param(childElem, childElem.state, childElem.context)
