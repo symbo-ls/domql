@@ -25,6 +25,7 @@ export const REGISTRY = {
 
   extend: {},
   helmet: {},
+  metadata: {},
   childExtend: {},
   childExtendRecursive: {},
   props: {},

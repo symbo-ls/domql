@@ -1,6 +1,6 @@
 'use strict'
 
-import { isFunction } from '@domql/utils'
+import { isFunction, isString, getContextFunction } from '@domql/utils'
 
 const getOnOrPropsEvent = (param, element) => {
   const onEvent = element.on?.[param]
@@ -9,9 +9,10 @@ const getOnOrPropsEvent = (param, element) => {
   return onEvent || onPropEvent
 }
 
-export const applyEvent = (param, element, state, context, options) => {
-  if (!param.call) element.warn(`Event is not executable: ${param}`)
-  return param.call(
+export const applyEvent = (fnValue, element, state, context, options) => {
+  if (isString(fnValue)) fnValue = getContextFunction.call(element, fnValue)
+  if (!fnValue.call) element.warn(`Event is not executable: ${fnValue}`)
+  return fnValue.call(
     element,
     element,
     state || element.state,
@@ -29,15 +30,16 @@ export const triggerEventOn = async (param, element, options) => {
 }
 
 export const applyEventUpdate = (
-  param,
+  fnValue,
   updatedObj,
   element,
   state,
   context,
   options
 ) => {
-  if (!param.call) element.warn(`Event is not executable: ${param}`)
-  return param.call(
+  if (isString(fnValue)) fnValue = getContextFunction.call(element, fnValue)
+  if (!fnValue.call) element.warn(`Event is not executable: ${fnValue}`)
+  return fnValue.call(
     element,
     updatedObj,
     element,
@@ -89,18 +91,14 @@ export const applyEventsOnNode = (element, options) => {
     )
       continue
 
-    const appliedFunction = getOnOrPropsEvent(param, element)
-    if (isFunction(appliedFunction)) {
+    let fnValue = getOnOrPropsEvent(param, element)
+    if (isString(fnValue)) {
+      fnValue = getContextFunction.call(element, fnValue)
+    }
+    if (isFunction(fnValue)) {
       node.addEventListener(param, async (event) => {
         const { state, context } = element
-        await appliedFunction.call(
-          element,
-          event,
-          element,
-          state,
-          context,
-          options
-        )
+        await fnValue.call(element, event, element, state, context, options)
       })
     }
   }

@@ -13,7 +13,7 @@
  * const debouncedFunction = debounce(this, myFunction, 500);
  * window.addEventListener('resize', debouncedFunction);
  */
-export function debounce (func, wait, immediate) {
+export function debounce(func, wait, immediate) {
   let timeout
   return function () {
     const context = this
@@ -53,7 +53,7 @@ export const debounceOnContext = (element, func, timeout = 300) => {
   }
 }
 
-export const memoize = fn => {
+export const memoize = (fn) => {
   const cache = {}
   return (...args) => {
     const n = args[0]
@@ -67,7 +67,7 @@ export const memoize = fn => {
   }
 }
 
-export const isStringFunction = inputString => {
+export const isStringFunction = (inputString) => {
   // Regular expression to match both regular and arrow function declarations
   const functionRegex = /^((function\s*\([^)]*\)\s*\{[^}]*\})|(\([^)]*\)\s*=>))/
 
@@ -75,7 +75,7 @@ export const isStringFunction = inputString => {
   return functionRegex.test(inputString)
 }
 
-export function cloneFunction (fn, win = window) {
+export function cloneFunction(fn, win = window) {
   const temp = function () {
     return fn.apply(win, arguments)
   }
@@ -87,4 +87,13 @@ export function cloneFunction (fn, win = window) {
     }
   }
   return temp
+}
+
+export function getContextFunction(fnKey) {
+  return (
+    this.context.utils?.[fnKey] ||
+    this.context.functions?.[fnKey] ||
+    this.context.methods?.[fnKey] ||
+    this.context.snippets?.[fnKey]
+  )
 }

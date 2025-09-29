@@ -8,7 +8,8 @@ import {
   isObjectLike,
   isProduction,
   removeValueFromArray,
-  deepClone
+  deepClone,
+  getContextFunction
 } from '@domql/utils'
 import { TREE } from '../tree.js'
 import { parseFilters, REGISTRY } from '../mixins/index.js'
@@ -345,12 +346,7 @@ export function variables(obj = {}) {
  * @returns {any|Promise} - The result or a Promise to the result
  */
 export function call(fnKey, ...args) {
-  const fn =
-    this.context.utils?.[fnKey] ||
-    this.context.functions?.[fnKey] ||
-    this.context.methods?.[fnKey] ||
-    this.context.snippets?.[fnKey]
-
+  const fn = getContextFunction.call(this, fnKey)
   if (!fn) return undefined
 
   try {
