@@ -266,7 +266,7 @@ export function log(...params) {
 
 export function warn(...params) {
   // if (isNotProduction()) {
-  console.warn(...params)
+  console.warn(...params, this)
   // }
 }
 
