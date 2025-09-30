@@ -151,8 +151,8 @@ export const deepClone = (obj, options = {}) => {
       ? new contentWindow.Array()
       : new contentWindow.Object()
     : isArray(obj)
-    ? []
-    : {}
+      ? []
+      : {}
 
   // Store the clone to handle circular references
   visited.set(obj, clone)
@@ -209,6 +209,7 @@ export const deepClone = (obj, options = {}) => {
  * Stringify object
  */
 export const deepStringify = (obj, stringified = {}) => {
+  if (!obj) return
   if (obj.node || obj.__ref || obj.parent || obj.__element || obj.parse) {
     ;(obj.__element || obj.parent?.__element).warn(
       'Trying to clone element or state at',
@@ -240,6 +241,7 @@ export const deepStringify = (obj, stringified = {}) => {
       stringified[prop] = objProp
     }
   }
+
   return stringified
 }
 
