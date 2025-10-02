@@ -1,6 +1,6 @@
 {
   "name": "@domql/event",
-  "version": "2.31.21",
+  "version": "2.31.22",
   "license": "MIT",
   "type": "module",
   "module": "index.js",
@@ -28,8 +28,8 @@
     "prepublish": "npm run build; npm run copy:package:cjs"
   },
   "dependencies": {
-    "@domql/report": "^2.31.21",
-    "@domql/utils": "^2.31.21"
+    "@domql/report": "^2.31.22",
+    "@domql/utils": "^2.31.22"
   },
-  "gitHead": "22ca81be5d349bfa4e13f0a847295ad3eafccafc"
+  "gitHead": "e005fda394404817a7242524756e56e3c09653ea"
 }
