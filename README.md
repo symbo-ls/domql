@@ -11,12 +11,12 @@ DOMQL recursively creates elements on your tree, runs transformations based on p
 - Good to generate GraphQL queries based on UI need
 
 You can start with [starter-kit](https://github.com/domql/starter-kit) as a
-boilerplate, or jump into the [playground](https://domql.com/playground/).
+boilerplate, or jump into the [developers playground](https://symbols.app/developers).
 
 [![npm version](https://badge.fury.io/js/domql.svg)](https://badge.fury.io/js/domql)
 
 ## Symbols
-DOMQL is designed to work perfectly with Symbols design system and components. To use it with Symbols please refer relevant docs: [symbols.app/api](https://symbols.app/api)
+DOMQL is designed to work perfectly with Symbols design system and components. To use it with Symbols please refer relevant docs: [symbols.app/docs/framework](https://symbols.app/docs/framework)
 
 
 ## Using
