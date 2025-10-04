@@ -21,7 +21,7 @@ export const resetElement = async (params, element, options) => {
   })
 }
 
-export const reset = async options => {
+export const reset = async (options) => {
   const element = this
   await create(element, element.parent, undefined, {
     ignoreChildExtend: true,
@@ -45,7 +45,8 @@ export const set = async function (params, options = {}, el) {
     if (options.routerContentElement !== options.lastElement.content) return
   }
 
-  const content = setContentKey(element, options)
+  const contentKey = setContentKey(element, options)
+  const content = element[contentKey]
   const __contentRef = content && content.__ref
   const lazyLoad = element.props && element.props.lazyLoad
 
