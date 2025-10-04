@@ -31,6 +31,11 @@ import { REGISTRY } from './mixins/index.js'
 import { applyParam } from './utils/applyParam.js'
 import { OPTIONS } from './cache/options.js'
 import { METHODS_EXL, deepMerge } from './utils/index.js' // old utils (current)
+import {
+  shouldThrottleUpdates,
+  noteElementUpdate,
+  getLoopStats
+} from '@domql/utils/loopGuard.js'
 
 const snapshot = {
   snapshotId: createSnapshotId
@@ -42,10 +47,14 @@ const UPDATE_DEFAULT_OPTIONS = {
   preventRecursive: false,
   currentSnapshot: false,
   calleeElement: false,
-  excludes: METHODS_EXL
+  excludes: METHODS_EXL,
+  depth: 0
 }
 
 export const update = async function (params = {}, opts) {
+  // Suspend guard
+  if (this?.__ref?.__suspended) return
+
   const calleeElementCache = opts?.calleeElement
   const options = deepClone(
     isObject(opts)
@@ -58,6 +67,15 @@ export const update = async function (params = {}, opts) {
   const { parent, node, key } = element
   const { excludes, preventInheritAtCurrentState } = options
 
+  // Depth guard
+  const MAX_DEPTH = 100
+  if (options.depth > MAX_DEPTH) {
+    if (element.warn)
+      element.warn('UpdateDepthExceeded', { path: element.__ref?.path })
+    else console.warn('UpdateDepthExceeded', { path: element.__ref?.path })
+    return
+  }
+
   let ref = element.__ref
   if (!ref) ref = element.__ref = {}
   const [snapshotOnCallee, calleeElement, snapshotHasUpdated] = captureSnapshot(
@@ -68,6 +86,18 @@ export const update = async function (params = {}, opts) {
 
   if (!options.preventListeners)
     await triggerEventOnUpdate('startUpdate', params, element, options)
+
+  // Loop guards (per-element and global)
+  if (noteElementUpdate(element) || shouldThrottleUpdates()) {
+    if (element.warn)
+      element.error('Updating Storm Detected', getLoopStats(element))
+    else {
+      console.error('Updating Storm Detected', getLoopsStats(element))
+    }
+    // Do not hard-suspend automatically; just degrade to rAF-coalesced updates
+    options.lazyLoad = true
+    return false
+  }
 
   if (
     preventInheritAtCurrentState &&
@@ -89,7 +119,7 @@ export const update = async function (params = {}, opts) {
   if (ref.__if && !options.preventPropsUpdate) {
     const hasParentProps =
       parent.props && (parent.props[key] || parent.props.childProps)
-    const hasFunctionInProps = ref.__props.filter(v => isFunction(v))
+    const hasFunctionInProps = ref.__props.filter((v) => isFunction(v))
     const props = params.props || hasParentProps || hasFunctionInProps.length
     if (props) updateProps(props, element, parent)
   }
@@ -104,8 +134,22 @@ export const update = async function (params = {}, opts) {
     if (beforeUpdateReturns === false) return element
   }
 
-  // apply new updates
-  overwriteDeep(element, params, { exclude: METHODS_EXL })
+  // apply new updates with change detection
+  const odOpts = { exclude: METHODS_EXL, __changed: false }
+  overwriteDeep(element, params, odOpts)
+
+  // If no structural element changes and no props update requested AND props didn't change, short-circuit
+  const hasPropsChanged = element.__ref?.__propsChanged
+  if (
+    !odOpts.__changed &&
+    !params.props &&
+    !hasPropsChanged &&
+    !options.updateByState
+  ) {
+    if (!options.preventUpdateListener)
+      await triggerEventOn('update', element, options)
+    return
+  }
 
   // exec updates
   throughExecProps(element)
@@ -191,6 +235,7 @@ export const update = async function (params = {}, opts) {
       const childUpdateCall = async () =>
         await update.call(prop, params[prop], {
           ...options,
+          depth: (options.depth || 0) + 1,
           currentSnapshot: snapshotOnCallee,
           calleeElement
         })

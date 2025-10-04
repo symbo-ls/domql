@@ -216,12 +216,9 @@ export const quietUpdate = function (obj, options = {}) {
 
 export const replace = function (obj, options = {}) {
   const state = this
-
-  for (const param in obj) {
-    state[param] = obj[param]
-  }
-
-  return state.update(obj, options)
+  // Do not mutate before update(); this breaks change detection.
+  // Let updateState handle overwriting and mark changes correctly.
+  return state.update(obj, { ...options, replace: true })
 }
 
 export const quietReplace = function (obj, options = {}) {

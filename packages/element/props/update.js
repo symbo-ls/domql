@@ -11,7 +11,16 @@ export const updateProps = (newProps, element, parent) => {
   if (parentProps.length) propsStack = __ref.__props = [].concat(parentProps, propsStack)
   if (newProps) propsStack = __ref.__props = [].concat(newProps, propsStack)
 
-  if (propsStack) syncProps(propsStack, element)
+  if (propsStack) {
+    const prevChanged = __ref.__propsChanged
+    syncProps(propsStack, element)
+    // If props didn't actually change, mark to skip deeper work later
+    if (__ref.__propsChanged === false) {
+      if (!element.updateOpts) element.updateOpts = {}
+      element.updateOpts.preventDefineUpdate = true
+      element.updateOpts.preventContentUpdate = true
+    }
+  }
 
   return element
 }

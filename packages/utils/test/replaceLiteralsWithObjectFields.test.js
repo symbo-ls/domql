@@ -8,7 +8,7 @@ describe('replaceLiteralsWithObjectFields', () => {
       day: 'Monday',
     };
 
-    const result = replaceLiteralsWithObjectFields(str, state);
+    const result = replaceLiteralsWithObjectFields(str, {}, state);
 
     expect(result).toEqual('Hello, John! Today is Monday.');
   });
@@ -20,7 +20,7 @@ describe('replaceLiteralsWithObjectFields', () => {
       day: 'Monday',
     };
 
-    const result = replaceLiteralsWithObjectFields(str, state);
+    const result = replaceLiteralsWithObjectFields(str, {}, state);
 
     expect(result).toEqual('Hello, world!');
   });
@@ -31,7 +31,7 @@ describe('replaceLiteralsWithObjectFields', () => {
       parent: null,
     };
 
-    const result = replaceLiteralsWithObjectFields(str, state);
+    const result = replaceLiteralsWithObjectFields(str, {}, state);
 
     expect(result).toEqual('Hello, !');
   });

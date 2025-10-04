@@ -3,6 +3,10 @@
   "version": "2.29.86",
   "main": "index.js",
   "license": "MIT",
+  "scripts": {
+    "link": "npm link",
+    "unlink": "npm unlink -g $npm_package_name || true"
+  },
   "dependencies": {
     "@domql/element": "^2.29.86",
     "@domql/render": "^2.29.86"
