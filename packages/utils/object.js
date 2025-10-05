@@ -499,11 +499,21 @@ export const stringToObject = (str, opts = { verbose: true }) => {
 export const diffObjects = (original, objToDiff, cache, opts) => {
   let hasDiff = false
 
-  for (const key in objToDiff) {
+  // Use union of keys
+  const allKeys = new Set([...Object.keys(original), ...Object.keys(objToDiff)])
+
+  for (const key of allKeys) {
     if (key === 'ref') continue
 
     const originalProp = original[key]
     const objToDiffProp = objToDiff[key]
+
+    // Handle deleted keys (missing in objToDiff)
+    if (!(key in objToDiff)) {
+      cache[key] = undefined
+      hasDiff = true
+      continue
+    }
 
     if (isObject(originalProp) && isObject(objToDiffProp)) {
       const nestedDiff = diff(originalProp, objToDiffProp, {}, opts)

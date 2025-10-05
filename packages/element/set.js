@@ -1,6 +1,6 @@
 'use strict'
 
-import { deepContains, setContentKey } from '@domql/utils'
+import { deepClone, deepContains, setContentKey } from '@domql/utils'
 
 import { OPTIONS } from './cache/options.js'
 import { create } from './create.js'
@@ -11,8 +11,6 @@ import { triggerEventOn, triggerEventOnUpdate } from '@domql/event'
 export const resetElement = async (params, element, options) => {
   if (!options.preventRemove) removeContent(element, options)
   const { __ref: ref } = element
-  // console.warn('resetting content', ref.path)
-  if (params instanceof Promise) console.log(params, params instanceof Promise)
   await create(params, element, ref.contentElementKey || 'content', {
     ignoreChildExtend: true,
     ...registry.defaultOptions,
@@ -33,7 +31,7 @@ export const reset = async (options) => {
 
 export const set = async function (params, options = {}, el) {
   const element = el || this
-  const { __ref: ref } = element
+  // const { __ref: ref } = element
 
   if (
     options.preventContentUpdate ||
@@ -45,33 +43,36 @@ export const set = async function (params, options = {}, el) {
     if (options.routerContentElement !== options.lastElement.content) return
   }
 
-  const contentKey = setContentKey(element, options)
-  const content = element[contentKey]
-  const __contentRef = content && content.__ref
+  // const contentKey = setContentKey(element, options)
+  // const content = element[contentKey]
+  // const __contentRef = content && content.__ref
   const lazyLoad = element.props && element.props.lazyLoad
 
   const hasCollection =
     element.$collection || element.$stateCollection || element.$propsCollection
   if (options.preventContentUpdate === true && !hasCollection) return
 
-  if (
-    ref.__noCollectionDifference ||
-    (__contentRef && __contentRef.__cached && deepContains(params, content))
-  ) {
-    if (!options.preventBeforeUpdateListener && !options.preventListeners) {
-      const beforeUpdateReturns = await triggerEventOnUpdate(
-        'beforeUpdate',
-        params,
-        element,
-        options
-      )
-      if (beforeUpdateReturns === false) return element
-    }
-    if (content?.update) await content.update()
-    if (!options.preventUpdateListener)
-      await triggerEventOn('update', element, options)
-    return
-  }
+  // console.log(deepClone(params), deepClone(content))
+  // console.log(deepContains(params, content))
+
+  // if (
+  //   ref.__noCollectionDifference ||
+  //   (__contentRef && __contentRef.__cached && deepContains(params, content))
+  // ) {
+  //   // if (!options.preventBeforeUpdateListener && !options.preventListeners) {
+  //   //   const beforeUpdateReturns = await triggerEventOnUpdate(
+  //   //     'beforeUpdate',
+  //   //     params,
+  //   //     element,
+  //   //     options
+  //   //   )
+  //   //   if (beforeUpdateReturns === false) return element
+  //   // }
+  //   // if (content?.update) await content.update()
+  //   // if (!options.preventUpdateListener)
+  //   //   await triggerEventOn('update', element, options)
+  //   return
+  // }
 
   if (params) {
     let { childExtend, props } = params
