@@ -208,7 +208,7 @@ export const deepClone = (obj, options = {}) => {
 /**
  * Stringify object
  */
-export const deepStringify = (obj, stringified = {}) => {
+export const deepStringifyFunctions = (obj, stringified = {}) => {
   if (!obj) return
   if (obj.node || obj.__ref || obj.parent || obj.__element || obj.parse) {
     ;(obj.__element || obj.parent?.__element).warn(
@@ -224,13 +224,13 @@ export const deepStringify = (obj, stringified = {}) => {
       stringified[prop] = objProp.toString()
     } else if (isObject(objProp)) {
       stringified[prop] = {}
-      deepStringify(objProp, stringified[prop])
+      deepStringifyFunctions(objProp, stringified[prop])
     } else if (isArray(objProp)) {
       stringified[prop] = []
       objProp.forEach((v, i) => {
         if (isObject(v)) {
           stringified[prop][i] = {}
-          deepStringify(v, stringified[prop][i])
+          deepStringifyFunctions(v, stringified[prop][i])
         } else if (isFunction(v)) {
           stringified[prop][i] = v.toString()
         } else {
@@ -246,7 +246,7 @@ export const deepStringify = (obj, stringified = {}) => {
 }
 
 const MAX_DEPTH = 100 // Adjust this value as needed
-export const deepStringifyWithMaxDepth = (
+export const deepStringifyFunctionsWithMaxDepth = (
   obj,
   stringified = {},
   depth = 0,
@@ -267,7 +267,7 @@ export const deepStringifyWithMaxDepth = (
       stringified[prop] = objProp.toString()
     } else if (isObject(objProp)) {
       stringified[prop] = {}
-      deepStringifyWithMaxDepth(
+      deepStringifyFunctionsWithMaxDepth(
         objProp,
         stringified[prop],
         depth + 1,
@@ -279,7 +279,7 @@ export const deepStringifyWithMaxDepth = (
         const itemPath = `${currentPath}[${i}]`
         if (isObject(v)) {
           stringified[prop][i] = {}
-          deepStringifyWithMaxDepth(
+          deepStringifyFunctionsWithMaxDepth(
             v,
             stringified[prop][i],
             depth + 1,
@@ -389,7 +389,7 @@ export const detachFunctionsFromObject = (obj, detached = {}) => {
     if (isFunction(objProp)) continue
     else if (isObject(objProp)) {
       detached[prop] = {}
-      deepStringify(objProp, detached[prop])
+      deepStringifyFunctions(objProp, detached[prop])
     } else if (isArray(objProp)) {
       detached[prop] = []
       objProp.forEach((v, i) => {
@@ -440,7 +440,7 @@ export const hasFunction = (str) => {
   )
 }
 
-export const deepDestringify = (obj, destringified = {}) => {
+export const deepDestringifyFunctions = (obj, destringified = {}) => {
   for (const prop in obj) {
     const hasOwnProperty = Object.prototype.hasOwnProperty.call(obj, prop)
     if (!hasOwnProperty) continue
@@ -473,13 +473,16 @@ export const deepDestringify = (obj, destringified = {}) => {
             destringified[prop].push(arrProp)
           }
         } else if (isObject(arrProp)) {
-          destringified[prop].push(deepDestringify(arrProp))
+          destringified[prop].push(deepDestringifyFunctions(arrProp))
         } else {
           destringified[prop].push(arrProp)
         }
       })
     } else if (isObject(objProp)) {
-      destringified[prop] = deepDestringify(objProp, destringified[prop])
+      destringified[prop] = deepDestringifyFunctions(
+        objProp,
+        destringified[prop]
+      )
     } else {
       destringified[prop] = objProp
     }
@@ -487,12 +490,12 @@ export const deepDestringify = (obj, destringified = {}) => {
   return destringified
 }
 
-export const stringToObject = (str, opts = { verbose: true }) => {
+export const evalStringToObject = (str, opts = { verbose: true }) => {
   try {
-    return str ? window.eval('(' + str + ')') : {} // eslint-disable-line
+    return str ? (opts.window || window).eval('(' + str + ')') : {} // eslint-disable-line
   } catch (e) {
     if (opts.verbose) console.warn(e)
-    if (opts.errorCallback) return opts.errorCallback(e)
+    if (opts.onError) return opts.onError(e)
   }
 }
 
@@ -562,8 +565,8 @@ export const diff = (original, objToDiff, cache = {}, opts = {}) => {
     objToDiff = deepClone(objToDiff)
   }
 
-  original = deepStringify(original)
-  objToDiff = deepStringify(objToDiff)
+  original = deepStringifyFunctions(original)
+  objToDiff = deepStringifyFunctions(objToDiff)
 
   if (isArray(original) && isArray(objToDiff)) {
     const result = diffArrays(original, objToDiff, [], opts)

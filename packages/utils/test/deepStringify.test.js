@@ -1,4 +1,4 @@
-const { deepStringify } = require('../dist/cjs')
+const { deepStringifyFunctions } = require('../dist/cjs')
 
 const testObject1 = {
   a: 'hello',
@@ -10,7 +10,9 @@ const testObject1 = {
       g: 'world'
     }
   },
-  h: function () { console.log('test') }
+  h: function () {
+    console.log('test')
+  }
 }
 
 const testObject2 = {
@@ -23,14 +25,18 @@ const testObject2 = {
     state: 'CA',
     zip: '12345'
   },
-  sayHello: function () { return 'Hello' }
+  sayHello: function () {
+    return 'Hello'
+  }
 }
 
-describe('deepStringify', () => {
+describe('deepStringifyFunctions', () => {
   test('should convert functions to string', () => {
     const obj = {
       a: 1,
-      b: function () { return 'test' }
+      b: function () {
+        return 'test'
+      }
     }
     const expected = {
       a: 1,
@@ -38,7 +44,7 @@ describe('deepStringify', () => {
         return 'test';
       }`
     }
-    expect(deepStringify(obj)).toEqual(expected)
+    expect(deepStringifyFunctions(obj)).toEqual(expected)
   })
 
   test('should stringify nested objects', () => {
@@ -60,21 +66,31 @@ describe('deepStringify', () => {
         }
       }
     }
-    expect(deepStringify(obj)).toEqual(expected)
+    expect(deepStringifyFunctions(obj)).toEqual(expected)
   })
 
   test('should stringify arrays', () => {
     const obj = {
       a: 1,
-      b: [1, 2, function () { return 'test' }]
+      b: [
+        1,
+        2,
+        function () {
+          return 'test'
+        }
+      ]
     }
     const expected = {
       a: 1,
-      b: [1, 2, `function () {
+      b: [
+        1,
+        2,
+        `function () {
         return 'test';
-      }`]
+      }`
+      ]
     }
-    expect(deepStringify(obj)).toEqual(expected)
+    expect(deepStringifyFunctions(obj)).toEqual(expected)
   })
 
   test('should stringify testObject1', () => {
@@ -92,7 +108,7 @@ describe('deepStringify', () => {
     console.log('test');
   }`
     }
-    expect(deepStringify(testObject1)).toEqual(expected)
+    expect(deepStringifyFunctions(testObject1)).toEqual(expected)
   })
 
   test('should stringify testObject2', () => {
@@ -110,6 +126,6 @@ describe('deepStringify', () => {
     return 'Hello';
   }`
     }
-    expect(deepStringify(testObject2)).toEqual(expected)
+    expect(deepStringifyFunctions(testObject2)).toEqual(expected)
   })
 })

@@ -37,6 +37,7 @@ const snapshot = {
 }
 
 const UPDATE_DEFAULT_OPTIONS = {
+  callIteration: 0,
   stackChanges: false,
   cleanExec: true,
   preventRecursive: false,
@@ -53,10 +54,18 @@ export const update = async function (params = {}, opts) {
       : UPDATE_DEFAULT_OPTIONS,
     { exclude: ['calleeElement'] }
   )
-  options.calleeElement = calleeElementCache
   const element = this
+  options.calleeElement = calleeElementCache || this
   const { parent, node, key } = element
   const { excludes, preventInheritAtCurrentState } = options
+
+  if (options.callIteration === undefined) options.callIteration = 0
+  else options.callIteration++
+
+  if (this === options.calleeElement && options.callIteration > 10) {
+    console.log('nonono')
+    return this.warn('Potential updating loop detected')
+  }
 
   let ref = element.__ref
   if (!ref) ref = element.__ref = {}
@@ -89,7 +98,7 @@ export const update = async function (params = {}, opts) {
   if (ref.__if && !options.preventPropsUpdate) {
     const hasParentProps =
       parent.props && (parent.props[key] || parent.props.childProps)
-    const hasFunctionInProps = ref.__props.filter(v => isFunction(v))
+    const hasFunctionInProps = ref.__props.filter((v) => isFunction(v))
     const props = params.props || hasParentProps || hasFunctionInProps.length
     if (props) updateProps(props, element, parent)
   }
@@ -389,7 +398,7 @@ const inheritStateUpdates = async (element, options) => {
 
 const createStateUpdate = async (element, parent, options) => {
   const __stateChildren = element.state.__children
-  const newState = await createState(element, parent)
+  const newState = await createState(element, parent, options)
   element.state = newState
   for (const child in __stateChildren) {
     // check this for inherited states

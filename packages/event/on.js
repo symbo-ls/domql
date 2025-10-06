@@ -12,6 +12,11 @@ const getOnOrPropsEvent = (param, element) => {
 export const applyEvent = (fnValue, element, state, context, options) => {
   if (isString(fnValue)) fnValue = getContextFunction.call(element, fnValue)
   if (!fnValue.call) element.warn(`Event is not executable: ${fnValue}`)
+
+  // console.log('2.1. applyEvent:')
+  // console.log(element.__ref.path?.join('.'))
+  // console.log(element, options)
+
   return fnValue.call(
     element,
     element,
@@ -23,6 +28,11 @@ export const applyEvent = (fnValue, element, state, context, options) => {
 
 export const triggerEventOn = async (param, element, options) => {
   const appliedFunction = getOnOrPropsEvent(param, element)
+
+  // console.log('----')
+  // console.log('1. trigger update', param)
+  // console.log(element, options, options.calleeElement)
+
   if (appliedFunction) {
     const { state, context } = element
     return await applyEvent(appliedFunction, element, state, context, options)
@@ -39,6 +49,11 @@ export const applyEventUpdate = (
 ) => {
   if (isString(fnValue)) fnValue = getContextFunction.call(element, fnValue)
   if (!fnValue.call) element.warn(`Event is not executable: ${fnValue}`)
+
+  // console.log('2.1. applyEventUpdate:')
+  // console.log(element.__ref.path?.join('.'))
+  // console.log(element, options)
+
   return fnValue.call(
     element,
     updatedObj,
@@ -55,6 +70,10 @@ export const triggerEventOnUpdate = async (
   element,
   options
 ) => {
+  // console.log('----')
+  // console.log('2. trigger update', param)
+  // console.log(element, options, options.calleeElement)
+
   const appliedFunction = getOnOrPropsEvent(param, element)
   if (appliedFunction) {
     const { state, context } = element
@@ -64,7 +83,7 @@ export const triggerEventOnUpdate = async (
       element,
       state,
       context,
-      options
+      { calleeElement: element, ...options }
     )
   }
 }

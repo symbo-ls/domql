@@ -66,7 +66,7 @@ export const applyInitialState = async function (element, parent, options) {
   applyMethods(element)
 
   // trigger `on.stateCreated`
-  await triggerEventOn('stateCreated', element)
+  await triggerEventOn('stateCreated', element, options)
 
   return element.state
 }

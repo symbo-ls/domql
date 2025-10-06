@@ -12,7 +12,7 @@ import {
 } from '@domql/utils'
 
 import { METHODS_EXL, overwrite } from './utils/index.js'
-import { isMethod } from './methods/index.js'
+import { isMethod, warn } from './methods/index.js'
 
 export const throughInitialExec = async (element, exclude = {}) => {
   const { __ref: ref } = element
@@ -65,12 +65,14 @@ export const throughUpdatedExec = async (
   return changes
 }
 
-export const throughExecProps = element => {
+export const throughExecProps = (element) => {
   const { __ref: ref } = element
   const { props } = element
   for (const k in props) {
     const isDefine =
       k.startsWith('is') || k.startsWith('has') || k.startsWith('use')
+    if (!ref.__execProps)
+      return warn.call(element, 'Element was not initiated to execute props')
     const cachedExecProp = ref.__execProps[k]
     if (isFunction(cachedExecProp)) {
       props[k] = exec(cachedExecProp, element)
@@ -81,7 +83,7 @@ export const throughExecProps = element => {
   }
 }
 
-export const throughInitialDefine = async element => {
+export const throughInitialDefine = async (element) => {
   const { define, context, __ref: ref } = element
 
   let defineObj = {}
@@ -119,7 +121,7 @@ export const throughInitialDefine = async element => {
   return element
 }
 
-export const throughUpdatedDefine = async element => {
+export const throughUpdatedDefine = async (element) => {
   const { context, define, __ref: ref } = element
   const changes = {}
 

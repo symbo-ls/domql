@@ -121,7 +121,7 @@ export function setNodeStyles(params = {}) {
   return el
 }
 
-export async function remove(opts) {
+export async function remove(opts = {}) {
   const element = this
   const beforeRemoveReturns = triggerEventOn('beforeRemove', element, opts)
   if (beforeRemoveReturns === false) return element
@@ -144,10 +144,10 @@ export function get(param) {
   return element[param]
 }
 
-export function setProps(param, options) {
+export function setProps(param, opts = {}) {
   const element = this
   if (!param || !element.props) return
-  element.update({ props: param }, options)
+  element.update({ props: param }, opts)
   return element
 }
 
@@ -274,6 +274,8 @@ export function error(...params) {
   // if (isNotProduction()) {
   if (params[params.length - 1]?.debugger) debugger // eslint-disable-line
   if (params[params.length - 1]?.verbose) verbose.call(this, ...params)
+  if (isFunction(params[params.length - 1]?.onError))
+    params[params.length - 1]?.onError.call(this, ...params)
   console.error(...params, this)
   // }
 }
@@ -289,8 +291,8 @@ export function nextElement() {
   return parent[nextChild]
 }
 
-export async function append(el, key) {
-  return await create(el, this, key)
+export async function append(el, key, opts) {
+  return await create(el, this, key, opts)
 }
 
 export function previousElement(el) {

@@ -1,6 +1,6 @@
-const { deepDestringify } = require('../dist/cjs')
+const { deepDestringifyFunctions } = require('../dist/cjs')
 
-describe('deepDestringify', () => {
+describe('deepDestringifyFunctions', () => {
   test('should return a new object with function strings replaced by their evaluated results', () => {
     const obj = {
       strFunc: '() => { return 42 }',
@@ -8,16 +8,12 @@ describe('deepDestringify', () => {
         nestedStrFunc: 'function() { return "hello" }',
         nestedStr: 'world'
       },
-      arr: [
-        '() => { return "foo" }',
-        '() => { return "bar" }',
-        'baz'
-      ],
+      arr: ['() => { return "foo" }', '() => { return "bar" }', 'baz'],
       num: 123,
       bool: true
     }
 
-    const result = deepDestringify(obj)
+    const result = deepDestringifyFunctions(obj)
 
     expect(result.strFunc()).toBe(42)
     expect(result.nestedObj.nestedStrFunc()).toBe('hello')
@@ -32,7 +28,7 @@ describe('deepDestringify', () => {
   test('should handle arrays with circular references', () => {
     const arr = [1, 2]
 
-    const result = deepDestringify(arr)
+    const result = deepDestringifyFunctions(arr)
 
     expect(result[0]).toBe(1)
     expect(result[1]).toBe(2)
@@ -41,7 +37,7 @@ describe('deepDestringify', () => {
   test('should not modify the original object', () => {
     const obj = { strFunc: '() => { return "original" }' }
 
-    deepDestringify(obj)
+    deepDestringifyFunctions(obj)
 
     expect(obj.strFunc).toBe('() => { return "original" }')
   })
