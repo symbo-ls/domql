@@ -502,8 +502,19 @@ export const evalStringToObject = (str, opts = { verbose: true }) => {
 export const diffObjects = (original, objToDiff, cache, opts) => {
   let hasDiff = false
 
-  // Use union of keys
-  const allKeys = new Set([...Object.keys(original), ...Object.keys(objToDiff)])
+  // Use union of keys maintaining original order where possible
+  const originalKeys = Object.keys(original)
+  const diffKeys = Object.keys(objToDiff)
+  const allKeys = [...new Set([...originalKeys, ...diffKeys])]
+
+  // Check if key order has changed
+  const originalKeyOrder = originalKeys.join(',')
+  const diffKeyOrder = diffKeys
+    .filter((k) => originalKeys.includes(k))
+    .join(',')
+  if (originalKeyOrder !== diffKeyOrder) {
+    hasDiff = true
+  }
 
   for (const key of allKeys) {
     if (key === 'ref') continue
@@ -540,11 +551,23 @@ export const diffObjects = (original, objToDiff, cache, opts) => {
 }
 
 const diffArrays = (original, objToDiff, cache, opts) => {
+  // Different lengths means arrays are different
   if (original.length !== objToDiff.length) {
     return objToDiff
   }
 
   let hasDiff = false
+
+  // First check if any elements have changed position
+  // by doing a shallow comparison of elements
+  const originalStringified = original.map((item) => JSON.stringify(item))
+  const diffStringified = objToDiff.map((item) => JSON.stringify(item))
+
+  if (originalStringified.join(',') !== diffStringified.join(',')) {
+    hasDiff = true
+  }
+
+  // Then do deep comparison of each element
   for (let i = 0; i < original.length; i++) {
     const diffObj = diff(original[i], objToDiff[i], {}, opts)
     if (
@@ -556,7 +579,7 @@ const diffArrays = (original, objToDiff, cache, opts) => {
     }
   }
 
-  return hasDiff ? cache : undefined
+  return hasDiff ? objToDiff : undefined
 }
 
 export const diff = (original, objToDiff, cache = {}, opts = {}) => {

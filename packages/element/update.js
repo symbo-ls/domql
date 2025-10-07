@@ -37,7 +37,6 @@ const snapshot = {
 }
 
 const UPDATE_DEFAULT_OPTIONS = {
-  callIteration: 0,
   stackChanges: false,
   cleanExec: true,
   preventRecursive: false,
@@ -64,18 +63,25 @@ export const update = async function (params = {}, opts) {
   const { parent, node, key } = element
   const { excludes, preventInheritAtCurrentState } = options
 
-  if (options.callIteration === undefined) options.callIteration = 0
-  else options.callIteration++
-
-  console.log('updating')
-
-  if (this === options.calleeElement && options.callIteration > 10) {
-    console.log('nonono')
-    return this.warn('Potential updating loop detected')
-  }
-
   let ref = element.__ref
   if (!ref) ref = element.__ref = {}
+
+  // self calling is detected
+  if (this === options.calleeElement && !options.allowStorm) {
+    if (ref.__selfCallIteration === undefined) ref.__selfCallIteration = 0
+    else ref.__selfCallIteration++
+    // prevent storm
+    if (ref.__selfCallIteration > 100) {
+      ref.__selfCallIteration = 0
+      return this.error('Potential self calling loop in update detected', opts)
+    }
+    // make storm detection time based
+    const stormTimeout = setTimeout(() => {
+      ref.__selfCallIteration = 0
+      clearTimeout(stormTimeout)
+    }, 350)
+  }
+
   const [snapshotOnCallee, calleeElement, snapshotHasUpdated] = captureSnapshot(
     element,
     options
