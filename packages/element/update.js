@@ -66,6 +66,15 @@ export const update = async function (params = {}, opts) {
   let ref = element.__ref
   if (!ref) ref = element.__ref = {}
 
+  if (ref.__stormAbortion && !options.allowStorm) {
+    // make storm abourtion time based
+    const stormAbortion = setTimeout(() => {
+      delete ref.__stormAbortion
+      clearTimeout(stormAbortion)
+    }, 1000)
+    return
+  }
+
   // self calling is detected
   if (this === options.calleeElement && !options.allowStorm) {
     if (ref.__selfCallIteration === undefined) ref.__selfCallIteration = 0
@@ -73,6 +82,7 @@ export const update = async function (params = {}, opts) {
     // prevent storm
     if (ref.__selfCallIteration > 100) {
       ref.__selfCallIteration = 0
+      ref.__stormAbortion = true
       return this.error('Potential self calling loop in update detected', opts)
     }
     // make storm detection time based
