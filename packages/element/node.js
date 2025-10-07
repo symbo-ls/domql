@@ -70,7 +70,8 @@ export const createNode = async (element, options) => {
     }
   }
 
-  for (const param in element) {
+  const keys = Object.keys(element)
+  for (const param of keys) {
     const value = element[param]
 
     if (!Object.hasOwnProperty.call(element, param)) continue
@@ -82,6 +83,10 @@ export const createNode = async (element, options) => {
       isObject(REGISTRY[param])
     )
       continue
+
+    if (param === 'onClick') {
+      debugger
+    }
 
     const isElement = await applyParam(param, element, options)
     if (!isElement) continue

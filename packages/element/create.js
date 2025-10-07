@@ -26,7 +26,7 @@ import { applyAnimationFrame, triggerEventOn } from '@domql/event'
 import { assignNode } from '@domql/render'
 import { createState } from '@domql/state'
 
-import { isMethod } from './methods/index.js'
+import { error, isMethod } from './methods/index.js'
 import { createProps } from './props/index.js'
 import { applyExtend } from './extend.js'
 import { REGISTRY, registry } from './mixins/index.js'
@@ -52,6 +52,16 @@ export const create = async (
   options = OPTIONS.create || {},
   attachOptions
 ) => {
+  const isValid = validateElement(element, options)
+  if (!isValid) {
+    error.call(
+      element,
+      'Error while creating element: Not valid type',
+      element,
+      options
+    )
+    return
+  }
   cacheOptions(element, options)
 
   // if element is STRING
@@ -156,6 +166,14 @@ const createBasedOnType = (element, parent, key, options) => {
     return { extend: element }
   }
 
+  // Check if element was passed as node, reassign it to element.node
+  if (
+    (typeof Node !== 'undefined' && element instanceof Node) ||
+    (typeof DocumentFragment !== 'undefined' &&
+      element instanceof DocumentFragment)
+  )
+    return { node: element }
+
   return element
 }
 
@@ -191,6 +209,87 @@ const redefineParent = (element, parent, key, options) => {
     return parentNodeWrapper
   }
   return parent
+}
+
+const validateElement = (value, options) => {
+  if (value == null) return false // null or undefined are not valid elements
+
+  // --- 1. Invalid primitive types
+  const t = typeof value
+  if (t === 'function' || t === 'symbol' || t === 'bigint') return false
+  if (Number.isNaN(value) || value === Infinity || value === -Infinity)
+    return false
+
+  // --- 2. Global / host objects
+  const unsafeGlobals = [
+    typeof window !== 'undefined' && window,
+    typeof document !== 'undefined' && document,
+    typeof globalThis !== 'undefined' && globalThis,
+    typeof navigator !== 'undefined' && navigator,
+    typeof location !== 'undefined' && location,
+    typeof history !== 'undefined' && history,
+    typeof screen !== 'undefined' && screen,
+    typeof frames !== 'undefined' && frames,
+    typeof parent !== 'undefined' && parent,
+    typeof self !== 'undefined' && self,
+    typeof top !== 'undefined' && top,
+    typeof performance !== 'undefined' && performance,
+    typeof console !== 'undefined' && console,
+    typeof indexedDB !== 'undefined' && indexedDB,
+    typeof caches !== 'undefined' && caches,
+    typeof localStorage !== 'undefined' && localStorage,
+    typeof sessionStorage !== 'undefined' && sessionStorage,
+    typeof crypto !== 'undefined' && crypto,
+    typeof visualViewport !== 'undefined' && visualViewport,
+    typeof customElements !== 'undefined' && customElements
+  ].filter(Boolean)
+
+  if (unsafeGlobals.includes(value)) return false
+
+  // --- 3. DOM node instances
+  // allow nodes in order to assign it in element.node
+  // if (typeof Node !== 'undefined' && value instanceof Node) return false
+  // if (typeof DocumentFragment !== 'undefined' && value instanceof DocumentFragment) return false
+  if (typeof EventTarget !== 'undefined' && value instanceof EventTarget)
+    return false
+  if (typeof Event !== 'undefined' && value instanceof Event) return false
+
+  // --- 4. Prototype / built-in objects
+  if (
+    value === Object.prototype ||
+    value === Array.prototype ||
+    value === Function.prototype ||
+    value === Map.prototype ||
+    value === Set.prototype ||
+    value === WeakMap.prototype ||
+    value === WeakSet.prototype ||
+    value === Promise.prototype ||
+    value === Symbol.prototype
+  )
+    return false
+
+  // --- 5. Platform API instances
+  const unsafeConstructors = [
+    typeof Worker !== 'undefined' && Worker,
+    typeof SharedWorker !== 'undefined' && SharedWorker,
+    typeof MessagePort !== 'undefined' && MessagePort,
+    typeof BroadcastChannel !== 'undefined' && BroadcastChannel,
+    typeof ReadableStream !== 'undefined' && ReadableStream,
+    typeof WritableStream !== 'undefined' && WritableStream,
+    typeof TransformStream !== 'undefined' && TransformStream,
+    typeof File !== 'undefined' && File,
+    typeof Blob !== 'undefined' && Blob,
+    typeof FormData !== 'undefined' && FormData,
+    typeof XMLHttpRequest !== 'undefined' && XMLHttpRequest,
+    typeof AbortController !== 'undefined' && AbortController,
+    typeof AbortSignal !== 'undefined' && AbortSignal
+  ].filter(Boolean)
+
+  for (const Ctor of unsafeConstructors) {
+    if (value instanceof Ctor) return false
+  }
+
+  return true
 }
 
 const cacheOptions = (element, options) => {

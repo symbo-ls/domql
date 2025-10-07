@@ -43,7 +43,7 @@ export const removeContent = function (el, opts = {}) {
         __cached[contentElementKey].remove()
     }
 
-    ref.__children.splice(ref.__children.indexOf(element[contentElementKey]), 1)
+    ref.__children.splice(ref.__children.indexOf(contentElementKey), 1)
 
     delete element[contentElementKey]
   }
@@ -53,7 +53,7 @@ export const removeContent = function (el, opts = {}) {
  * Appends anything as content
  * an original one as a child
  */
-export async function setContent (param, element, node, opts) {
+export async function setContent(param, element, node, opts) {
   const contentElementKey = setContentKey(element, opts)
   if (param && element) {
     if (element[contentElementKey]?.update) {

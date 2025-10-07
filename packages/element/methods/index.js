@@ -75,6 +75,12 @@ export function lookdown(param) {
 
     if (v === param) return childElem
     else if (isFunction(param)) {
+      if (!childElem) {
+        this.error(
+          `"${v}" found in element __children, but content is not defined`
+        )
+        continue
+      }
       const exec = param(childElem, childElem.state, childElem.context)
       if (childElem.state && exec) {
         return childElem
@@ -98,6 +104,12 @@ export function lookdownAll(param, results = []) {
 
     if (v === param) results.push(childElem)
     else if (isFunction(param)) {
+      if (!childElem) {
+        this.error(
+          `"${v}" found in element __children, but content is not defined`
+        )
+        continue
+      }
       const exec = param(childElem, childElem.state, childElem.context)
       if (childElem.state && exec) results.push(childElem)
     }
@@ -365,8 +377,8 @@ export function call(fnKey, ...args) {
     // Return synchronous results directly
     return result
   } catch (error) {
-    console.error(`Error calling '${fnKey}':`, error)
-    throw error
+    console.error(`Error calling '${fnKey}'`)
+    throw new Error(error)
   }
 }
 

@@ -46,6 +46,11 @@ const UPDATE_DEFAULT_OPTIONS = {
   excludes: METHODS_EXL
 }
 
+// const updateStack = []
+// requestAnimationFrame(() => {
+//   updateStack.forEach()
+// })
+
 export const update = async function (params = {}, opts) {
   const calleeElementCache = opts?.calleeElement
   const options = deepClone(
@@ -61,6 +66,8 @@ export const update = async function (params = {}, opts) {
 
   if (options.callIteration === undefined) options.callIteration = 0
   else options.callIteration++
+
+  console.log('updating')
 
   if (this === options.calleeElement && options.callIteration > 10) {
     console.log('nonono')
@@ -153,7 +160,8 @@ export const update = async function (params = {}, opts) {
     else options.preventUpdateAfterCount++
   }
 
-  for (const param in element) {
+  const keys = Object.keys(element)
+  for (const param of keys) {
     const prop = element[param]
 
     if (!Object.hasOwnProperty.call(element, param)) continue

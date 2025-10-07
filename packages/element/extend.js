@@ -1,6 +1,6 @@
 'use strict'
 
-import { isFunction, exec, isProduction } from '@domql/utils'
+import { isFunction, exec } from '@domql/utils'
 import {
   getExtendStack,
   jointStacks,
