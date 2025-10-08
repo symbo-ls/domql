@@ -91,6 +91,8 @@ export const create = async (
     return await onlyResolveExtends(element, parent, key, options)
   }
 
+  await triggerEventOn('beforeEvent', params, element, options)
+
   await triggerEventOn('start', element, options)
 
   switchDefaultOptions(element, parent, options)
