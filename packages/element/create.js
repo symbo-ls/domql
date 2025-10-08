@@ -91,7 +91,7 @@ export const create = async (
     return await onlyResolveExtends(element, parent, key, options)
   }
 
-  await triggerEventOn('beforeEvent', params, element, options)
+  await triggerEventOn('beforeEvent', element, options)
 
   await triggerEventOn('start', element, options)
 

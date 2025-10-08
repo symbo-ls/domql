@@ -75,7 +75,7 @@ export const update = async function (params = {}, opts) {
   if (checkIfStorm(element, options)) return
 
   if (!options.preventListeners)
-    await triggerEventOn('beforeEvent', params, element, options)
+    await triggerEventOn('beforeEvent', element, options)
 
   if (!options.preventListeners)
     await triggerEventOnUpdate('startUpdate', params, element, options)
