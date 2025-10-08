@@ -4,17 +4,25 @@ import { report } from '@domql/report'
 import { triggerEventOnUpdate } from '@domql/event'
 import { IGNORE_STATE_PARAMS } from './ignore.js'
 import { deepMerge, merge, overwriteDeep, overwriteShallow } from '@domql/utils'
-import { checkIfInherits, createNestedObjectByKeyPath, findInheritedState, getParentStateInKey, getRootStateInKey } from './inherit.js'
+import {
+  checkIfInherits,
+  createNestedObjectByKeyPath,
+  findInheritedState,
+  getParentStateInKey,
+  getRootStateInKey
+} from './inherit.js'
 
 const STATE_UPDATE_OPTIONS = {
   overwrite: true,
   preventHoistElementUpdate: false,
   updateByState: true,
-  isHoisted: true,
-  execStateFunction: true
+  isHoisted: true
 }
 
-export const updateState = async function (obj, options = STATE_UPDATE_OPTIONS) {
+export const updateState = async function (
+  obj,
+  options = STATE_UPDATE_OPTIONS
+) {
   const state = this
   const element = state.__element
 
@@ -28,7 +36,12 @@ export const updateState = async function (obj, options = STATE_UPDATE_OPTIONS) 
   } else if (options.preventInheritAtCurrentState) return
 
   if (!options.preventBeforeStateUpdateListener) {
-    const beforeStateUpdateReturns = await triggerEventOnUpdate('beforeStateUpdate', obj, element, options)
+    const beforeStateUpdateReturns = await triggerEventOnUpdate(
+      'beforeStateUpdate',
+      obj,
+      element,
+      options
+    )
     if (beforeStateUpdateReturns === false) return element
   }
 
@@ -73,11 +86,15 @@ const hoistStateUpdate = async (state, obj, options) => {
   if (!stateKey) return
 
   const asksForInherit = checkIfInherits(element)
-  const inheritedState = findInheritedState(element, parent, { returnParent: true })
-  const shouldPropagateState = asksForInherit && inheritedState && !options.stopStatePropagation
+  const inheritedState = findInheritedState(element, parent, {
+    returnParent: true
+  })
+  const shouldPropagateState =
+    asksForInherit && inheritedState && !options.stopStatePropagation
   if (!shouldPropagateState) return
 
-  const isStringState = (stateType === 'string' || stateType === 'number' || stateType === 'boolean')
+  const isStringState =
+    stateType === 'string' || stateType === 'number' || stateType === 'boolean'
   const value = isStringState ? state.value : state.parse()
   const passedValue = isStringState ? state.value : obj
 
@@ -87,13 +104,13 @@ const hoistStateUpdate = async (state, obj, options) => {
   const targetParent = findRootState || findGrandParentState || parent.state
   if (options.replace) overwriteDeep(targetParent, changesValue || value) // check with createNestedObjectByKeyPath
   await targetParent.update(changesValue, {
-    execStateFunction: false,
     isHoisted: true,
     preventUpdate: options.preventHoistElementUpdate,
     overwrite: !options.replace,
     ...options
   })
-  const hasNotUpdated = options.preventUpdate !== true || !options.preventHoistElementUpdate
+  const hasNotUpdated =
+    options.preventUpdate !== true || !options.preventHoistElementUpdate
   if (!options.preventStateUpdateListener && hasNotUpdated) {
     await triggerEventOnUpdate('stateUpdate', obj, element, options)
   }
@@ -111,16 +128,22 @@ const updateDependentState = async (state, obj, options) => {
 const applyElementUpdate = async (state, obj, options) => {
   const element = state.__element
   if (options.preventUpdate !== true) {
-    await element.update({}, {
-      ...options,
-      updateByState: true
-    })
+    await element.update(
+      {},
+      {
+        ...options,
+        updateByState: true
+      }
+    )
   } else if (options.preventUpdate === 'recursive') {
-    await element.update({}, {
-      ...options,
-      isHoisted: false,
-      updateByState: true,
-      preventUpdate: true
-    })
+    await element.update(
+      {},
+      {
+        ...options,
+        isHoisted: false,
+        updateByState: true,
+        preventUpdate: true
+      }
+    )
   }
 }

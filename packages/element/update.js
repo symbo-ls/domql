@@ -59,24 +59,31 @@ export const update = async function (params = {}, opts) {
     { exclude: ['calleeElement'] }
   )
   const element = this
-  options.calleeElement = calleeElementCache || this
+  options.calleeElement = calleeElementCache
   const { parent, node, key } = element
   const { excludes, preventInheritAtCurrentState } = options
 
   let ref = element.__ref
   if (!ref) ref = element.__ref = {}
 
+  const [snapshotOnCallee, calleeElement, snapshotHasUpdated] = captureSnapshot(
+    element,
+    options
+  )
+  if (snapshotHasUpdated) return
+
+  if (!options.updatingCalleeElement) options.updatingCalleeElement = this
   if (ref.__stormAbortion && !options.allowStorm) {
     // make storm abourtion time based
     const stormAbortion = setTimeout(() => {
       delete ref.__stormAbortion
       clearTimeout(stormAbortion)
     }, 1000)
-    return
+    return this.error('Potential storm update detected', opts)
   }
 
   // self calling is detected
-  if (this === options.calleeElement && !options.allowStorm) {
+  if (this === options.updatingCalleeElement && !options.allowStorm) {
     if (ref.__selfCallIteration === undefined) ref.__selfCallIteration = 0
     else ref.__selfCallIteration++
     // prevent storm
@@ -91,12 +98,6 @@ export const update = async function (params = {}, opts) {
       clearTimeout(stormTimeout)
     }, 350)
   }
-
-  const [snapshotOnCallee, calleeElement, snapshotHasUpdated] = captureSnapshot(
-    element,
-    options
-  )
-  if (snapshotHasUpdated) return
 
   if (!options.preventListeners)
     await triggerEventOnUpdate('startUpdate', params, element, options)
@@ -355,7 +356,6 @@ const checkIfOnUpdate = (element, parent, options) => {
  * @param {Object} options - Configuration options for state update inheritance.
  * @param {boolean} [options.preventUpdateTriggerStateUpdate] - If true, prevent triggering state updates.
  * @param {boolean} [options.isHoisted] - Whether the state is hoisted.
- * @param {boolean} [options.execStateFunction] - Execute the state functions.
  * @param {boolean} [options.stateFunctionOverwrite] - If true, overwrite (not merge) current state with what function returns.
  * @param {boolean} [options.preventInheritedStateUpdate] - If true, prevent inheriting state updates.
  * @param {boolean} [options.preventBeforeStateUpdateListener] - If true, prevent the 'beforeStateUpdate' event listener.
@@ -365,29 +365,14 @@ const checkIfOnUpdate = (element, parent, options) => {
 const inheritStateUpdates = async (element, options) => {
   const { __ref: ref } = element
   const stateKey = ref.__state
-  const { parent, state } = element
-  const { preventUpdateTriggerStateUpdate, isHoisted, execStateFunction } =
-    options
+  const { parent } = element
+  const { preventUpdateTriggerStateUpdate } = options
 
   if (preventUpdateTriggerStateUpdate) return
 
   // If does not have own state inherit from parent
   if (!stateKey && !ref.__hasRootState) {
     element.state = (parent && parent.state) || {}
-    return
-  }
-
-  // If state is function, decide execution and apply setting a current state
-  const shouldForceFunctionState =
-    isFunction(stateKey) && !isHoisted && execStateFunction
-  if (shouldForceFunctionState) {
-    const execState = exec(stateKey, element)
-    state.set(execState, {
-      ...options,
-      preventUpdate: true,
-      preventStateUpdateListener: false,
-      updatedByStateFunction: true
-    })
     return
   }
 

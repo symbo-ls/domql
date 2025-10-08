@@ -73,7 +73,7 @@ export const triggerEventOnUpdate = async (
       element,
       state,
       context,
-      { calleeElement: element, ...options }
+      options
     )
   }
 }

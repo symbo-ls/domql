@@ -377,7 +377,7 @@ export function call(fnKey, ...args) {
     // Return synchronous results directly
     return result
   } catch (error) {
-    console.error(`Error calling '${fnKey}'`)
+    console.error(`Error calling function: '${fnKey}'`)
     throw new Error(error)
   }
 }
