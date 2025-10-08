@@ -56,7 +56,7 @@ export const update = async function (params = {}, opts) {
     isObject(opts)
       ? deepMerge(opts, UPDATE_DEFAULT_OPTIONS)
       : UPDATE_DEFAULT_OPTIONS,
-    { exclude: ['calleeElement'] }
+    { exclude: ['calleeElement', 'updatingCalleeElement'] }
   )
   const element = this
   options.calleeElement = calleeElementCache
@@ -72,32 +72,7 @@ export const update = async function (params = {}, opts) {
   )
   if (snapshotHasUpdated) return
 
-  if (!options.updatingCalleeElement) options.updatingCalleeElement = this
-  if (ref.__stormAbortion && !options.allowStorm) {
-    // make storm abourtion time based
-    const stormAbortion = setTimeout(() => {
-      delete ref.__stormAbortion
-      clearTimeout(stormAbortion)
-    }, 1000)
-    return this.error('Potential storm update detected', opts)
-  }
-
-  // self calling is detected
-  if (this === options.updatingCalleeElement && !options.allowStorm) {
-    if (ref.__selfCallIteration === undefined) ref.__selfCallIteration = 0
-    else ref.__selfCallIteration++
-    // prevent storm
-    if (ref.__selfCallIteration > 100) {
-      ref.__selfCallIteration = 0
-      ref.__stormAbortion = true
-      return this.error('Potential self calling loop in update detected', opts)
-    }
-    // make storm detection time based
-    const stormTimeout = setTimeout(() => {
-      ref.__selfCallIteration = 0
-      clearTimeout(stormTimeout)
-    }, 350)
-  }
+  if (checkIfStorm(element, options)) return
 
   if (!options.preventListeners)
     await triggerEventOnUpdate('startUpdate', params, element, options)
@@ -243,6 +218,40 @@ export const update = async function (params = {}, opts) {
   }
 
   if (!preventUpdateListener) await triggerEventOn('update', element, options)
+}
+
+const checkIfStorm = (element, options) => {
+  let ref = element.__ref
+
+  if (!options.updatingCalleeElement) options.updatingCalleeElement = element
+
+  if (ref.__stormAbortion && !options.allowStorm) {
+    // make storm abourtion time based
+    const stormAbortion = setTimeout(() => {
+      delete ref.__stormAbortion
+      clearTimeout(stormAbortion)
+    }, 1000)
+    element.error('Potential storm update detected')
+    return true
+  }
+
+  // self calling is detected
+  if (element === options.updatingCalleeElement && !options.allowStorm) {
+    if (ref.__selfCallIteration === undefined) ref.__selfCallIteration = 0
+    else ref.__selfCallIteration++
+    // prevent storm
+    if (ref.__selfCallIteration > 100) {
+      ref.__selfCallIteration = 0
+      ref.__stormAbortion = true
+      element.error('Potential self calling loop in update detected')
+      return true
+    }
+    // make storm detection time based
+    const stormTimeout = setTimeout(() => {
+      ref.__selfCallIteration = 0
+      clearTimeout(stormTimeout)
+    }, 350)
+  }
 }
 
 const captureSnapshot = (element, options) => {
