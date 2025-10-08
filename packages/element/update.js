@@ -234,7 +234,7 @@ const checkIfStorm = (element, options) => {
       delete ref.__stormAbortion
       clearTimeout(stormAbortion)
     }, 1000)
-    element.error('Potential storm update detected')
+    element.error('Potential storm update detected', options)
     return true
   }
 
@@ -246,7 +246,7 @@ const checkIfStorm = (element, options) => {
     if (ref.__selfCallIteration > 100) {
       ref.__selfCallIteration = 0
       ref.__stormAbortion = true
-      element.error('Potential self calling loop in update detected')
+      element.error('Potential self calling loop in update detected', options)
       return true
     }
     // make storm detection time based
