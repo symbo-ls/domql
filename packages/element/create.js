@@ -91,14 +91,11 @@ export const create = async (
     return await onlyResolveExtends(element, parent, key, options)
   }
 
-  await triggerEventOn('beforeEvent', element, options)
-
+  await triggerEventOn('eventStart', element, options)
   await triggerEventOn('start', element, options)
 
   switchDefaultOptions(element, parent, options)
-
   addCaching(element, parent, options)
-
   addMethods(element, parent, options)
 
   createScope(element, parent, options)
@@ -139,6 +136,7 @@ export const create = async (
   addElementIntoParentChildren(element, parent)
 
   await triggerEventOn('complete', element, options)
+  await triggerEventOn('eventComplete', element, options)
 
   return element
 }

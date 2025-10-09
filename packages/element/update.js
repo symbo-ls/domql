@@ -75,7 +75,7 @@ export const update = async function (params = {}, opts) {
   if (checkIfStorm(element, options)) return
 
   if (!options.preventListeners)
-    await triggerEventOn('beforeEvent', element, options)
+    await triggerEventOn('eventStart', element, options)
 
   if (!options.preventListeners)
     await triggerEventOnUpdate('startUpdate', params, element, options)
@@ -220,7 +220,10 @@ export const update = async function (params = {}, opts) {
     }
   }
 
-  if (!preventUpdateListener) await triggerEventOn('update', element, options)
+  if (!options.preventListeners) {
+    if (!preventUpdateListener) await triggerEventOn('update', element, options)
+    await triggerEventOn('eventComplete', element, options)
+  }
 }
 
 const checkIfStorm = (element, options) => {
