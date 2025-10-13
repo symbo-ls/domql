@@ -12,7 +12,8 @@ import {
   createNestedObject,
   getInObjectByPath,
   removeNestedKeyByPath,
-  setInObjectByPath
+  setInObjectByPath,
+  deepMerge
 } from '@domql/utils'
 
 import { IGNORE_STATE_PARAMS } from './ignore.js'
@@ -128,7 +129,7 @@ export const set = async function (val, options = {}) {
   const state = this
   const value = deepClone(val)
   await state.clean({ preventStateUpdate: true, ...options })
-  await state.update(value, { replace: true, ...options })
+  await state.replace(value, options)
   return state
 }
 
@@ -153,6 +154,15 @@ export const setPathCollection = async function (changes, options = {}) {
       return overwriteDeep(acc, result)
     } else if (change[0] === 'delete') {
       await removeByPath.call(state, change[1], options)
+      // we are doing this to create empty nested
+      // by removed path to show as changed property
+      const removedFromPath = change[1].slice(0, -1)
+      const removedFromValue = getInObjectByPath(state, removedFromPath)
+      const result = createNestedObject(
+        removedFromPath,
+        isObject(removedFromValue) ? {} : []
+      )
+      return deepMerge(acc, result)
     }
     return acc
   }, {})

@@ -121,7 +121,7 @@ const updateDependentState = async (state, obj, options) => {
   if (!state.__depends) return
   for (const el in state.__depends) {
     const dependentState = state.__depends[el]
-    await dependentState.clean().update(state.parse(), options)
+    await dependentState.set(state.parse(), options)
   }
 }
 
