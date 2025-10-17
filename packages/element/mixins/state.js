@@ -3,8 +3,8 @@
 import { IGNORE_STATE_PARAMS } from '@domql/state'
 import { exec, isObject } from '@domql/utils'
 
-export async function state (params, element, node) {
-  const state = exec(params, element)
+export async function state(params, element, node, opts) {
+  const state = exec(params, element, element.state, element.context, opts)
 
   if (isObject(state)) {
     for (const param in state) {

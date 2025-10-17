@@ -65,7 +65,7 @@ export const throughUpdatedExec = async (
   return changes
 }
 
-export const throughExecProps = (element) => {
+export const throughExecProps = (element, opts) => {
   const { __ref: ref } = element
   const { props } = element
   for (const k in props) {
@@ -75,15 +75,21 @@ export const throughExecProps = (element) => {
       return warn.call(element, 'Element was not initiated to execute props')
     const cachedExecProp = ref.__execProps[k]
     if (isFunction(cachedExecProp)) {
-      props[k] = exec(cachedExecProp, element)
+      props[k] = exec(
+        cachedExecProp,
+        element,
+        element.state,
+        element.context,
+        opts
+      )
     } else if (isDefine && isFunction(props[k])) {
       ref.__execProps[k] = props[k]
-      props[k] = exec(props[k], element)
+      props[k] = exec(props[k], element, element.state, element.context, opts)
     }
   }
 }
 
-export const throughInitialDefine = async (element) => {
+export const throughInitialDefine = async (element, opts) => {
   const { define, context, __ref: ref } = element
 
   let defineObj = {}
@@ -100,7 +106,13 @@ export const throughInitialDefine = async (element) => {
       !isVariant(param)
     ) {
       ref.__exec[param] = elementProp
-      const execParam = (elementProp = await exec(elementProp, element))
+      const execParam = (elementProp = await exec(
+        elementProp,
+        element,
+        element.state,
+        element.context,
+        opts
+      ))
 
       if (execParam) {
         elementProp = element[param] = execParam.parse
@@ -121,7 +133,7 @@ export const throughInitialDefine = async (element) => {
   return element
 }
 
-export const throughUpdatedDefine = async (element) => {
+export const throughUpdatedDefine = async (element, opts) => {
   const { context, define, __ref: ref } = element
   const changes = {}
 
@@ -137,7 +149,13 @@ export const throughUpdatedDefine = async (element) => {
         element.state,
         element.context
       )
-    const cached = await exec(ref.__defineCache[param], element)
+    const cached = await exec(
+      ref.__defineCache[param],
+      element,
+      element.state,
+      element.context,
+      opts
+    )
     const newExecParam = await obj[param](
       cached,
       element,

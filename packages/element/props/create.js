@@ -7,14 +7,14 @@ import { inheritParentProps } from './inherit.js'
 
 const createPropsStack = (element, parent) => {
   const { props, __ref: ref } = element
-  const propsStack = ref.__props = inheritParentProps(element, parent)
+  const propsStack = (ref.__props = inheritParentProps(element, parent))
 
   if (isObject(props)) propsStack.push(props)
   else if (props === 'inherit' && parent.props) propsStack.push(parent.props)
   else if (props) propsStack.push(props)
 
   if (isArray(ref.__extend)) {
-    ref.__extend.forEach(extend => {
+    ref.__extend.forEach((extend) => {
       if (extend.props && extend.props !== props) propsStack.push(extend.props)
     })
   }
@@ -28,12 +28,14 @@ export const syncProps = async (props, element, opts) => {
   element.props = {}
   const mergedProps = {}
 
-  props.forEach(v => {
+  props.forEach((v) => {
     if (IGNORE_PROPS_PARAMS.includes(v)) return
     let execProps
     try {
-      execProps = exec(v, element)
-    } catch (e) { element.error(e, opts) }
+      execProps = exec(v, element, element.state, element.context, opts)
+    } catch (e) {
+      element.error(e, opts)
+    }
     // TODO: check if this failing the function props merge
     // if (isObject(execProps) && execProps.__element) return
     // it was causing infinite loop at early days
@@ -45,7 +47,10 @@ export const syncProps = async (props, element, opts) => {
   })
   element.props = mergedProps
 
-  const methods = { update: await update.bind(element.props), __element: element }
+  const methods = {
+    update: await update.bind(element.props),
+    __element: element
+  }
   Object.setPrototypeOf(element.props, methods)
 
   return element.props
@@ -58,7 +63,7 @@ export const createProps = function (element, parent, options) {
     const propsStack = options.cachedProps || createPropsStack(element, parent)
     if (propsStack.length) {
       ref.__props = propsStack
-      syncProps(propsStack, element)
+      syncProps(propsStack, element, options)
     } else {
       ref.__props = options.cachedProps || []
       element.props = {}
@@ -72,7 +77,7 @@ export const createProps = function (element, parent, options) {
     } catch (e) {
       element.props = {}
       ref.__props = options.cachedProps || []
-      element.error('Error applying props', e)
+      element.error('Error applying props', e, options)
     }
   }
 
@@ -82,7 +87,7 @@ export const createProps = function (element, parent, options) {
   return element
 }
 
-async function update (props, options) {
+async function update(props, options) {
   const element = this.__element
   await element.update({ props }, options)
 }

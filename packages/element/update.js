@@ -102,7 +102,7 @@ export const update = async function (params = {}, opts) {
       parent.props && (parent.props[key] || parent.props.childProps)
     const hasFunctionInProps = ref.__props.filter((v) => isFunction(v))
     const props = params.props || hasParentProps || hasFunctionInProps.length
-    if (props) updateProps(props, element, parent)
+    if (props) updateProps(props, element, parent, options)
   }
 
   if (!options.preventBeforeUpdateListener && !options.preventListeners) {
@@ -119,9 +119,9 @@ export const update = async function (params = {}, opts) {
   overwriteDeep(element, params, { exclude: METHODS_EXL })
 
   // exec updates
-  throughExecProps(element)
+  throughExecProps(element, options)
   await throughUpdatedExec(element, { ignore: UPDATE_DEFAULT_OPTIONS })
-  await throughUpdatedDefine(element)
+  await throughUpdatedDefine(element, options)
 
   if (!options.isForced && !options.preventListeners) {
     await triggerEventOn('beforeClassAssign', element, options)

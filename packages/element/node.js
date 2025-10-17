@@ -20,7 +20,7 @@ import {
 import { REGISTRY } from './mixins/index.js'
 import { applyParam } from './utils/applyParam.js'
 import { propagateEventsFromProps } from './utils/propEvents.js'
-import { isNotProduction } from '@domql/utils/env.js'
+// import { isNotProduction } from '@domql/utils/env.js'
 // import { defineSetter } from './methods'
 
 export const createNode = async (element, options) => {
@@ -54,10 +54,10 @@ export const createNode = async (element, options) => {
   // }
 
   // iterate through exec props
-  throughExecProps(element)
+  throughExecProps(element, options)
 
   // iterate through define
-  await throughInitialDefine(element)
+  await throughInitialDefine(element, options)
 
   // iterate through exec
   await throughInitialExec(element)

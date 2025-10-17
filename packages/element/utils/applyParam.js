@@ -5,7 +5,13 @@ import { REGISTRY } from '../mixins/index.js'
 
 export const applyParam = async (param, element, options) => {
   const { node, context, __ref: ref } = element
-  const prop = await exec(element[param], element)
+  const prop = await exec(
+    element[param],
+    element,
+    element.state,
+    element.context,
+    options
+  )
 
   const { onlyUpdate } = options
 

@@ -1,17 +1,14 @@
 'use strict'
 
 import { create } from '../create.js'
-import {
-  exec,
-  isString
-} from '@domql/utils'
+import { exec, isString } from '@domql/utils'
 
 /**
  * Creates a text node and appends into
  * an original one as a child
  */
-export function text (param, element, node) {
-  let prop = exec(param, element)
+export function text(param, element, node, opts) {
+  let prop = exec(param, element, element.state, element.context, opts)
   if (isString(prop) && prop.includes('{{')) {
     prop = element.call('replaceLiteralsWithObjectFields', prop)
   }

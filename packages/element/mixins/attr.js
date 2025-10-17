@@ -7,14 +7,20 @@ import { deepMerge } from '../utils/index.js'
 /**
  * Recursively add attributes to a DOM node
  */
-export function attr(params, element, node) {
+export function attr(params, element, node, opts) {
   const { __ref: ref, props } = element
   const { __attr } = ref
   if (isNot('object')) report('HTMLInvalidAttr', params)
   if (params) {
     if (props.attr) deepMerge(params, props.attr)
     for (const attr in params) {
-      const val = exec(params[attr], element)
+      const val = exec(
+        params[attr],
+        element,
+        element.state,
+        element.context,
+        opts
+      )
       // if (__attr[attr] === val) return
       if (
         val !== false &&
@@ -22,7 +28,10 @@ export function attr(params, element, node) {
         !isNull(val) &&
         node.setAttribute
       )
-        node.setAttribute(attr, exec(val, element))
+        node.setAttribute(
+          attr,
+          exec(val, element, element.state, element.context, opts)
+        )
       else if (node.removeAttribute) node.removeAttribute(attr)
       __attr[attr] = val
     }

@@ -30,7 +30,7 @@ import { isNotProduction } from './env.js'
  * @param {Object} context - The context to pass to the function
  * @returns {any|Promise} - The result or a Promise to the result
  */
-export function exec(param, element, state, context) {
+export function exec(param, element, state, context, opts = {}) {
   if (!element) element = this
   if (isFunction(param)) {
     try {
@@ -51,7 +51,7 @@ export function exec(param, element, state, context) {
       return result
     } catch (e) {
       element.log(param)
-      element.warn('Error executing function', e)
+      element.warn('Error executing function', e, opts)
     }
   }
   return param

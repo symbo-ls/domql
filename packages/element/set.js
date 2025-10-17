@@ -31,7 +31,9 @@ export const reset = async (options) => {
 
 export const set = async function (params, options = {}, el) {
   const element = el || this
-  // const { __ref: ref } = element
+  const { __ref: ref } = element
+
+  console.warn(params)
 
   if (
     options.preventContentUpdate ||
@@ -55,24 +57,24 @@ export const set = async function (params, options = {}, el) {
   // console.log(deepClone(params), deepClone(content))
   // console.log(deepContains(params, content))
 
-  // if (
-  //   ref.__noCollectionDifference ||
-  //   (__contentRef && __contentRef.__cached && deepContains(params, content))
-  // ) {
-  //   // if (!options.preventBeforeUpdateListener && !options.preventListeners) {
-  //   //   const beforeUpdateReturns = await triggerEventOnUpdate(
-  //   //     'beforeUpdate',
-  //   //     params,
-  //   //     element,
-  //   //     options
-  //   //   )
-  //   //   if (beforeUpdateReturns === false) return element
-  //   // }
-  //   // if (content?.update) await content.update()
-  //   // if (!options.preventUpdateListener)
-  //   //   await triggerEventOn('update', element, options)
-  //   return
-  // }
+  if (
+    ref.__noCollectionDifference //||
+    // (__contentRef && __contentRef.__cached && deepContains(params, content))
+  ) {
+    // if (!options.preventBeforeUpdateListener && !options.preventListeners) {
+    //   const beforeUpdateReturns = await triggerEventOnUpdate(
+    //     'beforeUpdate',
+    //     params,
+    //     element,
+    //     options
+    //   )
+    //   if (beforeUpdateReturns === false) return element
+    // }
+    // if (content?.update) await content.update()
+    // if (!options.preventUpdateListener)
+    //   await triggerEventOn('update', element, options)
+    return
+  }
 
   if (params) {
     let { childExtend, props } = params
