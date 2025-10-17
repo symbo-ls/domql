@@ -45,9 +45,9 @@ export const set = async function (params, options = {}, el) {
     if (options.routerContentElement !== options.lastElement.content) return
   }
 
-  // const contentKey = setContentKey(element, options)
-  // const content = element[contentKey]
-  // const __contentRef = content && content.__ref
+  const contentKey = setContentKey(element, options)
+  const content = element[contentKey]
+  const __contentRef = content && content.__ref
   const lazyLoad = element.props && element.props.lazyLoad
 
   const hasCollection =
@@ -58,21 +58,21 @@ export const set = async function (params, options = {}, el) {
   // console.log(deepContains(params, content))
 
   if (
-    ref.__noCollectionDifference //||
-    // (__contentRef && __contentRef.__cached && deepContains(params, content))
+    ref.__noCollectionDifference ||
+    (__contentRef && __contentRef.__cached && deepContains(params, content))
   ) {
-    // if (!options.preventBeforeUpdateListener && !options.preventListeners) {
-    //   const beforeUpdateReturns = await triggerEventOnUpdate(
-    //     'beforeUpdate',
-    //     params,
-    //     element,
-    //     options
-    //   )
-    //   if (beforeUpdateReturns === false) return element
-    // }
-    // if (content?.update) await content.update()
-    // if (!options.preventUpdateListener)
-    //   await triggerEventOn('update', element, options)
+    if (!options.preventBeforeUpdateListener && !options.preventListeners) {
+      const beforeUpdateReturns = await triggerEventOnUpdate(
+        'beforeUpdate',
+        params,
+        element,
+        options
+      )
+      if (beforeUpdateReturns === false) return element
+    }
+    if (content?.update) await content.update()
+    if (!options.preventUpdateListener)
+      await triggerEventOn('update', element, options)
     return
   }
 
