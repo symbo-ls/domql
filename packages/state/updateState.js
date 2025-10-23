@@ -51,7 +51,8 @@ export const updateState = async function (
 
   await updateDependentState(state, obj, options)
 
-  await applyElementUpdate(state, obj, options)
+  const updated = await applyElementUpdate(state, obj, options)
+  if (updated === false) return false
 
   if (!options.preventStateUpdateListener) {
     await triggerEventOnUpdate('stateUpdate', obj, element, options)
@@ -128,7 +129,7 @@ const updateDependentState = async (state, obj, options) => {
 const applyElementUpdate = async (state, obj, options) => {
   const element = state.__element
   if (options.preventUpdate !== true) {
-    await element.update(
+    return await element.update(
       {},
       {
         ...options,
@@ -136,7 +137,7 @@ const applyElementUpdate = async (state, obj, options) => {
       }
     )
   } else if (options.preventUpdate === 'recursive') {
-    await element.update(
+    return await element.update(
       {},
       {
         ...options,

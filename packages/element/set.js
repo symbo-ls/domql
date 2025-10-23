@@ -11,12 +11,20 @@ import { triggerEventOn, triggerEventOnUpdate } from '@domql/event'
 export const resetElement = async (params, element, options) => {
   if (!options.preventRemove) removeContent(element, options)
   const { __ref: ref } = element
-  await create(params, element, ref.contentElementKey || 'content', {
-    ignoreChildExtend: true,
-    ...registry.defaultOptions,
-    ...OPTIONS.create,
-    ...options
-  })
+  const contentElementKey = setContentKey(element, options)
+  const { __cached } = ref
+  const newContent = await create(
+    params,
+    element,
+    ref.contentElementKey || 'content',
+    {
+      ignoreChildExtend: true,
+      ...registry.defaultOptions,
+      ...OPTIONS.create,
+      ...options
+    }
+  )
+  __cached[contentElementKey] = newContent
 }
 
 export const reset = async (options) => {
@@ -33,7 +41,7 @@ export const set = async function (params, options = {}, el) {
   const element = el || this
   const { __ref: ref } = element
 
-  console.warn(params)
+  // console.warn(params)
 
   if (
     options.preventContentUpdate ||
@@ -51,15 +59,19 @@ export const set = async function (params, options = {}, el) {
   const lazyLoad = element.props && element.props.lazyLoad
 
   const hasCollection =
-    element.$collection || element.$stateCollection || element.$propsCollection
+    element.$collection ||
+    element.$stateCollection ||
+    element.$propsCollection ||
+    element.props?.children
   if (options.preventContentUpdate === true && !hasCollection) return
 
   // console.log(deepClone(params), deepClone(content))
   // console.log(deepContains(params, content))
 
   if (
-    ref.__noCollectionDifference ||
-    (__contentRef && __contentRef.__cached && deepContains(params, content))
+    !options.forceReset &&
+    (ref.__noCollectionDifference ||
+      (__contentRef && __contentRef.__cached && deepContains(params, content)))
   ) {
     if (!options.preventBeforeUpdateListener && !options.preventListeners) {
       const beforeUpdateReturns = await triggerEventOnUpdate(
@@ -70,7 +82,7 @@ export const set = async function (params, options = {}, el) {
       )
       if (beforeUpdateReturns === false) return element
     }
-    if (content?.update) await content.update()
+    if (content?.update) await content.update({}, options)
     if (!options.preventUpdateListener)
       await triggerEventOn('update', element, options)
     return
@@ -87,6 +99,7 @@ export const set = async function (params, options = {}, el) {
       props.childProps = element.props.childProps
       props.ignoreChildProps = true
     }
+    // TODO: check for fragment and ignore if these attrs ^
 
     // console.warn('setting content', ref.path)
 

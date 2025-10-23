@@ -70,9 +70,9 @@ export const update = async function (params = {}, opts) {
     element,
     options
   )
-  if (snapshotHasUpdated) return
+  if (snapshotHasUpdated) return false
 
-  if (checkIfStorm(element, options)) return
+  if (checkIfStorm(element, options)) return false
 
   if (!options.preventListeners)
     await triggerEventOn('eventStart', element, options)
@@ -84,7 +84,7 @@ export const update = async function (params = {}, opts) {
     preventInheritAtCurrentState &&
     preventInheritAtCurrentState.__element === element
   )
-    return
+    return false
   if (!excludes) merge(options, UPDATE_DEFAULT_OPTIONS)
 
   if (isString(params) || isNumber(params)) {
@@ -92,10 +92,10 @@ export const update = async function (params = {}, opts) {
   }
 
   const inheritState = await inheritStateUpdates(element, options)
-  if (inheritState === false) return
+  if (inheritState === false) return false
 
   const ifFails = checkIfOnUpdate(element, parent, options)
-  if (ifFails) return
+  if (ifFails) return false
 
   if (ref.__if && !options.preventPropsUpdate) {
     const hasParentProps =
@@ -129,8 +129,13 @@ export const update = async function (params = {}, opts) {
 
   if (!ref.__if) return false
   if (!node) {
+    // if (!node || !document.body.contains(node)) {
     // return createNode(element, options)
-    return
+    return false
+  }
+
+  if (element.tag !== 'fragment' && !document.body.contains(node)) {
+    // console.log(element, node)
   }
 
   const {

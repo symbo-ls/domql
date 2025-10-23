@@ -24,7 +24,7 @@ export const removeContent = function (el, opts = {}) {
   if (element[contentElementKey]) {
     if (element[contentElementKey].node && element.node) {
       if (element[contentElementKey].tag === 'fragment')
-        element.node.innerHTML = ''
+        element.node.innerHTML = '' // TODO: deep check to only remove `content` children and not other children
       else {
         const contentNode = element[contentElementKey].node
         if (contentNode.parentNode === element.node)
@@ -34,13 +34,12 @@ export const removeContent = function (el, opts = {}) {
 
     const { __cached } = ref
     if (__cached && __cached[contentElementKey]) {
-      if (__cached[contentElementKey].tag === 'fragment')
-        __cached[contentElementKey].parent.node.innerHTML = ''
-      else if (
-        __cached[contentElementKey] &&
-        isFunction(__cached[contentElementKey].remove)
-      )
-        __cached[contentElementKey].remove()
+      const cachedContent = __cached[contentElementKey]
+      if (cachedContent.tag === 'fragment')
+        cachedContent.parent.node.innerHTML = ''
+      else if (cachedContent && isFunction(cachedContent.remove))
+        cachedContent.remove()
+      delete __cached[contentElementKey]
     }
 
     ref.__children.splice(ref.__children.indexOf(contentElementKey), 1)
