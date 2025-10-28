@@ -53,7 +53,7 @@ const UPDATE_DEFAULT_OPTIONS = {
 export const update = async function (params = {}, opts) {
   const calleeElementCache = opts?.calleeElement
   const options = deepClone(
-    isObject(opts)
+    typeof opts === 'object' // dont use isObject as it does not check objects from cross frames
       ? deepMerge(opts, UPDATE_DEFAULT_OPTIONS)
       : UPDATE_DEFAULT_OPTIONS,
     { exclude: ['calleeElement', 'updatingCalleeElement'] }
