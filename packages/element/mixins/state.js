@@ -7,7 +7,8 @@ export async function state(params, element, node, opts) {
   const state = exec(params, element, element.state, element.context, opts)
 
   if (isObject(state)) {
-    for (const param in state) {
+    const keys = Object.keys(state)
+    for (const param of keys) {
       if (IGNORE_STATE_PARAMS.includes(param)) continue
       if (!Object.hasOwnProperty.call(state, param)) continue
       // element.state[param] = exec(state[param], element)
