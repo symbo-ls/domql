@@ -69,6 +69,7 @@ export const set = async function (params, options = {}, el) {
   // console.log(deepContains(params, content))
 
   if (
+    options.forceUpdate &&
     !options.forceReset &&
     (ref.__noCollectionDifference ||
       (__contentRef && __contentRef.__cached && deepContains(params, content)))
