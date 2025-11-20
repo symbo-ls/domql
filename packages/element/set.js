@@ -11,8 +11,6 @@ import { triggerEventOn, triggerEventOnUpdate } from '@domql/event'
 export const resetElement = async (params, element, options) => {
   if (!options.preventRemove) removeContent(element, options)
   const { __ref: ref } = element
-  const contentElementKey = setContentKey(element, options)
-  const { __cached } = ref
   const newContent = await create(
     params,
     element,
@@ -24,7 +22,7 @@ export const resetElement = async (params, element, options) => {
       ...options
     }
   )
-  __cached[contentElementKey] = newContent
+  ref.__cachedContent = newContent
 }
 
 export const reset = async (options) => {
@@ -113,6 +111,8 @@ export const set = async function (params, options = {}, el) {
         }
       })
     } else await resetElement(params, element, options)
+  } else {
+    if (!options.preventRemove) removeContent(element, options)
   }
 
   return element

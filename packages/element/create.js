@@ -451,6 +451,7 @@ const addCaching = (element, parent) => {
 
   // enable CACHING
   if (!ref.__cached) ref.__cached = {}
+  if (!ref.__cachedContent) ref.__cachedContent = null
   if (!ref.__defineCache) ref.__defineCache = {}
 
   // enable EXEC

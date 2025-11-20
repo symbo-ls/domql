@@ -21,25 +21,25 @@ export const removeContent = function (el, opts = {}) {
   const contentElementKey = setContentKey(element, opts)
 
   if (opts.contentElementKey !== 'content') opts.contentElementKey = 'content'
-  if (element[contentElementKey]) {
-    if (element[contentElementKey].node && element.node) {
-      if (element[contentElementKey].tag === 'fragment')
+  const contentElement = element[contentElementKey]
+  if (contentElement) {
+    if (contentElement.node && element.node) {
+      if (contentElement.tag === 'fragment')
         element.node.innerHTML = '' // TODO: deep check to only remove `content` children and not other children
       else {
-        const contentNode = element[contentElementKey].node
+        const contentNode = contentElement.node
         if (contentNode.parentNode === element.node)
-          element.node.removeChild(element[contentElementKey].node)
+          element.node.removeChild(contentElement.node)
       }
     }
 
-    const { __cached } = ref
-    if (__cached && __cached[contentElementKey]) {
-      const cachedContent = __cached[contentElementKey]
-      if (cachedContent.tag === 'fragment')
-        cachedContent.parent.node.innerHTML = ''
-      else if (cachedContent && isFunction(cachedContent.remove))
-        cachedContent.remove()
-      delete __cached[contentElementKey]
+    const { __cachedContent } = ref
+    if (__cachedContent) {
+      if (__cachedContent.tag === 'fragment')
+        __cachedContent.parent.node.innerHTML = ''
+      else if (__cachedContent && isFunction(__cachedContent.remove))
+        __cachedContent.remove()
+      delete ref.__cachedContent
     }
 
     ref.__children.splice(ref.__children.indexOf(contentElementKey), 1)
@@ -54,12 +54,16 @@ export const removeContent = function (el, opts = {}) {
  */
 export async function setContent(param, element, node, opts) {
   const contentElementKey = setContentKey(element, opts)
-  if (param && element) {
+  if (!element) this.warn('No element to set content on')
+
+  if (param) {
     if (element[contentElementKey]?.update) {
       await element[contentElementKey].update({}, opts)
     } else {
       await set.call(element, param, opts)
     }
+  } else {
+    removeContent(element, opts)
   }
 }
 

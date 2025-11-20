@@ -138,6 +138,8 @@ export async function remove(opts = {}) {
   const beforeRemoveReturns = triggerEventOn('beforeRemove', element, opts)
   if (beforeRemoveReturns === false) return element
   if (isFunction(element.node.remove)) element.node.remove()
+  else if (element.node?.parentNode)
+    element.node.parentNode.removeChild(element.node)
   else if (!isProduction()) {
     console.warn('This item cant be removed')
     element.log()
