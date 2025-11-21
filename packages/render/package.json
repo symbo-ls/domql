@@ -1,6 +1,6 @@
 {
   "name": "@domql/render",
-  "version": "2.32.15",
+  "version": "2.32.16",
   "license": "MIT",
   "type": "module",
   "module": "index.js",
@@ -18,9 +18,9 @@
     "dist"
   ],
   "dependencies": {
-    "@domql/event": "^2.32.15",
-    "@domql/report": "^2.32.15",
-    "@domql/utils": "^2.32.15"
+    "@domql/event": "^2.32.16",
+    "@domql/report": "^2.32.16",
+    "@domql/utils": "^2.32.16"
   },
   "scripts": {
     "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
@@ -29,5 +29,5 @@
     "build": "npx rimraf -I dist; npm run build:cjs; npm run build:esm",
     "prepublish": "npx rimraf -I dist && npm run build && npm run copy:package:cjs"
   },
-  "gitHead": "6a415e03899ef8fed12e0f85bdd58026b240f7f7"
+  "gitHead": "4bcd38160b8844839b3a4ee716ef1fc900d4ebeb"
 }
