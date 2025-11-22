@@ -1,7 +1,7 @@
 {
   "name": "domql-root",
   "private": true,
-  "version": "2.32.16",
+  "version": "2.32.17",
   "repository": "https://github.com/domql/domql",
   "scripts": {
     "postinstall": "npx lerna run build; npx lerna run copy:package:cjs",
@@ -39,7 +39,7 @@
     "jest": "^30.2.0",
     "jest-environment-jsdom": "^30.2.0",
     "jsdom": "^27.0.1",
-    "lerna": "^9.0.0",
+    "lerna": "^9.0.1",
     "nodemon": "^3.1.10",
     "rimraf": "^6.0.1",
     "standard": "^17.1.2"
