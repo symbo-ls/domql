@@ -77,7 +77,12 @@ export const merge = (element, obj, excludeFrom = []) => {
   return element
 }
 
-export const deepMerge = (element, extend, excludeFrom = []) => {
+export const deepMerge = (
+  element,
+  extend,
+  excludeFrom = [],
+  level = Infinity
+) => {
   for (const e in extend) {
     const hasOwnProperty = Object.prototype.hasOwnProperty.call(extend, e)
     if (!hasOwnProperty || excludeFrom.includes(e) || e.startsWith('__'))
@@ -85,7 +90,15 @@ export const deepMerge = (element, extend, excludeFrom = []) => {
     const elementProp = element[e]
     const extendProp = extend[e]
     if (isObjectLike(elementProp) && isObjectLike(extendProp)) {
-      deepMerge(elementProp, extendProp, excludeFrom)
+      // shallow merge when deepness level is reached
+      if (level > 0) {
+        deepMerge(elementProp, extendProp, excludeFrom, level - 1)
+      } else {
+        for (const k in extendProp) {
+          if (excludeFrom.includes(k) || elementProp[k]) continue
+          elementProp[k] = extendProp[k]
+        }
+      }
     } else if (elementProp === undefined) {
       element[e] = extendProp
     }
