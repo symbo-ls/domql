@@ -1,14 +1,14 @@
 {
   "name": "@domql/emotion",
-  "version": "2.32.18",
+  "version": "2.32.19",
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
-    "@domql/utils": "^2.32.18"
+    "@domql/utils": "^2.32.19"
   },
   "peerDependencies": {
     "@emotion/css": "*"
   },
-  "gitHead": "1af6547fd19f5b3ea7b93398c3c7efe0bd8b89a5",
+  "gitHead": "ce092725c84d862876d7c96eeb42e0407c96fef3",
   "source": "index.js"
 }
