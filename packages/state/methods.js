@@ -113,7 +113,7 @@ export const add = async function (value, options = {}) {
 
 export const toggle = async function (key, options = {}) {
   const state = this
-  return await state.update({ [key]: !state[key] }, options)
+  return await state.update({ [key]: !Boolean(state[key]) }, options)
 }
 
 export const remove = async function (key, options = {}) {
