@@ -1,6 +1,6 @@
 {
   "name": "@domql/performance",
-  "version": "2.32.32",
+  "version": "2.33.0",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
