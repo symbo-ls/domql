@@ -178,7 +178,7 @@ export const deepClone = (obj, options = {}) => {
     if (exclude.includes(key) || key.startsWith('__') || key === '__proto__')
       continue
 
-    const value = obj[key]
+    let value = obj[key]
 
     // Skip based on cleanup options
     if ((cleanUndefined && isUndefined(value)) || (cleanNull && isNull(value)))
@@ -203,12 +203,12 @@ export const deepClone = (obj, options = {}) => {
     }
 
     // Handle special cases
-    if (value.__ref && value.node) {
-      clone[key] = value.parseDeep()
+    if (value?.__ref && value?.node) {
+      value = value.parseDeep()
     }
 
-    if (value.__element) {
-      clone[key] = value.parse()
+    if (value?.__element) {
+      value = value.parse()
     }
 
     // Recursively clone objects
