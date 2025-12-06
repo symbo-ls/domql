@@ -8,8 +8,8 @@ import {
   isObjectLike,
   isProduction,
   removeValueFromArray,
-  deepClone,
-  getContextFunction
+  getContextFunction,
+  clone
 } from '@domql/utils'
 import { TREE } from '../tree.js'
 import { parseFilters, REGISTRY } from '../mixins/index.js'
@@ -336,7 +336,7 @@ export function variables(obj = {}) {
   return {
     changed: (cb) => {
       if (!changed || !varCaches) return
-      const returns = cb(changes, deepClone(varCaches))
+      const returns = cb(changes, clone(varCaches))
       for (const key in changes) {
         varCaches[key] = changes[key]
       }

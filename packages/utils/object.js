@@ -164,8 +164,8 @@ export const deepClone = (obj, options = {}) => {
       ? new contentWindow.Array()
       : new contentWindow.Object()
     : isArray(obj)
-      ? []
-      : {}
+    ? []
+    : {}
 
   // Store the clone to handle circular references
   visited.set(obj, clone)
@@ -200,6 +200,15 @@ export const deepClone = (obj, options = {}) => {
     if (isFunction(value) && options.window) {
       clone[key] = contentWindow.eval('(' + value.toString() + ')')
       continue
+    }
+
+    // Handle special cases
+    if (value.__ref && value.node) {
+      clone[key] = value.parseDeep()
+    }
+
+    if (value.__element) {
+      clone[key] = value.parse()
     }
 
     // Recursively clone objects
