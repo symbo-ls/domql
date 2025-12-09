@@ -1,6 +1,6 @@
 'use strict'
 
-import { deepClone, deepContains, setContentKey } from '@domql/utils'
+import { deepContains, setContentKey } from '@domql/utils'
 
 import { OPTIONS } from './cache/options.js'
 import { create } from './create.js'
@@ -27,6 +27,7 @@ export const resetElement = async (params, element, options) => {
       ...options
     }
   )
+
   ref.__cachedContent = newContent
 
   if (element.key === 'DynamicIsland') {
@@ -47,8 +48,6 @@ export const reset = async (options) => {
 export const set = async function (params, options = {}, el) {
   const element = el || this
   const { __ref: ref } = element
-
-  // console.warn(params)
 
   if (
     options.preventContentUpdate ||
