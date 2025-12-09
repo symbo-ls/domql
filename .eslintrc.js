@@ -1,6 +1,6 @@
 module.exports = {
   extend: [
-    'standard',
+    'neostandard',
     'plugin:jest/all'
   ],
   parser: '@babel/eslint-parser',
