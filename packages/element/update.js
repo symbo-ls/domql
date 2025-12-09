@@ -94,7 +94,7 @@ export const update = async function (params = {}, opts) {
   const inheritState = await inheritStateUpdates(element, options)
   if (inheritState === false) return false
 
-  const ifFails = checkIfOnUpdate(element, parent, options)
+  const ifFails = await checkIfOnUpdate(element, parent, options)
   if (ifFails) return false
 
   if (ref.__if && !options.preventPropsUpdate) {
@@ -215,6 +215,9 @@ export const update = async function (params = {}, opts) {
       lazyLoad
         ? window.requestAnimationFrame(async () => {
             // eslint-disable-line
+            if (element.key === 'DynamicIsland') {
+              console.log('lazy mfucker')
+            }
             await childUpdateCall()
             // handle lazy load
             if (!options.preventUpdateListener) {
@@ -285,16 +288,18 @@ const captureSnapshot = (element, options) => {
   return [snapshotOnCallee, calleeElement]
 }
 
-const checkIfOnUpdate = (element, parent, options) => {
+const checkIfOnUpdate = async (element, parent, options) => {
   if ((!isFunction(element.if) && !isFunction(element.props?.if)) || !parent)
     return
 
   const ref = element.__ref
-  const ifPassed = (element.if || element.props?.if)(
-    element,
-    element.state,
-    element.context,
-    options
+  const ifPassed = Boolean(
+    (element.if || element.props?.if)(
+      element,
+      element.state,
+      element.context,
+      options
+    )
   )
   const itWasFalse = ref.__if !== true
 
@@ -326,7 +331,8 @@ const checkIfOnUpdate = (element, parent, options) => {
         element.$stateCollection ||
         element.$propsCollection
       ) {
-        element.removeContent()
+        await element.removeContent()
+        // element.removeContent()
       } else if (element[contentKey]?.parseDeep)
         element[contentKey] = element[contentKey].parseDeep()
 
@@ -346,7 +352,7 @@ const checkIfOnUpdate = (element, parent, options) => {
 
       delete element.__ref
       delete element.parent
-      const createdElement = create(
+      const createdElement = await create(
         element,
         parent,
         element.key,

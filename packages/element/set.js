@@ -9,7 +9,12 @@ import { removeContent } from './mixins/content.js'
 import { triggerEventOn, triggerEventOnUpdate } from '@domql/event'
 
 export const resetElement = async (params, element, options) => {
-  if (!options.preventRemove) removeContent(element, options)
+  if (element.key === 'DynamicIsland') {
+    console.log('removed?')
+  }
+
+  if (!options.preventRemove) await removeContent(element, options)
+
   const { __ref: ref } = element
   const newContent = await create(
     params,
@@ -23,6 +28,10 @@ export const resetElement = async (params, element, options) => {
     }
   )
   ref.__cachedContent = newContent
+
+  if (element.key === 'DynamicIsland') {
+    console.log('__cachedContent', ref.__cachedContent)
+  }
 }
 
 export const reset = async (options) => {
@@ -47,8 +56,8 @@ export const set = async function (params, options = {}, el) {
   )
     return
 
-  if (options.routerContentElement && options.lastElement) {
-    if (options.routerContentElement !== options.lastElement.content) return
+  if (element.key === 'DynamicIsland') {
+    console.log(params, options)
   }
 
   const contentKey = setContentKey(element, options)
@@ -104,6 +113,9 @@ export const set = async function (params, options = {}, el) {
 
     if (lazyLoad) {
       window.requestAnimationFrame(async () => {
+        if (element.key === 'DynamicIsland') {
+          console.log('lazy set mfucker')
+        }
         await resetElement(params, element, options)
         // handle lazy load
         if (!options.preventUpdateListener) {

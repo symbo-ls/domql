@@ -29,11 +29,6 @@ export const createNode = async (element, options) => {
 
   let isNewNode
 
-  // handle content duplication bug with delayed rendering
-  if (options.routerContentElement && options.lastElement) {
-    if (options.routerContentElement !== options.lastElement.content) return
-  }
-
   if (!node) {
     isNewNode = true
 
@@ -106,6 +101,9 @@ export const createNode = async (element, options) => {
 
       if ((element.props && element.props.lazyLoad) || options.lazyLoad) {
         window.requestAnimationFrame(async () => {
+          if (element.key === 'DynamicIsland') {
+            console.log('lazy createe mfucker')
+          }
           await createAsync()
           // handle lazy load
           if (!options.preventUpdateListener) {

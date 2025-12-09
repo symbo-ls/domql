@@ -14,7 +14,7 @@ export const updateContent = async function (params, options) {
     await element[contentKey].update(params, options)
 }
 
-export const removeContent = function (el, opts = {}) {
+export const removeContent = async function (el, opts = {}) {
   const element = el || this
   const { __ref: ref } = element
   // console.warn('removing content', ref.path)
@@ -22,6 +22,10 @@ export const removeContent = function (el, opts = {}) {
 
   if (opts.contentElementKey !== 'content') opts.contentElementKey = 'content'
   const contentElement = element[contentElementKey]
+
+  if (element.key === 'DynamicIsland') {
+    console.log('maybe')
+  }
   if (contentElement) {
     if (contentElement.node && element.node) {
       if (contentElement.tag === 'fragment')
@@ -30,6 +34,7 @@ export const removeContent = function (el, opts = {}) {
         const contentNode = contentElement.node
         if (contentNode.parentNode === element.node)
           element.node.removeChild(contentElement.node)
+        else contentNode.parentNode?.removeChild(contentElement.node)
       }
     }
 
@@ -38,7 +43,7 @@ export const removeContent = function (el, opts = {}) {
       if (__cachedContent.tag === 'fragment')
         __cachedContent.parent.node.innerHTML = ''
       else if (__cachedContent && isFunction(__cachedContent.remove))
-        __cachedContent.remove()
+        await __cachedContent.remove()
       delete ref.__cachedContent
     }
 
@@ -56,6 +61,10 @@ export async function setContent(param, element, node, opts) {
   const contentElementKey = setContentKey(element, opts)
   if (!element) this.warn('No element to set content on')
 
+  if (element.key === 'DynamicIsland') {
+    console.log(param, opts)
+  }
+
   if (param) {
     if (element[contentElementKey]?.update) {
       await element[contentElementKey].update({}, opts)
@@ -63,7 +72,7 @@ export async function setContent(param, element, node, opts) {
       await set.call(element, param, opts)
     }
   } else {
-    removeContent(element, opts)
+    await removeContent(element, opts)
   }
 }
 
