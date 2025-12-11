@@ -15,7 +15,7 @@ export const generateHash = () => Math.random().toString(36).substring(2)
 export const extendStackRegistry = {}
 export const extendCachedRegistry = {}
 
-export const getHashedExtend = extend => {
+export const getHashedExtend = (extend) => {
   return extendStackRegistry[extend.__hash]
 }
 
@@ -37,7 +37,7 @@ export const getExtendStackRegistry = (extend, stack) => {
 
 // stacking
 export const extractArrayExtend = (extend, stack, context) => {
-  extend.forEach(each => flattenExtend(each, stack, context))
+  extend.forEach((each) => flattenExtend(each, stack, context))
   return stack
 }
 
@@ -79,7 +79,7 @@ export const deepMergeExtend = (element, extend) => {
   return element
 }
 
-export const cloneAndMergeArrayExtend = stack => {
+export const cloneAndMergeArrayExtend = (stack) => {
   return stack.reduce((a, c) => {
     return deepMergeExtend(a, deepClone(c))
   }, {})
@@ -91,23 +91,39 @@ export const fallbackStringExtend = (
   options = {},
   variant
 ) => {
-  const COMPONENTS = (context && context.components) || options.components
-  const PAGES = (context && context.pages) || options.pages
-  if (isString(extend)) {
-    const componentExists =
-      COMPONENTS &&
-      (COMPONENTS[extend + '.' + variant] ||
-        COMPONENTS[extend] ||
-        COMPONENTS['smbls.' + extend])
-    const pageExists = PAGES && extend.startsWith('/') && PAGES[extend]
-    if (componentExists) return componentExists
-    else if (pageExists) return pageExists
-    else {
-      if (options.verbose && isNotProduction()) {
-        console.warn('Extend is string but component was not found:', extend)
-      }
-      return {}
+  const checkIfExists = (key, variant, onlyVariant) => {
+    const COMPONENTS = (context && context.components) || options.components
+    if (COMPONENTS) {
+      const hasVariant = variant && COMPONENTS[key + '.' + variant]
+      if (onlyVariant) return hasVariant
+      const componentExists =
+        hasVariant || COMPONENTS[key] || COMPONENTS['smbls.' + key] // add shared libraries
+      if (componentExists) return componentExists
     }
+    const PAGES = (context && context.pages) || options.pages
+    if (PAGES) {
+      const pageExists = key?.startsWith('/') && PAGES[key]
+      if (pageExists) return pageExists
+    }
+  }
+
+  if (variant) {
+    console.log(extend, variant)
+  }
+
+  if (isString(extend)) {
+    const variantExists = checkIfExists(extend, variant)
+    if (variantExists) return variantExists
+    if (options.verbose && isNotProduction()) {
+      console.warn('Extend is string but component was not found:', extend)
+    }
+    return {}
+  } else if (isArray(extend)) {
+    const extendKey = extend.find((element) => {
+      return typeof element === 'string'
+    })
+    const variantExists = checkIfExists(extendKey, variant, true)
+    if (variantExists) return variantExists
   }
   return extend
 }
@@ -129,7 +145,7 @@ export const getExtendStack = (extend, context) => {
   return getExtendStackRegistry(extend, stack)
 }
 
-export const getExtendMerged = extend => {
+export const getExtendMerged = (extend) => {
   const stack = getExtendStack(extend)
   return cloneAndMergeArrayExtend(stack)
 }
