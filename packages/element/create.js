@@ -125,6 +125,8 @@ export const create = async (
 
   const onInit = await triggerEventOn('init', element, options)
   if (onInit === false) return element
+  const onEventInit = await triggerEventOn('eventInit', element, options)
+  if (onEventInit === false) return element
 
   await triggerEventOn('beforeClassAssign', element, options)
 
