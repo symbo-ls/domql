@@ -286,16 +286,11 @@ const captureSnapshot = (element, options) => {
 }
 
 const checkIfOnUpdate = (element, parent, options) => {
-  if ((!isFunction(element.if) && !isFunction(element.props?.if)) || !parent)
-    return
+  const ifFn = element.props?.if || element.if
+  if (!isFunction(ifFn) || !parent) return
 
   const ref = element.__ref
-  const ifPassed = (element.if || element.props?.if)(
-    element,
-    element.state,
-    element.context,
-    options
-  )
+  const ifPassed = ifFn(element, element.state, element.context, options)
   const itWasFalse = ref.__if !== true
 
   if (ifPassed) {
