@@ -88,11 +88,15 @@ export const set = async function (params, options = {}, el) {
   }
 
   if (params) {
-    let { childExtend, props } = params
+    let { childExtend, childExtendRecursive, props } = params
     if (!props) props = params.props = {}
     if (!childExtend && element.childExtend) {
       params.childExtend = element.childExtend
       props.ignoreChildExtend = true
+    }
+    if (!childExtendRecursive && element.childExtendRecursive) {
+      params.childExtendRecursive = element.childExtendRecursive
+      props.ignoreChildExtendRecursive = true
     }
     if (!props?.childProps && element.props?.childProps) {
       props.childProps = element.props.childProps
