@@ -1,12 +1,12 @@
 {
   "name": "@domql/parse",
-  "version": "2.33.29",
+  "version": "2.33.30",
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
-    "@domql/element": "^2.33.29",
-    "@domql/render": "^2.33.29"
+    "@domql/element": "^2.33.30",
+    "@domql/render": "^2.33.30"
   },
-  "gitHead": "4a29b29c86a47fa047345b16120cc426bbe57f41",
+  "gitHead": "3e76a5c1ce90c420530c64dc1dadd6a544a3834d",
   "source": "index.js"
 }
