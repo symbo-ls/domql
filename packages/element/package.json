@@ -1,6 +1,6 @@
 {
   "name": "@domql/element",
-  "version": "2.33.36",
+  "version": "2.33.37",
   "license": "MIT",
   "type": "module",
   "module": "index.js",
@@ -27,12 +27,12 @@
     "prepublish": "npx rimraf -I dist && npm run build && npm run copy:package:cjs"
   },
   "dependencies": {
-    "@domql/event": "^2.33.36",
-    "@domql/render": "^2.33.36",
-    "@domql/state": "^2.33.36",
-    "@domql/utils": "^2.33.36"
+    "@domql/event": "^2.33.37",
+    "@domql/render": "^2.33.37",
+    "@domql/state": "^2.33.37",
+    "@domql/utils": "^2.33.37"
   },
-  "gitHead": "c49777e3aee153b8b68f55a2aa9a3a5988483e2f",
+  "gitHead": "383eb71ccab284ca3b27477941b24d7152d51e67",
   "devDependencies": {
     "@babel/core": "^7.27.1"
   }
