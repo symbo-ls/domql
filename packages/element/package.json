@@ -11,7 +11,8 @@
       "default": "./dist/cjs/index.js"
     },
     "./utils/component": "./utils/component.js",
-    "./methods/index.js": "./methods/index.js"
+    "./methods/index.js": "./methods/index.js",
+    "./mixins/registry.js": "./mixins/registry.js"
   },
   "source": "index.js",
   "files": [
