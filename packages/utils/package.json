@@ -10,6 +10,10 @@
       "import": "./dist/esm/index.js",
       "require": "./dist/cjs/index.js",
       "default": "./dist/esm/index.js"
+    },
+    "./env.js": {
+      "import": "./env.js",
+      "require": "./env.js"
     }
   },
   "source": "index.js",
