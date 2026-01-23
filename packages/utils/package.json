@@ -7,9 +7,9 @@
   "main": "index.js",
   "exports": {
     ".": {
-      "import": "./dist/esm/index.js",
-      "require": "./dist/cjs/index.js",
-      "default": "./dist/esm/index.js"
+      "import": "./index.js",
+      "require": "./index.js",
+      "default": "./index.js"
     },
     "./env.js": {
       "import": "./env.js",
