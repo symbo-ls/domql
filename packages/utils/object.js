@@ -95,7 +95,7 @@ export const deepMerge = (
         deepMerge(elementProp, extendProp, excludeFrom, level - 1)
       } else {
         for (const k in extendProp) {
-          if (excludeFrom.includes(k) || elementProp[k] === undefined) continue
+          if (excludeFrom.includes(k) || elementProp[k] !== undefined) continue
           elementProp[k] = extendProp[k]
         }
       }
