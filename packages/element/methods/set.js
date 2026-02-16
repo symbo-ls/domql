@@ -29,6 +29,13 @@ import {
   append,
   warn
 } from './index.js'
+import {
+  getContext,
+  getRoot,
+  getRootContext,
+  getRootData,
+  getRootState
+} from './root.js'
 
 export const addMethods = (element, parent, options = {}) => {
   const proto = {
@@ -44,6 +51,11 @@ export const addMethods = (element, parent, options = {}) => {
     lookdown,
     lookdownAll,
     getRef,
+    getRootState,
+    getRoot,
+    getRootData,
+    getRootContext,
+    getContext,
     getPath,
     setNodeStyles,
     spotByPath,
