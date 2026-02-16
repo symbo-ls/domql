@@ -1,5 +1,6 @@
 'use strict'
 
+import './root.js'
 import { triggerEventOn } from '@domql/event'
 import {
   isDefined,
