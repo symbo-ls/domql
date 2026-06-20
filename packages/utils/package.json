@@ -30,6 +30,6 @@
   },
   "gitHead": "0be12bcdd99c265fdeded6d756a1a3616a943ffc",
   "devDependencies": {
-    "@babel/core": "^7.27.1"
+    "@babel/core": "^8.0.0"
   }
 }
